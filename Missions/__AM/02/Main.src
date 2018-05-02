@@ -1,0 +1,47 @@
+{
+   General information:
+Map scripts: Nefarem
+Status: 60%
+Todo:
+ - Dialogs
+ - Capture depots
+ - Spawn tigers
+ - Spawn Mikhail
+ - Spawn enemy cargo bays
+ - Cutscene with other americans soldiers
+ - Spawn enemy attack
+ - Simple AI
+
+}
+
+Export JMM, Bobby, Cyrus;                         // Heroes from mission 01
+Export Lisa, Khatam, Brian, Jerry, Mikhail;       // Heroes from mission 02
+Export Powell;                                    // Other heroes
+Export hpJMM, hpBobby, hpCyrus;
+Export RuSoldMinLevel, RuSoldMaxLevel;
+
+Starting
+begin
+     // Variable
+     RuSoldMinLevel = 0; // Minimum russian soldiers level
+     RuSoldMaxLevel = 0; // Maximum russian soldiers level
+
+     hpJMM = 0; // JMM's HP from before mission
+     hpBobby = 0; // Bobby's HP from before mission
+     hpCyrus = 0; // Cyrus's HP from before mission
+
+     // Other
+     RandomizeAll;
+     InGameOn;
+     Resetfog;
+
+     // Execude functions
+     PrepareDifficulty;
+
+     PrepareSouthBase;
+     PrepareNorthBase;
+     PrepareOtherRussians;
+
+     PrepareHeroes;
+
+end;

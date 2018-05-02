@@ -1,0 +1,97 @@
+Export function PrepareRussianHeroes;
+begin
+
+    // Mikhail
+    uc_side = 6;
+    Mikhail = NewCharacter('Mikhail');
+end;
+
+Export function PrepareSouthBase;
+var i, un;
+begin
+
+   for i = 1 to 2 do
+   begin
+
+           uc_side = 3;
+           uc_nation = 3;
+
+           hc_gallery = '';
+           hc_name = '';
+           PrepareHuman(false, 1, rand(RuSoldMinLevel, RuSoldMaxLevel));
+
+           un = CreateHuman;
+           PlaceUnitArea(un, SouthBaseRussianSpawn1, false);
+           ComTurnXY(un, 111, 38);
+
+   end;
+
+   for i = 1 to Difficulty do
+   begin
+
+           uc_side = 3;
+           uc_nation = 3;
+
+           hc_gallery = '';
+           hc_name = '';
+           PrepareHuman(false, 3, rand(RuSoldMinLevel, RuSoldMaxLevel));
+
+           un = CreateHuman;
+           PlaceUnitArea(un, SouthBaseRussianSpawn2, false);
+           ComTurnXY(un, 111, 28);
+
+   end;
+
+   RespawnInside(3, 3, arm2, rand(RuSoldMinLevel, RuSoldMaxLevel), 1, [rand(1,2), rand(2,3), rand(3,4)][Difficulty]);
+
+
+end;
+
+Export function PrepareNorthBase;
+var i, un;
+begin
+
+   for i = 1 to [rand(1,2), rand(2,3), rand(3,4)][Difficulty] do
+   begin
+
+           uc_side = 3;
+           uc_nation = 3;
+
+           hc_gallery = '';
+           hc_name = '';
+           PrepareHuman(false, 1, rand(RuSoldMinLevel, RuSoldMaxLevel));
+
+           un = CreateHuman;
+           PlaceUnitArea(un, NorthBaseRussianSpawn1, false);
+           ComTurnXY(un, 54, 16);
+
+   end;
+
+   RespawnInside(3, 3, arm1, rand(RuSoldMinLevel, RuSoldMaxLevel), 1, [Rand(1,2), Rand(2, 3), Rand(3, 4)][Difficulty]);
+   RespawnInside(3, 3, lab1, rand(RuSoldMinLevel, RuSoldMaxLevel), 4, [0, 1, 2][Difficulty]);
+   RespawnInside(3, 3, dep1, rand(RuSoldMinLevel, RuSoldMaxLevel), 2, [1, 2, 2][Difficulty]);
+
+
+end;
+
+Export function PrepareOtherRussians;
+var i, un;
+begin
+
+   for i = 1 to 2 do
+   begin
+
+           uc_side = 3;
+           uc_nation = 3;
+
+           hc_gallery = '';
+           hc_name = '';
+           PrepareHuman(false, 1, rand(RuSoldMinLevel, RuSoldMaxLevel));
+
+           un = CreateHuman;
+           PlaceUnitArea(un, RussiansWaterSpawn, false);
+           ComTurnXY(un, 80, 73);
+
+   end;
+
+end;
