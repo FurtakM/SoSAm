@@ -176,30 +176,24 @@ begin
     end;
 end;
 
+// Function by Altar from original 02 mission
+Export Function Nearest(un, units);
+var nearest_dist, nearest_un, sold, dist;
 
-
-{
-�atwy:
-1.      Tylko jeden bunkier w p�nocnej bazie.
-2.      Poziom �o�nierzy rosyjskich (0-2).
-3.      W p�nocnej i po�udniowej bazie ma�y garnizon sk�adaj�cy si� z (1-2) dodatkowych �o�nierzy.
-4.      Poziom paliwa w pojazdach - 50%
-
-�redni:
-1.      Dodatkowy bunkier na wzg�rzu i p�nocnej bazie od strony lasu.
-2.      Poziom �o�nierzy rosyjskich (1-2).
-3.      Garnizon sk�ada si� z (2-3) dodatkowych �o�nierzy.
-4.      Agresywne tygrysy (2) w p�nocnym lesie, (1-2) poziom.
-5.      Poziom paliwa w pojazdach - 35%
-
-Trudny:
-1.      Dodatkowy bunkier przy rzece, i w p�nocnej bazie od strony wzg�rza.
-2.      Poziom �o�nierzy rosyjskich (2-3).
-3.      Garnizon sk�ada si� z (3-4) dodatkowych �o�nierzy.
-4.      Agresywne tygrysy (3) w p�nocnym lesie, 4 poziom.
-5.      Poziom paliwa w pojazdach - 20% .
-
-}
+ begin
+  nearest_dist= 1000;
+  nearest_un= un;
+  for sold in units do
+   begin
+    dist = GetDistUnits(un, sold);
+    if dist < nearest_dist then
+      begin
+        nearest_un=sold;
+        nearest_dist=dist;
+      end;
+   end;
+   result:=nearest_un;
+end;
 
 Export function PrepareDifficulty;
 begin
@@ -207,7 +201,7 @@ begin
      IF Difficulty = 1 then
      begin
          RemoveUnit([brw2, brw3, brw4, brw5]);
-         SetFuel([vehicle1, vehicle2], 50);
+         SetFuel([vehicle1, vehicle2], 60);
          RuSoldMinLevel = 0;
          RuSoldMaxLevel = 1;
      end;
@@ -215,14 +209,14 @@ begin
      IF Difficulty = 2 then
      begin
          RemoveUnit([brw3, brw4]);
-         SetFuel([vehicle1, vehicle2], 35);
+         SetFuel([vehicle1, vehicle2], 50);
          RuSoldMinLevel = 1;
          RuSoldMaxLevel = 2;
      end;
 
      IF Difficulty = 3 then
      begin
-         SetFuel([vehicle1, vehicle2], 20);
+         SetFuel([vehicle1, vehicle2], 40);
          RuSoldMinLevel = 2;
          RuSoldMaxLevel = 3;
      end;
@@ -257,11 +251,24 @@ begin
     if mikhailStatus = 2 then AddMedal('Prisoner',  2); 
     if mikhailStatus = 3 then AddMedal('Prisoner', -2);
 
-    if mikhailStatus = 1 then SaveVariable(mikhailStatus,'01_mikhailStatus_1');
+    if mikhailStatus = 1 then SaveVariable(mikhailStatus,'02_mikhailStatus_1');
+    If IsOK(vehicle1) AND GetSide(vehicle1) = 1 then SaveVariable([GetChassis(vehicle1),GetEngine(vehicle1),GetControl(vehicle1),GetWeapon(vehicle1), GetLives(vehicle1)], '02_tank1_2');
+    If IsOK(vehicle2) AND GetSide(vehicle2) = 1 then SaveVariable([GetChassis(vehicle2),GetEngine(vehicle2),GetControl(vehicle2),GetWeapon(vehicle2), GetLives(vehicle2)], '02_tank2_3');
 
     GiveMedals('MAIN');
 
     RewardPeople(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+
+    SaveCharacters(JMM, 'JMM');
+    SaveCharacters(Bobby, 'Bobby');
+    SaveCharacters(Cyrus, 'Cyrus');
+    SaveCharacters(Lisa, 'Lisa');
+    SaveCharacters(Khatam, 'Khatam');
+    SaveCharacters(Brian, 'Brian');
+    SaveCharacters(Jerry, 'Jerry');
+    If mikhailStatus = 1 then SaveCharacters(Mikhail, 'Mikhail');
+
+    SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human]]) diff [JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry],'02_other_survivors');
 
     YouWin;
         
