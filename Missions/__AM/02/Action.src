@@ -2,6 +2,8 @@
 Every 1 do
 begin
 
+     CenterNowOnUnits(JMM);
+
      IF Cyrus AND Bobby then
      begin
           Say(Cyrus, 'D1a-Cyrus-1');
@@ -10,6 +12,7 @@ begin
           Say(JMM, 'D1a-JMM-2');
 
           ComStand(Lisa);
+          wait(0$1);
           AddComTurnUnit(Lisa, JMM);
           ComTurnUnit([JMM, Cyrus, Bobby], Lisa);
 
@@ -102,6 +105,7 @@ begin
      ComHold(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
      CenterOnXY(24, 32);
      PlaceUnitArea(Khatam, PaulSpawn, true);
+     SetClass(Khatam, 4);
 
      wait(0$1);
 
@@ -111,15 +115,15 @@ begin
      wait(0$1);
 
      Say(Khatam, 'D2a-Khat-1');
-     Say(Khatam, 'D2a-JMM-1');
+     Say(JMM, 'D2a-JMM-1');
      Say(Khatam, 'D2a-Khat-2');
-     Say(Khatam, 'D2a-JMM-2');
+     Say(JMM, 'D2a-JMM-2');
      Say(Khatam, 'D2a-Khat-3');
-     Say(Khatam, 'D2a-JMM-3');
+     Say(JMM, 'D2a-JMM-3');
      Say(Khatam, 'D2a-Khat-4');
-     Say(Khatam, 'D2a-JMM-4');
+     Say(JMM, 'D2a-JMM-4');
      Say(Khatam, 'D2a-Khat-5');
-     Say(Khatam, 'D2a-JMM-5');
+     Say(JMM, 'D2a-JMM-5');
 
      InGameOff;
 
@@ -132,20 +136,37 @@ begin
 end;
 
 // Find Americans corpses
-
 Every 0$1 trigger FilterUnitsInArea(DeadTriggerArea, [f_side, 1]) > 0 do
-var distanceTab, min, i;
+var i, distanceTab, min, tmpFemale, tmpMale;
 begin
 
-     min = 0;
-     distanceTab = [ [Bobby, GetDistUnitArea(Bobby, DeadsSpawn)], [Cyrus, GetDistUnitArea(Bobby, DeadsSpawn)], [Lisa, GetDistUnitArea(Bobby, DeadsSpawn)] ];
+     tmpFemale = FilterAllUnits([[f_side, 1], [f_class, 2], [f_sex, 2]]);
+     tmpMale = FilterAllUnits([[f_side, 1], [f_class, 2], [f_sex, 1]]);
+     distanceTab = [ [Bobby, GetDistUnitArea(Bobby, DeadsSpawn)], [Cyrus, GetDistUnitArea(Cyrus, DeadsSpawn)], [Lisa, GetDistUnitArea(Lisa, DeadsSpawn)], [tmpMale[1], GetDistUnits(tmpMale[1], DeadsSpawn)], [tmpFemale[1], GetDistUnits(tmpFemale[1], DeadsSpawn)]  ];
+
+     PrepareDeadSoldiers;
 
      InGameOn;
      CenterOnXY(23, 12);
 
      ComMoveXY(FilterAllUnits([[f_side, 1]]), 23, 12);
 
-     for i = 1 to distanceTab do if distanceTab[1][i+1] > min then min = distanceTab[1][i+1];
+     min = distanceTab[1][2];
+
+     for i = 1 to distanceTab do if distanceTab[i][2] < min then min = distanceTab[i][2];
+
+     for i = 1 to distanceTab do
+     begin
+          if distanceTab[i][2] = min then
+          begin
+               if distanceTab[i][1] = Bobby then Say(Bobby, 'DCorpses-Bobby-1');
+               if distanceTab[i][1] = Cyrus then Say(Cyrus, 'DCorpses-Cyrus-1');
+               if distanceTab[i][1] = Lisa then Say(Lisa, 'DCorpses-Lisa-1');
+               if distanceTab[i][1] = tmpMale[1] then Say(tmpMale[1], 'DCorpses-Sol1-1');
+               if distanceTab[i][1] = tmpFemale[1] then Say(tmpFemale[1], 'DCorpses-FSol1-1');
+               break;
+          end;
+     end;
 
      Say(JMM, 'DCorpses-JMM-1');
 
@@ -155,6 +176,53 @@ begin
 
      Say(JMM, 'DCorpses-JMM-2');
 
+end;
+
+// Find new AM soldiers
+
+Every 0$1 trigger FilterUnitsInArea(WaterScene, [f_side, 1]) > 0 do
+var i;
+begin
+    InGameOn;
+    ComTurnXY(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 72, 77);    
+    CenterOnXY(72, 77);
+
+    PrepareOtherAmericans;
+
+    SetAttitude(3, 4, att_enemy, true);
+    SetAttitude(4, 3, att_enemy, true);
+    for i in FilterUnitsInArea(RussiansWaterSpawn, [f_side, 3]) do ComFree(i);
+
+    wait(0$1);
+
+    InGameOff;
+    Say(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]))], 'DF-Sol1-1');
+    Say(JMM, 'DF-JMM-1'); 
+
+end;
+
+// Kill russians near river
+
+Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 AND (IsOK(Brian) OR IsOK(Jerry)) do
+begin
+
+    If NOT IsDead(Brian) then SetSide(Brian, 1);
+    If NOT IsDead(Jerry) then SetSide(Jerry, 1);
+
+    IF FilterAllUnits([[f_side, 1], [f_class, 4]]) > 0 then
+    begin
+        Say(JMM, 'DFa-JMM-1');
+    end else
+    begin
+        Say(JMM, 'DFa-JMM-1a');
+    end;
+
+    if GetLives(Brian) >= 500 then
+    begin
+        Say(Brian, 'DFb-Sol1-1');
+        ComMoveXY(Brian, 78, 74);
+        IF IsDead(Jerry) then Say(Brian, 'DFb-Sol1-1a')
+    end;    
 end;
 
 // Contact with enemy bunker
@@ -186,6 +254,11 @@ begin
      Say(JMM, 'DX3-JMM-1');
      DialogueOff;
 
+     wait([0$3, 0$2, 0$1][Difficulty]);
+
+    repeat
+    wait(0$1);
+
     for i in FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_empty]]) do
     begin
         for j in FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_class, 3]]) do
@@ -194,4 +267,322 @@ begin
         end;
     end;
 
+    until FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_empty]]) = 0 OR FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_class, 3]]) = 0;
+
+end;
+
+// Capture one of the two bases
+
+Every 0$1 trigger GetSide(dep1) = 1 OR GetSide(dep2) = 1 do
+begin
+    DialogueOn;
+    SayRadio(JMM, 'D3-JMM-1');
+    SayRadio(Powell, 'D3-Pow-1');
+    if IsOK(Cyrus) then Say(Cyrus, 'D3-Cyrus-1');  
+    DialogueOff;    
+end;
+
+// Capture all enemy bases and spawn Mikhail
+
+Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 do
+begin
+
+    DialogueOn;
+    SayRadio(JMM, 'D3a-JMM-1');
+    SayRadio(Powell, 'D3a-Pow-1');
+    SayRadio(JMM, 'D3a-JMM-2');
+    SayRadio(Powell, 'D3a-Pow-2');
+    SayRadio(JMM, 'D3a-JMM-3');
+    SayRadio(Powell, 'D3a-Pow-3');
+    SayRadio(JMM, 'D3a-JMM-4');
+    DialogueOff;
+
+    ChangeMissionObjectives('M2');
+    SayRadio(JMM, 'D3b-JMM-1');
+
+    wait(0$5);
+    InGameOn;
+    PrepareRussianHeroes;
+    CenterNowOnUnits(Mikhail);
+    ComTurnUnit(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), Mikhail);
+    ComTurnUnit(Mikhail, FilterAllUnits([[f_side, 1], [f_class, 2]][1]));
+
+    Say(Mikhail, 'D4-Mikh-1');
+    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-Sol1-1');
+    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-FSol1-1');    
+    Say(Mikhail, 'D4-Mikh-2');
+    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-Sol1-2');
+    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-FSol1-2');    
+    Say(Mikhail, 'D4-Mikh-3');
+    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-Sol1-3');
+    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-FSol1-3');    
+    Say(Mikhail, 'D4-Mikh-4');
+
+    {
+        ? Qs1
+Sir, ten Rusek mówi trochę po angielsku. Twierdzi, że jest cywilem. Mam go zgasić?
+- Zabij Rosjanina.
+- Przesłuchaj Rosjanina.
+- Pozwól mu odejść.
+?
+    }
+
+    case query('Qs1')  of
+        1: begin
+            InGameOff;
+            SetAttitude(1, 6, att_enemy, true);
+            ComMoveToArea(Mikhail, MikhailEscape);
+        end;
+
+        2: begin
+            repeat
+                wait(0$1);
+                CenterNowOnUnits(FilterAllUnits([[f_side, 1], [f_class, 2]][1]));
+                ComMoveUnit(Mikhail, JMM);
+            until (GetDistUnits(JMM, Mikhail) < 5);
+            ComTurnUnit(Mikhail, JMM);
+
+            Say(JMM, 'D4b-JMM-1');
+            Say(Mikhail, 'D4b-Mikh-1');
+            Say(JMM, 'D4b-JMM-2');
+            Say(Mikhail, 'D4b-Mikh-2');
+            Say(JMM, 'D4b-JMM-3');
+            Say(Mikhail, 'D4b-Mikh-3');
+            Say(JMM, 'D4b-JMM-4');
+            Say(Mikhail, 'D4b-Mikh-4');
+            Say(JMM, 'D4b-JMM-5');
+            Say(Mikhail, 'D4b-Mikh-5');
+            Say(JMM, 'D4b-JMM-6');
+            Say(Mikhail, 'D4b-Mikh-6');
+            Say(JMM, 'D4b-JMM-7');
+            Say(Mikhail, 'D4b-Mikh-7');
+            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-Sol1-7');
+            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-FSol1-7');    
+            Say(JMM, 'D4b-JMM-7');
+            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-Sol1-8');
+            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-FSol1-8');
+            Say(JMM, 'D4b-JMM-9');
+
+            SetSide(Mikhail, 1);
+
+            repeat
+                wait(0$1);
+                CenterNowOnUnits(Mikhail);
+
+                IF GetDistUnits(Mikhail, dep1) < GetDistUnits(Mikhail, dep2) then
+                begin
+                     ComEnterUnit(Mikhail, dep1);
+                end else
+                begin
+                     ComEnterUnit(Mikhail, dep2);
+                end;
+
+            until IsInUnit(Mikhail);
+
+            mikhailDepot = IsInUnit(Mikhail);
+
+            InGameOff;
+
+        end;
+
+        3: begin
+            ComMoveToArea(Mikhail, MikhailEscape);
+            wait(0$3);
+            InGameOff;
+        end;
+
+    end;
+end;
+
+// Spawn enemy cargo bay
+Every 5$0 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 do
+begin
+    PrepareCargoBays;
+    ComMoveXY([cargo1, cargo2, driver1, driver2], 53, 16);
+
+    wait(0$5);
+    Say(driver1, 'D5-Rus2-1');
+
+    wait(0$7);
+    Say(driver1, 'D5-Rus2-1a');
+
+    ComMoveXY([cargo1, cargo2], 7, 9);
+
+    cargoEscape = 1;
+end;
+
+// Escape cargo from map
+Every 0$1 trigger cargoEscape > 0 do
+begin
+    enable;
+
+    if IsInArea(cargo1, RussianAttack) OR IsInArea(driver1, RussianAttack) then
+    begin
+        RemoveUnit(cargo1);
+        RemoveUnit(driver1);
+        cargoEscape = cargoEscape + 1;
+    end;
+     
+    if IsInArea(cargo2, RussianAttack) OR IsInArea(driver2, RussianAttack) then
+    begin
+         RemoveUnit(cargo2);
+         RemoveUnit(driver2);
+         cargoEscape = cargoEscape + 1;
+    end;
+end;
+
+Every 0$1 trigger cargoEscape > 1 do
+begin
+    Say(FilterAllUnits([[f_side, 1], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_sex, 1]]))], 'D5a-Sol1-1');
+    Say(JMM, 'D5a-JMM-1');
+end;
+
+// End mission if you destroy all cargos
+Every 0$01 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape = 1 do
+begin
+    wait([30$0, 25$0, 20$0][Difficulty]);
+    SayRadio(Powell, 'D6-Pow-1');
+    SayRadio(JMM, 'D6-JMM-1');
+    SayRadio(Powell, 'D6-Pow-2');
+    SayRadio(JMM, 'D6-JMM-2');
+
+    FinishMission;
+end;
+
+// End mission if one cargo escape - spawn attack
+Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape > 1 do
+var tmp;
+begin
+    wait([30$0, 25$0, 20$0][Difficulty]);
+    PrepareRussianAttack([1, 2, 3][Difficulty], RussianAttack);
+    lastBattle = 1;
+
+    tmp = FilterUnitsInArea(Battlefield, [[f_side, 3], [f_type, unit_human], [f_sex, sex_male]]);
+
+    Say(tmp[1], 'D9-Rus3-1');
+    Say(tmp[2], 'D9-Russ-1');
+end;
+
+// End mission after battle
+Every 0$7 trigger LastBattle = 1 AND FilterUnitsInArea(Battlefield, [[f_side, 3], [f_type, unit_human]]) = 0 do
+begin
+    SayRadio(Powell, 'D6-Pow-1');
+    SayRadio(JMM, 'D6-JMM-1');
+    SayRadio(Powell, 'D6-Pow-2');
+    SayRadio(JMM, 'D6-JMM-2');
+
+    FinishMission;
+end;
+
+// Macmillan's alert about attack depots
+Every 0$1 trigger GetLives(dep1) < 1000 OR GetLives(dep2) < 1000 do Say(JMM, ' D8-JMM-1');
+
+// Mihail
+
+// Mikhail in depot - change variable value
+Every 0$1 trigger IsInUnit(Mikhail) do
+begin
+     mikhailInBase = 1;
+     enable;
+
+end;
+
+// Mikhail ask  > kill/patrol/free
+Every 0$1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 1 AND GetSide(Mikhail) = 1 do
+begin
+     mikhailInBase = 4;
+
+     enable;
+     
+     case query('QMikh2') of
+     1: Begin
+        SetAttitude(1, 6, att_enemy, true);
+        SetSide(Mikhail, 6);
+        ComExitBuilding(Mikhail);
+        wait(0$1);
+        ComMoveToArea(Mikhail, MikhailEscape);
+        mikhailInbase = 3;
+     end;
+      
+     2: Begin
+        mikhailInBase = 2;
+        SetSide(Mikhail, 6);
+        ComExitBuilding(Mikhail);
+        wait(0$1);
+        AddComMoveXY(Mikhail, GetX(Mikhail) + 2, GetY(Mikhail) + 2);
+        AddComMoveXY(Mikhail, GetX(Mikhail) + 1, GetY(Mikhail) + 2);
+        AddComMoveXY(Mikhail, GetX(Mikhail) + 2, GetY(Mikhail));
+
+        wait(0$5);
+        ComMoveToArea(Mikhail, MikhailEnter);
+     end;
+
+     3: Begin
+        SetSide(Mikhail, 6);
+        ComExitBuilding(Mikhail);
+        wait(0$1);
+        ComMoveToArea(Mikhail, MikhailEscape);
+        mikhailInbase = 3;
+     end;
+
+  end;
+
+end;
+
+// Mikhail back to depot
+Every 1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 2 do
+begin
+     enable;
+     mikhailInBase = 1;
+     SetSide(Mikhail, 1);
+     IF GetDistUnits(Mikhail, dep1) < GetDistUnits(Mikhail, dep2) then
+     begin
+          ComEnterUnit(Mikhail, dep1);
+     end else
+     begin
+          ComEnterUnit(Mikhail, dep2);
+     end;
+
+end;
+
+// Mikhail - Escape
+Every 0$1 trigger IsInUnit(Mikhail) AND GetDistUnits(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1]]), IsInUnit(Mikhail)) < 5 do
+begin
+
+     SetSide(Mikhail, 6);
+     ComExitBuilding(Mikhail);
+     wait(0$1);
+     ComMoveToArea(Mikhail, MikhailEscape);
+     mikhailStatus = 3;
+end;
+
+// Mikhail - Macmillan dialog about Mikhail's escape
+Every 0$1 trigger GetDistUnits(JMM, mikhailDepot) < 5 AND mikhailStatus = 3 do
+var tmp;
+begin
+
+     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM];
+
+     DialogueOn;
+     Say(JMM, 'D7-JMM-1');
+     Say(tmp[1], 'D7-Sol1-1');
+     Say(JMM, 'D7-JMM-2');
+     Say(tmp[1], 'D7-Sol1-2');
+     Say(JMM, 'D7-JMM-3');
+     Say(tmp[1], 'D7-Sol1-3');
+
+     If IsOK(Cyrus) and IsOK(Lisa) then
+     begin
+          Say(Cyrus, 'D7-Cyrus-3');
+          Say(tmp[1], 'D7-Sol1-4');
+          Say(Lisa, 'D7-Lisa-4');
+     end;
+
+end;
+
+// Mikhail - Remove from map
+Every 0$1 trigger IsInArea(Mikhail, MikhailEscape) AND GetSide(Mikhail) = 6 do
+begin
+     mikhailStatus = 3;
+     RemoveUnit(Mikhail);
 end;
