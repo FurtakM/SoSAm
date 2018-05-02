@@ -1,0 +1,76 @@
+// Support function to fast spawn people in buildings - Author: Nefarem
+
+Export function RespawnInside(side, nation, build, skill, clas, count);
+var i,l, un;
+begin
+
+   for i = 1 to count do
+   begin
+
+           uc_side = side;
+           uc_nation = nation;
+
+           hc_gallery = '';
+           hc_name = '';
+           PrepareHuman(false, clas, skill);
+
+           un = CreateHuman;
+           PlaceHumanInUnit(un,build);
+
+   end;
+
+END;
+
+
+{
+£atwy:
+1.      Tylko jeden bunkier w pó³nocnej bazie.
+2.      Poziom ¿o³nierzy rosyjskich (0-2).
+3.      W pó³nocnej i po³udniowej bazie ma³y garnizon sk³adaj¹cy siê z (1-2) dodatkowych ¿o³nierzy.
+4.      Poziom paliwa w pojazdach - 50%
+
+Œredni:
+1.      Dodatkowy bunkier na wzgórzu i pó³nocnej bazie od strony lasu.
+2.      Poziom ¿o³nierzy rosyjskich (1-2).
+3.      Garnizon sk³ada siê z (2-3) dodatkowych ¿o³nierzy.
+4.      Agresywne tygrysy (2) w pó³nocnym lesie, (1-2) poziom.
+5.      Poziom paliwa w pojazdach - 35%
+
+Trudny:
+1.      Dodatkowy bunkier przy rzece, i w pó³nocnej bazie od strony wzgórza.
+2.      Poziom ¿o³nierzy rosyjskich (2-3).
+3.      Garnizon sk³ada siê z (3-4) dodatkowych ¿o³nierzy.
+4.      Agresywne tygrysy (3) w pó³nocnym lesie, 4 poziom.
+5.      Poziom paliwa w pojazdach - 20% .
+
+}
+
+Export function PrepareDifficulty;
+begin
+
+     IF Difficulty = 1 then
+     begin
+         RemoveUnit([brw2, brw3, brw4, brw5]);
+         SetFuel([vehicle1, vehicle2], 50);
+         RuSoldMinLevel = 0;
+         RuSoldMaxLevel = 1;
+     end;
+
+     IF Difficulty = 2 then
+     begin
+         RemoveUnit([brw3, brw4]);
+         SetFuel([vehicle1, vehicle2], 35);
+         RuSoldMinLevel = 1;
+         RuSoldMaxLevel = 2;
+     end;
+
+     IF Difficulty = 3 then
+     begin
+         SetFuel([vehicle1, vehicle2], 20);
+         RuSoldMinLevel = 2;
+         RuSoldMaxLevel = 3;
+     end;
+
+end;
+
+
