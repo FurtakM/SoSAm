@@ -1,0 +1,51 @@
+Export russian_troops_1, russian_troops_2, russian_patrol_tanks;
+Export Pokryshkin;
+
+Export Function InitRussian;
+var skill, i, un;
+begin
+skill := [1, 2, 3][Difficulty];
+
+uc_side := 3;
+uc_nation := 3;
+
+Pokryshkin := PrepareUnit('Pokryshkin', false);
+
+hc_gallery := '';
+hc_name := '';
+
+// guard north / south
+for i = 1 to 6 do
+    begin
+    PrepareHuman(sex_male, 1, skill);
+    un := CreateHuman;
+
+    if i mod 2 = 0 then
+       begin
+       russian_troops_1 := Insert(russian_troops_1, 1, un);
+       PlaceUnitArea(un, guard_north, false);
+       end
+      else
+       begin
+       russian_troops_2 := Insert(russian_troops_2, 1, un);
+       PlaceUnitArea(un, guard_south, false);
+       end;
+    end;
+
+
+for i = 1 to 2 do
+    begin
+    un := PrepareTank(3, 3, ru_medium_tracked, engine_combustion, control_manual, ru_heavy_machine_gun, 100);
+    PrepareHuman(false, 3, skill);
+    PlaceHumanInUnit(CreateHuman, un);
+    PlaceUnitXY(un, [23, 131][i], [14, 87][i], false);
+    russian_patrol_tanks := Insert(russian_patrol_tanks, 1, un);
+    end;
+End;
+
+
+Every 0$01 trigger active_road_patrol do
+ComPatrol(russian_patrol_tanks[1], 'road', 0$02, [131, 87, 107, 75, 107, 66, 114, 61, 107, 34]);
+
+Every 0$01 trigger active_road_patrol do
+ComPatrol(russian_patrol_tanks[2], 'road', 0$02, [21, 12, 37, 30, 65, 62, 107, 76]);
