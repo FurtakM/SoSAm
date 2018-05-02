@@ -55,3 +55,17 @@ Export Function ComPatrol(unit, mode, pause, coords);
 begin
 
 End;
+
+Export Function DebugSay(dialog);
+var speaker;
+begin
+uc_nation := 1;
+uc_side := 0;
+
+PrepareHuman(false, 1, 0);
+hc_name := 'speaker';
+hc_gallery := '';
+
+speaker := CreateHuman;
+Say(speaker, dialog);
+End;
