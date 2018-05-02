@@ -1,4 +1,237 @@
 // starting begin ResetFog ;
    0: CALL_OW 335
+// Init ;
+   4: CALL 13 0 0
+// DebugMode ;
+   8: CALL 29 0 0
 // end ;
-   4: END
+  12: END
+// export debug ; function Init ; begin
+  13: LD_INT 0
+  15: PPUSH
+// debug := true ;
+  16: LD_ADDR_EXP 1
+  20: PUSH
+  21: LD_INT 1
+  23: ST_TO_ADDR
+// end ;
+  24: LD_VAR 0 1
+  28: RET
+// function DebugMode ; var i ; begin
+  29: LD_INT 0
+  31: PPUSH
+  32: PPUSH
+// if not debug then
+  33: LD_EXP 1
+  37: NOT
+  38: IFFALSE 42
+// exit ;
+  40: GO 53
+// TurnFogOff ( ) ;
+  42: CALL_OW 537
+// FogOff ( 1 ) ;
+  46: LD_INT 1
+  48: PPUSH
+  49: CALL_OW 344
+// end ; end_of_file
+  53: LD_VAR 0 1
+  57: RET
+// export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
+  58: LD_INT 0
+  60: PPUSH
+  61: PPUSH
+// if exist_mode then
+  62: LD_VAR 0 2
+  66: IFFALSE 85
+// unit := CreateCharacter ( ident ) else
+  68: LD_ADDR_VAR 0 4
+  72: PUSH
+  73: LD_VAR 0 1
+  77: PPUSH
+  78: CALL_OW 34
+  82: ST_TO_ADDR
+  83: GO 100
+// unit := NewCharacter ( ident ) ;
+  85: LD_ADDR_VAR 0 4
+  89: PUSH
+  90: LD_VAR 0 1
+  94: PPUSH
+  95: CALL_OW 25
+  99: ST_TO_ADDR
+// result := unit ;
+ 100: LD_ADDR_VAR 0 3
+ 104: PUSH
+ 105: LD_VAR 0 4
+ 109: ST_TO_ADDR
+// end ;
+ 110: LD_VAR 0 3
+ 114: RET
+// export function PrepareSolBun ( skill , b ) ; var un , dir ; begin
+ 115: LD_INT 0
+ 117: PPUSH
+ 118: PPUSH
+ 119: PPUSH
+// uc_side := GetSide ( b ) ;
+ 120: LD_ADDR_OWVAR 20
+ 124: PUSH
+ 125: LD_VAR 0 2
+ 129: PPUSH
+ 130: CALL_OW 255
+ 134: ST_TO_ADDR
+// uc_nation := GetNation ( b ) ;
+ 135: LD_ADDR_OWVAR 21
+ 139: PUSH
+ 140: LD_VAR 0 2
+ 144: PPUSH
+ 145: CALL_OW 248
+ 149: ST_TO_ADDR
+// PrepareHuman ( false , 1 , skill ) ;
+ 150: LD_INT 0
+ 152: PPUSH
+ 153: LD_INT 1
+ 155: PPUSH
+ 156: LD_VAR 0 1
+ 160: PPUSH
+ 161: CALL_OW 380
+// dir := GetDir ( b ) - 3 ;
+ 165: LD_ADDR_VAR 0 5
+ 169: PUSH
+ 170: LD_VAR 0 2
+ 174: PPUSH
+ 175: CALL_OW 254
+ 179: PUSH
+ 180: LD_INT 3
+ 182: MINUS
+ 183: ST_TO_ADDR
+// if dir < 0 then
+ 184: LD_VAR 0 5
+ 188: PUSH
+ 189: LD_INT 0
+ 191: LESS
+ 192: IFFALSE 208
+// dir := 6 + dir ;
+ 194: LD_ADDR_VAR 0 5
+ 198: PUSH
+ 199: LD_INT 6
+ 201: PUSH
+ 202: LD_VAR 0 5
+ 206: PLUS
+ 207: ST_TO_ADDR
+// un := CreateHuman ;
+ 208: LD_ADDR_VAR 0 4
+ 212: PUSH
+ 213: CALL_OW 44
+ 217: ST_TO_ADDR
+// SetDir ( un , dir ) ;
+ 218: LD_VAR 0 4
+ 222: PPUSH
+ 223: LD_VAR 0 5
+ 227: PPUSH
+ 228: CALL_OW 233
+// PlaceHumanInUnit ( un , b ) ;
+ 232: LD_VAR 0 4
+ 236: PPUSH
+ 237: LD_VAR 0 2
+ 241: PPUSH
+ 242: CALL_OW 52
+// end ;
+ 246: LD_VAR 0 3
+ 250: RET
+// export function PrepareTank ( side , nation , chassis , engine , control , weapon , fuel ) ; begin
+ 251: LD_INT 0
+ 253: PPUSH
+// uc_side := side ;
+ 254: LD_ADDR_OWVAR 20
+ 258: PUSH
+ 259: LD_VAR 0 1
+ 263: ST_TO_ADDR
+// uc_nation := nation ;
+ 264: LD_ADDR_OWVAR 21
+ 268: PUSH
+ 269: LD_VAR 0 2
+ 273: ST_TO_ADDR
+// vc_chassis := chassis ;
+ 274: LD_ADDR_OWVAR 37
+ 278: PUSH
+ 279: LD_VAR 0 3
+ 283: ST_TO_ADDR
+// vc_engine := engine ;
+ 284: LD_ADDR_OWVAR 39
+ 288: PUSH
+ 289: LD_VAR 0 4
+ 293: ST_TO_ADDR
+// vc_control := control ;
+ 294: LD_ADDR_OWVAR 38
+ 298: PUSH
+ 299: LD_VAR 0 5
+ 303: ST_TO_ADDR
+// vc_weapon := weapon ;
+ 304: LD_ADDR_OWVAR 40
+ 308: PUSH
+ 309: LD_VAR 0 6
+ 313: ST_TO_ADDR
+// vc_fuel_battery := fuel ;
+ 314: LD_ADDR_OWVAR 41
+ 318: PUSH
+ 319: LD_VAR 0 7
+ 323: ST_TO_ADDR
+// result := CreateVehicle ;
+ 324: LD_ADDR_VAR 0 8
+ 328: PUSH
+ 329: CALL_OW 45
+ 333: ST_TO_ADDR
+// end ;
+ 334: LD_VAR 0 8
+ 338: RET
+// export function ComPatrol ( unit , mode , pause , coords ) ; begin
+ 339: LD_INT 0
+ 341: PPUSH
+// end ;
+ 342: LD_VAR 0 5
+ 346: RET
+// export function DebugSay ( dialog ) ; var speaker ; begin
+ 347: LD_INT 0
+ 349: PPUSH
+ 350: PPUSH
+// uc_nation := 1 ;
+ 351: LD_ADDR_OWVAR 21
+ 355: PUSH
+ 356: LD_INT 1
+ 358: ST_TO_ADDR
+// uc_side := 0 ;
+ 359: LD_ADDR_OWVAR 20
+ 363: PUSH
+ 364: LD_INT 0
+ 366: ST_TO_ADDR
+// PrepareHuman ( false , 1 , 0 ) ;
+ 367: LD_INT 0
+ 369: PPUSH
+ 370: LD_INT 1
+ 372: PPUSH
+ 373: LD_INT 0
+ 375: PPUSH
+ 376: CALL_OW 380
+// hc_name := speaker ;
+ 380: LD_ADDR_OWVAR 26
+ 384: PUSH
+ 385: LD_STRING speaker
+ 387: ST_TO_ADDR
+// hc_gallery :=  ;
+ 388: LD_ADDR_OWVAR 33
+ 392: PUSH
+ 393: LD_STRING 
+ 395: ST_TO_ADDR
+// speaker := CreateHuman ;
+ 396: LD_ADDR_VAR 0 3
+ 400: PUSH
+ 401: CALL_OW 44
+ 405: ST_TO_ADDR
+// Say ( speaker , dialog ) ;
+ 406: LD_VAR 0 3
+ 410: PPUSH
+ 411: LD_VAR 0 1
+ 415: PPUSH
+ 416: CALL_OW 88
+// end ; end_of_file
+ 420: LD_VAR 0 2
+ 424: RET

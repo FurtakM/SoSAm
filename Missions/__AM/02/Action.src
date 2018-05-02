@@ -6,12 +6,26 @@ begin
 
      IF Cyrus AND Bobby then
      begin
+          ComMoveXY(Cyrus, 43, 72);
+          ComMoveXY(Bobby, 44, 70);
+          ComMoveXY(JMM, 46, 73);
+
           Say(Cyrus, 'D1a-Cyrus-1');
           Say(JMM, 'D1a-JMM-1');
+
+          AddComMoveXY(Cyrus, 37, 66);
+          AddComMoveXY(Bobby, 41, 67);
+          AddComMoveXY(JMM, 38, 64);
+
           Say(Bobby, 'D1a-Bobby-2');
+
+          AddComMoveXY(Cyrus, 35, 62);
+          AddComMoveXY(Bobby, 32, 60);
+          AddComMoveXY(JMM, 35, 60);
+
           Say(JMM, 'D1a-JMM-2');
 
-          ComStand(Lisa);
+          ComWalk(Lisa);
           wait(0$1);
           AddComTurnUnit(Lisa, JMM);
           ComTurnUnit([JMM, Cyrus, Bobby], Lisa);
@@ -22,12 +36,24 @@ begin
 
      IF Cyrus AND NOT Bobby then
      begin
+          ComMoveXY(Cyrus, 43, 72);
+          ComMoveXY(JMM, 46, 73);
+
           Say(Cyrus, 'D1a-Cyrus-1');
           Say(JMM, 'D1a-JMM-1');
+
+          AddComMoveXY(Cyrus, 37, 66);
+          AddComMoveXY(JMM, 38, 64);
+
           Say(Cyrus, 'D1a-Cyrus-2');
+
+          AddComMoveXY(Cyrus, 35, 62);
+          AddComMoveXY(JMM, 35, 60);
+
           Say(JMM, 'D1a-JMM-2');
 
-          ComStand(Lisa);
+          ComWalk(Lisa);
+          wait(0$1);
           AddComTurnUnit(Lisa, JMM);
 
           Say(Lisa, 'D1a-Lisa-2');
@@ -37,12 +63,25 @@ begin
 
      IF NOT Cyrus AND Bobby then
      begin
+
+          ComMoveXY(Bobby, 44, 70);
+          ComMoveXY(JMM, 46, 73);
+
           Say(Bobby, 'D1a-Bobby-1');
           Say(JMM, 'D1a-JMM-1');
+
+          AddComMoveXY(Bobby, 37, 66);
+          AddComMoveXY(JMM, 38, 64);
+
           Say(Bobby, 'D1a-Bobby-2');
+
+          AddComMoveXY(Bobby, 35, 62);
+          AddComMoveXY(JMM, 35, 60);
+
           Say(JMM, 'D1a-JMM-2');
 
-          ComStand(Lisa);
+          ComWalk(Lisa);
+          wait(0$1);
           AddComTurnUnit(Lisa, JMM);
           ComTurnUnit([JMM, Cyrus], Lisa);
 
@@ -53,12 +92,22 @@ begin
 
      IF NOT Cyrus and NOT Bobby then
      begin
-          Say(JMM, 'D1b-JMM-1');
-          Say(JMM, 'D1b-JMM-2');
+          ComMoveXY(JMM, 37, 66);
 
-          ComStand(Lisa);
+          Say(JMM, 'D1b-JMM-1');
+
+          ComCrawl(JMM);
+          AddComMoveXY(JMM, 35, 60);
+
+          wait(0$8);
+
+          Say(JMM, 'D1b-JMM-1a');
+
+          ComWalk([JMM, Lisa]);
+          wait(0$1);
+
           AddComTurnUnit(Lisa, JMM);
-          ComTurnUnit([JMM], Lisa);
+          AddComTurnUnit([JMM], Lisa);
 
           Say(Lisa, 'D1b-Lisa-1');
 
@@ -271,6 +320,40 @@ begin
 
 end;
 
+// Dialog about tanks
+Every 0$1 trigger FilterUnitsInArea(SouthBase, [[f_side, 3], [f_type, unit_human], [f_class, 3]]) = 0 do
+begin
+     If IsOK(Bobby) then
+     begin
+          Say(Bobby, 'DX2-Bobby-1'); 
+          Say(JMM, 'DX2-JMM-1a');
+     end else
+     begin
+          Say(JMM, 'DX2-JMM-1');
+     end;
+
+end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]) >= 1 do
+var tmp, temp1, temp2;
+begin
+     tmp = FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]);
+     temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby];
+     temp2 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_female]]) diff [Lisa];
+
+     Say(JMM, 'DX2a-JMM-1');
+
+     IF IsInUnit(Bobby) = tmp[1] then Say(Bobby, 'DX2a-Bobby-1');
+     IF IsInUnit(Cyrus) = tmp[1] then Say(Cyrus, 'DX2a-Cyrus-1');
+     IF IsInUnit(Lisa) = tmp[1] then Say(Lisa, 'DX2a-Lisa-1');
+     IF IsInUnit(temp1[1]) = tmp[1] then Say(temp1[1], 'DX2a-Sol1-1');
+     IF IsInUnit(temp2[2]) = tmp[1] then Say(temp2[2], 'DX2a-FSol1-1');
+     IF IsInUnit(JMM) = tmp[1] then Say(JMM, 'DX2b-JMM-1');
+
+     Say(JMM, 'DX2a-JMM-2');
+
+end;
+
 // Capture one of the two bases
 
 Every 0$1 trigger GetSide(dep1) = 1 OR GetSide(dep2) = 1 do
@@ -285,7 +368,11 @@ end;
 // Capture all enemy bases and spawn Mikhail
 
 Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 do
+var temp, i;
 begin
+
+    temp = FilterAllUnits([[f_side, 1], [f_class, 2]]) diff [JMM];
+    PrepareTigers;
 
     DialogueOn;
     SayRadio(JMM, 'D3a-JMM-1');
@@ -298,7 +385,7 @@ begin
     DialogueOff;
 
     ChangeMissionObjectives('M2');
-    SayRadio(JMM, 'D3b-JMM-1');
+    Say(JMM, 'D3b-JMM-1');
 
     wait(0$5);
     InGameOn;
@@ -308,24 +395,15 @@ begin
     ComTurnUnit(Mikhail, FilterAllUnits([[f_side, 1], [f_class, 2]][1]));
 
     Say(Mikhail, 'D4-Mikh-1');
-    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-Sol1-1');
-    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-FSol1-1');    
+    if GetSex(temp[1]) = 1 then Say(temp[1], 'D4-Sol1-1');
+    if GetSex(temp[1]) = 2 then Say(temp[1], 'D4-FSol1-1');
     Say(Mikhail, 'D4-Mikh-2');
-    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-Sol1-2');
-    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-FSol1-2');    
+    if GetSex(temp[1]) = 1 then Say(temp[1], 'D4-Sol1-2');
+    if GetSex(temp[1]) = 2 then Say(temp[2], 'D4-FSol1-2');
     Say(Mikhail, 'D4-Mikh-3');
-    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-Sol1-3');
-    if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4-FSol1-3');    
+    if GetSex(temp[1]) = 1 then Say(temp[1], 'D4-Sol1-3');
+    if GetSex(temp[1]) = 2 then Say(temp[1], 'D4-FSol1-3');
     Say(Mikhail, 'D4-Mikh-4');
-
-    {
-        ? Qs1
-Sir, ten Rusek mówi trochę po angielsku. Twierdzi, że jest cywilem. Mam go zgasić?
-- Zabij Rosjanina.
-- Przesłuchaj Rosjanina.
-- Pozwól mu odejść.
-?
-    }
 
     case query('Qs1')  of
         1: begin
@@ -337,7 +415,8 @@ Sir, ten Rusek mówi trochę po angielsku. Twierdzi, że jest cywilem. Mam go zg
         2: begin
             repeat
                 wait(0$1);
-                CenterNowOnUnits(FilterAllUnits([[f_side, 1], [f_class, 2]][1]));
+                CenterNowOnUnits(temp[1]);
+                ComMoveUnit(temp[1], JMM);
                 ComMoveUnit(Mikhail, JMM);
             until (GetDistUnits(JMM, Mikhail) < 5);
             ComTurnUnit(Mikhail, JMM);
@@ -356,14 +435,16 @@ Sir, ten Rusek mówi trochę po angielsku. Twierdzi, że jest cywilem. Mam go zg
             Say(Mikhail, 'D4b-Mikh-6');
             Say(JMM, 'D4b-JMM-7');
             Say(Mikhail, 'D4b-Mikh-7');
-            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-Sol1-7');
-            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-FSol1-7');    
-            Say(JMM, 'D4b-JMM-7');
-            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 1 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-Sol1-8');
-            if GetSex(FilterAllUnits([[f_side, 1], [f_class, 2]][1])) = 2 then Say(FilterAllUnits([[f_side, 1], [f_class, 2]][1]), 'D4b-FSol1-8');
+            if GetSex(temp[1]) = 1 then Say(temp[1], 'D4b-Sol1-7');
+            if GetSex(temp[1]) = 2 then Say(temp[1], 'D4b-FSol1-7');
+            Say(JMM, 'D4b-JMM-7');                 
+            if GetSex(temp[1]) = 1 then Say(temp[1], 'D4b-Sol1-8');
+            if GetSex(temp[1]) = 2 then Say(temp[1], 'D4b-FSol1-8');
             Say(JMM, 'D4b-JMM-9');
 
             SetSide(Mikhail, 1);
+
+            for i in FilterAllUnits([[f_side, 1]]) do ComFree(i);
 
             repeat
                 wait(0$1);
@@ -382,6 +463,8 @@ Sir, ten Rusek mówi trochę po angielsku. Twierdzi, że jest cywilem. Mam go zg
             mikhailDepot = IsInUnit(Mikhail);
 
             InGameOff;
+
+            ChangeMissionObjectives('M3');
 
         end;
 
@@ -404,9 +487,9 @@ begin
     Say(driver1, 'D5-Rus2-1');
 
     wait(0$7);
-    Say(driver1, 'D5-Rus2-1a');
 
     ComMoveXY([cargo1, cargo2], 7, 9);
+    Say(driver1, 'D5-Rus2-1a');
 
     cargoEscape = 1;
 end;
@@ -440,20 +523,24 @@ end;
 // End mission if you destroy all cargos
 Every 0$01 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape = 1 do
 begin
-    wait([30$0, 25$0, 20$0][Difficulty]);
-    SayRadio(Powell, 'D6-Pow-1');
-    SayRadio(JMM, 'D6-JMM-1');
-    SayRadio(Powell, 'D6-Pow-2');
-    SayRadio(JMM, 'D6-JMM-2');
+    wait([9$0, 8$0, 7$0][Difficulty]);
 
-    FinishMission;
-end;
+    IF cargoEscape = 1 then
+    begin
+        SayRadio(Powell, 'D6-Pow-1');
+        SayRadio(JMM, 'D6-JMM-1');
+        SayRadio(Powell, 'D6-Pow-2');
+        SayRadio(JMM, 'D6-JMM-2');
+
+        FinishMission;
+    end;
+end;  
 
 // End mission if one cargo escape - spawn attack
 Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape > 1 do
 var tmp;
 begin
-    wait([30$0, 25$0, 20$0][Difficulty]);
+    wait([9$0, 8$0, 7$0][Difficulty]);
     PrepareRussianAttack([1, 2, 3][Difficulty], RussianAttack);
     lastBattle = 1;
 
@@ -501,7 +588,7 @@ begin
         ComExitBuilding(Mikhail);
         wait(0$1);
         ComMoveToArea(Mikhail, MikhailEscape);
-        mikhailInbase = 3;
+        mikhailInbase = 0;
      end;
       
      2: Begin
@@ -522,7 +609,7 @@ begin
         ComExitBuilding(Mikhail);
         wait(0$1);
         ComMoveToArea(Mikhail, MikhailEscape);
-        mikhailInbase = 3;
+        mikhailInbase = 0;
      end;
 
   end;
@@ -533,27 +620,38 @@ end;
 Every 1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 2 do
 begin
      enable;
-     mikhailInBase = 1;
+     
      SetSide(Mikhail, 1);
-     IF GetDistUnits(Mikhail, dep1) < GetDistUnits(Mikhail, dep2) then
-     begin
+
+     repeat
+       wait(0$1);
+       IF GetDistUnits(Mikhail, dep1) < GetDistUnits(Mikhail, dep2) then
+       begin
           ComEnterUnit(Mikhail, dep1);
-     end else
-     begin
+       end else
+       begin
           ComEnterUnit(Mikhail, dep2);
-     end;
+       end;
+     until IsInUnit(Mikhail);
+
+     mikhailInBase = 1;
 
 end;
 
 // Mikhail - Escape
-Every 0$1 trigger IsInUnit(Mikhail) AND GetDistUnits(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1]]), IsInUnit(Mikhail)) < 5 do
+Every 0$1 trigger IsInUnit(Mikhail) do
 begin
+enable;
 
-     SetSide(Mikhail, 6);
-     ComExitBuilding(Mikhail);
-     wait(0$1);
-     ComMoveToArea(Mikhail, MikhailEscape);
-     mikhailStatus = 3;
+     IF FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_dist, IsInUnit(Mikhail), 10]]) = 1 then //AND FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_inside, IsInUnit(Mikhail)]]) = 1 then
+     begin
+       SetAttitude(1, 6, att_enemy, true);
+       SetSide(Mikhail, 6);
+       ComExitBuilding(Mikhail);
+       wait(0$1);
+       ComMoveToArea(Mikhail, MikhailEscape);
+       mikhailStatus = 3;
+     end;
 end;
 
 // Mikhail - Macmillan dialog about Mikhail's escape
@@ -578,6 +676,8 @@ begin
           Say(Lisa, 'D7-Lisa-4');
      end;
 
+     DialogueOff;
+
 end;
 
 // Mikhail - Remove from map
@@ -585,4 +685,28 @@ Every 0$1 trigger IsInArea(Mikhail, MikhailEscape) AND GetSide(Mikhail) = 6 do
 begin
      mikhailStatus = 3;
      RemoveUnit(Mikhail);
+end;
+
+// Mikhail - Dialog random American about escape
+Every 0$1 trigger mikhailStatus = 3 AND GetSide(Mikhail) = 6 do
+var i, attacker;
+begin
+enable;
+ if IsOk(Mikhail) then
+   begin
+    attacker= Nearest(Mikhail, FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+   if GetDistUnits(attacker, Mikhail) < 8 then
+   begin
+    if GetSex(attacker)= sex_male then
+     begin
+       Disable;
+       Say(attacker, 'D7a-Sol1-1');
+     end
+    else 
+     begin
+       Disable;
+       Say(attacker, 'D7a-FSol1-1');
+     end;
+  end;
+  end;
 end;
