@@ -1,3 +1,4 @@
+//AM01 Remake by Pra¿anin
 var am,oth;
 var john,joan,sik,lucy,grant,will,phi,off,others,budovy;
 var joanok,oothersok,buildingsok,killhim,buildinglives;
@@ -21,13 +22,15 @@ begin
   am=1;
   oth=4;
   revealfogarea(am,rev);
+  ingame_video=true;
+  interface_hidden=true;
   debug=false;
-  follow=true;
   joanok=true;
   oothersok=true;
   buildingsok=true;
   killhim=false;
   budovy=[depot1,depot2,depot3,lab1,arm1,arm2,eon];
+  CreatePersonnel;
   disable(01);
   disable(02);
   disable(03);
@@ -44,22 +47,57 @@ begin
   will=newcharacter('Williams');
   phi=newcharacter('Phillips');
   off=newcharacter('Officer');
+  CreateOfficer2;
   others=[lucy,grant,sik,will,phi];
-  placeunitxy(off,52,39,false);
-  placeunitxyr(lucy,47,38,3,false);
+  placeunitxy(off,43,39,false);
+  placeunitxyr(off2,74,32,3,false);
+{  placeunitxyr(lucy,47,38,3,false);
   placeunitxyr(grant,47,38,3,false);
   placeunitxyr(sik,47,38,3,false);
   placeunitxyr(will,47,38,3,false);
-  placeunitxyr(phi,47,38,3,false);
-  comhold(others^[off]);
+  placeunitxyr(phi,47,38,3,false); }
+  PlaceHumanInUnit(john,arm1);
+  PlaceHumanInUnit(lucy,arm1);
+  PlaceHumanInUnit(grant,arm1);
+  PlaceHumanInUnit(sik,arm1);
+  PlaceHumanInUnit(will,arm1);
+  PlaceHumanInUnit(phi,arm1);
+  comhold(others^[off,off2]);
+  AddComTurnXY(off2,67,52);
 
-  placeunitxy(john,24,26,false);
-  placeunitxy(joan,25,24,false);
+//  placeunitxy(john,24,26,false);
+  placeunitxy(joan,40,32,false);
   comhold([joan,john]);
-  centernowonunits(john);
+  centernowonXY(48,38);
 
-  dialogueon;
+//  dialogueon;
+  ComMoveXY(off,49,41);
+  wait(0$3);
   say(off,'DX1-Off-1');
+  ComMoveXY(off,51,38);
+  ComMoveXY(john,50,39);
+  ComMoveXY(lucy,51,40);
+  ComMoveXY(grant,52,41);
+  wait(0$1);
+  ComMoveXY(sik,50,40);
+  ComMoveXY(will,51,41);
+  ComMoveXY(phi,52,42);
+  AddComTurnXY(off,50,47);
+  AddComTurnXY(john,65,25);
+  AddComTurnXY(lucy,65,25);
+  AddComTurnXY(grant,65,25);
+  AddComTurnXY(sik,65,25);
+  AddComTurnXY(will,65,25);
+  AddComTurnXY(phi,65,25);
+  wait(0$2);
+  say(off,'DX1-Off-1a');
+  commovexy(others,75,36);
+  commovexy(off,71,34);
+  commovexy(john,53,44);
+  commovexy(joan,52,43);
+  addcomturnunit(john,joan);
+  addcomturnunit(joan,john);
+  wait(0$7);
   say(john,'DX1-JMM-1');
   say(joan,'DX1-Joan-1');
   say(john,'DX1-JMM-2');
@@ -67,12 +105,13 @@ begin
   say(john,'DX1-JMM-3');
   say(joan,'DX1-Joan-3');
   say(john,'DX1-JMM-4');
-  dialogueoff;
-  commovexy(others,75,35);
-  commovexy(off,71,34);
+  follow=true;
+//  dialogueoff;
 //  saveforquickrestart;
   wait(0$0.3);
   changemissionobjectives('M0');
+  ingame_video=false;
+  interface_hidden=false;
   hintSpec('Hints',3);
   wait(0$1);
   hint('Character');
@@ -93,7 +132,7 @@ every 3 trigger isselected(john) marked 01 do
     hint('Commands');
   end;
 
-every 3+1 trigger isselected(others^[joan,off]) marked 02 do hint('NPC');
+every 3+1 trigger isselected(others^allmen^[joan,off]) marked 02 do hint('NPC');
 
 every 5 trigger isinarea(john,vis) marked 03 do hint('Visibility');
 
@@ -162,6 +201,7 @@ begin
     say(joan,'DXAttack-Joan-1');
     killhim=true;
     SA_OnAttackFriends;
+    music_class=1;
 {    InsertMusic('musicdemo2.wav');
     AddMusic('');}
     commovexy(joan,getx(sik),gety(sik));
@@ -169,10 +209,10 @@ begin
     say(sik,'DXAttack-Sik-1');
     dialogueoff;
     setattitude(am,oth,att_enemy,true);
-    comattackunit(others^[off],john);
+    comattackunit(others^[off,off2],john);
     joanok=false;
   end;
-  if oothersok then if getlives(others^[off])<1000 then begin
+  if oothersok then if getlives(others^[off,off2])<1000 then begin
     if debug then msg('others+off: '&getlives(others^[off]));
 //    comhold(john);
     comhold(others^[off]);
@@ -182,12 +222,13 @@ begin
     wait(0$0.7);
     killhim=true;
     SA_OnAttackFriends;
+    music_class=1;
 {    InsertMusic('musicdemo2.wav');
     AddMusic('');}
     say(sik,'DXAttack-Sik-1');
     dialogueoff;
     setattitude(am,oth,att_enemy,true);
-    comattackunit(others^[off],john);
+    comattackunit(others^[off,off2],john);
     oothersok=false;
   end;
   if buildingsok then if getlives(budovy)<1000 then begin
@@ -212,10 +253,11 @@ begin
     disable(097);
     disable_07=true;
     dialogueon;
+    music_class=1;
     say(sik,'DXAttack-Sik-1');
     dialogueoff;
     setattitude(am,oth,att_enemy,true);
-    comattackunit(others^[off],john);
+    comattackunit(others^[off,off2],john);
     killhim=true;
     SA_OnAttackFriends;
 {    InsertMusic('musicdemo2.wav');
@@ -224,14 +266,32 @@ begin
   enable;
 end;
 
+every 0$0.3 trigger IsInUnit(john)=truck and (not killhim) do
+begin
+    disable(097);
+    disable_07=true;
+    dialogueon;
+    music_class=1;
+    say(sik,'DXAttack-Sik-1');
+    dialogueoff;
+    setattitude(am,oth,att_enemy,true);
+    comattackunit(others^[off,off2],john);
+    killhim=true;
+    SA_OnAttackFriends;
+{    InsertMusic('musicdemo2.wav');
+    AddMusic('');}
+end;
+
 on unitgoestored(un) do
   if un=john then
     {if killhim then} begin
       commovexy(off,getx(john),gety(john));
       wait(0$1);
-      dialogueon;
+      InGameOn;
+      SetLives(john,240);
+      SetSide(john,8);
       say(off,'DXAttack-Off-1');
-      dialogueoff;
+      InGameOff;
       youlost('Dissmiss');
     end
   {  else begin
@@ -242,10 +302,11 @@ on unitgoestored(un) do
     disable(06);
     wait(0$0.5);
     dialogueon;
+    music_class=1;
     say(sik,'DXAttack-Sik-1');
     dialogueoff;
     setattitude(am,oth,att_enemy,true);
-    comattackunit(others^[off],john);
+    comattackunit(others^[off,off2],john);
     killhim=true;
     SA_OnAttackFriends;
 {    InsertMusic('musicdemo2.wav');
@@ -258,23 +319,51 @@ every 0$0.4 trigger isinarea(john,aeon) and not killhim do
 begin
   follow=false;
   centernowonunits([eon]);
-  dialogueon;
+  commovexy(john,75,36);
+  InGameOn;
   say(off,'DXReady-Off-1');
   say(sik,'DXReady-Sik-1');
-  say(lucy,'DXReady-Don-1');
-  dialogueoff;
-  ingameon;
-  comstop(john);
-  comenterunit(sik,eon);
-  wait(0$1.5);
-  comenterunit(lucy,eon);
+  SayEffect('DXReady-All-1');
   wait(0$2);
+  say(lucy,'DXReady-Don-1');
+  SayEffect('DXReady-All-2');
+  wait(0$2);
+  say(off2,'DXReady-Off2-1');
+  wait(0$1);
+  say(off2,'DXReady-Off2-2');
+  ComMoveXY(off,72,29);
+  ComMoveXY(off2,73,31);
+  ComMoveXY(john,67,28);
+  ComMoveXY(lucy,68,30);
+  ComMoveXY(grant,69,32);
+  ComMoveXY(sik,66,28);
+  ComMoveXY(will,67,30);
+  ComMoveXY(phi,68,32);
+  AddComTurnXY(off,49,27);
+  AddComTurnXY(off2,49,27);
+  AddComTurnXY(john,85,33);
+  AddComTurnXY(lucy,85,33);
+  AddComTurnXY(grant,85,33);
+  AddComTurnXY(sik,85,33);
+  AddComTurnXY(will,85,33);
+  AddComTurnXY(phi,85,33);
+  wait(0$9);
+  say(off2,'DXReady-Off2-3');
+  wait(0$1);
+//  dialogueoff;
+//  ingameon;
+//  comstop(john);
   case query('QQuit') of
     1:begin
       SA_OnNotEonEnter;
 {      dialogueon;
       say(john,'DQrQuit#1-JMM-1');
       dialogueoff;}
+      say(off2,'DQrQuit#1-Off2-1');
+      say(john,'DQrQuit#1-JMM-1a');
+      say(off2,'DQrQuit#1-Off2-2');
+      ComMoveXY(john,73,49);
+      wait(0$3);
       ingameoff;
       YouDidSomethingExtraordinary;
 //      youwin('Saved');
@@ -283,6 +372,20 @@ begin
       SA_OnEonEnter;
       //ingameoff;
       disable(29);
+      wait(0$1);
+      say(off2,'DXReady-Off2-4');
+      wait(0$1);
+      say(off,'DXReady-Off-2');
+      comenterunit(will,eon);
+      wait(0$3);
+      say(off,'DXReady-Off-3');
+      comenterunit(sik,eon);
+      wait(0$3);
+      say(off,'DXReady-Off-4');
+      comenterunit(lucy,eon);
+      wait(0$3);
+      say(off,'DXReady-Off-5');
+      wait(0$1);
       //dialogueon;
       say(john,'DQrQuit#2-JMM-1');
       //dialogueoff;
