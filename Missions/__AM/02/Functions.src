@@ -1,6 +1,6 @@
 // Support function to fast spawn people in buildings - Author: Nefarem
 
-Export function RespawnInside(side, nation, build, skill, clas, count);
+Export function RespawnInside(side, nation, build, skill, class, count);
 var i,l, un;
 begin
 
@@ -12,7 +12,7 @@ begin
 
            hc_gallery = '';
            hc_name = '';
-           PrepareHuman(false, clas, skill);
+           PrepareHuman(false, class, skill);
 
            un = CreateHuman;
            PlaceHumanInUnit(un,build);
@@ -22,25 +22,181 @@ begin
 END;
 
 
+// Function by Serpent
+Export Function PrepareSolBun(skill, b);
+var un, dir;
+begin
+     uc_side := GetSide(b);
+     uc_nation := GetNation(b);
+
+     PrepareHuman(false, 1, skill);
+     un = CreateHuman;
+
+     dir := GetDir(b)  - 3;
+
+     if dir < 0 then dir := 6 + dir;
+
+     SetDir(un, dir);
+     PlaceHumanInUnit(un, b);
+End;
+
+// AI Functions by Nefarem
+Export function RepairBuilding(side, building, area);
+var buildings_list, i,engineerOk_list, j;
+begin
+
+        engineerOk_list = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000]]);
+        buildings_list = FilterUnitsInArea(area, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+        if buildings_list > 0 and engineerOk_list > 0 then
+        begin
+
+                for i in engineerOk_list do
+                begin
+                     for j in buildings_list do
+                     begin
+
+                        AddComExitBuilding(i);
+                        wait(0$1);
+                        AddComRepairBuilding(i, j);
+
+                    end;
+                end;
+        end;
+
+        if buildings_list = 0 then
+        begin
+
+           for i in engineerOK_list do
+           begin
+             ComEnterUnit(i, building);
+          end;
+
+        end;
+END;
+
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list,  i, j, damageUnits;
+begin
+
+        sci_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
+
+        damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 650]]]);
+
+        if damageUnits > 0 then
+        begin
+
+                for i = 1 to damageUnits do
+                        ComMoveToArea(damageUnits[i], healArea);
+
+                for i = 1 to sci_list do
+                begin
+
+                ComExitBuilding(sci_list[i]);
+
+                for j in FilterUnitsInArea(healArea,[f_side, side]) do
+                begin
+
+                    AddComHeal(sci_list[i], j[j]);
+                    wait(1$0);
+
+            end;
+        end;
+
+        end else
+        begin
+
+        AddComEnterUnit(sci_list, build);
+
+       end;
+END;
+
+Export function RepairVehicle(side, repairArea, area);
+var i,j, vehicleOK_list, damageVehicle_list, emptyVehicle_list, mechanicInside_list, mechanicOutside_list;
+begin
+
+    vehicleOK_list = FilterUnitsInArea(area, [[f_side, side], [f_type, unit_vehicle], [f_lives, 550], [f_weapon, 46]]);
+    damageVehicle_list = FilterUnitsInArea(area, [[f_side, side], [f_type, unit_vehicle], [f_weapon, 46], [f_not,[f_lives, 550]]]);
+    emptyVehicle_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_weapon, 46], [f_lives, 1000], [f_empty]]);
+
+    for i in damageVehicle_list do mechanicInside_list =  UnitsInside(i);
+        mechanicOutside_list =  FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
+
+    IF damageVehicle_list > 0 then
+    begin
+
+            for i in damageVehicle_list do
+            begin
+                for j in mechanicInside_list do
+                begin
+                    ComMoveToArea(damageVehicle_list, repairArea);
+                    AddComExitVehicle(j);
+                    AddComRepairVehicle(j, i);
+                end;
+            end;
+
+    end;
+
+    IF emptyVehicle_list > 0 then
+    begin
+
+        for i in emptyVehicle_list  do
+        begin
+            for j in mechanicOutside_list do
+            begin
+            AddComEnterUnit(j, i);
+            end;
+
+    end;
+
+    end;
+
+    IF VehicleOK_list > 0 then
+    begin
+        for i in VehicleOK_list  do ComAgressiveMove(i, 110, 29);
+    end;
+end;
+
+Export function DefendBases(area, enemySide, defendersList, build);
+var i, j;
+begin
+    if FilterUnitsInArea(area, [[f_side, enemySide], [f_type, unit_human]]) > 0 then
+    begin
+        for i in defendersList do
+        begin
+            ComExitBuilding(i);
+            wait(0$1);
+
+            for j in FilterUnitsInArea(area, [[f_side, enemySide], [f_type, unit_human]]) do
+                AddComAgressiveMove(i, GetX(j), GetY(j));
+        end;
+    end else
+    begin
+        for i in defendersList do ComEnterUnit(i, build);          
+    end;
+end;
+
+
+
 {
-£atwy:
-1.      Tylko jeden bunkier w pó³nocnej bazie.
-2.      Poziom ¿o³nierzy rosyjskich (0-2).
-3.      W pó³nocnej i po³udniowej bazie ma³y garnizon sk³adaj¹cy siê z (1-2) dodatkowych ¿o³nierzy.
+ï¿½atwy:
+1.      Tylko jeden bunkier w pï¿½nocnej bazie.
+2.      Poziom ï¿½oï¿½nierzy rosyjskich (0-2).
+3.      W pï¿½nocnej i poï¿½udniowej bazie maï¿½y garnizon skï¿½adajï¿½cy siï¿½ z (1-2) dodatkowych ï¿½oï¿½nierzy.
 4.      Poziom paliwa w pojazdach - 50%
 
-Œredni:
-1.      Dodatkowy bunkier na wzgórzu i pó³nocnej bazie od strony lasu.
-2.      Poziom ¿o³nierzy rosyjskich (1-2).
-3.      Garnizon sk³ada siê z (2-3) dodatkowych ¿o³nierzy.
-4.      Agresywne tygrysy (2) w pó³nocnym lesie, (1-2) poziom.
+ï¿½redni:
+1.      Dodatkowy bunkier na wzgï¿½rzu i pï¿½nocnej bazie od strony lasu.
+2.      Poziom ï¿½oï¿½nierzy rosyjskich (1-2).
+3.      Garnizon skï¿½ada siï¿½ z (2-3) dodatkowych ï¿½oï¿½nierzy.
+4.      Agresywne tygrysy (2) w pï¿½nocnym lesie, (1-2) poziom.
 5.      Poziom paliwa w pojazdach - 35%
 
 Trudny:
-1.      Dodatkowy bunkier przy rzece, i w pó³nocnej bazie od strony wzgórza.
-2.      Poziom ¿o³nierzy rosyjskich (2-3).
-3.      Garnizon sk³ada siê z (3-4) dodatkowych ¿o³nierzy.
-4.      Agresywne tygrysy (3) w pó³nocnym lesie, 4 poziom.
+1.      Dodatkowy bunkier przy rzece, i w pï¿½nocnej bazie od strony wzgï¿½rza.
+2.      Poziom ï¿½oï¿½nierzy rosyjskich (2-3).
+3.      Garnizon skï¿½ada siï¿½ z (3-4) dodatkowych ï¿½oï¿½nierzy.
+4.      Agresywne tygrysy (3) w pï¿½nocnym lesie, 4 poziom.
 5.      Poziom paliwa w pojazdach - 20% .
 
 }
@@ -73,4 +229,41 @@ begin
 
 end;
 
+
+// Finish mission
+
+Export function FinishMission;
+begin
+    if GetResourceType(GetBase(dep1), 1) >= 200 then
+    begin
+        AddMedal('Cans', 1);
+    end
+    else
+    begin
+        AddMedal('Cans', -1);
+    end;
+
+    if deadsCounter >= 3  then
+    begin
+        AddMedal('Deaths', 1);
+    end
+    else
+    begin
+        AddMedal('Deaths', -1);
+    end;
+
+    if mikhailStatus = 0 then AddMedal('Prisoner', -1);
+    if mikhailStatus = 1 then AddMedal('Prisoner',  1);
+    if mikhailStatus = 2 then AddMedal('Prisoner',  2); 
+    if mikhailStatus = 3 then AddMedal('Prisoner', -2);
+
+    if mikhailStatus = 1 then SaveVariable(mikhailStatus,'01_mikhailStatus_1');
+
+    GiveMedals('MAIN');
+
+    RewardPeople(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+
+    YouWin;
+        
+end;
 

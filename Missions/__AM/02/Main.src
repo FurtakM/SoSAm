@@ -1,17 +1,18 @@
 {
    General information:
 Map scripts: Nefarem
-Status: 60%
-Todo:
- - Dialogs
- - Capture depots
- - Spawn tigers
- - Spawn Mikhail
- - Spawn enemy cargo bays
- - Cutscene with other americans soldiers
- - Spawn enemy attack
- - Simple AI
 
+Updates:
+1: 02.05.2018 godz. 2:00
+2: 02.05.2018 godz. 19:00
+
+Status: 90%
+Todo:
+ - Dialogs about russian tanks and durring escape Mikhail
+ - Spawn tigers
+
+  missionNum_variableName_num
+  01_BobbyLivePoints_1
 }
 
 Export JMM, Bobby, Cyrus;                         // Heroes from mission 01
@@ -19,6 +20,17 @@ Export Lisa, Khatam, Brian, Jerry, Mikhail;       // Heroes from mission 02
 Export Powell;                                    // Other heroes
 Export hpJMM, hpBobby, hpCyrus;
 Export RuSoldMinLevel, RuSoldMaxLevel;
+
+Export cargo1, cargo2;
+Export driver1, driver2;
+
+Export cargoEscape;
+Export mikhailStatus, mikhailInBase, mikhailDepot;
+Export northBaseDefenders, southBaseDefenders, attackGroup;
+
+Export lastBattle;
+
+Export deadsCounter;
 
 Starting
 begin
@@ -30,6 +42,20 @@ begin
      hpBobby = 0; // Bobby's HP from before mission
      hpCyrus = 0; // Cyrus's HP from before mission
 
+     cargoEscape = 0; // If one cargo escape, will be russian attack
+
+     mikhailStatus = 0; // 0 - n, 1 - capture, 2 - killed durring escape, 3 - escape, 4 - outside not busy
+     mikhailInBase = 0; // Check Mikhail status in base 1 - in depo, 2 - in patrol, 3 - free/kill
+     mikhailDepot = 0; // Depot where is Mikhail
+
+     lastBattle = 0; // 1 - ready to end mission if you defeat enemy attack
+
+     deadsCounter = 0; // How much people you lost
+
+     southBaseDefenders = []; // Group soldiers in barrack who will attack you
+     northBaseDefenders = []; // Same
+     attackGroup = []; // Group who attack you at end mission
+     
      // Other
      RandomizeAll;
      InGameOn;
@@ -38,10 +64,12 @@ begin
      // Execude functions
      PrepareDifficulty;
 
+     PrepareRussianCommander;
      PrepareSouthBase;
      PrepareNorthBase;
      PrepareOtherRussians;
 
      PrepareHeroes;
+     PrepareLisSquad;
 
 end;

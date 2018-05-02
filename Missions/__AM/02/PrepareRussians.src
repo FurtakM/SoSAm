@@ -1,9 +1,32 @@
 Export function PrepareRussianHeroes;
+var tmp;
 begin
+
+     tmp = FilterAllUnits([[f_side, 1], [f_class, 2]]);
 
     // Mikhail
     uc_side = 6;
     Mikhail = NewCharacter('Mikhail');
+    PlaceUnitXYR(Mikhail, GetX(tmp[1]),  GetY(tmp[1]), 3, true);
+end;
+
+Export function PrepareRussianCommander;
+var un;
+begin
+     uc_side = 3;
+     uc_nation = 3;
+
+     hc_gallery = '';
+     hc_name = 'Natasza Stjepanowna';
+     PrepareHuman(2, 1, rand(2, 4));
+     hc_importance = 110;
+
+     un = CreateHuman;
+     PlaceUnitArea(un, NataszaSpawn, false);
+     ComTurnXY(un, 56, 16);
+
+     northBaseDefenders = northBaseDefenders ^ un;
+
 end;
 
 Export function PrepareSouthBase;
@@ -18,7 +41,8 @@ begin
 
            hc_gallery = '';
            hc_name = '';
-           PrepareHuman(false, 1, rand(RuSoldMinLevel, RuSoldMaxLevel));
+           PrepareHuman(1, 1, rand(RuSoldMinLevel, RuSoldMaxLevel));
+           hc_importance = 0;
 
            un = CreateHuman;
            PlaceUnitArea(un, SouthBaseRussianSpawn1, false);
@@ -42,8 +66,9 @@ begin
 
    end;
 
-   RespawnInside(3, 3, arm2, rand(RuSoldMinLevel, RuSoldMaxLevel), 1, [rand(1,2), rand(2,3), rand(3,4)][Difficulty]);
+   RespawnInside(3, 3, arm2, rand(RuSoldMinLevel, RuSoldMaxLevel), 1, [1, rand(1,2), rand(1,2)][Difficulty]);
 
+   for i in UnitsInside(arm2) do southBaseDefenders = southBaseDefenders ^ i;
 
 end;
 
@@ -63,14 +88,14 @@ begin
 
            un = CreateHuman;
            PlaceUnitArea(un, NorthBaseRussianSpawn1, false);
-           ComTurnXY(un, 54, 16);
 
    end;
 
-   RespawnInside(3, 3, arm1, rand(RuSoldMinLevel, RuSoldMaxLevel), 1, [Rand(1,2), Rand(2, 3), Rand(3, 4)][Difficulty]);
+   RespawnInside(3, 3, arm1, rand(RuSoldMinLevel, RuSoldMaxLevel), 1, [Rand(1,2), Rand(1, 3), Rand(1, 3)][Difficulty]);
    RespawnInside(3, 3, lab1, rand(RuSoldMinLevel, RuSoldMaxLevel), 4, [0, 1, 2][Difficulty]);
    RespawnInside(3, 3, dep1, rand(RuSoldMinLevel, RuSoldMaxLevel), 2, [1, 2, 2][Difficulty]);
 
+   for i in UnitsInside(arm1) do northBaseDefenders = northBaseDefenders ^ i;
 
 end;
 
@@ -94,4 +119,84 @@ begin
 
    end;
 
+   // Bunkers
+
+   for i in FilterAllUnits([[f_side, 3], [f_btype, 31]]) do PrepareSolBun(rand(RuSoldMinLevel, RuSoldMaxLevel), i);
+
+
+end;
+
+Export function PrepareCargoBays;
+begin
+        uc_side = 3;
+        uc_nation = 3;
+        
+        vc_engine = 1;
+        vc_control = 1;
+        vc_weapon = 51;
+        vc_chassis = 21;
+
+        cargo1 = CreateVehicle;
+        cargo2 = CreateVehicle;
+
+        PlaceUnitArea(cargo1, RussianAttack, false);
+        PlaceUnitArea(cargo2, RussianAttack, false);
+
+        hc_gallery = '';
+        hc_name = '';
+        PrepareHuman(1, 3, rand(1,2));
+
+        driver1 = CreateHuman;
+        PlaceHumanInUnit(driver1, cargo1);
+
+        hc_name = 'Nikolai Andreyev';
+
+        driver2 = CreateHuman;
+        PlaceHumanInUnit(driver2, cargo2);
+end;
+
+Export function PrepareRussianAttack(count, area);
+var i, veh, un;
+begin
+        uc_side = 3;
+        uc_nation = 3;
+
+        for i := 1 to count do
+        begin
+                vc_engine = 1;
+                vc_control = 1;
+                vc_weapon = 46;
+                vc_chassis = 21;
+
+                veh = CreateVehicle;     
+                PlaceUnitArea(veh, area, false);
+                attackGroup = attackGroup ^ veh;
+
+                hc_gallery = '';
+                hc_name = '';
+                PrepareHuman(false, 3, rand(RuSoldMinLevel,RuSoldMaxLevel));
+
+                un = CreateHuman;
+
+                PlaceHumanInUnit(un, veh);
+                attackGroup = attackGroup ^ un;
+        end;
+
+        PrepareHuman(false, 2, rand(RuSoldMinLevel,RuSoldMaxLevel));
+        un = CreateHuman;
+
+        for i := 1 to count * 2 do
+        begin
+
+                hc_gallery = '';
+                hc_name = '';
+                PrepareHuman(false, 1, rand(RuSoldMinLevel,RuSoldMaxLevel));
+
+                un = CreateHuman;
+
+                PlaceUnitArea(un, area, false);
+                attackGroup = attackGroup ^ un;
+        end;
+
+        for i in attackGroup do ComAgressiveMove(i, 54, 19);
 end;
