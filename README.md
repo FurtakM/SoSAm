@@ -1,4 +1,4 @@
-# American Remake Mod by SoS Team (Serpent, Nefarem)
+# American Remake Mod by SoS Team (Serpent, Nefarem, Prażanin)
 
 # Opis
 Todo
