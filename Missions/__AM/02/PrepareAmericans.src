@@ -1,0 +1,98 @@
+// Spawn JMM, Bobby, Cyrus
+
+Export function PrepareHeroes;
+begin
+
+    uc_side = 1;
+
+    JMM = CreateCharacter('JMM');
+    Powell = NewCharacter('Powell');
+
+    Bobby = CreateCharacter('Bobby');
+    if Bobby then SetLives(Bobby, 900);
+    Cyrus = CreateCharacter('Cyrus');
+    if Cyrus then SetLives(Cyrus, 900);
+
+    Khatam = NewCharacter('Khatam');
+
+    uc_side = 4;
+
+    Lisa = NewCharacter('Lisa');
+
+    PlaceUnitArea(JMM, StartArea, false);
+    PlaceUnitArea(Bobby, StartArea, false);
+    PlaceUnitArea(Cyrus, StartArea, false);
+    PlaceUnitArea(Lisa, LisaSpawn, false);
+
+    ComCrawl(Lisa);
+
+
+end;
+
+Export function PrepareLisSquad;
+var i, un;
+begin
+
+   for i = 1 to 2 do
+   begin
+
+           uc_side = 4;
+           uc_nation = 1;
+
+           hc_gallery = '';
+           hc_name = '';
+           PrepareHuman(false, 2, rand(0,1));
+
+           un = CreateHuman;
+           PlaceUnitArea(un, LisaEngs, false);
+
+   end;
+
+end;
+
+Export function PrepareOtherAmericans;
+begin
+
+   uc_side = 4;
+   uc_nation = 1;
+
+   hc_gallery = '';
+
+   hc_name = 'Brian Garvin';
+   PrepareHuman(false, 1, rand(1,2));
+
+   Brian = CreateHuman;
+   PlaceUnitArea(Brian, OtherAmericanSpawn, true);
+
+   hc_name = 'Jerry White';
+   PrepareHuman(false, 2, rand(1,2));
+
+   Jerry = CreateHuman;
+   PlaceUnitArea(Jerry, OtherAmericanSpawn, true);
+
+
+
+end;
+
+Export function PrepareDeadSoldiers;
+var i, un;
+begin
+
+   for i = 1 to 6 do
+   begin
+
+           uc_side = 4;
+           uc_nation = 1;
+
+           hc_gallery = '';
+           hc_name = '';
+           PrepareHuman(false, rand(1,4), 1);
+
+           un = CreateHuman;
+           PlaceUnitArea(un, DeadsSpawn, false);
+
+           SetLives(un, 0);
+
+   end;
+
+end;

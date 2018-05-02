@@ -1,0 +1,197 @@
+// Mission start
+Every 1 do
+begin
+
+     IF Cyrus AND Bobby then
+     begin
+          Say(Cyrus, 'D1a-Cyrus-1');
+          Say(JMM, 'D1a-JMM-1');
+          Say(Bobby, 'D1a-Bobby-2');
+          Say(JMM, 'D1a-JMM-2');
+
+          ComStand(Lisa);
+          AddComTurnUnit(Lisa, JMM);
+          ComTurnUnit([JMM, Cyrus, Bobby], Lisa);
+
+          Say(Lisa, 'D1a-Lisa-2');
+
+     end;
+
+     IF Cyrus AND NOT Bobby then
+     begin
+          Say(Cyrus, 'D1a-Cyrus-1');
+          Say(JMM, 'D1a-JMM-1');
+          Say(Cyrus, 'D1a-Cyrus-2');
+          Say(JMM, 'D1a-JMM-2');
+
+          ComStand(Lisa);
+          AddComTurnUnit(Lisa, JMM);
+
+          Say(Lisa, 'D1a-Lisa-2');
+
+          ComTurnUnit([JMM, Cyrus], Lisa);
+     end;
+
+     IF NOT Cyrus AND Bobby then
+     begin
+          Say(Bobby, 'D1a-Bobby-1');
+          Say(JMM, 'D1a-JMM-1');
+          Say(Bobby, 'D1a-Bobby-2');
+          Say(JMM, 'D1a-JMM-2');
+
+          ComStand(Lisa);
+          AddComTurnUnit(Lisa, JMM);
+          ComTurnUnit([JMM, Cyrus], Lisa);
+
+          Say(Lisa, 'D1a-Lisa-2');
+
+
+     end;
+
+     IF NOT Cyrus and NOT Bobby then
+     begin
+          Say(JMM, 'D1b-JMM-1');
+          Say(JMM, 'D1b-JMM-2');
+
+          ComStand(Lisa);
+          AddComTurnUnit(Lisa, JMM);
+          ComTurnUnit([JMM], Lisa);
+
+          Say(Lisa, 'D1b-Lisa-1');
+
+     end;
+
+     Say(JMM, 'D1-JMM-1');
+     Say(Lisa, 'D1-Lisa-1');
+     Say(JMM, 'D1-JMM-2');
+     SayRadio(Powell, 'D1-Pow-2');
+
+     If Cyrus then
+     begin
+          Say(Cyrus, 'D1-Cyrus-2');
+          Say(JMM, 'D1-JMM-3');
+     end;
+
+     SayRadio(Powell, 'D1-Pow-3');
+     SayRadio(JMM, 'D1-JMM-4');
+     SayRadio(Powell, 'D1-Pow-4');
+     SayRadio(Powell, 'D1-Pow-4a');
+
+     If Cyrus then Say(Cyrus, 'D1-Cyrus-4');
+
+     If Bobby then
+     begin
+          Say(Bobby, 'D1-Bobby-4');
+          Say(Lisa, 'D1-Lisa-4');
+          Say(JMM, 'D1-JMM-5');
+     end;
+
+     InGameOff;
+     SetSide(FilterAllUnits([f_side, 4]), 1);
+     ChangeMissionObjectives('M1');
+     SaveForQuickRestart;
+
+end;
+
+// Meet Khatam
+
+Every 0$1 trigger FilterUnitsInArea(PaulTriggerArea, [f_side, 1]) > 0 do
+begin
+
+     InGameOn;
+     ComHold(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+     CenterOnXY(24, 32);
+     PlaceUnitArea(Khatam, PaulSpawn, true);
+
+     wait(0$1);
+
+     ComMoveXY(Khatam, 27, 38);
+     AddComTurnUnit(Khatam, JMM);
+
+     wait(0$1);
+
+     Say(Khatam, 'D2a-Khat-1');
+     Say(Khatam, 'D2a-JMM-1');
+     Say(Khatam, 'D2a-Khat-2');
+     Say(Khatam, 'D2a-JMM-2');
+     Say(Khatam, 'D2a-Khat-3');
+     Say(Khatam, 'D2a-JMM-3');
+     Say(Khatam, 'D2a-Khat-4');
+     Say(Khatam, 'D2a-JMM-4');
+     Say(Khatam, 'D2a-Khat-5');
+     Say(Khatam, 'D2a-JMM-5');
+
+     InGameOff;
+
+     If FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 1000]]]) > 0 then
+     begin
+          Say(Khatam, 'D2a-Khat-6');
+          ComHeal(Khatam, FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 1000]]])[1]);
+     end;
+
+end;
+
+// Find Americans corpses
+
+Every 0$1 trigger FilterUnitsInArea(DeadTriggerArea, [f_side, 1]) > 0 do
+var distanceTab, min, i;
+begin
+
+     min = 0;
+     distanceTab = [ [Bobby, GetDistUnitArea(Bobby, DeadsSpawn)], [Cyrus, GetDistUnitArea(Bobby, DeadsSpawn)], [Lisa, GetDistUnitArea(Bobby, DeadsSpawn)] ];
+
+     InGameOn;
+     CenterOnXY(23, 12);
+
+     ComMoveXY(FilterAllUnits([[f_side, 1]]), 23, 12);
+
+     for i = 1 to distanceTab do if distanceTab[1][i+1] > min then min = distanceTab[1][i+1];
+
+     Say(JMM, 'DCorpses-JMM-1');
+
+     IF IsOK(Khatam) then Say(Khatam, 'DCorpses-Khat-1');
+
+     InGameOff;
+
+     Say(JMM, 'DCorpses-JMM-2');
+
+end;
+
+// Contact with enemy bunker
+
+Every 0$1 do
+var i;
+begin
+
+  enable;
+
+  for i in FilterAllUnits([[f_side, 3], [f_type, unit_building], [f_btype, 31]]) do
+  begin
+       IF See(1, i) then
+       begin
+            Disable;
+            Say(JMM, 'DX1-JMM-1');
+       end;
+  end;
+end;
+
+// Alert in south base
+
+Every 0$1 trigger SeeArea(1, SouthBaseRussianSpawn1) do
+var i, j;
+begin
+
+     DialogueOn;
+     Say(FilterUnitsInArea(SouthBaseRussianSpawn1, [[f_side, 3], [f_type, unit_human]])[1], 'DX3-Rus1-1');
+     Say(JMM, 'DX3-JMM-1');
+     DialogueOff;
+
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_empty]]) do
+    begin
+        for j in FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_class, 3]]) do
+        begin
+            ComEnterUnit(j, i);
+        end;
+    end;
+
+end;
