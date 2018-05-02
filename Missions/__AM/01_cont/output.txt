@@ -186,6 +186,52 @@
 // export function ComPatrol ( unit , mode , pause , coords ) ; begin
  339: LD_INT 0
  341: PPUSH
-// end ; end_of_file
+// end ;
  342: LD_VAR 0 5
  346: RET
+// export function DebugSay ( dialog ) ; var speaker ; begin
+ 347: LD_INT 0
+ 349: PPUSH
+ 350: PPUSH
+// uc_nation := 1 ;
+ 351: LD_ADDR_OWVAR 21
+ 355: PUSH
+ 356: LD_INT 1
+ 358: ST_TO_ADDR
+// uc_side := 0 ;
+ 359: LD_ADDR_OWVAR 20
+ 363: PUSH
+ 364: LD_INT 0
+ 366: ST_TO_ADDR
+// PrepareHuman ( false , 1 , 0 ) ;
+ 367: LD_INT 0
+ 369: PPUSH
+ 370: LD_INT 1
+ 372: PPUSH
+ 373: LD_INT 0
+ 375: PPUSH
+ 376: CALL_OW 380
+// hc_name := speaker ;
+ 380: LD_ADDR_OWVAR 26
+ 384: PUSH
+ 385: LD_STRING speaker
+ 387: ST_TO_ADDR
+// hc_gallery :=  ;
+ 388: LD_ADDR_OWVAR 33
+ 392: PUSH
+ 393: LD_STRING 
+ 395: ST_TO_ADDR
+// speaker := CreateHuman ;
+ 396: LD_ADDR_VAR 0 3
+ 400: PUSH
+ 401: CALL_OW 44
+ 405: ST_TO_ADDR
+// Say ( speaker , dialog ) ;
+ 406: LD_VAR 0 3
+ 410: PPUSH
+ 411: LD_VAR 0 1
+ 415: PPUSH
+ 416: CALL_OW 88
+// end ; end_of_file
+ 420: LD_VAR 0 2
+ 424: RET
