@@ -52,8 +52,36 @@ result := CreateVehicle;
 End;
 
 Export Function ComPatrol(unit, mode, pause, coords);
+var i;
 begin
+while(active_road_patrol) do
+begin
+Wait(0$01);
 
+if not unit then
+   exit;
+
+if mode = 'road' then
+   if GetFuel(unit) < 50 and not See(1, unit) and not HasTask(unit) then
+      SetFuel(unit, 100);
+
+if not HasTask(unit) then
+   begin
+   for i = 1 to coords do
+       begin
+       AddComAgressiveMove(unit, coords[i], coords[i+1]);
+       AddComWait(unit, pause);
+       i := i + 1;
+       end;
+
+   for i = coords downto 1 do
+       begin
+       AddComAgressiveMove(unit, coords[i-1], coords[i]);
+       AddComWait(unit, pause);
+       i := i - 1;
+       end;
+   end;
+end;
 End;
 
 Export Function DebugSay(dialog);
