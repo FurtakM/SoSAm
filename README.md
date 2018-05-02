@@ -51,4 +51,3 @@ Push:
 git push origin <twój_branch>
 ```
 
-
