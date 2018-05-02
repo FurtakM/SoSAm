@@ -1,4 +1,58 @@
 // starting begin ResetFog ;
    0: CALL_OW 335
-// end ;
+// end ; end_of_file
    4: END
+// export function PrepareSolBun ( skill , b ) ; var un , dir ; begin
+   5: LD_INT 0
+   7: PPUSH
+   8: PPUSH
+   9: PPUSH
+// uc_side := GetSide ( b ) ;
+  10: LD_ADDR_OWVAR 20
+  14: PUSH
+  15: LD_VAR 0 2
+  19: PPUSH
+  20: CALL_OW 255
+  24: ST_TO_ADDR
+// uc_nation := GetNation ( b ) ;
+  25: LD_ADDR_OWVAR 21
+  29: PUSH
+  30: LD_VAR 0 2
+  34: PPUSH
+  35: CALL_OW 248
+  39: ST_TO_ADDR
+// PrepareHuman ( false , 1 , skill ) ;
+  40: LD_INT 0
+  42: PPUSH
+  43: LD_INT 1
+  45: PPUSH
+  46: LD_VAR 0 1
+  50: PPUSH
+  51: CALL_OW 380
+// dir := GetDir ( b ) - 3 ;
+  55: LD_ADDR_VAR 0 5
+  59: PUSH
+  60: LD_VAR 0 2
+  64: PPUSH
+  65: CALL_OW 254
+  69: PUSH
+  70: LD_INT 3
+  72: MINUS
+  73: ST_TO_ADDR
+// if dir < 0 then
+  74: LD_VAR 0 5
+  78: PUSH
+  79: LD_INT 0
+  81: LESS
+  82: IFFALSE 98
+// dir := 6 + dir ;
+  84: LD_ADDR_VAR 0 5
+  88: PUSH
+  89: LD_INT 6
+  91: PUSH
+  92: LD_VAR 0 5
+  96: PLUS
+  97: ST_TO_ADDR
+// end ;
+  98: LD_VAR 0 3
+ 102: RET
