@@ -15,7 +15,7 @@ hc_gallery := '';
 hc_name := '';
 
 // guard north / south
-for i = 1 to 6 do
+for i = 1 to 8 do
     begin
     PrepareHuman(sex_male, 1, skill);
     un := CreateHuman;
@@ -33,6 +33,9 @@ for i = 1 to 6 do
     end;
 
 
+for i in FilterAllUnits([[f_side, 3], [f_btype, b_breastwork]]) do
+    PrepareSolBun(skill, i);
+
 for i = 1 to 2 do
     begin
     un := PrepareTank(3, 3, ru_medium_tracked, engine_combustion, control_manual, ru_heavy_machine_gun, 100);
@@ -49,3 +52,14 @@ ComPatrol(russian_patrol_tanks[1], 'road', 0$02, [131, 87, 107, 75, 107, 66, 114
 
 Every 0$01 trigger active_road_patrol do
 ComPatrol(russian_patrol_tanks[2], 'road', 0$02, [21, 12, 37, 30, 65, 62, 107, 76]);
+
+Every 0$01 trigger macmilan_use_radio do
+begin
+active_road_patrol := false;
+
+ComStop(russian_patrol_tanks);
+AddComAgressiveMove(russian_patrol_tanks, 72, 41);
+
+ComExitBuilding(russian_troops_2);
+AddComAgressiveMove(russian_troops_2, 72, 41);
+End;
