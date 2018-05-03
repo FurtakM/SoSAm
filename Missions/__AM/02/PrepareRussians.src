@@ -2,7 +2,7 @@ Export function PrepareRussianHeroes;
 var tmp;
 begin
 
-     tmp = FilterAllUnits([[f_side, 1], [f_class, 2]]);
+     tmp = FilterAllUnits([[f_side, 1], [f_nation, 1], [f_class, 2]]);
 
     // Mikhail
     uc_side = 6;
@@ -134,7 +134,7 @@ begin
         vc_engine = 1;
         vc_control = 1;
         vc_weapon = 51;
-        vc_chassis = 21;
+        vc_chassis = 22;
 
         cargo1 = CreateVehicle;
         cargo2 = CreateVehicle;
@@ -169,7 +169,7 @@ begin
                 vc_engine = 1;
                 vc_control = 1;
                 vc_weapon = 42;
-                vc_chassis = 21;
+                vc_chassis = [21, 22, 22][Difficulty];
 
                 veh = CreateVehicle;     
                 PlaceUnitArea(veh, area, false);
@@ -188,7 +188,7 @@ begin
         PrepareHuman(false, 2, rand(RuSoldMinLevel,RuSoldMaxLevel));
         un = CreateHuman;
 
-        for i := 1 to count * 2 do
+        for i := 1 to count + 2 * 2 do
         begin
 
                 hc_gallery = '';
