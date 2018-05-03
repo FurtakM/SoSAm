@@ -1,0 +1,28 @@
+// Start mission
+Every 1 do
+begin
+    CenterNowOnUnits(amvj);
+    ComMoveXY(amvj, 51, 26);
+    AddComMoveXY(amvj, 53, 23);
+    AddComMoveXY(amvj, 52, 19);
+
+    repeat
+        wait(0$1);
+        CenterNowOnUnits(amvj);
+    until GetX(amvj) = 52 AND GetY(amvj) = 19;
+
+    ComExitVehicle(JMM);
+    wait(0$1);
+    ComTurnUnit(JMM, Brown);
+    ComTurnUnit(Brown, JMM);
+    Say(JMM, 'D1-JMM-1');
+
+    ComMoveXY(JMM, 48, 11);
+    AddComTurnUnit(JMM, Brown);
+
+    ComMoveXY(Brown, 48, 13);
+    AddComTurnUnit(Brown, JMM);
+
+    Say(Brown, 'D1-Brown-1');
+    InGameOff;
+end;
