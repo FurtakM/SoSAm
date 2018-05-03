@@ -204,12 +204,12 @@ end;
 
 // Find Americans corpses
 Every 0$1 trigger FilterUnitsInArea(DeadTriggerArea, [f_side, 1]) > 0 do
-var i, distanceTab, min, tmpFemale, tmpMale;
+var i, distanceTab, min, tmp;
 begin
 
-     tmpFemale = FilterAllUnits([[f_side, 1], [f_class, 2], [f_sex, 2]]);
-     tmpMale = FilterAllUnits([[f_side, 1], [f_class, 2], [f_sex, 1]]);
-     distanceTab = [ [Bobby, GetDistUnitArea(Bobby, DeadsSpawn)], [Cyrus, GetDistUnitArea(Cyrus, DeadsSpawn)], [Lisa, GetDistUnitArea(Lisa, DeadsSpawn)], [tmpMale[1], GetDistUnits(tmpMale[1], DeadsSpawn)], [tmpFemale[1], GetDistUnits(tmpFemale[1], DeadsSpawn)]  ];
+     distanceTab = [ [999, 999] ];
+
+     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Bobby, Cyrus, Lisa, Khatam];
 
      PrepareDeadSoldiers;
 
@@ -222,24 +222,43 @@ begin
 
      min = distanceTab[1][2];
 
-     for i = 1 to distanceTab do if distanceTab[i][2] < min then min = distanceTab[i][2];
+     for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Khatam] do
+         if IsOK(i) then distanceTab = distanceTab ^ [ [i, GetDistUnitArea(i, DeadsSpawn)] ];
 
-     for i = 1 to distanceTab do
+     for i = 2 to distanceTab do if distanceTab[i][2] < min then min = distanceTab[i][2];
+
+     for i = 2 to distanceTab do
      begin
           if distanceTab[i][2] = min then
           begin
                if distanceTab[i][1] = Bobby then Say(Bobby, 'DCorpses-Bobby-1');
                if distanceTab[i][1] = Cyrus then Say(Cyrus, 'DCorpses-Cyrus-1');
                if distanceTab[i][1] = Lisa then Say(Lisa, 'DCorpses-Lisa-1');
-               if distanceTab[i][1] = tmpMale[1] then Say(tmpMale[1], 'DCorpses-Sol1-1');
-               if distanceTab[i][1] = tmpFemale[1] then Say(tmpFemale[1], 'DCorpses-FSol1-1');
-               SetLives(DyingSold, 50);
+               if distanceTab[i][1] = tmp[1] and GetSex(tmp[1]) = 1 then Say(tmp[1], 'DCorpses-Sol1-1');
+               if distanceTab[i][1] = tmp[1] and GetSex(tmp[1]) = 2 then Say(tmp[1], 'DCorpses-FSol1-1');
+               if distanceTab[i][1] = tmp[2] and GetSex(tmp[2]) = 1 then Say(tmp[2], 'DCorpses-Sol1-1');
+               if distanceTab[i][1] = tmp[2] and GetSex(tmp[2]) = 2 then Say(tmp[2], 'DCorpses-FSol1-1');
+               SetLives(DyingSold, 150);
                break;
           end;
-     end;
+     end; 
+
+     repeat
+       wait(0$1);
+       for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM] do
+       begin
+          ComMoveToArea(i, DeadCutscene);
+          ComMoveToArea(JMM, JMMAreaCutscene);
+          AddComTurnXY(i, 23, 11);
+          AddComTurnXY(JMM, 23, 11);
+          SetLives(DyingSold, 250);
+       end;
+     until IsInArea(JMM, JMMAreaCutscene);
+
+     wait(0$3);
 
      Say(JMM, 'DCorpses-JMM-1');
-     SetLives(DyingSold, 50);
+     SetLives(DyingSold, 150);
 
      IF IsOK(Khatam) then
      begin
@@ -250,12 +269,17 @@ begin
 
           spotCorpses = 0;
 
-          SetLives(DyingSold, 4);
-          wait(0$2);
+          SetLives(DyingSold, 10);
+          wait(0$3);
+          SetLives(DyingSold, 0);
+
+          wait(0$1);
+          CenterNowOnUnits([JMM, Khatam]);
+          ComTurnUnit(Khatam, JMM);
+          wait(0$1);
 
           Say(Khatam, 'DCorpses-Khat-1');
 
-          SetLives(DyingSold, 0);
      end;
 
      InGameOff;
@@ -268,13 +292,13 @@ end;
 Every 0$1 trigger spotCorpses = 1 do
 begin
      enable;
-     SetLives(DyingSold, 50);
+     SetLives(DyingSold, 150);
 
 end;
 
 // Find new AM soldiers
 
-Every 0$1 trigger FilterUnitsInArea(WaterScene, [f_side, 1]) > 0 do
+Every 0$1 trigger FilterUnitsInArea(WaterScene, [f_side, 1]) > 0 AND NOT GetSide(dep1) = 1 AND NOT GetSide(dep2) = 1  do
 var i;
 begin
     InGameOn;
@@ -297,7 +321,7 @@ end;
 
 // Kill russians near river
 
-Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 do
+Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 AND NOT GetSide(dep1) = 1 AND NOT GetSide(dep2) = 1 do
 begin
 
     If NOT IsDead(Brian) then SetSide(Brian, 1);
@@ -422,7 +446,7 @@ Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 do
 var temp, i;
 begin
 
-    temp = FilterAllUnits([[f_side, 1], [f_class, 2]]) diff [JMM];
+    temp = FilterAllUnits([[f_side, 1],[f_nation, 1], [f_class, 2]]) diff [JMM];
 
     DialogueOn;
     Say(JMM, 'D3a-JMM-1');
@@ -527,12 +551,16 @@ begin
     end;
 
     PrepareTigers;
+    RussianTrap;
 
 end;
 
 // Spawn enemy cargo bay
-Every 5$0 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 do
+Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 and GetResourceType(GetBase(dep1), 1) >= 100 do
 begin
+
+    wait(rand(1$0, 2$0) + 0$30);
+
     PrepareCargoBays;
     ComMoveXY([cargo1, cargo2, driver1, driver2], 53, 16);
 
@@ -569,7 +597,7 @@ end;
 
 Every 0$1 trigger cargoEscape > 1 do
 begin
-    Say(FilterAllUnits([[f_side, 1], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_sex, 1]]))], 'D5a-Sol1-1');
+    Say(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]]))], 'D5a-Sol1-1');
     Say(JMM, 'D5a-JMM-1');
 end;
 
@@ -579,9 +607,10 @@ Every 0$1 trigger GetLives(dep1) < 1000 OR GetLives(dep2) < 1000 do Say(JMM, ' D
 // Mihail
 
 // Mikhail in depot - change variable value
-Every 0$1 trigger IsInUnit(Mikhail) do
+Every 0$1 trigger IsInUnit(Mikhail) = dep1 do
 begin
      mikhailInBase = 1;
+     mikhailStatus = 1;
      enable;
 
 end;
@@ -614,6 +643,7 @@ begin
 
         wait(0$5);
         AddComMoveToArea(Mikhail, MikhailEnter);
+        mikhailStatus = 1;
      end;
 
      3: Begin
@@ -712,12 +742,16 @@ enable;
     if GetSex(attacker)= sex_male then
      begin
        Disable;
-       Say(attacker, 'D7a-Sol1-1');
+       Say(attacker, 'D7a-Sol1-1'); 
+       wait(0$2);
+       Say(attacker, 'D7a-Sol1-1a');
      end
     else 
      begin
        Disable;
        Say(attacker, 'D7a-FSol1-1');
+       wait(0$2);
+       Say(attacker, 'D7a-FSol1-1a');
      end;
   end;
   end;
