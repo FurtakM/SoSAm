@@ -51,3 +51,8 @@ Push:
 git push origin <twój_branch>
 ```
 
+# Zadania
+Serpent - Dokończenie misji 01_cont i rozpoczęcie prac nad misją 03.
+Nefarem - Poprawienie błędów w misji 02 i rozpoczecie prac nad misją 04.
+Prażanin - Stworzenie avatarów ludzi z Gammy.
+
