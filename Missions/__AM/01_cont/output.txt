@@ -3,16 +3,16 @@
 // Init ;
    4: CALL 25 0 0
 // InitAmerican ;
-   8: CALL 756 0 0
+   8: CALL 900 0 0
 // InitRussian ;
-  12: CALL 995 0 0
+  12: CALL 1139 0 0
 // DebugMode ;
-  16: CALL 89 0 0
+  16: CALL 137 0 0
 // Action ;
-  20: CALL 1618 0 0
+  20: CALL 2358 0 0
 // end ;
   24: END
-// export debug ; export active_russian_dialog , bobby_in_squad , powell_contact , macmilan_use_radio , cyrus_in_squad , active_road_patrol ; function Init ; begin
+// export debug ; export active_russian_dialog , bobby_in_squad , powell_contact , macmilan_use_radio , cyrus_in_squad , active_road_patrol , macmilan_in_trap , meta_action , end_mission , bobby_saved , cyrus_saved , send_troops_to_forest ; function Init ; begin
   25: LD_INT 0
   27: PPUSH
 // debug := true ;
@@ -50,1892 +50,2997 @@
   80: PUSH
   81: LD_INT 0
   83: ST_TO_ADDR
-// end ;
-  84: LD_VAR 0 1
-  88: RET
-// function DebugMode ; var i ; begin
+// macmilan_in_trap := false ;
+  84: LD_ADDR_EXP 8
+  88: PUSH
   89: LD_INT 0
-  91: PPUSH
-  92: PPUSH
+  91: ST_TO_ADDR
+// meta_action := false ;
+  92: LD_ADDR_EXP 9
+  96: PUSH
+  97: LD_INT 0
+  99: ST_TO_ADDR
+// end_mission := false ;
+ 100: LD_ADDR_EXP 10
+ 104: PUSH
+ 105: LD_INT 0
+ 107: ST_TO_ADDR
+// bobby_saved := false ;
+ 108: LD_ADDR_EXP 11
+ 112: PUSH
+ 113: LD_INT 0
+ 115: ST_TO_ADDR
+// cyrus_saved := false ;
+ 116: LD_ADDR_EXP 12
+ 120: PUSH
+ 121: LD_INT 0
+ 123: ST_TO_ADDR
+// send_troops_to_forest := false ;
+ 124: LD_ADDR_EXP 13
+ 128: PUSH
+ 129: LD_INT 0
+ 131: ST_TO_ADDR
+// end ;
+ 132: LD_VAR 0 1
+ 136: RET
+// function DebugMode ; var i ; begin
+ 137: LD_INT 0
+ 139: PPUSH
+ 140: PPUSH
 // if not debug then
-  93: LD_EXP 1
-  97: NOT
-  98: IFFALSE 102
+ 141: LD_EXP 1
+ 145: NOT
+ 146: IFFALSE 150
 // exit ;
- 100: GO 113
+ 148: GO 169
+// Difficulty := 3 ;
+ 150: LD_ADDR_OWVAR 67
+ 154: PUSH
+ 155: LD_INT 3
+ 157: ST_TO_ADDR
 // TurnFogOff ( ) ;
- 102: CALL_OW 537
+ 158: CALL_OW 537
 // FogOff ( 1 ) ;
- 106: LD_INT 1
- 108: PPUSH
- 109: CALL_OW 344
+ 162: LD_INT 1
+ 164: PPUSH
+ 165: CALL_OW 344
 // end ; end_of_file
- 113: LD_VAR 0 1
- 117: RET
+ 169: LD_VAR 0 1
+ 173: RET
 // export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
- 118: LD_INT 0
- 120: PPUSH
- 121: PPUSH
-// if exist_mode then
- 122: LD_VAR 0 2
- 126: IFFALSE 145
-// unit := CreateCharacter ( ident ) else
- 128: LD_ADDR_VAR 0 4
- 132: PUSH
- 133: LD_VAR 0 1
- 137: PPUSH
- 138: CALL_OW 34
- 142: ST_TO_ADDR
- 143: GO 160
-// unit := NewCharacter ( ident ) ;
- 145: LD_ADDR_VAR 0 4
- 149: PUSH
- 150: LD_VAR 0 1
- 154: PPUSH
- 155: CALL_OW 25
- 159: ST_TO_ADDR
-// result := unit ;
- 160: LD_ADDR_VAR 0 3
- 164: PUSH
- 165: LD_VAR 0 4
- 169: ST_TO_ADDR
-// end ;
- 170: LD_VAR 0 3
- 174: RET
-// export function PrepareSolBun ( skill , b ) ; var un , dir ; begin
- 175: LD_INT 0
+ 174: LD_INT 0
+ 176: PPUSH
  177: PPUSH
- 178: PPUSH
- 179: PPUSH
-// uc_side := GetSide ( b ) ;
- 180: LD_ADDR_OWVAR 20
- 184: PUSH
- 185: LD_VAR 0 2
- 189: PPUSH
- 190: CALL_OW 255
- 194: ST_TO_ADDR
-// uc_nation := GetNation ( b ) ;
- 195: LD_ADDR_OWVAR 21
- 199: PUSH
- 200: LD_VAR 0 2
- 204: PPUSH
- 205: CALL_OW 248
- 209: ST_TO_ADDR
-// PrepareHuman ( false , 1 , skill ) ;
- 210: LD_INT 0
- 212: PPUSH
- 213: LD_INT 1
- 215: PPUSH
- 216: LD_VAR 0 1
- 220: PPUSH
- 221: CALL_OW 380
-// dir := GetDir ( b ) - 3 ;
- 225: LD_ADDR_VAR 0 5
- 229: PUSH
- 230: LD_VAR 0 2
+// if exist_mode then
+ 178: LD_VAR 0 2
+ 182: IFFALSE 201
+// unit := CreateCharacter ( ident ) else
+ 184: LD_ADDR_VAR 0 4
+ 188: PUSH
+ 189: LD_VAR 0 1
+ 193: PPUSH
+ 194: CALL_OW 34
+ 198: ST_TO_ADDR
+ 199: GO 216
+// unit := NewCharacter ( ident ) ;
+ 201: LD_ADDR_VAR 0 4
+ 205: PUSH
+ 206: LD_VAR 0 1
+ 210: PPUSH
+ 211: CALL_OW 25
+ 215: ST_TO_ADDR
+// result := unit ;
+ 216: LD_ADDR_VAR 0 3
+ 220: PUSH
+ 221: LD_VAR 0 4
+ 225: ST_TO_ADDR
+// end ;
+ 226: LD_VAR 0 3
+ 230: RET
+// export function PrepareSolBun ( skill , b ) ; var un , dir ; begin
+ 231: LD_INT 0
+ 233: PPUSH
  234: PPUSH
- 235: CALL_OW 254
- 239: PUSH
- 240: LD_INT 3
- 242: MINUS
- 243: ST_TO_ADDR
+ 235: PPUSH
+// uc_side := GetSide ( b ) ;
+ 236: LD_ADDR_OWVAR 20
+ 240: PUSH
+ 241: LD_VAR 0 2
+ 245: PPUSH
+ 246: CALL_OW 255
+ 250: ST_TO_ADDR
+// uc_nation := GetNation ( b ) ;
+ 251: LD_ADDR_OWVAR 21
+ 255: PUSH
+ 256: LD_VAR 0 2
+ 260: PPUSH
+ 261: CALL_OW 248
+ 265: ST_TO_ADDR
+// PrepareHuman ( false , 1 , skill ) ;
+ 266: LD_INT 0
+ 268: PPUSH
+ 269: LD_INT 1
+ 271: PPUSH
+ 272: LD_VAR 0 1
+ 276: PPUSH
+ 277: CALL_OW 380
+// dir := GetDir ( b ) - 3 ;
+ 281: LD_ADDR_VAR 0 5
+ 285: PUSH
+ 286: LD_VAR 0 2
+ 290: PPUSH
+ 291: CALL_OW 254
+ 295: PUSH
+ 296: LD_INT 3
+ 298: MINUS
+ 299: ST_TO_ADDR
 // if dir < 0 then
- 244: LD_VAR 0 5
- 248: PUSH
- 249: LD_INT 0
- 251: LESS
- 252: IFFALSE 268
+ 300: LD_VAR 0 5
+ 304: PUSH
+ 305: LD_INT 0
+ 307: LESS
+ 308: IFFALSE 324
 // dir := 6 + dir ;
- 254: LD_ADDR_VAR 0 5
- 258: PUSH
- 259: LD_INT 6
- 261: PUSH
- 262: LD_VAR 0 5
- 266: PLUS
- 267: ST_TO_ADDR
-// un := CreateHuman ;
- 268: LD_ADDR_VAR 0 4
- 272: PUSH
- 273: CALL_OW 44
- 277: ST_TO_ADDR
-// SetDir ( un , dir ) ;
- 278: LD_VAR 0 4
- 282: PPUSH
- 283: LD_VAR 0 5
- 287: PPUSH
- 288: CALL_OW 233
-// PlaceHumanInUnit ( un , b ) ;
- 292: LD_VAR 0 4
- 296: PPUSH
- 297: LD_VAR 0 2
- 301: PPUSH
- 302: CALL_OW 52
-// end ;
- 306: LD_VAR 0 3
- 310: RET
-// export function PrepareTank ( side , nation , chassis , engine , control , weapon , fuel ) ; begin
- 311: LD_INT 0
- 313: PPUSH
-// uc_side := side ;
- 314: LD_ADDR_OWVAR 20
- 318: PUSH
- 319: LD_VAR 0 1
+ 310: LD_ADDR_VAR 0 5
+ 314: PUSH
+ 315: LD_INT 6
+ 317: PUSH
+ 318: LD_VAR 0 5
+ 322: PLUS
  323: ST_TO_ADDR
-// uc_nation := nation ;
- 324: LD_ADDR_OWVAR 21
+// un := CreateHuman ;
+ 324: LD_ADDR_VAR 0 4
  328: PUSH
- 329: LD_VAR 0 2
+ 329: CALL_OW 44
  333: ST_TO_ADDR
+// SetDir ( un , dir ) ;
+ 334: LD_VAR 0 4
+ 338: PPUSH
+ 339: LD_VAR 0 5
+ 343: PPUSH
+ 344: CALL_OW 233
+// PlaceHumanInUnit ( un , b ) ;
+ 348: LD_VAR 0 4
+ 352: PPUSH
+ 353: LD_VAR 0 2
+ 357: PPUSH
+ 358: CALL_OW 52
+// end ;
+ 362: LD_VAR 0 3
+ 366: RET
+// export function PrepareTank ( side , nation , chassis , engine , control , weapon , fuel ) ; begin
+ 367: LD_INT 0
+ 369: PPUSH
+// uc_side := side ;
+ 370: LD_ADDR_OWVAR 20
+ 374: PUSH
+ 375: LD_VAR 0 1
+ 379: ST_TO_ADDR
+// uc_nation := nation ;
+ 380: LD_ADDR_OWVAR 21
+ 384: PUSH
+ 385: LD_VAR 0 2
+ 389: ST_TO_ADDR
 // vc_chassis := chassis ;
- 334: LD_ADDR_OWVAR 37
- 338: PUSH
- 339: LD_VAR 0 3
- 343: ST_TO_ADDR
+ 390: LD_ADDR_OWVAR 37
+ 394: PUSH
+ 395: LD_VAR 0 3
+ 399: ST_TO_ADDR
 // vc_engine := engine ;
- 344: LD_ADDR_OWVAR 39
- 348: PUSH
- 349: LD_VAR 0 4
- 353: ST_TO_ADDR
+ 400: LD_ADDR_OWVAR 39
+ 404: PUSH
+ 405: LD_VAR 0 4
+ 409: ST_TO_ADDR
 // vc_control := control ;
- 354: LD_ADDR_OWVAR 38
- 358: PUSH
- 359: LD_VAR 0 5
- 363: ST_TO_ADDR
+ 410: LD_ADDR_OWVAR 38
+ 414: PUSH
+ 415: LD_VAR 0 5
+ 419: ST_TO_ADDR
 // vc_weapon := weapon ;
- 364: LD_ADDR_OWVAR 40
- 368: PUSH
- 369: LD_VAR 0 6
- 373: ST_TO_ADDR
+ 420: LD_ADDR_OWVAR 40
+ 424: PUSH
+ 425: LD_VAR 0 6
+ 429: ST_TO_ADDR
 // vc_fuel_battery := fuel ;
- 374: LD_ADDR_OWVAR 41
- 378: PUSH
- 379: LD_VAR 0 7
- 383: ST_TO_ADDR
+ 430: LD_ADDR_OWVAR 41
+ 434: PUSH
+ 435: LD_VAR 0 7
+ 439: ST_TO_ADDR
 // result := CreateVehicle ;
- 384: LD_ADDR_VAR 0 8
- 388: PUSH
- 389: CALL_OW 45
- 393: ST_TO_ADDR
-// end ;
- 394: LD_VAR 0 8
- 398: RET
-// export function ComPatrol ( unit , mode , pause , coords ) ; var i ; begin
- 399: LD_INT 0
- 401: PPUSH
- 402: PPUSH
-// while ( active_road_patrol ) do
- 403: LD_EXP 7
- 407: IFFALSE 673
-// begin Wait ( 0 0$01 ) ;
- 409: LD_INT 35
- 411: PPUSH
- 412: CALL_OW 67
-// if not unit then
- 416: LD_VAR 0 1
- 420: NOT
- 421: IFFALSE 425
-// exit ;
- 423: GO 673
-// if mode = road then
- 425: LD_VAR 0 2
- 429: PUSH
- 430: LD_STRING road
- 432: EQUAL
- 433: IFFALSE 489
-// if GetFuel ( unit ) < 50 and not See ( 1 , unit ) and not HasTask ( unit ) then
- 435: LD_VAR 0 1
- 439: PPUSH
- 440: CALL_OW 261
+ 440: LD_ADDR_VAR 0 8
  444: PUSH
- 445: LD_INT 50
- 447: LESS
- 448: PUSH
- 449: LD_INT 1
- 451: PPUSH
- 452: LD_VAR 0 1
- 456: PPUSH
- 457: CALL_OW 292
- 461: NOT
- 462: AND
- 463: PUSH
- 464: LD_VAR 0 1
- 468: PPUSH
- 469: CALL_OW 314
- 473: NOT
- 474: AND
- 475: IFFALSE 489
-// SetFuel ( unit , 100 ) ;
- 477: LD_VAR 0 1
- 481: PPUSH
- 482: LD_INT 100
- 484: PPUSH
- 485: CALL_OW 240
-// if not HasTask ( unit ) then
- 489: LD_VAR 0 1
- 493: PPUSH
- 494: CALL_OW 314
- 498: NOT
- 499: IFFALSE 671
-// begin for i = 1 to coords do
- 501: LD_ADDR_VAR 0 6
- 505: PUSH
- 506: DOUBLE
- 507: LD_INT 1
- 509: DEC
- 510: ST_TO_ADDR
- 511: LD_VAR 0 4
- 515: PUSH
- 516: FOR_TO
- 517: IFFALSE 584
-// begin AddComAgressiveMove ( unit , coords [ i ] , coords [ i + 1 ] ) ;
- 519: LD_VAR 0 1
- 523: PPUSH
- 524: LD_VAR 0 4
- 528: PUSH
- 529: LD_VAR 0 6
- 533: ARRAY
- 534: PPUSH
- 535: LD_VAR 0 4
- 539: PUSH
- 540: LD_VAR 0 6
- 544: PUSH
- 545: LD_INT 1
- 547: PLUS
- 548: ARRAY
- 549: PPUSH
- 550: CALL_OW 174
-// AddComWait ( unit , pause ) ;
- 554: LD_VAR 0 1
- 558: PPUSH
- 559: LD_VAR 0 3
- 563: PPUSH
- 564: CALL_OW 202
-// i := i + 1 ;
- 568: LD_ADDR_VAR 0 6
- 572: PUSH
- 573: LD_VAR 0 6
- 577: PUSH
- 578: LD_INT 1
- 580: PLUS
- 581: ST_TO_ADDR
+ 445: CALL_OW 45
+ 449: ST_TO_ADDR
 // end ;
- 582: GO 516
- 584: POP
- 585: POP
-// for i = coords downto 1 do
- 586: LD_ADDR_VAR 0 6
- 590: PUSH
- 591: DOUBLE
- 592: LD_VAR 0 4
- 596: INC
- 597: ST_TO_ADDR
- 598: LD_INT 1
- 600: PUSH
- 601: FOR_DOWNTO
- 602: IFFALSE 669
-// begin AddComAgressiveMove ( unit , coords [ i - 1 ] , coords [ i ] ) ;
+ 450: LD_VAR 0 8
+ 454: RET
+// export function ComPatrol ( unit , mode , pause , coords ) ; var i ; begin
+ 455: LD_INT 0
+ 457: PPUSH
+ 458: PPUSH
+// while ( active_road_patrol ) do
+ 459: LD_EXP 7
+ 463: IFFALSE 817
+// begin Wait ( 0 0$01 ) ;
+ 465: LD_INT 35
+ 467: PPUSH
+ 468: CALL_OW 67
+// if not unit then
+ 472: LD_VAR 0 1
+ 476: NOT
+ 477: IFFALSE 481
+// exit ;
+ 479: GO 817
+// if mode = road then
+ 481: LD_VAR 0 2
+ 485: PUSH
+ 486: LD_STRING road
+ 488: EQUAL
+ 489: IFFALSE 545
+// if GetFuel ( unit ) < 50 and not See ( 1 , unit ) and not HasTask ( unit ) then
+ 491: LD_VAR 0 1
+ 495: PPUSH
+ 496: CALL_OW 261
+ 500: PUSH
+ 501: LD_INT 50
+ 503: LESS
+ 504: PUSH
+ 505: LD_INT 1
+ 507: PPUSH
+ 508: LD_VAR 0 1
+ 512: PPUSH
+ 513: CALL_OW 292
+ 517: NOT
+ 518: AND
+ 519: PUSH
+ 520: LD_VAR 0 1
+ 524: PPUSH
+ 525: CALL_OW 314
+ 529: NOT
+ 530: AND
+ 531: IFFALSE 545
+// SetFuel ( unit , 100 ) ;
+ 533: LD_VAR 0 1
+ 537: PPUSH
+ 538: LD_INT 100
+ 540: PPUSH
+ 541: CALL_OW 240
+// if mode = forest then
+ 545: LD_VAR 0 2
+ 549: PUSH
+ 550: LD_STRING forest
+ 552: EQUAL
+ 553: IFFALSE 633
+// if GetLives ( unit ) < 600 then
+ 555: LD_VAR 0 1
+ 559: PPUSH
+ 560: CALL_OW 256
+ 564: PUSH
+ 565: LD_INT 600
+ 567: LESS
+ 568: IFFALSE 633
+// begin ComMoveXY ( unit , 42 , 3 ) ;
+ 570: LD_VAR 0 1
+ 574: PPUSH
+ 575: LD_INT 42
+ 577: PPUSH
+ 578: LD_INT 3
+ 580: PPUSH
+ 581: CALL_OW 111
+// SetRememberedX ( unit , GetX ( unit ) ) ;
+ 585: LD_VAR 0 1
+ 589: PPUSH
+ 590: LD_VAR 0 1
+ 594: PPUSH
+ 595: CALL_OW 250
+ 599: PPUSH
+ 600: CALL_OW 231
+// SetRememberedY ( unit , GetY ( unit ) ) ;
  604: LD_VAR 0 1
  608: PPUSH
- 609: LD_VAR 0 4
- 613: PUSH
- 614: LD_VAR 0 6
- 618: PUSH
- 619: LD_INT 1
- 621: MINUS
- 622: ARRAY
- 623: PPUSH
- 624: LD_VAR 0 4
- 628: PUSH
- 629: LD_VAR 0 6
- 633: ARRAY
- 634: PPUSH
- 635: CALL_OW 174
+ 609: LD_VAR 0 1
+ 613: PPUSH
+ 614: CALL_OW 251
+ 618: PPUSH
+ 619: CALL_OW 232
+// send_troops_to_forest := true ;
+ 623: LD_ADDR_EXP 13
+ 627: PUSH
+ 628: LD_INT 1
+ 630: ST_TO_ADDR
+// break ;
+ 631: GO 817
+// end ; if not HasTask ( unit ) then
+ 633: LD_VAR 0 1
+ 637: PPUSH
+ 638: CALL_OW 314
+ 642: NOT
+ 643: IFFALSE 815
+// begin for i = 1 to coords do
+ 645: LD_ADDR_VAR 0 6
+ 649: PUSH
+ 650: DOUBLE
+ 651: LD_INT 1
+ 653: DEC
+ 654: ST_TO_ADDR
+ 655: LD_VAR 0 4
+ 659: PUSH
+ 660: FOR_TO
+ 661: IFFALSE 728
+// begin AddComAgressiveMove ( unit , coords [ i ] , coords [ i + 1 ] ) ;
+ 663: LD_VAR 0 1
+ 667: PPUSH
+ 668: LD_VAR 0 4
+ 672: PUSH
+ 673: LD_VAR 0 6
+ 677: ARRAY
+ 678: PPUSH
+ 679: LD_VAR 0 4
+ 683: PUSH
+ 684: LD_VAR 0 6
+ 688: PUSH
+ 689: LD_INT 1
+ 691: PLUS
+ 692: ARRAY
+ 693: PPUSH
+ 694: CALL_OW 174
 // AddComWait ( unit , pause ) ;
- 639: LD_VAR 0 1
- 643: PPUSH
- 644: LD_VAR 0 3
- 648: PPUSH
- 649: CALL_OW 202
+ 698: LD_VAR 0 1
+ 702: PPUSH
+ 703: LD_VAR 0 3
+ 707: PPUSH
+ 708: CALL_OW 202
+// i := i + 1 ;
+ 712: LD_ADDR_VAR 0 6
+ 716: PUSH
+ 717: LD_VAR 0 6
+ 721: PUSH
+ 722: LD_INT 1
+ 724: PLUS
+ 725: ST_TO_ADDR
+// end ;
+ 726: GO 660
+ 728: POP
+ 729: POP
+// for i = coords downto 1 do
+ 730: LD_ADDR_VAR 0 6
+ 734: PUSH
+ 735: DOUBLE
+ 736: LD_VAR 0 4
+ 740: INC
+ 741: ST_TO_ADDR
+ 742: LD_INT 1
+ 744: PUSH
+ 745: FOR_DOWNTO
+ 746: IFFALSE 813
+// begin AddComAgressiveMove ( unit , coords [ i - 1 ] , coords [ i ] ) ;
+ 748: LD_VAR 0 1
+ 752: PPUSH
+ 753: LD_VAR 0 4
+ 757: PUSH
+ 758: LD_VAR 0 6
+ 762: PUSH
+ 763: LD_INT 1
+ 765: MINUS
+ 766: ARRAY
+ 767: PPUSH
+ 768: LD_VAR 0 4
+ 772: PUSH
+ 773: LD_VAR 0 6
+ 777: ARRAY
+ 778: PPUSH
+ 779: CALL_OW 174
+// AddComWait ( unit , pause ) ;
+ 783: LD_VAR 0 1
+ 787: PPUSH
+ 788: LD_VAR 0 3
+ 792: PPUSH
+ 793: CALL_OW 202
 // i := i - 1 ;
- 653: LD_ADDR_VAR 0 6
- 657: PUSH
- 658: LD_VAR 0 6
- 662: PUSH
- 663: LD_INT 1
- 665: MINUS
- 666: ST_TO_ADDR
+ 797: LD_ADDR_VAR 0 6
+ 801: PUSH
+ 802: LD_VAR 0 6
+ 806: PUSH
+ 807: LD_INT 1
+ 809: MINUS
+ 810: ST_TO_ADDR
 // end ;
- 667: GO 601
- 669: POP
- 670: POP
+ 811: GO 745
+ 813: POP
+ 814: POP
 // end ; end ;
- 671: GO 403
+ 815: GO 459
 // end ;
- 673: LD_VAR 0 5
- 677: RET
+ 817: LD_VAR 0 5
+ 821: RET
 // export function DebugSay ( dialog ) ; var speaker ; begin
- 678: LD_INT 0
- 680: PPUSH
- 681: PPUSH
+ 822: LD_INT 0
+ 824: PPUSH
+ 825: PPUSH
 // uc_nation := 1 ;
- 682: LD_ADDR_OWVAR 21
- 686: PUSH
- 687: LD_INT 1
- 689: ST_TO_ADDR
+ 826: LD_ADDR_OWVAR 21
+ 830: PUSH
+ 831: LD_INT 1
+ 833: ST_TO_ADDR
 // uc_side := 0 ;
- 690: LD_ADDR_OWVAR 20
- 694: PUSH
- 695: LD_INT 0
- 697: ST_TO_ADDR
+ 834: LD_ADDR_OWVAR 20
+ 838: PUSH
+ 839: LD_INT 0
+ 841: ST_TO_ADDR
 // PrepareHuman ( false , 1 , 0 ) ;
- 698: LD_INT 0
- 700: PPUSH
- 701: LD_INT 1
- 703: PPUSH
- 704: LD_INT 0
- 706: PPUSH
- 707: CALL_OW 380
+ 842: LD_INT 0
+ 844: PPUSH
+ 845: LD_INT 1
+ 847: PPUSH
+ 848: LD_INT 0
+ 850: PPUSH
+ 851: CALL_OW 380
 // hc_name := speaker ;
- 711: LD_ADDR_OWVAR 26
- 715: PUSH
- 716: LD_STRING speaker
- 718: ST_TO_ADDR
+ 855: LD_ADDR_OWVAR 26
+ 859: PUSH
+ 860: LD_STRING speaker
+ 862: ST_TO_ADDR
 // hc_gallery :=  ;
- 719: LD_ADDR_OWVAR 33
- 723: PUSH
- 724: LD_STRING 
- 726: ST_TO_ADDR
+ 863: LD_ADDR_OWVAR 33
+ 867: PUSH
+ 868: LD_STRING 
+ 870: ST_TO_ADDR
 // speaker := CreateHuman ;
- 727: LD_ADDR_VAR 0 3
- 731: PUSH
- 732: CALL_OW 44
- 736: ST_TO_ADDR
+ 871: LD_ADDR_VAR 0 3
+ 875: PUSH
+ 876: CALL_OW 44
+ 880: ST_TO_ADDR
 // Say ( speaker , dialog ) ;
- 737: LD_VAR 0 3
- 741: PPUSH
- 742: LD_VAR 0 1
- 746: PPUSH
- 747: CALL_OW 88
-// end ; end_of_file
- 751: LD_VAR 0 2
- 755: RET
-// export JMM , Bobby , Cyrus , Powell , fakePokryshkin ; export function InitAmerican ; begin
- 756: LD_INT 0
- 758: PPUSH
-// uc_nation := 1 ;
- 759: LD_ADDR_OWVAR 21
- 763: PUSH
- 764: LD_INT 1
- 766: ST_TO_ADDR
-// JMM := PrepareUnit ( JMM , false ) ;
- 767: LD_ADDR_EXP 8
- 771: PUSH
- 772: LD_STRING JMM
- 774: PPUSH
- 775: LD_INT 0
- 777: PPUSH
- 778: CALL 118 0 2
- 782: ST_TO_ADDR
-// uc_side := 4 ;
- 783: LD_ADDR_OWVAR 20
- 787: PUSH
- 788: LD_INT 4
- 790: ST_TO_ADDR
-// hc_gallery := us ;
- 791: LD_ADDR_OWVAR 33
- 795: PUSH
- 796: LD_STRING us
- 798: ST_TO_ADDR
-// hc_face_number := 7 ;
- 799: LD_ADDR_OWVAR 34
- 803: PUSH
- 804: LD_INT 7
- 806: ST_TO_ADDR
-// hc_sex := sex_male ;
- 807: LD_ADDR_OWVAR 27
- 811: PUSH
- 812: LD_INT 1
- 814: ST_TO_ADDR
-// hc_name :=   ;
- 815: LD_ADDR_OWVAR 26
- 819: PUSH
- 820: LD_STRING  
- 822: ST_TO_ADDR
-// hc_class := 1 ;
- 823: LD_ADDR_OWVAR 28
- 827: PUSH
- 828: LD_INT 1
- 830: ST_TO_ADDR
-// Powell := CreateHuman ;
- 831: LD_ADDR_EXP 11
- 835: PUSH
- 836: CALL_OW 44
- 840: ST_TO_ADDR
-// hc_name :=   ;
- 841: LD_ADDR_OWVAR 26
- 845: PUSH
- 846: LD_STRING  
- 848: ST_TO_ADDR
-// hc_gallery := ru ;
- 849: LD_ADDR_OWVAR 33
- 853: PUSH
- 854: LD_STRING ru
- 856: ST_TO_ADDR
-// hc_face_number := 4 ;
- 857: LD_ADDR_OWVAR 34
- 861: PUSH
- 862: LD_INT 4
- 864: ST_TO_ADDR
-// hc_sex := sex_male ;
- 865: LD_ADDR_OWVAR 27
- 869: PUSH
- 870: LD_INT 1
- 872: ST_TO_ADDR
-// fakePokryshkin := CreateHuman ;
- 873: LD_ADDR_EXP 12
- 877: PUSH
- 878: CALL_OW 44
- 882: ST_TO_ADDR
-// Bobby := PrepareUnit ( Bobby , false ) ;
- 883: LD_ADDR_EXP 9
- 887: PUSH
- 888: LD_STRING Bobby
+ 881: LD_VAR 0 3
+ 885: PPUSH
+ 886: LD_VAR 0 1
  890: PPUSH
- 891: LD_INT 0
- 893: PPUSH
- 894: CALL 118 0 2
- 898: ST_TO_ADDR
-// Cyrus := PrepareUnit ( Cyrus , false ) ;
- 899: LD_ADDR_EXP 10
- 903: PUSH
- 904: LD_STRING Cyrus
- 906: PPUSH
- 907: LD_INT 0
- 909: PPUSH
- 910: CALL 118 0 2
- 914: ST_TO_ADDR
-// case Difficulty of 1 :
- 915: LD_OWVAR 67
- 919: PUSH
- 920: LD_INT 1
- 922: DOUBLE
- 923: EQUAL
- 924: IFTRUE 928
- 926: GO 943
- 928: POP
-// SetLives ( Bobby , 500 ) ; 2 :
- 929: LD_EXP 9
- 933: PPUSH
- 934: LD_INT 500
- 936: PPUSH
- 937: CALL_OW 234
- 941: GO 990
- 943: LD_INT 2
- 945: DOUBLE
- 946: EQUAL
- 947: IFTRUE 951
- 949: GO 966
- 951: POP
-// SetLives ( Bobby , 450 ) ; 3 :
- 952: LD_EXP 9
- 956: PPUSH
- 957: LD_INT 450
- 959: PPUSH
- 960: CALL_OW 234
- 964: GO 990
- 966: LD_INT 3
- 968: DOUBLE
- 969: EQUAL
- 970: IFTRUE 974
- 972: GO 989
- 974: POP
-// SetLives ( Bobby , 400 ) ; end ;
- 975: LD_EXP 9
- 979: PPUSH
- 980: LD_INT 400
- 982: PPUSH
- 983: CALL_OW 234
- 987: GO 990
- 989: POP
+ 891: CALL_OW 88
 // end ; end_of_file
- 990: LD_VAR 0 1
- 994: RET
-// export russian_troops_1 , russian_troops_2 , russian_patrol_tanks ; export Pokryshkin ; export function InitRussian ; var skill , i , un ; begin
- 995: LD_INT 0
- 997: PPUSH
- 998: PPUSH
- 999: PPUSH
-1000: PPUSH
-// skill := [ 1 , 2 , 3 ] [ Difficulty ] ;
-1001: LD_ADDR_VAR 0 2
+ 895: LD_VAR 0 2
+ 899: RET
+// export JMM , Bobby , Cyrus , Powell , fakePokryshkin ; export function InitAmerican ; begin
+ 900: LD_INT 0
+ 902: PPUSH
+// uc_nation := 1 ;
+ 903: LD_ADDR_OWVAR 21
+ 907: PUSH
+ 908: LD_INT 1
+ 910: ST_TO_ADDR
+// JMM := PrepareUnit ( JMM , false ) ;
+ 911: LD_ADDR_EXP 14
+ 915: PUSH
+ 916: LD_STRING JMM
+ 918: PPUSH
+ 919: LD_INT 0
+ 921: PPUSH
+ 922: CALL 174 0 2
+ 926: ST_TO_ADDR
+// uc_side := 4 ;
+ 927: LD_ADDR_OWVAR 20
+ 931: PUSH
+ 932: LD_INT 4
+ 934: ST_TO_ADDR
+// hc_gallery := us ;
+ 935: LD_ADDR_OWVAR 33
+ 939: PUSH
+ 940: LD_STRING us
+ 942: ST_TO_ADDR
+// hc_face_number := 7 ;
+ 943: LD_ADDR_OWVAR 34
+ 947: PUSH
+ 948: LD_INT 7
+ 950: ST_TO_ADDR
+// hc_sex := sex_male ;
+ 951: LD_ADDR_OWVAR 27
+ 955: PUSH
+ 956: LD_INT 1
+ 958: ST_TO_ADDR
+// hc_name :=   ;
+ 959: LD_ADDR_OWVAR 26
+ 963: PUSH
+ 964: LD_STRING  
+ 966: ST_TO_ADDR
+// hc_class := 1 ;
+ 967: LD_ADDR_OWVAR 28
+ 971: PUSH
+ 972: LD_INT 1
+ 974: ST_TO_ADDR
+// Powell := CreateHuman ;
+ 975: LD_ADDR_EXP 17
+ 979: PUSH
+ 980: CALL_OW 44
+ 984: ST_TO_ADDR
+// hc_name :=   ;
+ 985: LD_ADDR_OWVAR 26
+ 989: PUSH
+ 990: LD_STRING  
+ 992: ST_TO_ADDR
+// hc_gallery := ru ;
+ 993: LD_ADDR_OWVAR 33
+ 997: PUSH
+ 998: LD_STRING ru
+1000: ST_TO_ADDR
+// hc_face_number := 4 ;
+1001: LD_ADDR_OWVAR 34
 1005: PUSH
-1006: LD_INT 1
-1008: PUSH
-1009: LD_INT 2
-1011: PUSH
-1012: LD_INT 3
-1014: PUSH
-1015: EMPTY
-1016: LIST
-1017: LIST
-1018: LIST
-1019: PUSH
-1020: LD_OWVAR 67
-1024: ARRAY
-1025: ST_TO_ADDR
-// uc_side := 3 ;
-1026: LD_ADDR_OWVAR 20
-1030: PUSH
-1031: LD_INT 3
-1033: ST_TO_ADDR
-// uc_nation := 3 ;
-1034: LD_ADDR_OWVAR 21
-1038: PUSH
-1039: LD_INT 3
-1041: ST_TO_ADDR
-// Pokryshkin := PrepareUnit ( Pokryshkin , false ) ;
-1042: LD_ADDR_EXP 16
-1046: PUSH
-1047: LD_STRING Pokryshkin
-1049: PPUSH
-1050: LD_INT 0
-1052: PPUSH
-1053: CALL 118 0 2
-1057: ST_TO_ADDR
-// hc_gallery :=  ;
-1058: LD_ADDR_OWVAR 33
-1062: PUSH
-1063: LD_STRING 
-1065: ST_TO_ADDR
-// hc_name :=  ;
-1066: LD_ADDR_OWVAR 26
-1070: PUSH
-1071: LD_STRING 
-1073: ST_TO_ADDR
-// for i = 1 to 8 do
-1074: LD_ADDR_VAR 0 3
-1078: PUSH
-1079: DOUBLE
-1080: LD_INT 1
-1082: DEC
-1083: ST_TO_ADDR
-1084: LD_INT 8
-1086: PUSH
-1087: FOR_TO
-1088: IFFALSE 1209
-// begin PrepareHuman ( sex_male , 1 , skill ) ;
-1090: LD_INT 1
-1092: PPUSH
-1093: LD_INT 1
-1095: PPUSH
-1096: LD_VAR 0 2
+1006: LD_INT 4
+1008: ST_TO_ADDR
+// hc_sex := sex_male ;
+1009: LD_ADDR_OWVAR 27
+1013: PUSH
+1014: LD_INT 1
+1016: ST_TO_ADDR
+// fakePokryshkin := CreateHuman ;
+1017: LD_ADDR_EXP 18
+1021: PUSH
+1022: CALL_OW 44
+1026: ST_TO_ADDR
+// Bobby := PrepareUnit ( Bobby , false ) ;
+1027: LD_ADDR_EXP 15
+1031: PUSH
+1032: LD_STRING Bobby
+1034: PPUSH
+1035: LD_INT 0
+1037: PPUSH
+1038: CALL 174 0 2
+1042: ST_TO_ADDR
+// Cyrus := PrepareUnit ( Cyrus , false ) ;
+1043: LD_ADDR_EXP 16
+1047: PUSH
+1048: LD_STRING Cyrus
+1050: PPUSH
+1051: LD_INT 0
+1053: PPUSH
+1054: CALL 174 0 2
+1058: ST_TO_ADDR
+// case Difficulty of 1 :
+1059: LD_OWVAR 67
+1063: PUSH
+1064: LD_INT 1
+1066: DOUBLE
+1067: EQUAL
+1068: IFTRUE 1072
+1070: GO 1087
+1072: POP
+// SetLives ( Bobby , 500 ) ; 2 :
+1073: LD_EXP 15
+1077: PPUSH
+1078: LD_INT 500
+1080: PPUSH
+1081: CALL_OW 234
+1085: GO 1134
+1087: LD_INT 2
+1089: DOUBLE
+1090: EQUAL
+1091: IFTRUE 1095
+1093: GO 1110
+1095: POP
+// SetLives ( Bobby , 450 ) ; 3 :
+1096: LD_EXP 15
 1100: PPUSH
-1101: CALL_OW 380
-// un := CreateHuman ;
-1105: LD_ADDR_VAR 0 4
-1109: PUSH
-1110: CALL_OW 44
-1114: ST_TO_ADDR
-// if i mod 2 = 0 then
-1115: LD_VAR 0 3
-1119: PUSH
-1120: LD_INT 2
-1122: MOD
-1123: PUSH
-1124: LD_INT 0
-1126: EQUAL
-1127: IFFALSE 1169
-// begin russian_troops_1 := Insert ( russian_troops_1 , 1 , un ) ;
-1129: LD_ADDR_EXP 13
-1133: PUSH
-1134: LD_EXP 13
-1138: PPUSH
-1139: LD_INT 1
+1101: LD_INT 450
+1103: PPUSH
+1104: CALL_OW 234
+1108: GO 1134
+1110: LD_INT 3
+1112: DOUBLE
+1113: EQUAL
+1114: IFTRUE 1118
+1116: GO 1133
+1118: POP
+// SetLives ( Bobby , 400 ) ; end ;
+1119: LD_EXP 15
+1123: PPUSH
+1124: LD_INT 400
+1126: PPUSH
+1127: CALL_OW 234
+1131: GO 1134
+1133: POP
+// end ; end_of_file
+1134: LD_VAR 0 1
+1138: RET
+// export russian_troops_1 , russian_troops_2 , russian_patrol_tanks , russian_meta_guards , russian_patrol_forest ; export Pokryshkin ; export function InitRussian ; var skill , i , un ; begin
+1139: LD_INT 0
 1141: PPUSH
-1142: LD_VAR 0 4
-1146: PPUSH
-1147: CALL_OW 2
-1151: ST_TO_ADDR
-// PlaceUnitArea ( un , guard_north , false ) ;
-1152: LD_VAR 0 4
-1156: PPUSH
-1157: LD_INT 3
-1159: PPUSH
-1160: LD_INT 0
-1162: PPUSH
-1163: CALL_OW 49
-// end else
-1167: GO 1207
-// begin russian_troops_2 := Insert ( russian_troops_2 , 1 , un ) ;
-1169: LD_ADDR_EXP 14
-1173: PUSH
-1174: LD_EXP 14
-1178: PPUSH
-1179: LD_INT 1
-1181: PPUSH
-1182: LD_VAR 0 4
-1186: PPUSH
-1187: CALL_OW 2
-1191: ST_TO_ADDR
-// PlaceUnitArea ( un , guard_south , false ) ;
-1192: LD_VAR 0 4
+1142: PPUSH
+1143: PPUSH
+1144: PPUSH
+// skill := [ 1 , 2 , 3 ] [ Difficulty ] ;
+1145: LD_ADDR_VAR 0 2
+1149: PUSH
+1150: LD_INT 1
+1152: PUSH
+1153: LD_INT 2
+1155: PUSH
+1156: LD_INT 3
+1158: PUSH
+1159: EMPTY
+1160: LIST
+1161: LIST
+1162: LIST
+1163: PUSH
+1164: LD_OWVAR 67
+1168: ARRAY
+1169: ST_TO_ADDR
+// uc_side := 3 ;
+1170: LD_ADDR_OWVAR 20
+1174: PUSH
+1175: LD_INT 3
+1177: ST_TO_ADDR
+// uc_nation := 3 ;
+1178: LD_ADDR_OWVAR 21
+1182: PUSH
+1183: LD_INT 3
+1185: ST_TO_ADDR
+// Pokryshkin := PrepareUnit ( Pokryshkin , false ) ;
+1186: LD_ADDR_EXP 24
+1190: PUSH
+1191: LD_STRING Pokryshkin
+1193: PPUSH
+1194: LD_INT 0
 1196: PPUSH
-1197: LD_INT 4
-1199: PPUSH
-1200: LD_INT 0
-1202: PPUSH
-1203: CALL_OW 49
-// end ; end ;
-1207: GO 1087
-1209: POP
-1210: POP
-// for i in FilterAllUnits ( [ [ f_side , 3 ] , [ f_btype , b_breastwork ] ] ) do
-1211: LD_ADDR_VAR 0 3
-1215: PUSH
-1216: LD_INT 22
-1218: PUSH
-1219: LD_INT 3
-1221: PUSH
-1222: EMPTY
-1223: LIST
-1224: LIST
-1225: PUSH
-1226: LD_INT 30
-1228: PUSH
-1229: LD_INT 31
-1231: PUSH
-1232: EMPTY
-1233: LIST
-1234: LIST
-1235: PUSH
-1236: EMPTY
-1237: LIST
-1238: LIST
-1239: PPUSH
-1240: CALL_OW 69
-1244: PUSH
-1245: FOR_IN
-1246: IFFALSE 1264
-// PrepareSolBun ( skill , i ) ;
-1248: LD_VAR 0 2
-1252: PPUSH
-1253: LD_VAR 0 3
-1257: PPUSH
-1258: CALL 175 0 2
-1262: GO 1245
-1264: POP
-1265: POP
-// for i = 1 to 2 do
-1266: LD_ADDR_VAR 0 3
-1270: PUSH
-1271: DOUBLE
-1272: LD_INT 1
-1274: DEC
-1275: ST_TO_ADDR
-1276: LD_INT 2
-1278: PUSH
-1279: FOR_TO
-1280: IFFALSE 1411
-// begin un := PrepareTank ( 3 , 3 , ru_medium_tracked , engine_combustion , control_manual , ru_heavy_machine_gun , 100 ) ;
-1282: LD_ADDR_VAR 0 4
-1286: PUSH
-1287: LD_INT 3
-1289: PPUSH
-1290: LD_INT 3
-1292: PPUSH
-1293: LD_INT 22
-1295: PPUSH
-1296: LD_INT 1
-1298: PPUSH
-1299: LD_INT 1
-1301: PPUSH
-1302: LD_INT 42
-1304: PPUSH
-1305: LD_INT 100
-1307: PPUSH
-1308: CALL 311 0 7
-1312: ST_TO_ADDR
-// PrepareHuman ( false , 3 , skill ) ;
-1313: LD_INT 0
-1315: PPUSH
-1316: LD_INT 3
-1318: PPUSH
-1319: LD_VAR 0 2
-1323: PPUSH
-1324: CALL_OW 380
-// PlaceHumanInUnit ( CreateHuman , un ) ;
-1328: CALL_OW 44
+1197: CALL 174 0 2
+1201: ST_TO_ADDR
+// PlaceUnitXY ( Pokryshkin , 44 , 5 , false ) ;
+1202: LD_EXP 24
+1206: PPUSH
+1207: LD_INT 44
+1209: PPUSH
+1210: LD_INT 5
+1212: PPUSH
+1213: LD_INT 0
+1215: PPUSH
+1216: CALL_OW 48
+// hc_importance := 0 ;
+1220: LD_ADDR_OWVAR 32
+1224: PUSH
+1225: LD_INT 0
+1227: ST_TO_ADDR
+// hc_gallery :=  ;
+1228: LD_ADDR_OWVAR 33
+1232: PUSH
+1233: LD_STRING 
+1235: ST_TO_ADDR
+// hc_name :=  ;
+1236: LD_ADDR_OWVAR 26
+1240: PUSH
+1241: LD_STRING 
+1243: ST_TO_ADDR
+// for i = 1 to 8 do
+1244: LD_ADDR_VAR 0 3
+1248: PUSH
+1249: DOUBLE
+1250: LD_INT 1
+1252: DEC
+1253: ST_TO_ADDR
+1254: LD_INT 8
+1256: PUSH
+1257: FOR_TO
+1258: IFFALSE 1379
+// begin PrepareHuman ( sex_male , 1 , skill ) ;
+1260: LD_INT 1
+1262: PPUSH
+1263: LD_INT 1
+1265: PPUSH
+1266: LD_VAR 0 2
+1270: PPUSH
+1271: CALL_OW 380
+// un := CreateHuman ;
+1275: LD_ADDR_VAR 0 4
+1279: PUSH
+1280: CALL_OW 44
+1284: ST_TO_ADDR
+// if i mod 2 = 0 then
+1285: LD_VAR 0 3
+1289: PUSH
+1290: LD_INT 2
+1292: MOD
+1293: PUSH
+1294: LD_INT 0
+1296: EQUAL
+1297: IFFALSE 1339
+// begin russian_troops_1 := Insert ( russian_troops_1 , 1 , un ) ;
+1299: LD_ADDR_EXP 19
+1303: PUSH
+1304: LD_EXP 19
+1308: PPUSH
+1309: LD_INT 1
+1311: PPUSH
+1312: LD_VAR 0 4
+1316: PPUSH
+1317: CALL_OW 2
+1321: ST_TO_ADDR
+// PlaceUnitArea ( un , guard_north , false ) ;
+1322: LD_VAR 0 4
+1326: PPUSH
+1327: LD_INT 3
+1329: PPUSH
+1330: LD_INT 0
 1332: PPUSH
-1333: LD_VAR 0 4
-1337: PPUSH
-1338: CALL_OW 52
-// PlaceUnitXY ( un , [ 23 , 131 ] [ i ] , [ 14 , 87 ] [ i ] , false ) ;
-1342: LD_VAR 0 4
-1346: PPUSH
-1347: LD_INT 23
-1349: PUSH
-1350: LD_INT 131
-1352: PUSH
-1353: EMPTY
-1354: LIST
-1355: LIST
-1356: PUSH
-1357: LD_VAR 0 3
-1361: ARRAY
-1362: PPUSH
-1363: LD_INT 14
-1365: PUSH
-1366: LD_INT 87
-1368: PUSH
-1369: EMPTY
-1370: LIST
-1371: LIST
-1372: PUSH
-1373: LD_VAR 0 3
-1377: ARRAY
-1378: PPUSH
-1379: LD_INT 0
-1381: PPUSH
-1382: CALL_OW 48
-// russian_patrol_tanks := Insert ( russian_patrol_tanks , 1 , un ) ;
-1386: LD_ADDR_EXP 15
-1390: PUSH
-1391: LD_EXP 15
-1395: PPUSH
-1396: LD_INT 1
-1398: PPUSH
-1399: LD_VAR 0 4
-1403: PPUSH
-1404: CALL_OW 2
-1408: ST_TO_ADDR
-// end ;
-1409: GO 1279
-1411: POP
-1412: POP
-// end ;
-1413: LD_VAR 0 1
-1417: RET
-// every 0 0$01 trigger active_road_patrol do
-1418: LD_EXP 7
-1422: IFFALSE 1488
-1424: GO 1426
-1426: DISABLE
-// ComPatrol ( russian_patrol_tanks [ 1 ] , road , 0 0$02 , [ 131 , 87 , 107 , 75 , 107 , 66 , 114 , 61 , 107 , 34 ] ) ;
-1427: LD_EXP 15
-1431: PUSH
-1432: LD_INT 1
-1434: ARRAY
-1435: PPUSH
-1436: LD_STRING road
-1438: PPUSH
-1439: LD_INT 70
-1441: PPUSH
-1442: LD_INT 131
-1444: PUSH
-1445: LD_INT 87
-1447: PUSH
-1448: LD_INT 107
-1450: PUSH
-1451: LD_INT 75
-1453: PUSH
-1454: LD_INT 107
+1333: CALL_OW 49
+// end else
+1337: GO 1377
+// begin russian_troops_2 := Insert ( russian_troops_2 , 1 , un ) ;
+1339: LD_ADDR_EXP 20
+1343: PUSH
+1344: LD_EXP 20
+1348: PPUSH
+1349: LD_INT 1
+1351: PPUSH
+1352: LD_VAR 0 4
+1356: PPUSH
+1357: CALL_OW 2
+1361: ST_TO_ADDR
+// PlaceUnitArea ( un , guard_south , false ) ;
+1362: LD_VAR 0 4
+1366: PPUSH
+1367: LD_INT 4
+1369: PPUSH
+1370: LD_INT 0
+1372: PPUSH
+1373: CALL_OW 49
+// end ; end ;
+1377: GO 1257
+1379: POP
+1380: POP
+// for i in FilterAllUnits ( [ [ f_side , 3 ] , [ f_btype , b_breastwork ] ] ) do
+1381: LD_ADDR_VAR 0 3
+1385: PUSH
+1386: LD_INT 22
+1388: PUSH
+1389: LD_INT 3
+1391: PUSH
+1392: EMPTY
+1393: LIST
+1394: LIST
+1395: PUSH
+1396: LD_INT 30
+1398: PUSH
+1399: LD_INT 31
+1401: PUSH
+1402: EMPTY
+1403: LIST
+1404: LIST
+1405: PUSH
+1406: EMPTY
+1407: LIST
+1408: LIST
+1409: PPUSH
+1410: CALL_OW 69
+1414: PUSH
+1415: FOR_IN
+1416: IFFALSE 1434
+// PrepareSolBun ( skill , i ) ;
+1418: LD_VAR 0 2
+1422: PPUSH
+1423: LD_VAR 0 3
+1427: PPUSH
+1428: CALL 231 0 2
+1432: GO 1415
+1434: POP
+1435: POP
+// for i = 1 to 2 do
+1436: LD_ADDR_VAR 0 3
+1440: PUSH
+1441: DOUBLE
+1442: LD_INT 1
+1444: DEC
+1445: ST_TO_ADDR
+1446: LD_INT 2
+1448: PUSH
+1449: FOR_TO
+1450: IFFALSE 1581
+// begin un := PrepareTank ( 3 , 3 , ru_medium_tracked , engine_combustion , control_manual , ru_heavy_machine_gun , 100 ) ;
+1452: LD_ADDR_VAR 0 4
 1456: PUSH
-1457: LD_INT 66
-1459: PUSH
-1460: LD_INT 114
-1462: PUSH
-1463: LD_INT 61
-1465: PUSH
-1466: LD_INT 107
-1468: PUSH
-1469: LD_INT 34
-1471: PUSH
-1472: EMPTY
-1473: LIST
-1474: LIST
-1475: LIST
-1476: LIST
-1477: LIST
-1478: LIST
-1479: LIST
-1480: LIST
-1481: LIST
-1482: LIST
-1483: PPUSH
-1484: CALL 399 0 4
-1488: END
-// every 0 0$01 trigger active_road_patrol do
-1489: LD_EXP 7
-1493: IFFALSE 1551
-1495: GO 1497
-1497: DISABLE
-// ComPatrol ( russian_patrol_tanks [ 2 ] , road , 0 0$02 , [ 21 , 12 , 37 , 30 , 65 , 62 , 107 , 76 ] ) ;
-1498: LD_EXP 15
-1502: PUSH
-1503: LD_INT 2
-1505: ARRAY
-1506: PPUSH
-1507: LD_STRING road
-1509: PPUSH
-1510: LD_INT 70
-1512: PPUSH
-1513: LD_INT 21
-1515: PUSH
-1516: LD_INT 12
-1518: PUSH
-1519: LD_INT 37
-1521: PUSH
-1522: LD_INT 30
-1524: PUSH
-1525: LD_INT 65
-1527: PUSH
-1528: LD_INT 62
-1530: PUSH
-1531: LD_INT 107
-1533: PUSH
-1534: LD_INT 76
-1536: PUSH
-1537: EMPTY
-1538: LIST
-1539: LIST
+1457: LD_INT 3
+1459: PPUSH
+1460: LD_INT 3
+1462: PPUSH
+1463: LD_INT 22
+1465: PPUSH
+1466: LD_INT 1
+1468: PPUSH
+1469: LD_INT 1
+1471: PPUSH
+1472: LD_INT 42
+1474: PPUSH
+1475: LD_INT 100
+1477: PPUSH
+1478: CALL 367 0 7
+1482: ST_TO_ADDR
+// PrepareHuman ( false , 3 , skill ) ;
+1483: LD_INT 0
+1485: PPUSH
+1486: LD_INT 3
+1488: PPUSH
+1489: LD_VAR 0 2
+1493: PPUSH
+1494: CALL_OW 380
+// PlaceHumanInUnit ( CreateHuman , un ) ;
+1498: CALL_OW 44
+1502: PPUSH
+1503: LD_VAR 0 4
+1507: PPUSH
+1508: CALL_OW 52
+// PlaceUnitXY ( un , [ 23 , 131 ] [ i ] , [ 14 , 87 ] [ i ] , false ) ;
+1512: LD_VAR 0 4
+1516: PPUSH
+1517: LD_INT 23
+1519: PUSH
+1520: LD_INT 131
+1522: PUSH
+1523: EMPTY
+1524: LIST
+1525: LIST
+1526: PUSH
+1527: LD_VAR 0 3
+1531: ARRAY
+1532: PPUSH
+1533: LD_INT 14
+1535: PUSH
+1536: LD_INT 87
+1538: PUSH
+1539: EMPTY
 1540: LIST
 1541: LIST
-1542: LIST
-1543: LIST
-1544: LIST
-1545: LIST
-1546: PPUSH
-1547: CALL 399 0 4
-1551: END
-// every 0 0$01 trigger macmilan_use_radio do
-1552: LD_EXP 5
-1556: IFFALSE 1617
-1558: GO 1560
-1560: DISABLE
-// begin active_road_patrol := false ;
-1561: LD_ADDR_EXP 7
-1565: PUSH
-1566: LD_INT 0
-1568: ST_TO_ADDR
-// ComStop ( russian_patrol_tanks ) ;
-1569: LD_EXP 15
+1542: PUSH
+1543: LD_VAR 0 3
+1547: ARRAY
+1548: PPUSH
+1549: LD_INT 0
+1551: PPUSH
+1552: CALL_OW 48
+// russian_patrol_tanks := Insert ( russian_patrol_tanks , 1 , un ) ;
+1556: LD_ADDR_EXP 21
+1560: PUSH
+1561: LD_EXP 21
+1565: PPUSH
+1566: LD_INT 1
+1568: PPUSH
+1569: LD_VAR 0 4
 1573: PPUSH
-1574: CALL_OW 141
-// AddComAgressiveMove ( russian_patrol_tanks , 72 , 41 ) ;
-1578: LD_EXP 15
-1582: PPUSH
-1583: LD_INT 72
-1585: PPUSH
-1586: LD_INT 41
-1588: PPUSH
-1589: CALL_OW 174
-// ComExitBuilding ( russian_troops_2 ) ;
-1593: LD_EXP 14
-1597: PPUSH
-1598: CALL_OW 122
-// AddComAgressiveMove ( russian_troops_2 , 72 , 41 ) ;
-1602: LD_EXP 14
-1606: PPUSH
-1607: LD_INT 72
-1609: PPUSH
-1610: LD_INT 41
-1612: PPUSH
-1613: CALL_OW 174
-// end ; end_of_file
-1617: END
-// export function Action ; begin
-1618: LD_INT 0
-1620: PPUSH
-// InGameOn ;
-1621: CALL_OW 8
-// CenterOnXY ( 79 , 76 ) ;
-1625: LD_INT 79
-1627: PPUSH
-1628: LD_INT 76
-1630: PPUSH
-1631: CALL_OW 84
-// Wait ( 0 0$0.3 ) ;
-1635: LD_INT 10
-1637: PPUSH
-1638: CALL_OW 67
-// PlaceUnitXY ( JMM , 80 , 79 , true ) ;
-1642: LD_EXP 8
-1646: PPUSH
-1647: LD_INT 80
-1649: PPUSH
-1650: LD_INT 79
-1652: PPUSH
-1653: LD_INT 1
-1655: PPUSH
-1656: CALL_OW 48
-// Wait ( 0 0$03 ) ;
-1660: LD_INT 105
-1662: PPUSH
-1663: CALL_OW 67
-// ComMoveXY ( JMM , 80 , 76 ) ;
-1667: LD_EXP 8
-1671: PPUSH
-1672: LD_INT 80
-1674: PPUSH
-1675: LD_INT 76
-1677: PPUSH
-1678: CALL_OW 111
-// Say ( JMM , D1-JMM-1 ) ;
-1682: LD_EXP 8
+1574: CALL_OW 2
+1578: ST_TO_ADDR
+// end ;
+1579: GO 1449
+1581: POP
+1582: POP
+// for i = 1 to [ 2 , 2 , 3 ] [ Difficulty ] do
+1583: LD_ADDR_VAR 0 3
+1587: PUSH
+1588: DOUBLE
+1589: LD_INT 1
+1591: DEC
+1592: ST_TO_ADDR
+1593: LD_INT 2
+1595: PUSH
+1596: LD_INT 2
+1598: PUSH
+1599: LD_INT 3
+1601: PUSH
+1602: EMPTY
+1603: LIST
+1604: LIST
+1605: LIST
+1606: PUSH
+1607: LD_OWVAR 67
+1611: ARRAY
+1612: PUSH
+1613: FOR_TO
+1614: IFFALSE 1705
+// begin PrepareHuman ( [ sex_female , sex_male , sex_male ] [ i ] , 1 , 1 ) ;
+1616: LD_INT 2
+1618: PUSH
+1619: LD_INT 1
+1621: PUSH
+1622: LD_INT 1
+1624: PUSH
+1625: EMPTY
+1626: LIST
+1627: LIST
+1628: LIST
+1629: PUSH
+1630: LD_VAR 0 3
+1634: ARRAY
+1635: PPUSH
+1636: LD_INT 1
+1638: PPUSH
+1639: LD_INT 1
+1641: PPUSH
+1642: CALL_OW 380
+// un := CreateHuman ;
+1646: LD_ADDR_VAR 0 4
+1650: PUSH
+1651: CALL_OW 44
+1655: ST_TO_ADDR
+// russian_meta_guards := Insert ( russian_meta_guards , 1 , un ) ;
+1656: LD_ADDR_EXP 22
+1660: PUSH
+1661: LD_EXP 22
+1665: PPUSH
+1666: LD_INT 1
+1668: PPUSH
+1669: LD_VAR 0 4
+1673: PPUSH
+1674: CALL_OW 2
+1678: ST_TO_ADDR
+// PlaceUnitArea ( un , exitArea , false ) ;
+1679: LD_VAR 0 4
+1683: PPUSH
+1684: LD_INT 10
 1686: PPUSH
-1687: LD_STRING D1-JMM-1
+1687: LD_INT 0
 1689: PPUSH
-1690: CALL_OW 88
-// Wait ( 0 0$0.3 ) ;
-1694: LD_INT 10
-1696: PPUSH
-1697: CALL_OW 67
-// ComMoveXY ( JMM , 76 , 76 ) ;
-1701: LD_EXP 8
-1705: PPUSH
-1706: LD_INT 76
-1708: PPUSH
-1709: LD_INT 76
-1711: PPUSH
-1712: CALL_OW 111
-// Say ( JMM , D1-JMM-1a ) ;
-1716: LD_EXP 8
-1720: PPUSH
-1721: LD_STRING D1-JMM-1a
-1723: PPUSH
-1724: CALL_OW 88
-// Wait ( 0 0$0.3 ) ;
-1728: LD_INT 10
-1730: PPUSH
-1731: CALL_OW 67
-// ComTurnXY ( JMM , 83 , 66 ) ;
-1735: LD_EXP 8
-1739: PPUSH
-1740: LD_INT 83
-1742: PPUSH
-1743: LD_INT 66
-1745: PPUSH
-1746: CALL_OW 118
-// Say ( JMM , D1-JMM-1b ) ;
-1750: LD_EXP 8
+1690: CALL_OW 49
+// ComHold ( un ) ;
+1694: LD_VAR 0 4
+1698: PPUSH
+1699: CALL_OW 140
+// end ;
+1703: GO 1613
+1705: POP
+1706: POP
+// if Difficulty < 3 then
+1707: LD_OWVAR 67
+1711: PUSH
+1712: LD_INT 3
+1714: LESS
+1715: IFFALSE 1719
+// exit ;
+1717: GO 1762
+// PrepareHuman ( false , 1 , skill ) ;
+1719: LD_INT 0
+1721: PPUSH
+1722: LD_INT 1
+1724: PPUSH
+1725: LD_VAR 0 2
+1729: PPUSH
+1730: CALL_OW 380
+// russian_patrol_forest := CreateHuman ;
+1734: LD_ADDR_EXP 23
+1738: PUSH
+1739: CALL_OW 44
+1743: ST_TO_ADDR
+// PlaceUnitXY ( russian_patrol_forest , 82 , 2 , false ) ;
+1744: LD_EXP 23
+1748: PPUSH
+1749: LD_INT 82
+1751: PPUSH
+1752: LD_INT 2
 1754: PPUSH
-1755: LD_STRING D1-JMM-1b
+1755: LD_INT 0
 1757: PPUSH
-1758: CALL_OW 88
-// Wait ( 0 0$0.5 ) ;
-1762: LD_INT 18
-1764: PPUSH
-1765: CALL_OW 67
-// Say ( JMM , D1-JMM-1c ) ;
-1769: LD_EXP 8
-1773: PPUSH
-1774: LD_STRING D1-JMM-1c
-1776: PPUSH
-1777: CALL_OW 88
-// Wait ( 0 0$0.2 ) ;
-1781: LD_INT 7
-1783: PPUSH
-1784: CALL_OW 67
-// SayRadio ( Powell , D1-Pow-1 ) ;
-1788: LD_EXP 11
-1792: PPUSH
-1793: LD_STRING D1-Pow-1
-1795: PPUSH
-1796: CALL_OW 94
-// Say ( JMM , D1-JMM-2 ) ;
-1800: LD_EXP 8
-1804: PPUSH
-1805: LD_STRING D1-JMM-2
-1807: PPUSH
-1808: CALL_OW 88
-// SayRadio ( Powell , D1-Pow-2 ) ;
-1812: LD_EXP 11
-1816: PPUSH
-1817: LD_STRING D1-Pow-2
-1819: PPUSH
-1820: CALL_OW 94
-// Say ( JMM , D1-JMM-3 ) ;
-1824: LD_EXP 8
-1828: PPUSH
-1829: LD_STRING D1-JMM-3
-1831: PPUSH
-1832: CALL_OW 88
-// SayRadio ( Powell , D1-Pow-3 ) ;
-1836: LD_EXP 11
-1840: PPUSH
-1841: LD_STRING D1-Pow-3
-1843: PPUSH
-1844: CALL_OW 94
-// Say ( JMM , D1-JMM-4 ) ;
-1848: LD_EXP 8
-1852: PPUSH
-1853: LD_STRING D1-JMM-4
+1758: CALL_OW 48
+// end ;
+1762: LD_VAR 0 1
+1766: RET
+// every 0 0$01 trigger active_road_patrol do
+1767: LD_EXP 7
+1771: IFFALSE 1837
+1773: GO 1775
+1775: DISABLE
+// ComPatrol ( russian_patrol_tanks [ 1 ] , road , 0 0$02 , [ 131 , 87 , 107 , 75 , 107 , 66 , 114 , 61 , 107 , 34 ] ) ;
+1776: LD_EXP 21
+1780: PUSH
+1781: LD_INT 1
+1783: ARRAY
+1784: PPUSH
+1785: LD_STRING road
+1787: PPUSH
+1788: LD_INT 70
+1790: PPUSH
+1791: LD_INT 131
+1793: PUSH
+1794: LD_INT 87
+1796: PUSH
+1797: LD_INT 107
+1799: PUSH
+1800: LD_INT 75
+1802: PUSH
+1803: LD_INT 107
+1805: PUSH
+1806: LD_INT 66
+1808: PUSH
+1809: LD_INT 114
+1811: PUSH
+1812: LD_INT 61
+1814: PUSH
+1815: LD_INT 107
+1817: PUSH
+1818: LD_INT 34
+1820: PUSH
+1821: EMPTY
+1822: LIST
+1823: LIST
+1824: LIST
+1825: LIST
+1826: LIST
+1827: LIST
+1828: LIST
+1829: LIST
+1830: LIST
+1831: LIST
+1832: PPUSH
+1833: CALL 455 0 4
+1837: END
+// every 0 0$01 trigger active_road_patrol do
+1838: LD_EXP 7
+1842: IFFALSE 1900
+1844: GO 1846
+1846: DISABLE
+// ComPatrol ( russian_patrol_tanks [ 2 ] , road , 0 0$02 , [ 21 , 12 , 37 , 30 , 65 , 62 , 107 , 76 ] ) ;
+1847: LD_EXP 21
+1851: PUSH
+1852: LD_INT 2
+1854: ARRAY
 1855: PPUSH
-1856: CALL_OW 88
-// ComFree ( JMM ) ;
-1860: LD_EXP 8
-1864: PPUSH
-1865: CALL_OW 139
-// Wait ( 0 0$0.3 ) ;
-1869: LD_INT 10
-1871: PPUSH
-1872: CALL_OW 67
-// InGameOff ;
-1876: CALL_OW 9
-// ChangeMissionObjectives ( M1 ) ;
-1880: LD_STRING M1
-1882: PPUSH
-1883: CALL_OW 337
-// active_russian_dialog := true ;
-1887: LD_ADDR_EXP 2
-1891: PUSH
-1892: LD_INT 1
-1894: ST_TO_ADDR
-// active_road_patrol := true ;
-1895: LD_ADDR_EXP 7
-1899: PUSH
-1900: LD_INT 1
-1902: ST_TO_ADDR
-// PlaceUnitXY ( Bobby , 41 , 71 , false ) ;
-1903: LD_EXP 9
-1907: PPUSH
-1908: LD_INT 41
-1910: PPUSH
-1911: LD_INT 71
-1913: PPUSH
-1914: LD_INT 0
-1916: PPUSH
-1917: CALL_OW 48
-// ComHold ( Bobby ) ;
-1921: LD_EXP 9
+1856: LD_STRING road
+1858: PPUSH
+1859: LD_INT 70
+1861: PPUSH
+1862: LD_INT 21
+1864: PUSH
+1865: LD_INT 12
+1867: PUSH
+1868: LD_INT 37
+1870: PUSH
+1871: LD_INT 30
+1873: PUSH
+1874: LD_INT 65
+1876: PUSH
+1877: LD_INT 62
+1879: PUSH
+1880: LD_INT 107
+1882: PUSH
+1883: LD_INT 76
+1885: PUSH
+1886: EMPTY
+1887: LIST
+1888: LIST
+1889: LIST
+1890: LIST
+1891: LIST
+1892: LIST
+1893: LIST
+1894: LIST
+1895: PPUSH
+1896: CALL 455 0 4
+1900: END
+// every 0 0$01 trigger IsOk ( russian_patrol_forest ) do
+1901: LD_EXP 23
+1905: PPUSH
+1906: CALL_OW 302
+1910: IFFALSE 1972
+1912: GO 1914
+1914: DISABLE
+// ComPatrol ( russian_patrol_forest , forest , 0 0$01 , [ 52 , 15 , 81 , 9 , 120 , 52 , 135 , 80 , 122 , 95 ] ) ;
+1915: LD_EXP 23
+1919: PPUSH
+1920: LD_STRING forest
+1922: PPUSH
+1923: LD_INT 35
 1925: PPUSH
-1926: CALL_OW 140
-// PlaceUnitXY ( Cyrus , 81 , 23 , false ) ;
-1930: LD_EXP 10
-1934: PPUSH
-1935: LD_INT 81
-1937: PPUSH
-1938: LD_INT 23
-1940: PPUSH
-1941: LD_INT 0
-1943: PPUSH
-1944: CALL_OW 48
-// ComMoveXY ( Cyrus , 79 , 32 ) ;
-1948: LD_EXP 10
-1952: PPUSH
-1953: LD_INT 79
-1955: PPUSH
-1956: LD_INT 32
-1958: PPUSH
-1959: CALL_OW 111
-// ComCrawl ( Cyrus ) ;
-1963: LD_EXP 10
+1926: LD_INT 52
+1928: PUSH
+1929: LD_INT 15
+1931: PUSH
+1932: LD_INT 81
+1934: PUSH
+1935: LD_INT 9
+1937: PUSH
+1938: LD_INT 120
+1940: PUSH
+1941: LD_INT 52
+1943: PUSH
+1944: LD_INT 135
+1946: PUSH
+1947: LD_INT 80
+1949: PUSH
+1950: LD_INT 122
+1952: PUSH
+1953: LD_INT 95
+1955: PUSH
+1956: EMPTY
+1957: LIST
+1958: LIST
+1959: LIST
+1960: LIST
+1961: LIST
+1962: LIST
+1963: LIST
+1964: LIST
+1965: LIST
+1966: LIST
 1967: PPUSH
-1968: CALL_OW 137
-// end ;
-1972: LD_VAR 0 1
-1976: RET
-// every 0 0$01 trigger active_russian_dialog do
-1977: LD_EXP 2
-1981: IFFALSE 2290
-1983: GO 1985
-1985: DISABLE
-// begin Wait ( 0 0$02 ) ;
-1986: LD_INT 70
-1988: PPUSH
-1989: CALL_OW 67
-// ComAgressiveMove ( russian_troops_1 , 79 , 83 ) ;
-1993: LD_EXP 13
-1997: PPUSH
-1998: LD_INT 79
-2000: PPUSH
-2001: LD_INT 83
+1968: CALL 455 0 4
+1972: END
+// every 0 0$01 trigger macmilan_use_radio do
+1973: LD_EXP 5
+1977: IFFALSE 2038
+1979: GO 1981
+1981: DISABLE
+// begin active_road_patrol := false ;
+1982: LD_ADDR_EXP 7
+1986: PUSH
+1987: LD_INT 0
+1989: ST_TO_ADDR
+// ComStop ( russian_patrol_tanks ) ;
+1990: LD_EXP 21
+1994: PPUSH
+1995: CALL_OW 141
+// AddComAgressiveMove ( russian_patrol_tanks , 72 , 41 ) ;
+1999: LD_EXP 21
 2003: PPUSH
-2004: CALL_OW 114
-// Say ( russian_troops_1 [ 1 ] , D1R-Rus1-1 ) ;
-2008: LD_EXP 13
-2012: PUSH
-2013: LD_INT 1
-2015: ARRAY
-2016: PPUSH
-2017: LD_STRING D1R-Rus1-1
-2019: PPUSH
-2020: CALL_OW 88
-// Say ( russian_troops_1 [ 2 ] , D1R-Rus2-1 ) ;
-2024: LD_EXP 13
-2028: PUSH
-2029: LD_INT 2
-2031: ARRAY
-2032: PPUSH
-2033: LD_STRING D1R-Rus2-1
-2035: PPUSH
-2036: CALL_OW 88
-// ComAgressiveMove ( russian_troops_2 , 79 , 83 ) ;
-2040: LD_EXP 14
-2044: PPUSH
-2045: LD_INT 79
-2047: PPUSH
-2048: LD_INT 83
-2050: PPUSH
-2051: CALL_OW 114
-// repeat wait ( 0 0$01 ) ;
-2055: LD_INT 35
-2057: PPUSH
-2058: CALL_OW 67
-// until GetDistUnitXY ( russian_troops_1 [ 1 ] , 79 , 82 ) < 5 ;
-2062: LD_EXP 13
-2066: PUSH
-2067: LD_INT 1
-2069: ARRAY
-2070: PPUSH
-2071: LD_INT 79
-2073: PPUSH
-2074: LD_INT 82
-2076: PPUSH
-2077: CALL_OW 297
-2081: PUSH
-2082: LD_INT 5
-2084: LESS
-2085: IFFALSE 2055
-// if not IsInArea ( JMM , jmm_spot ) then
-2087: LD_EXP 8
-2091: PPUSH
-2092: LD_INT 5
-2094: PPUSH
-2095: CALL_OW 308
-2099: NOT
-2100: IFFALSE 2120
-// Say ( russian_troops_1 [ 1 ] , D1Ra-Rus2-1 ) else
-2102: LD_EXP 13
-2106: PUSH
-2107: LD_INT 1
-2109: ARRAY
+2004: LD_INT 72
+2006: PPUSH
+2007: LD_INT 41
+2009: PPUSH
+2010: CALL_OW 174
+// ComExitBuilding ( russian_troops_2 ) ;
+2014: LD_EXP 20
+2018: PPUSH
+2019: CALL_OW 122
+// AddComAgressiveMove ( russian_troops_2 , 72 , 41 ) ;
+2023: LD_EXP 20
+2027: PPUSH
+2028: LD_INT 72
+2030: PPUSH
+2031: LD_INT 41
+2033: PPUSH
+2034: CALL_OW 174
+// end ;
+2038: END
+// every 0 0$03 trigger FilterUnitsInArea ( def_south , [ f_side , 1 ] ) do var un ;
+2039: LD_INT 9
+2041: PPUSH
+2042: LD_INT 22
+2044: PUSH
+2045: LD_INT 1
+2047: PUSH
+2048: EMPTY
+2049: LIST
+2050: LIST
+2051: PPUSH
+2052: CALL_OW 70
+2056: IFFALSE 2130
+2058: GO 2060
+2060: DISABLE
+2061: LD_INT 0
+2063: PPUSH
+// begin enable ;
+2064: ENABLE
+// un := FilterUnitsInArea ( def_south , [ f_side , 1 ] ) [ 1 ] ;
+2065: LD_ADDR_VAR 0 1
+2069: PUSH
+2070: LD_INT 9
+2072: PPUSH
+2073: LD_INT 22
+2075: PUSH
+2076: LD_INT 1
+2078: PUSH
+2079: EMPTY
+2080: LIST
+2081: LIST
+2082: PPUSH
+2083: CALL_OW 70
+2087: PUSH
+2088: LD_INT 1
+2090: ARRAY
+2091: ST_TO_ADDR
+// ComExitBuilding ( russian_troops_2 ) ;
+2092: LD_EXP 20
+2096: PPUSH
+2097: CALL_OW 122
+// AddComAgressiveMove ( russian_troops_2 , GetX ( un ) , GetY ( un ) ) ;
+2101: LD_EXP 20
+2105: PPUSH
+2106: LD_VAR 0 1
 2110: PPUSH
-2111: LD_STRING D1Ra-Rus2-1
-2113: PPUSH
-2114: CALL_OW 88
-2118: GO 2256
-// begin Say ( russian_troops_1 [ 2 ] , D1Rb-Rus1-1 ) ;
-2120: LD_EXP 13
-2124: PUSH
-2125: LD_INT 2
-2127: ARRAY
-2128: PPUSH
-2129: LD_STRING D1Rb-Rus1-1
-2131: PPUSH
-2132: CALL_OW 88
-// Say ( russian_troops_1 [ 1 ] , D1Rb-Rus2-1 ) ;
-2136: LD_EXP 13
-2140: PUSH
-2141: LD_INT 1
-2143: ARRAY
-2144: PPUSH
-2145: LD_STRING D1Rb-Rus2-1
-2147: PPUSH
-2148: CALL_OW 88
-// ComAgressiveMove ( russian_troops_1 ^ russian_troops_2 , GetX ( JMM ) , GetY ( JMM ) ) ;
-2152: LD_EXP 13
-2156: PUSH
-2157: LD_EXP 14
-2161: ADD
-2162: PPUSH
-2163: LD_EXP 8
-2167: PPUSH
-2168: CALL_OW 250
-2172: PPUSH
-2173: LD_EXP 8
-2177: PPUSH
-2178: CALL_OW 251
-2182: PPUSH
-2183: CALL_OW 114
-// repeat wait ( 0 0$01 ) ;
-2187: LD_INT 35
-2189: PPUSH
-2190: CALL_OW 67
-// until not IsInArea ( JMM , jmm_spot ) and not See ( 3 , jmm ) ;
-2194: LD_EXP 8
-2198: PPUSH
-2199: LD_INT 5
-2201: PPUSH
-2202: CALL_OW 308
-2206: NOT
-2207: PUSH
-2208: LD_INT 3
+2111: CALL_OW 250
+2115: PPUSH
+2116: LD_VAR 0 1
+2120: PPUSH
+2121: CALL_OW 251
+2125: PPUSH
+2126: CALL_OW 174
+// end ;
+2130: PPOPN 1
+2132: END
+// every 0 0$01 trigger GetLives ( russian_patrol_tanks [ 1 ] ) < 999 or GetLives ( russian_patrol_tanks [ 2 ] ) < 999 do
+2133: LD_EXP 21
+2137: PUSH
+2138: LD_INT 1
+2140: ARRAY
+2141: PPUSH
+2142: CALL_OW 256
+2146: PUSH
+2147: LD_INT 999
+2149: LESS
+2150: PUSH
+2151: LD_EXP 21
+2155: PUSH
+2156: LD_INT 2
+2158: ARRAY
+2159: PPUSH
+2160: CALL_OW 256
+2164: PUSH
+2165: LD_INT 999
+2167: LESS
+2168: OR
+2169: IFFALSE 2196
+2171: GO 2173
+2173: DISABLE
+// begin active_road_patrol := false ;
+2174: LD_ADDR_EXP 7
+2178: PUSH
+2179: LD_INT 0
+2181: ST_TO_ADDR
+// ComAttackUnit ( russian_patrol_tanks , JMM ) ;
+2182: LD_EXP 21
+2186: PPUSH
+2187: LD_EXP 14
+2191: PPUSH
+2192: CALL_OW 115
+// end ;
+2196: END
+// every 0 0$01 trigger macmilan_in_trap do
+2197: LD_EXP 8
+2201: IFFALSE 2247
+2203: GO 2205
+2205: DISABLE
+// begin ComExitBuilding ( russian_troops_2 ) ;
+2206: LD_EXP 20
 2210: PPUSH
-2211: LD_EXP 8
-2215: PPUSH
-2216: CALL_OW 292
-2220: NOT
-2221: AND
-2222: IFFALSE 2187
-// Say ( russian_troops_1 [ 2 ] , D1Rc-Rus1-1 ) ;
-2224: LD_EXP 13
-2228: PUSH
-2229: LD_INT 2
-2231: ARRAY
-2232: PPUSH
-2233: LD_STRING D1Rc-Rus1-1
-2235: PPUSH
-2236: CALL_OW 88
-// Say ( russian_troops_1 [ 1 ] , D1Ra-Rus2-1a ) ;
-2240: LD_EXP 13
-2244: PUSH
-2245: LD_INT 1
-2247: ARRAY
-2248: PPUSH
-2249: LD_STRING D1Ra-Rus2-1a
-2251: PPUSH
-2252: CALL_OW 88
-// end ; Wait ( 0 0$10 ) ;
-2256: LD_INT 350
-2258: PPUSH
-2259: CALL_OW 67
-// ComAgressiveMove ( russian_troops_1 , 45 , 5 ) ;
-2263: LD_EXP 13
-2267: PPUSH
-2268: LD_INT 45
-2270: PPUSH
-2271: LD_INT 5
-2273: PPUSH
-2274: CALL_OW 114
-// ComEnterUnit ( russian_troops_2 , rbar1 ) ;
-2278: LD_EXP 14
-2282: PPUSH
-2283: LD_INT 26
-2285: PPUSH
-2286: CALL_OW 120
+2211: CALL_OW 122
+// ComAttackUnit ( russian_troops_1 ^ russian_troops_2 ^ Pokryshkin ^ russian_patrol_tanks , JMM ) ;
+2215: LD_EXP 19
+2219: PUSH
+2220: LD_EXP 20
+2224: ADD
+2225: PUSH
+2226: LD_EXP 24
+2230: ADD
+2231: PUSH
+2232: LD_EXP 21
+2236: ADD
+2237: PPUSH
+2238: LD_EXP 14
+2242: PPUSH
+2243: CALL_OW 115
 // end ;
-2290: END
-// every 0 0$02 trigger GetDistUnits ( JMM , Bobby ) < 9 do
-2291: LD_EXP 8
-2295: PPUSH
-2296: LD_EXP 9
-2300: PPUSH
-2301: CALL_OW 296
-2305: PUSH
-2306: LD_INT 9
-2308: LESS
-2309: IFFALSE 2760
-2311: GO 2313
-2313: DISABLE
-// begin ComWalk ( Bobby ) ;
-2314: LD_EXP 9
-2318: PPUSH
-2319: CALL_OW 138
-// ComMoveXY ( Bobby , GetX ( JMM ) , GetY ( JMM ) ) ;
-2323: LD_EXP 9
-2327: PPUSH
-2328: LD_EXP 8
+2247: END
+// every 0 0$01 trigger meta_action do
+2248: LD_EXP 9
+2252: IFFALSE 2298
+2254: GO 2256
+2256: DISABLE
+// begin active_road_patrol := false ;
+2257: LD_ADDR_EXP 7
+2261: PUSH
+2262: LD_INT 0
+2264: ST_TO_ADDR
+// ComAgressiveMove ( russian_troops_1 ^ russian_troops_2 ^ Pokryshkin ^ russian_patrol_tanks , 93 , 1 ) ;
+2265: LD_EXP 19
+2269: PUSH
+2270: LD_EXP 20
+2274: ADD
+2275: PUSH
+2276: LD_EXP 24
+2280: ADD
+2281: PUSH
+2282: LD_EXP 21
+2286: ADD
+2287: PPUSH
+2288: LD_INT 93
+2290: PPUSH
+2291: LD_INT 1
+2293: PPUSH
+2294: CALL_OW 114
+// end ;
+2298: END
+// every 0 0$20 trigger send_troops_to_forest do
+2299: LD_EXP 13
+2303: IFFALSE 2357
+2305: GO 2307
+2307: DISABLE
+// begin if not IsOk ( russian_patrol_forest ) then
+2308: LD_EXP 23
+2312: PPUSH
+2313: CALL_OW 302
+2317: NOT
+2318: IFFALSE 2322
+// exit ;
+2320: GO 2357
+// ComAgressiveMove ( russian_troops_1 ^ Pokryshkin , GetRememberedX ( russian_patrol_forest ) , GetRememberedY ( russian_patrol_forest ) ) ;
+2322: LD_EXP 19
+2326: PUSH
+2327: LD_EXP 24
+2331: ADD
 2332: PPUSH
-2333: CALL_OW 250
+2333: LD_EXP 23
 2337: PPUSH
-2338: LD_EXP 8
+2338: CALL_OW 252
 2342: PPUSH
-2343: CALL_OW 251
+2343: LD_EXP 23
 2347: PPUSH
-2348: CALL_OW 111
-// repeat wait ( 0 0$01 ) ;
-2352: LD_INT 35
-2354: PPUSH
-2355: CALL_OW 67
-// until See ( 4 , JMM ) ;
-2359: LD_INT 4
-2361: PPUSH
-2362: LD_EXP 8
-2366: PPUSH
-2367: CALL_OW 292
-2371: IFFALSE 2352
+2348: CALL_OW 253
+2352: PPUSH
+2353: CALL_OW 114
+// end ; end_of_file
+2357: END
+// export function Action ; begin
+2358: LD_INT 0
+2360: PPUSH
 // InGameOn ;
-2373: CALL_OW 8
-// ComTurnUnit ( JMM , Bobby ) ;
-2377: LD_EXP 8
-2381: PPUSH
-2382: LD_EXP 9
-2386: PPUSH
-2387: CALL_OW 119
-// if cyrus_in_squad and IsOk ( Cyrus ) and GetDistUnits ( JMM , Cyrus ) < 10 then
-2391: LD_EXP 6
-2395: PUSH
-2396: LD_EXP 10
-2400: PPUSH
-2401: CALL_OW 302
-2405: AND
-2406: PUSH
-2407: LD_EXP 8
-2411: PPUSH
-2412: LD_EXP 10
-2416: PPUSH
-2417: CALL_OW 296
-2421: PUSH
-2422: LD_INT 10
-2424: LESS
-2425: AND
-2426: IFFALSE 2471
-// begin ComMoveXY ( Cyrus , GetX ( JMM ) , GetY ( JMM ) ) ;
-2428: LD_EXP 10
-2432: PPUSH
-2433: LD_EXP 8
-2437: PPUSH
-2438: CALL_OW 250
-2442: PPUSH
-2443: LD_EXP 8
-2447: PPUSH
-2448: CALL_OW 251
-2452: PPUSH
-2453: CALL_OW 111
-// AddComTurnUnit ( Cyrus , Bobby ) ;
-2457: LD_EXP 10
-2461: PPUSH
-2462: LD_EXP 9
-2466: PPUSH
-2467: CALL_OW 179
-// end ; Say ( JMM , D2-JMM-1 ) ;
-2471: LD_EXP 8
-2475: PPUSH
-2476: LD_STRING D2-JMM-1
-2478: PPUSH
-2479: CALL_OW 88
+2361: CALL_OW 8
+// CenterOnXY ( 79 , 76 ) ;
+2365: LD_INT 79
+2367: PPUSH
+2368: LD_INT 76
+2370: PPUSH
+2371: CALL_OW 84
 // Wait ( 0 0$0.3 ) ;
-2483: LD_INT 10
+2375: LD_INT 10
+2377: PPUSH
+2378: CALL_OW 67
+// PlaceUnitXY ( JMM , 80 , 79 , true ) ;
+2382: LD_EXP 14
+2386: PPUSH
+2387: LD_INT 80
+2389: PPUSH
+2390: LD_INT 79
+2392: PPUSH
+2393: LD_INT 1
+2395: PPUSH
+2396: CALL_OW 48
+// Wait ( 0 0$03 ) ;
+2400: LD_INT 105
+2402: PPUSH
+2403: CALL_OW 67
+// ComMoveXY ( JMM , 80 , 76 ) ;
+2407: LD_EXP 14
+2411: PPUSH
+2412: LD_INT 80
+2414: PPUSH
+2415: LD_INT 76
+2417: PPUSH
+2418: CALL_OW 111
+// Say ( JMM , D1-JMM-1 ) ;
+2422: LD_EXP 14
+2426: PPUSH
+2427: LD_STRING D1-JMM-1
+2429: PPUSH
+2430: CALL_OW 88
+// Wait ( 0 0$0.3 ) ;
+2434: LD_INT 10
+2436: PPUSH
+2437: CALL_OW 67
+// ComMoveXY ( JMM , 76 , 76 ) ;
+2441: LD_EXP 14
+2445: PPUSH
+2446: LD_INT 76
+2448: PPUSH
+2449: LD_INT 76
+2451: PPUSH
+2452: CALL_OW 111
+// Say ( JMM , D1-JMM-1a ) ;
+2456: LD_EXP 14
+2460: PPUSH
+2461: LD_STRING D1-JMM-1a
+2463: PPUSH
+2464: CALL_OW 88
+// Wait ( 0 0$0.3 ) ;
+2468: LD_INT 10
+2470: PPUSH
+2471: CALL_OW 67
+// ComTurnXY ( JMM , 83 , 66 ) ;
+2475: LD_EXP 14
+2479: PPUSH
+2480: LD_INT 83
+2482: PPUSH
+2483: LD_INT 66
 2485: PPUSH
-2486: CALL_OW 67
-// ComTurnUnit ( Bobby , JMM ) ;
-2490: LD_EXP 9
+2486: CALL_OW 118
+// Say ( JMM , D1-JMM-1b ) ;
+2490: LD_EXP 14
 2494: PPUSH
-2495: LD_EXP 8
-2499: PPUSH
-2500: CALL_OW 119
-// Say ( Bobby , D2-Bobby-1 ) ;
-2504: LD_EXP 9
-2508: PPUSH
-2509: LD_STRING D2-Bobby-1
-2511: PPUSH
-2512: CALL_OW 88
-// Say ( JMM , D2-JMM-2 ) ;
-2516: LD_EXP 8
-2520: PPUSH
-2521: LD_STRING D2-JMM-2
+2495: LD_STRING D1-JMM-1b
+2497: PPUSH
+2498: CALL_OW 88
+// Wait ( 0 0$0.5 ) ;
+2502: LD_INT 18
+2504: PPUSH
+2505: CALL_OW 67
+// Say ( JMM , D1-JMM-1c ) ;
+2509: LD_EXP 14
+2513: PPUSH
+2514: LD_STRING D1-JMM-1c
+2516: PPUSH
+2517: CALL_OW 88
+// Wait ( 0 0$0.2 ) ;
+2521: LD_INT 7
 2523: PPUSH
-2524: CALL_OW 88
-// ComMoveXY ( Bobby , GetX ( JMM ) , GetY ( JMM ) ) ;
-2528: LD_EXP 9
+2524: CALL_OW 67
+// SayRadio ( Powell , D1-Pow-1 ) ;
+2528: LD_EXP 17
 2532: PPUSH
-2533: LD_EXP 8
-2537: PPUSH
-2538: CALL_OW 250
-2542: PPUSH
-2543: LD_EXP 8
+2533: LD_STRING D1-Pow-1
+2535: PPUSH
+2536: CALL_OW 94
+// Say ( JMM , D1-JMM-2 ) ;
+2540: LD_EXP 14
+2544: PPUSH
+2545: LD_STRING D1-JMM-2
 2547: PPUSH
-2548: CALL_OW 251
-2552: PPUSH
-2553: CALL_OW 111
-// Say ( Bobby , D2-Bobby-2 ) ;
-2557: LD_EXP 9
-2561: PPUSH
-2562: LD_STRING D2-Bobby-2
-2564: PPUSH
-2565: CALL_OW 88
-// Say ( JMM , D2-JMM-3 ) ;
-2569: LD_EXP 8
-2573: PPUSH
-2574: LD_STRING D2-JMM-3
-2576: PPUSH
-2577: CALL_OW 88
-// ComTurnUnit ( Bobby , JMM ) ;
-2581: LD_EXP 9
-2585: PPUSH
-2586: LD_EXP 8
-2590: PPUSH
-2591: CALL_OW 119
-// Say ( Bobby , D2-Bobby-3 ) ;
-2595: LD_EXP 9
-2599: PPUSH
-2600: LD_STRING D2-Bobby-3
-2602: PPUSH
-2603: CALL_OW 88
-// Say ( JMM , D2-JMM-4 ) ;
-2607: LD_EXP 8
+2548: CALL_OW 88
+// SayRadio ( Powell , D1-Pow-2 ) ;
+2552: LD_EXP 17
+2556: PPUSH
+2557: LD_STRING D1-Pow-2
+2559: PPUSH
+2560: CALL_OW 94
+// Say ( JMM , D1-JMM-3 ) ;
+2564: LD_EXP 14
+2568: PPUSH
+2569: LD_STRING D1-JMM-3
+2571: PPUSH
+2572: CALL_OW 88
+// SayRadio ( Powell , D1-Pow-3 ) ;
+2576: LD_EXP 17
+2580: PPUSH
+2581: LD_STRING D1-Pow-3
+2583: PPUSH
+2584: CALL_OW 94
+// Say ( JMM , D1-JMM-4 ) ;
+2588: LD_EXP 14
+2592: PPUSH
+2593: LD_STRING D1-JMM-4
+2595: PPUSH
+2596: CALL_OW 88
+// ComFree ( JMM ) ;
+2600: LD_EXP 14
+2604: PPUSH
+2605: CALL_OW 139
+// Wait ( 0 0$0.3 ) ;
+2609: LD_INT 10
 2611: PPUSH
-2612: LD_STRING D2-JMM-4
-2614: PPUSH
-2615: CALL_OW 88
-// Say ( Bobby , D2-Bobby-4 ) ;
-2619: LD_EXP 9
-2623: PPUSH
-2624: LD_STRING D2-Bobby-4
-2626: PPUSH
-2627: CALL_OW 88
-// Say ( JMM , D2-JMM-5 ) ;
-2631: LD_EXP 8
-2635: PPUSH
-2636: LD_STRING D2-JMM-5
-2638: PPUSH
-2639: CALL_OW 88
-// Say ( Bobby , D2-Bobby-5 ) ;
-2643: LD_EXP 9
+2612: CALL_OW 67
+// InGameOff ;
+2616: CALL_OW 9
+// ChangeMissionObjectives ( M1 ) ;
+2620: LD_STRING M1
+2622: PPUSH
+2623: CALL_OW 337
+// active_russian_dialog := true ;
+2627: LD_ADDR_EXP 2
+2631: PUSH
+2632: LD_INT 1
+2634: ST_TO_ADDR
+// active_road_patrol := true ;
+2635: LD_ADDR_EXP 7
+2639: PUSH
+2640: LD_INT 1
+2642: ST_TO_ADDR
+// PlaceUnitXY ( Bobby , 41 , 71 , false ) ;
+2643: LD_EXP 15
 2647: PPUSH
-2648: LD_STRING D2-Bobby-5
+2648: LD_INT 41
 2650: PPUSH
-2651: CALL_OW 88
-// Say ( JMM , D2-JMM-6 ) ;
-2655: LD_EXP 8
-2659: PPUSH
-2660: LD_STRING D2-JMM-6
-2662: PPUSH
-2663: CALL_OW 88
-// if not cyrus_in_squad then
-2667: LD_EXP 6
-2671: NOT
-2672: IFFALSE 2698
-// begin Say ( Bobby , D2-Bobby-6 ) ;
-2674: LD_EXP 9
-2678: PPUSH
-2679: LD_STRING D2-Bobby-6
-2681: PPUSH
-2682: CALL_OW 88
-// Say ( JMM , D2-JMM-7 ) ;
-2686: LD_EXP 8
-2690: PPUSH
-2691: LD_STRING D2-JMM-7
-2693: PPUSH
-2694: CALL_OW 88
-// end ; InGameOff ;
-2698: CALL_OW 9
-// SetSide ( Bobby , 1 ) ;
-2702: LD_EXP 9
-2706: PPUSH
-2707: LD_INT 1
-2709: PPUSH
-2710: CALL_OW 235
-// ComFree ( [ JMM , Bobby ] ) ;
-2714: LD_EXP 8
-2718: PUSH
-2719: LD_EXP 9
-2723: PUSH
-2724: EMPTY
-2725: LIST
-2726: LIST
-2727: PPUSH
-2728: CALL_OW 139
-// bobby_in_squad := true ;
-2732: LD_ADDR_EXP 3
-2736: PUSH
-2737: LD_INT 1
-2739: ST_TO_ADDR
-// if powell_contact and not cyrus_in_squad then
-2740: LD_EXP 4
-2744: PUSH
-2745: LD_EXP 6
-2749: NOT
-2750: AND
-2751: IFFALSE 2760
-// ChangeMissionObjectives ( M2b ) ;
-2753: LD_STRING M2b
+2651: LD_INT 71
+2653: PPUSH
+2654: LD_INT 0
+2656: PPUSH
+2657: CALL_OW 48
+// ComHold ( Bobby ) ;
+2661: LD_EXP 15
+2665: PPUSH
+2666: CALL_OW 140
+// PlaceUnitXY ( Cyrus , 81 , 23 , false ) ;
+2670: LD_EXP 16
+2674: PPUSH
+2675: LD_INT 81
+2677: PPUSH
+2678: LD_INT 23
+2680: PPUSH
+2681: LD_INT 0
+2683: PPUSH
+2684: CALL_OW 48
+// ComMoveXY ( Cyrus , 79 , 32 ) ;
+2688: LD_EXP 16
+2692: PPUSH
+2693: LD_INT 79
+2695: PPUSH
+2696: LD_INT 32
+2698: PPUSH
+2699: CALL_OW 111
+// ComCrawl ( Cyrus ) ;
+2703: LD_EXP 16
+2707: PPUSH
+2708: CALL_OW 137
+// SaveForQuickRestart ;
+2712: CALL_OW 22
+// end ;
+2716: LD_VAR 0 1
+2720: RET
+// every 0 0$01 trigger active_russian_dialog do var wait_points ;
+2721: LD_EXP 2
+2725: IFFALSE 3297
+2727: GO 2729
+2729: DISABLE
+2730: LD_INT 0
+2732: PPUSH
+// begin wait_points := 0 ;
+2733: LD_ADDR_VAR 0 1
+2737: PUSH
+2738: LD_INT 0
+2740: ST_TO_ADDR
+// Wait ( 0 0$02 ) ;
+2741: LD_INT 70
+2743: PPUSH
+2744: CALL_OW 67
+// ComAgressiveMove ( russian_troops_1 , 79 , 83 ) ;
+2748: LD_EXP 19
+2752: PPUSH
+2753: LD_INT 79
 2755: PPUSH
-2756: CALL_OW 337
-// end ;
-2760: END
-// every 0 0$41 trigger active_russian_dialog and not bobby_in_squad do
-2761: LD_EXP 2
-2765: PUSH
-2766: LD_EXP 3
-2770: NOT
-2771: AND
-2772: IFFALSE 2792
-2774: GO 2776
-2776: DISABLE
-// ComMoveXY ( Bobby , 75 , 83 ) ;
-2777: LD_EXP 9
-2781: PPUSH
-2782: LD_INT 75
-2784: PPUSH
-2785: LD_INT 83
+2756: LD_INT 83
+2758: PPUSH
+2759: CALL_OW 114
+// Say ( russian_troops_1 [ 2 ] , D1R-Rus1-1 ) ;
+2763: LD_EXP 19
+2767: PUSH
+2768: LD_INT 2
+2770: ARRAY
+2771: PPUSH
+2772: LD_STRING D1R-Rus1-1
+2774: PPUSH
+2775: CALL_OW 88
+// Say ( russian_troops_1 [ 1 ] , D1R-Rus2-1 ) ;
+2779: LD_EXP 19
+2783: PUSH
+2784: LD_INT 1
+2786: ARRAY
 2787: PPUSH
-2788: CALL_OW 111
-2792: END
-// every 0 0$10 trigger cyrus_in_squad and not bobby_in_squad do
-2793: LD_EXP 6
-2797: PUSH
-2798: LD_EXP 3
-2802: NOT
-2803: AND
-2804: IFFALSE 2833
-2806: GO 2808
-2808: DISABLE
-// begin ComMoveXY ( Bobby , 105 , 97 ) ;
-2809: LD_EXP 9
-2813: PPUSH
-2814: LD_INT 105
-2816: PPUSH
-2817: LD_INT 97
-2819: PPUSH
-2820: CALL_OW 111
-// AddComCrawl ( Bobby ) ;
-2824: LD_EXP 9
+2788: LD_STRING D1R-Rus2-1
+2790: PPUSH
+2791: CALL_OW 88
+// ComAgressiveMove ( russian_troops_2 , 79 , 83 ) ;
+2795: LD_EXP 20
+2799: PPUSH
+2800: LD_INT 79
+2802: PPUSH
+2803: LD_INT 83
+2805: PPUSH
+2806: CALL_OW 114
+// repeat wait ( 0 0$01 ) ;
+2810: LD_INT 35
+2812: PPUSH
+2813: CALL_OW 67
+// until GetDistUnitXY ( russian_troops_1 [ 1 ] , 79 , 82 ) < 5 ;
+2817: LD_EXP 19
+2821: PUSH
+2822: LD_INT 1
+2824: ARRAY
+2825: PPUSH
+2826: LD_INT 79
 2828: PPUSH
-2829: CALL_OW 197
-// end ;
-2833: END
-// every 0 0$01 trigger IsInArea ( JMM , obstacle_area ) and GetDistUnits ( JMM , Bobby ) < 7 and bobby_in_squad do
-2834: LD_EXP 8
-2838: PPUSH
-2839: LD_INT 6
-2841: PPUSH
-2842: CALL_OW 308
-2846: PUSH
-2847: LD_EXP 8
-2851: PPUSH
-2852: LD_EXP 9
-2856: PPUSH
-2857: CALL_OW 296
+2829: LD_INT 82
+2831: PPUSH
+2832: CALL_OW 297
+2836: PUSH
+2837: LD_INT 5
+2839: LESS
+2840: IFFALSE 2810
+// if not IsInArea ( JMM , jmm_spot ) then
+2842: LD_EXP 14
+2846: PPUSH
+2847: LD_INT 5
+2849: PPUSH
+2850: CALL_OW 308
+2854: NOT
+2855: IFFALSE 2875
+// Say ( russian_troops_1 [ 1 ] , D1Ra-Rus2-1 ) else
+2857: LD_EXP 19
 2861: PUSH
-2862: LD_INT 7
-2864: LESS
-2865: AND
-2866: PUSH
-2867: LD_EXP 3
-2871: AND
-2872: IFFALSE 2919
-2874: GO 2876
-2876: DISABLE
-// begin ComHold ( [ JMM , Bobby ] ) ;
-2877: LD_EXP 8
-2881: PUSH
-2882: LD_EXP 9
-2886: PUSH
-2887: EMPTY
-2888: LIST
-2889: LIST
-2890: PPUSH
-2891: CALL_OW 140
-// Say ( JMM , D2a-JMM-1 ) ;
-2895: LD_EXP 8
+2862: LD_INT 1
+2864: ARRAY
+2865: PPUSH
+2866: LD_STRING D1Ra-Rus2-1
+2868: PPUSH
+2869: CALL_OW 88
+2873: GO 3011
+// begin Say ( russian_troops_1 [ 2 ] , D1Rb-Rus1-1 ) ;
+2875: LD_EXP 19
+2879: PUSH
+2880: LD_INT 2
+2882: ARRAY
+2883: PPUSH
+2884: LD_STRING D1Rb-Rus1-1
+2886: PPUSH
+2887: CALL_OW 88
+// Say ( russian_troops_1 [ 1 ] , D1Rb-Rus2-1 ) ;
+2891: LD_EXP 19
+2895: PUSH
+2896: LD_INT 1
+2898: ARRAY
 2899: PPUSH
-2900: LD_STRING D2a-JMM-1
+2900: LD_STRING D1Rb-Rus2-1
 2902: PPUSH
 2903: CALL_OW 88
-// Say ( Bobby , D2a-Bobby-1 ) ;
-2907: LD_EXP 9
-2911: PPUSH
-2912: LD_STRING D2a-Bobby-1
-2914: PPUSH
-2915: CALL_OW 88
-// end ;
-2919: END
-// every 0 0$40 trigger active_russian_dialog and not See ( 3 , JMM ) do
-2920: LD_EXP 2
-2924: PUSH
-2925: LD_INT 3
+// ComAgressiveMove ( russian_troops_1 ^ russian_troops_2 , GetX ( JMM ) , GetY ( JMM ) ) ;
+2907: LD_EXP 19
+2911: PUSH
+2912: LD_EXP 20
+2916: ADD
+2917: PPUSH
+2918: LD_EXP 14
+2922: PPUSH
+2923: CALL_OW 250
 2927: PPUSH
-2928: LD_EXP 8
+2928: LD_EXP 14
 2932: PPUSH
-2933: CALL_OW 292
-2937: NOT
-2938: AND
-2939: IFFALSE 3090
-2941: GO 2943
-2943: DISABLE
-// begin InGameOn ;
-2944: CALL_OW 8
-// DialogueOn ;
-2948: CALL_OW 6
-// SayRadio ( Powell , D3-Pow-1 ) ;
-2952: LD_EXP 11
+2933: CALL_OW 251
+2937: PPUSH
+2938: CALL_OW 114
+// repeat wait ( 0 0$01 ) ;
+2942: LD_INT 35
+2944: PPUSH
+2945: CALL_OW 67
+// until not IsInArea ( JMM , jmm_spot ) and not See ( 3 , jmm ) ;
+2949: LD_EXP 14
+2953: PPUSH
+2954: LD_INT 5
 2956: PPUSH
-2957: LD_STRING D3-Pow-1
-2959: PPUSH
-2960: CALL_OW 94
-// Say ( JMM , D3-JMM-1 ) ;
-2964: LD_EXP 8
-2968: PPUSH
-2969: LD_STRING D3-JMM-1
-2971: PPUSH
-2972: CALL_OW 88
-// SayRadio ( Powell , D3-Pow-2 ) ;
-2976: LD_EXP 11
-2980: PPUSH
-2981: LD_STRING D3-Pow-2
-2983: PPUSH
-2984: CALL_OW 94
-// Say ( JMM , D3-JMM-2 ) ;
-2988: LD_EXP 8
-2992: PPUSH
-2993: LD_STRING D3-JMM-2
-2995: PPUSH
-2996: CALL_OW 88
-// SayRadio ( Powell , D3-Pow-3 ) ;
-3000: LD_EXP 11
-3004: PPUSH
-3005: LD_STRING D3-Pow-3
-3007: PPUSH
-3008: CALL_OW 94
-// DialogueOff ;
-3012: CALL_OW 7
-// InGameOff ;
-3016: CALL_OW 9
-// powell_contact := true ;
-3020: LD_ADDR_EXP 4
-3024: PUSH
-3025: LD_INT 1
-3027: ST_TO_ADDR
-// uc_side := 4 ;
-3028: LD_ADDR_OWVAR 20
-3032: PUSH
-3033: LD_INT 4
-3035: ST_TO_ADDR
-// uc_nation := 1 ;
-3036: LD_ADDR_OWVAR 21
-3040: PUSH
-3041: LD_INT 1
-3043: ST_TO_ADDR
-// Powell := PrepareUnit ( Powell , false ) ;
-3044: LD_ADDR_EXP 11
+2957: CALL_OW 308
+2961: NOT
+2962: PUSH
+2963: LD_INT 3
+2965: PPUSH
+2966: LD_EXP 14
+2970: PPUSH
+2971: CALL_OW 292
+2975: NOT
+2976: AND
+2977: IFFALSE 2942
+// Say ( russian_troops_1 [ 2 ] , D1Rc-Rus1-1 ) ;
+2979: LD_EXP 19
+2983: PUSH
+2984: LD_INT 2
+2986: ARRAY
+2987: PPUSH
+2988: LD_STRING D1Rc-Rus1-1
+2990: PPUSH
+2991: CALL_OW 88
+// Say ( russian_troops_1 [ 1 ] , D1Ra-Rus2-1a ) ;
+2995: LD_EXP 19
+2999: PUSH
+3000: LD_INT 1
+3002: ARRAY
+3003: PPUSH
+3004: LD_STRING D1Ra-Rus2-1a
+3006: PPUSH
+3007: CALL_OW 88
+// end ; wait_points := 10 ;
+3011: LD_ADDR_VAR 0 1
+3015: PUSH
+3016: LD_INT 10
+3018: ST_TO_ADDR
+// if Difficulty > 1 then
+3019: LD_OWVAR 67
+3023: PUSH
+3024: LD_INT 1
+3026: GREATER
+3027: IFFALSE 3058
+// begin ComAgressiveMove ( russian_troops_1 , 78 , 95 ) ;
+3029: LD_EXP 19
+3033: PPUSH
+3034: LD_INT 78
+3036: PPUSH
+3037: LD_INT 95
+3039: PPUSH
+3040: CALL_OW 114
+// wait_points := wait_points + 15 ;
+3044: LD_ADDR_VAR 0 1
 3048: PUSH
-3049: LD_STRING Powell
-3051: PPUSH
-3052: LD_INT 0
-3054: PPUSH
-3055: CALL 118 0 2
-3059: ST_TO_ADDR
-// ChangeMissionObjectives ( M2 ) ;
-3060: LD_STRING M2
-3062: PPUSH
-3063: CALL_OW 337
-// if not bobby_in_squad then
-3067: LD_EXP 3
-3071: NOT
-3072: IFFALSE 3083
-// ChangeMissionObjectives ( M2a ) else
-3074: LD_STRING M2a
-3076: PPUSH
-3077: CALL_OW 337
-3081: GO 3090
-// ChangeMissionObjectives ( M2b ) ;
-3083: LD_STRING M2b
-3085: PPUSH
-3086: CALL_OW 337
-// end ;
-3090: END
-// every 0 0$01 trigger IsInArea ( JMM , fakeArea ) do
-3091: LD_EXP 8
-3095: PPUSH
-3096: LD_INT 7
-3098: PPUSH
-3099: CALL_OW 308
-3103: IFFALSE 3228
-3105: GO 3107
-3107: DISABLE
-// begin DialogueOn ;
-3108: CALL_OW 6
-// SayRadio ( fakePokryshkin , D4-Rus3-1 ) ;
-3112: LD_EXP 12
-3116: PPUSH
-3117: LD_STRING D4-Rus3-1
-3119: PPUSH
-3120: CALL_OW 94
-// DialogueOff ;
-3124: CALL_OW 7
-// ChangeMissionObjectives ( M3a ) ;
-3128: LD_STRING M3a
-3130: PPUSH
-3131: CALL_OW 337
-// Wait ( 0 0$02 ) ;
-3135: LD_INT 70
-3137: PPUSH
-3138: CALL_OW 67
-// DialogueOn ;
-3142: CALL_OW 6
-// SayRadio ( Powell , D4-Pow-1 ) ;
-3146: LD_EXP 11
-3150: PPUSH
-3151: LD_STRING D4-Pow-1
-3153: PPUSH
-3154: CALL_OW 94
-// DialogueOff ;
-3158: CALL_OW 7
-// ChangeMissionObjectives ( M3b ) ;
-3162: LD_STRING M3b
-3164: PPUSH
-3165: CALL_OW 337
-// case Query ( Q1 ) of 1 :
-3169: LD_STRING Q1
-3171: PPUSH
-3172: CALL_OW 97
-3176: PUSH
-3177: LD_INT 1
-3179: DOUBLE
-3180: EQUAL
-3181: IFTRUE 3185
-3183: GO 3216
-3185: POP
-// begin macmilan_use_radio := true ;
-3186: LD_ADDR_EXP 5
-3190: PUSH
-3191: LD_INT 1
-3193: ST_TO_ADDR
-// DialogueOn ;
-3194: CALL_OW 6
-// Say ( JMM , D4a-JMM-1 ) ;
-3198: LD_EXP 8
-3202: PPUSH
-3203: LD_STRING D4a-JMM-1
-3205: PPUSH
-3206: CALL_OW 88
-// DialogueOff ;
-3210: CALL_OW 7
-// end ; 2 :
-3214: GO 3228
-3216: LD_INT 2
-3218: DOUBLE
-3219: EQUAL
-3220: IFTRUE 3224
-3222: GO 3227
-3224: POP
-// ; end ;
-3225: GO 3228
-3227: POP
-// end ;
-3228: END
-// every 0 0$02 trigger GetDistUnits ( JMM , Cyrus ) < 8 do
-3229: LD_EXP 8
+3049: LD_VAR 0 1
+3053: PUSH
+3054: LD_INT 15
+3056: PLUS
+3057: ST_TO_ADDR
+// end ; repeat wait ( 0 0$01 ) ;
+3058: LD_INT 35
+3060: PPUSH
+3061: CALL_OW 67
+// wait_points := wait_points - 1 ;
+3065: LD_ADDR_VAR 0 1
+3069: PUSH
+3070: LD_VAR 0 1
+3074: PUSH
+3075: LD_INT 1
+3077: MINUS
+3078: ST_TO_ADDR
+// if See ( 3 , JMM ) then
+3079: LD_INT 3
+3081: PPUSH
+3082: LD_EXP 14
+3086: PPUSH
+3087: CALL_OW 292
+3091: IFFALSE 3145
+// begin Say ( russian_troops_1 [ 2 ] , D1Rb-Rus1-1 ) ;
+3093: LD_EXP 19
+3097: PUSH
+3098: LD_INT 2
+3100: ARRAY
+3101: PPUSH
+3102: LD_STRING D1Rb-Rus1-1
+3104: PPUSH
+3105: CALL_OW 88
+// ComAgressiveMove ( russian_troops_1 , GetX ( JMM ) , GetY ( JMM ) ) ;
+3109: LD_EXP 19
+3113: PPUSH
+3114: LD_EXP 14
+3118: PPUSH
+3119: CALL_OW 250
+3123: PPUSH
+3124: LD_EXP 14
+3128: PPUSH
+3129: CALL_OW 251
+3133: PPUSH
+3134: CALL_OW 114
+// Wait ( 0 0$03 ) ;
+3138: LD_INT 105
+3140: PPUSH
+3141: CALL_OW 67
+// end ; until wait_points = 0 ;
+3145: LD_VAR 0 1
+3149: PUSH
+3150: LD_INT 0
+3152: EQUAL
+3153: IFFALSE 3058
+// ComAgressiveMove ( russian_troops_1 , 45 , 5 ) ;
+3155: LD_EXP 19
+3159: PPUSH
+3160: LD_INT 45
+3162: PPUSH
+3163: LD_INT 5
+3165: PPUSH
+3166: CALL_OW 114
+// ComEnterUnit ( russian_troops_2 , rbar1 ) ;
+3170: LD_EXP 20
+3174: PPUSH
+3175: LD_INT 26
+3177: PPUSH
+3178: CALL_OW 120
+// repeat wait ( 0 0$01 ) ;
+3182: LD_INT 35
+3184: PPUSH
+3185: CALL_OW 67
+// if See ( 3 , JMM ) then
+3189: LD_INT 3
+3191: PPUSH
+3192: LD_EXP 14
+3196: PPUSH
+3197: CALL_OW 292
+3201: IFFALSE 3257
+// begin Say ( russian_troops_1 [ 2 ] , D1Rb-Rus1-1 ) ;
+3203: LD_EXP 19
+3207: PUSH
+3208: LD_INT 2
+3210: ARRAY
+3211: PPUSH
+3212: LD_STRING D1Rb-Rus1-1
+3214: PPUSH
+3215: CALL_OW 88
+// ComAgressiveMove ( russian_troops_1 , GetX ( JMM ) , GetY ( JMM ) ) ;
+3219: LD_EXP 19
+3223: PPUSH
+3224: LD_EXP 14
+3228: PPUSH
+3229: CALL_OW 250
 3233: PPUSH
-3234: LD_EXP 10
+3234: LD_EXP 14
 3238: PPUSH
-3239: CALL_OW 296
-3243: PUSH
-3244: LD_INT 8
-3246: LESS
-3247: IFFALSE 3498
-3249: GO 3251
-3251: DISABLE
-// begin InGameOn ;
-3252: CALL_OW 8
-// ComMoveXY ( JMM , GetX ( Cyrus ) , GetY ( Cyrus ) ) ;
-3256: LD_EXP 8
-3260: PPUSH
-3261: LD_EXP 10
-3265: PPUSH
-3266: CALL_OW 250
-3270: PPUSH
-3271: LD_EXP 10
-3275: PPUSH
-3276: CALL_OW 251
+3239: CALL_OW 251
+3243: PPUSH
+3244: CALL_OW 114
+// Wait ( 0 0$50 ) ;
+3248: LD_INT 1750
+3250: PPUSH
+3251: CALL_OW 67
+// end else
+3255: GO 3272
+// ComAgressiveMove ( russian_troops_1 , 45 , 5 ) ;
+3257: LD_EXP 19
+3261: PPUSH
+3262: LD_INT 45
+3264: PPUSH
+3265: LD_INT 5
+3267: PPUSH
+3268: CALL_OW 114
+// until GetDistUnitXY ( russian_troops_1 [ 1 ] , 45 , 5 ) < 10 ;
+3272: LD_EXP 19
+3276: PUSH
+3277: LD_INT 1
+3279: ARRAY
 3280: PPUSH
-3281: CALL_OW 111
-// if IsOk ( Bobby ) and bobby_in_squad then
-3285: LD_EXP 9
-3289: PPUSH
-3290: CALL_OW 302
-3294: PUSH
-3295: LD_EXP 3
-3299: AND
-3300: IFFALSE 3331
-// ComMoveXY ( Bobby , GetX ( JMM ) , GetY ( JMM ) ) ;
-3302: LD_EXP 9
-3306: PPUSH
-3307: LD_EXP 8
-3311: PPUSH
-3312: CALL_OW 250
-3316: PPUSH
-3317: LD_EXP 8
-3321: PPUSH
-3322: CALL_OW 251
-3326: PPUSH
-3327: CALL_OW 111
-// Say ( JMM , D5-JMM-1 ) ;
-3331: LD_EXP 8
-3335: PPUSH
-3336: LD_STRING D5-JMM-1
-3338: PPUSH
-3339: CALL_OW 88
-// Wait ( 0 0$0.3 ) ;
-3343: LD_INT 10
-3345: PPUSH
-3346: CALL_OW 67
-// ComTurnUnit ( JMM , Cyrus ) ;
-3350: LD_EXP 8
-3354: PPUSH
-3355: LD_EXP 10
-3359: PPUSH
-3360: CALL_OW 119
-// ComWalk ( Cyrus ) ;
-3364: LD_EXP 10
-3368: PPUSH
-3369: CALL_OW 138
-// ComTurnUnit ( Cyrus , JMM ) ;
-3373: LD_EXP 10
-3377: PPUSH
-3378: LD_EXP 8
-3382: PPUSH
-3383: CALL_OW 119
-// Say ( Cyrus , D5-Cyrus-1 ) ;
-3387: LD_EXP 10
-3391: PPUSH
-3392: LD_STRING D5-Cyrus-1
-3394: PPUSH
-3395: CALL_OW 88
-// if IsOk ( Bobby ) and bobby_in_squad then
-3399: LD_EXP 9
-3403: PPUSH
-3404: CALL_OW 302
-3408: PUSH
-3409: LD_EXP 3
-3413: AND
-3414: IFFALSE 3454
-// begin ComTurnUnit ( Bobby , Cyrus ) ;
-3416: LD_EXP 9
-3420: PPUSH
-3421: LD_EXP 10
-3425: PPUSH
-3426: CALL_OW 119
-// Say ( Bobby , D5-Bobby-1 ) ;
-3430: LD_EXP 9
-3434: PPUSH
-3435: LD_STRING D5-Bobby-1
-3437: PPUSH
-3438: CALL_OW 88
-// Say ( JMM , D5-JMM-2 ) ;
-3442: LD_EXP 8
-3446: PPUSH
-3447: LD_STRING D5-JMM-2
-3449: PPUSH
-3450: CALL_OW 88
-// end ; InGameOff ;
-3454: CALL_OW 9
-// cyrus_in_squad := true ;
-3458: LD_ADDR_EXP 6
-3462: PUSH
-3463: LD_INT 1
-3465: ST_TO_ADDR
-// SetSide ( Cyrus , 1 ) ;
-3466: LD_EXP 10
-3470: PPUSH
-3471: LD_INT 1
-3473: PPUSH
-3474: CALL_OW 235
-// if powell_contact and not bobby_in_squad then
-3478: LD_EXP 4
-3482: PUSH
-3483: LD_EXP 3
-3487: NOT
-3488: AND
-3489: IFFALSE 3498
-// ChangeMissionObjectives ( M2b ) ;
-3491: LD_STRING M2b
-3493: PPUSH
-3494: CALL_OW 337
+3281: LD_INT 45
+3283: PPUSH
+3284: LD_INT 5
+3286: PPUSH
+3287: CALL_OW 297
+3291: PUSH
+3292: LD_INT 10
+3294: LESS
+3295: IFFALSE 3182
 // end ;
-3498: END
+3297: PPOPN 1
+3299: END
+// every 0 0$02 trigger GetDistUnits ( JMM , Bobby ) < 9 do
+3300: LD_EXP 14
+3304: PPUSH
+3305: LD_EXP 15
+3309: PPUSH
+3310: CALL_OW 296
+3314: PUSH
+3315: LD_INT 9
+3317: LESS
+3318: IFFALSE 3769
+3320: GO 3322
+3322: DISABLE
+// begin ComWalk ( Bobby ) ;
+3323: LD_EXP 15
+3327: PPUSH
+3328: CALL_OW 138
+// ComMoveXY ( Bobby , GetX ( JMM ) , GetY ( JMM ) ) ;
+3332: LD_EXP 15
+3336: PPUSH
+3337: LD_EXP 14
+3341: PPUSH
+3342: CALL_OW 250
+3346: PPUSH
+3347: LD_EXP 14
+3351: PPUSH
+3352: CALL_OW 251
+3356: PPUSH
+3357: CALL_OW 111
+// repeat wait ( 0 0$01 ) ;
+3361: LD_INT 35
+3363: PPUSH
+3364: CALL_OW 67
+// until See ( 4 , JMM ) ;
+3368: LD_INT 4
+3370: PPUSH
+3371: LD_EXP 14
+3375: PPUSH
+3376: CALL_OW 292
+3380: IFFALSE 3361
+// InGameOn ;
+3382: CALL_OW 8
+// ComTurnUnit ( JMM , Bobby ) ;
+3386: LD_EXP 14
+3390: PPUSH
+3391: LD_EXP 15
+3395: PPUSH
+3396: CALL_OW 119
+// if cyrus_in_squad and IsOk ( Cyrus ) and GetDistUnits ( JMM , Cyrus ) < 10 then
+3400: LD_EXP 6
+3404: PUSH
+3405: LD_EXP 16
+3409: PPUSH
+3410: CALL_OW 302
+3414: AND
+3415: PUSH
+3416: LD_EXP 14
+3420: PPUSH
+3421: LD_EXP 16
+3425: PPUSH
+3426: CALL_OW 296
+3430: PUSH
+3431: LD_INT 10
+3433: LESS
+3434: AND
+3435: IFFALSE 3480
+// begin ComMoveXY ( Cyrus , GetX ( JMM ) , GetY ( JMM ) ) ;
+3437: LD_EXP 16
+3441: PPUSH
+3442: LD_EXP 14
+3446: PPUSH
+3447: CALL_OW 250
+3451: PPUSH
+3452: LD_EXP 14
+3456: PPUSH
+3457: CALL_OW 251
+3461: PPUSH
+3462: CALL_OW 111
+// AddComTurnUnit ( Cyrus , Bobby ) ;
+3466: LD_EXP 16
+3470: PPUSH
+3471: LD_EXP 15
+3475: PPUSH
+3476: CALL_OW 179
+// end ; Say ( JMM , D2-JMM-1 ) ;
+3480: LD_EXP 14
+3484: PPUSH
+3485: LD_STRING D2-JMM-1
+3487: PPUSH
+3488: CALL_OW 88
+// Wait ( 0 0$0.3 ) ;
+3492: LD_INT 10
+3494: PPUSH
+3495: CALL_OW 67
+// ComTurnUnit ( Bobby , JMM ) ;
+3499: LD_EXP 15
+3503: PPUSH
+3504: LD_EXP 14
+3508: PPUSH
+3509: CALL_OW 119
+// Say ( Bobby , D2-Bobby-1 ) ;
+3513: LD_EXP 15
+3517: PPUSH
+3518: LD_STRING D2-Bobby-1
+3520: PPUSH
+3521: CALL_OW 88
+// Say ( JMM , D2-JMM-2 ) ;
+3525: LD_EXP 14
+3529: PPUSH
+3530: LD_STRING D2-JMM-2
+3532: PPUSH
+3533: CALL_OW 88
+// ComMoveXY ( Bobby , GetX ( JMM ) , GetY ( JMM ) ) ;
+3537: LD_EXP 15
+3541: PPUSH
+3542: LD_EXP 14
+3546: PPUSH
+3547: CALL_OW 250
+3551: PPUSH
+3552: LD_EXP 14
+3556: PPUSH
+3557: CALL_OW 251
+3561: PPUSH
+3562: CALL_OW 111
+// Say ( Bobby , D2-Bobby-2 ) ;
+3566: LD_EXP 15
+3570: PPUSH
+3571: LD_STRING D2-Bobby-2
+3573: PPUSH
+3574: CALL_OW 88
+// Say ( JMM , D2-JMM-3 ) ;
+3578: LD_EXP 14
+3582: PPUSH
+3583: LD_STRING D2-JMM-3
+3585: PPUSH
+3586: CALL_OW 88
+// ComTurnUnit ( Bobby , JMM ) ;
+3590: LD_EXP 15
+3594: PPUSH
+3595: LD_EXP 14
+3599: PPUSH
+3600: CALL_OW 119
+// Say ( Bobby , D2-Bobby-3 ) ;
+3604: LD_EXP 15
+3608: PPUSH
+3609: LD_STRING D2-Bobby-3
+3611: PPUSH
+3612: CALL_OW 88
+// Say ( JMM , D2-JMM-4 ) ;
+3616: LD_EXP 14
+3620: PPUSH
+3621: LD_STRING D2-JMM-4
+3623: PPUSH
+3624: CALL_OW 88
+// Say ( Bobby , D2-Bobby-4 ) ;
+3628: LD_EXP 15
+3632: PPUSH
+3633: LD_STRING D2-Bobby-4
+3635: PPUSH
+3636: CALL_OW 88
+// Say ( JMM , D2-JMM-5 ) ;
+3640: LD_EXP 14
+3644: PPUSH
+3645: LD_STRING D2-JMM-5
+3647: PPUSH
+3648: CALL_OW 88
+// Say ( Bobby , D2-Bobby-5 ) ;
+3652: LD_EXP 15
+3656: PPUSH
+3657: LD_STRING D2-Bobby-5
+3659: PPUSH
+3660: CALL_OW 88
+// Say ( JMM , D2-JMM-6 ) ;
+3664: LD_EXP 14
+3668: PPUSH
+3669: LD_STRING D2-JMM-6
+3671: PPUSH
+3672: CALL_OW 88
+// if not powell_contact then
+3676: LD_EXP 4
+3680: NOT
+3681: IFFALSE 3707
+// begin Say ( Bobby , D2-Bobby-6 ) ;
+3683: LD_EXP 15
+3687: PPUSH
+3688: LD_STRING D2-Bobby-6
+3690: PPUSH
+3691: CALL_OW 88
+// Say ( JMM , D2-JMM-7 ) ;
+3695: LD_EXP 14
+3699: PPUSH
+3700: LD_STRING D2-JMM-7
+3702: PPUSH
+3703: CALL_OW 88
+// end ; InGameOff ;
+3707: CALL_OW 9
+// SetSide ( Bobby , 1 ) ;
+3711: LD_EXP 15
+3715: PPUSH
+3716: LD_INT 1
+3718: PPUSH
+3719: CALL_OW 235
+// ComFree ( [ JMM , Bobby ] ) ;
+3723: LD_EXP 14
+3727: PUSH
+3728: LD_EXP 15
+3732: PUSH
+3733: EMPTY
+3734: LIST
+3735: LIST
+3736: PPUSH
+3737: CALL_OW 139
+// bobby_in_squad := true ;
+3741: LD_ADDR_EXP 3
+3745: PUSH
+3746: LD_INT 1
+3748: ST_TO_ADDR
+// if powell_contact and not cyrus_in_squad then
+3749: LD_EXP 4
+3753: PUSH
+3754: LD_EXP 6
+3758: NOT
+3759: AND
+3760: IFFALSE 3769
+// ChangeMissionObjectives ( M2b ) ;
+3762: LD_STRING M2b
+3764: PPUSH
+3765: CALL_OW 337
+// end ;
+3769: END
+// every 0 0$45 trigger active_russian_dialog and not bobby_in_squad do
+3770: LD_EXP 2
+3774: PUSH
+3775: LD_EXP 3
+3779: NOT
+3780: AND
+3781: IFFALSE 3801
+3783: GO 3785
+3785: DISABLE
+// ComMoveXY ( Bobby , 75 , 83 ) ;
+3786: LD_EXP 15
+3790: PPUSH
+3791: LD_INT 75
+3793: PPUSH
+3794: LD_INT 83
+3796: PPUSH
+3797: CALL_OW 111
+3801: END
+// every 0 0$10 trigger cyrus_in_squad and not bobby_in_squad do
+3802: LD_EXP 6
+3806: PUSH
+3807: LD_EXP 3
+3811: NOT
+3812: AND
+3813: IFFALSE 3842
+3815: GO 3817
+3817: DISABLE
+// begin ComMoveXY ( Bobby , 105 , 97 ) ;
+3818: LD_EXP 15
+3822: PPUSH
+3823: LD_INT 105
+3825: PPUSH
+3826: LD_INT 97
+3828: PPUSH
+3829: CALL_OW 111
+// AddComCrawl ( Bobby ) ;
+3833: LD_EXP 15
+3837: PPUSH
+3838: CALL_OW 197
+// end ;
+3842: END
+// every 0 0$01 trigger IsInArea ( JMM , obstacle_area ) and GetDistUnits ( JMM , Bobby ) < 7 and bobby_in_squad do
+3843: LD_EXP 14
+3847: PPUSH
+3848: LD_INT 6
+3850: PPUSH
+3851: CALL_OW 308
+3855: PUSH
+3856: LD_EXP 14
+3860: PPUSH
+3861: LD_EXP 15
+3865: PPUSH
+3866: CALL_OW 296
+3870: PUSH
+3871: LD_INT 7
+3873: LESS
+3874: AND
+3875: PUSH
+3876: LD_EXP 3
+3880: AND
+3881: IFFALSE 3928
+3883: GO 3885
+3885: DISABLE
+// begin ComHold ( [ JMM , Bobby ] ) ;
+3886: LD_EXP 14
+3890: PUSH
+3891: LD_EXP 15
+3895: PUSH
+3896: EMPTY
+3897: LIST
+3898: LIST
+3899: PPUSH
+3900: CALL_OW 140
+// Say ( JMM , D2a-JMM-1 ) ;
+3904: LD_EXP 14
+3908: PPUSH
+3909: LD_STRING D2a-JMM-1
+3911: PPUSH
+3912: CALL_OW 88
+// Say ( Bobby , D2a-Bobby-1 ) ;
+3916: LD_EXP 15
+3920: PPUSH
+3921: LD_STRING D2a-Bobby-1
+3923: PPUSH
+3924: CALL_OW 88
+// end ;
+3928: END
+// every 0 0$50 trigger active_russian_dialog and not See ( 3 , JMM ) do
+3929: LD_EXP 2
+3933: PUSH
+3934: LD_INT 3
+3936: PPUSH
+3937: LD_EXP 14
+3941: PPUSH
+3942: CALL_OW 292
+3946: NOT
+3947: AND
+3948: IFFALSE 4124
+3950: GO 3952
+3952: DISABLE
+// begin Wait ( rand ( 0 0$10 , 0 0$20 ) ) ;
+3953: LD_INT 350
+3955: PPUSH
+3956: LD_INT 700
+3958: PPUSH
+3959: CALL_OW 12
+3963: PPUSH
+3964: CALL_OW 67
+// InGameOn ;
+3968: CALL_OW 8
+// DialogueOn ;
+3972: CALL_OW 6
+// SayRadio ( Powell , D3-Pow-1 ) ;
+3976: LD_EXP 17
+3980: PPUSH
+3981: LD_STRING D3-Pow-1
+3983: PPUSH
+3984: CALL_OW 94
+// Say ( JMM , D3-JMM-1 ) ;
+3988: LD_EXP 14
+3992: PPUSH
+3993: LD_STRING D3-JMM-1
+3995: PPUSH
+3996: CALL_OW 88
+// SayRadio ( Powell , D3-Pow-2 ) ;
+4000: LD_EXP 17
+4004: PPUSH
+4005: LD_STRING D3-Pow-2
+4007: PPUSH
+4008: CALL_OW 94
+// Say ( JMM , D3-JMM-2 ) ;
+4012: LD_EXP 14
+4016: PPUSH
+4017: LD_STRING D3-JMM-2
+4019: PPUSH
+4020: CALL_OW 88
+// SayRadio ( Powell , D3-Pow-3 ) ;
+4024: LD_EXP 17
+4028: PPUSH
+4029: LD_STRING D3-Pow-3
+4031: PPUSH
+4032: CALL_OW 94
+// DialogueOff ;
+4036: CALL_OW 7
+// InGameOff ;
+4040: CALL_OW 9
+// powell_contact := true ;
+4044: LD_ADDR_EXP 4
+4048: PUSH
+4049: LD_INT 1
+4051: ST_TO_ADDR
+// SetAreaMapShow ( exitArea , 1 ) ;
+4052: LD_INT 10
+4054: PPUSH
+4055: LD_INT 1
+4057: PPUSH
+4058: CALL_OW 424
+// uc_side := 4 ;
+4062: LD_ADDR_OWVAR 20
+4066: PUSH
+4067: LD_INT 4
+4069: ST_TO_ADDR
+// uc_nation := 1 ;
+4070: LD_ADDR_OWVAR 21
+4074: PUSH
+4075: LD_INT 1
+4077: ST_TO_ADDR
+// Powell := PrepareUnit ( Powell , false ) ;
+4078: LD_ADDR_EXP 17
+4082: PUSH
+4083: LD_STRING Powell
+4085: PPUSH
+4086: LD_INT 0
+4088: PPUSH
+4089: CALL 174 0 2
+4093: ST_TO_ADDR
+// ChangeMissionObjectives ( M2 ) ;
+4094: LD_STRING M2
+4096: PPUSH
+4097: CALL_OW 337
+// if not bobby_in_squad then
+4101: LD_EXP 3
+4105: NOT
+4106: IFFALSE 4117
+// ChangeMissionObjectives ( M2a ) else
+4108: LD_STRING M2a
+4110: PPUSH
+4111: CALL_OW 337
+4115: GO 4124
+// ChangeMissionObjectives ( M2b ) ;
+4117: LD_STRING M2b
+4119: PPUSH
+4120: CALL_OW 337
+// end ;
+4124: END
+// every 0 0$01 trigger IsInArea ( JMM , fakeArea ) do
+4125: LD_EXP 14
+4129: PPUSH
+4130: LD_INT 7
+4132: PPUSH
+4133: CALL_OW 308
+4137: IFFALSE 4272
+4139: GO 4141
+4141: DISABLE
+// begin DialogueOn ;
+4142: CALL_OW 6
+// SayRadio ( fakePokryshkin , D4-Rus3-1 ) ;
+4146: LD_EXP 18
+4150: PPUSH
+4151: LD_STRING D4-Rus3-1
+4153: PPUSH
+4154: CALL_OW 94
+// DialogueOff ;
+4158: CALL_OW 7
+// ChangeMissionObjectives ( M3a ) ;
+4162: LD_STRING M3a
+4164: PPUSH
+4165: CALL_OW 337
+// SetAreaMapShow ( fakeEnd , 1 ) ;
+4169: LD_INT 11
+4171: PPUSH
+4172: LD_INT 1
+4174: PPUSH
+4175: CALL_OW 424
+// Wait ( 0 0$02 ) ;
+4179: LD_INT 70
+4181: PPUSH
+4182: CALL_OW 67
+// DialogueOn ;
+4186: CALL_OW 6
+// SayRadio ( Powell , D4-Pow-1 ) ;
+4190: LD_EXP 17
+4194: PPUSH
+4195: LD_STRING D4-Pow-1
+4197: PPUSH
+4198: CALL_OW 94
+// DialogueOff ;
+4202: CALL_OW 7
+// ChangeMissionObjectives ( M3b ) ;
+4206: LD_STRING M3b
+4208: PPUSH
+4209: CALL_OW 337
+// case Query ( Q1 ) of 1 :
+4213: LD_STRING Q1
+4215: PPUSH
+4216: CALL_OW 97
+4220: PUSH
+4221: LD_INT 1
+4223: DOUBLE
+4224: EQUAL
+4225: IFTRUE 4229
+4227: GO 4260
+4229: POP
+// begin macmilan_use_radio := true ;
+4230: LD_ADDR_EXP 5
+4234: PUSH
+4235: LD_INT 1
+4237: ST_TO_ADDR
+// DialogueOn ;
+4238: CALL_OW 6
+// Say ( JMM , D4a-JMM-1 ) ;
+4242: LD_EXP 14
+4246: PPUSH
+4247: LD_STRING D4a-JMM-1
+4249: PPUSH
+4250: CALL_OW 88
+// DialogueOff ;
+4254: CALL_OW 7
+// end ; 2 :
+4258: GO 4272
+4260: LD_INT 2
+4262: DOUBLE
+4263: EQUAL
+4264: IFTRUE 4268
+4266: GO 4271
+4268: POP
+// ; end ;
+4269: GO 4272
+4271: POP
+// end ;
+4272: END
+// every 0 0$02 trigger GetDistUnits ( JMM , Cyrus ) < 8 do
+4273: LD_EXP 14
+4277: PPUSH
+4278: LD_EXP 16
+4282: PPUSH
+4283: CALL_OW 296
+4287: PUSH
+4288: LD_INT 8
+4290: LESS
+4291: IFFALSE 4542
+4293: GO 4295
+4295: DISABLE
+// begin InGameOn ;
+4296: CALL_OW 8
+// ComMoveXY ( JMM , GetX ( Cyrus ) , GetY ( Cyrus ) ) ;
+4300: LD_EXP 14
+4304: PPUSH
+4305: LD_EXP 16
+4309: PPUSH
+4310: CALL_OW 250
+4314: PPUSH
+4315: LD_EXP 16
+4319: PPUSH
+4320: CALL_OW 251
+4324: PPUSH
+4325: CALL_OW 111
+// if IsOk ( Bobby ) and bobby_in_squad then
+4329: LD_EXP 15
+4333: PPUSH
+4334: CALL_OW 302
+4338: PUSH
+4339: LD_EXP 3
+4343: AND
+4344: IFFALSE 4375
+// ComMoveXY ( Bobby , GetX ( JMM ) , GetY ( JMM ) ) ;
+4346: LD_EXP 15
+4350: PPUSH
+4351: LD_EXP 14
+4355: PPUSH
+4356: CALL_OW 250
+4360: PPUSH
+4361: LD_EXP 14
+4365: PPUSH
+4366: CALL_OW 251
+4370: PPUSH
+4371: CALL_OW 111
+// Say ( JMM , D5-JMM-1 ) ;
+4375: LD_EXP 14
+4379: PPUSH
+4380: LD_STRING D5-JMM-1
+4382: PPUSH
+4383: CALL_OW 88
+// Wait ( 0 0$0.3 ) ;
+4387: LD_INT 10
+4389: PPUSH
+4390: CALL_OW 67
+// ComTurnUnit ( JMM , Cyrus ) ;
+4394: LD_EXP 14
+4398: PPUSH
+4399: LD_EXP 16
+4403: PPUSH
+4404: CALL_OW 119
+// ComWalk ( Cyrus ) ;
+4408: LD_EXP 16
+4412: PPUSH
+4413: CALL_OW 138
+// ComTurnUnit ( Cyrus , JMM ) ;
+4417: LD_EXP 16
+4421: PPUSH
+4422: LD_EXP 14
+4426: PPUSH
+4427: CALL_OW 119
+// Say ( Cyrus , D5-Cyrus-1 ) ;
+4431: LD_EXP 16
+4435: PPUSH
+4436: LD_STRING D5-Cyrus-1
+4438: PPUSH
+4439: CALL_OW 88
+// if IsOk ( Bobby ) and bobby_in_squad then
+4443: LD_EXP 15
+4447: PPUSH
+4448: CALL_OW 302
+4452: PUSH
+4453: LD_EXP 3
+4457: AND
+4458: IFFALSE 4498
+// begin ComTurnUnit ( Bobby , Cyrus ) ;
+4460: LD_EXP 15
+4464: PPUSH
+4465: LD_EXP 16
+4469: PPUSH
+4470: CALL_OW 119
+// Say ( Bobby , D5-Bobby-1 ) ;
+4474: LD_EXP 15
+4478: PPUSH
+4479: LD_STRING D5-Bobby-1
+4481: PPUSH
+4482: CALL_OW 88
+// Say ( JMM , D5-JMM-2 ) ;
+4486: LD_EXP 14
+4490: PPUSH
+4491: LD_STRING D5-JMM-2
+4493: PPUSH
+4494: CALL_OW 88
+// end ; InGameOff ;
+4498: CALL_OW 9
+// cyrus_in_squad := true ;
+4502: LD_ADDR_EXP 6
+4506: PUSH
+4507: LD_INT 1
+4509: ST_TO_ADDR
+// SetSide ( Cyrus , 1 ) ;
+4510: LD_EXP 16
+4514: PPUSH
+4515: LD_INT 1
+4517: PPUSH
+4518: CALL_OW 235
+// if powell_contact and not bobby_in_squad then
+4522: LD_EXP 4
+4526: PUSH
+4527: LD_EXP 3
+4531: NOT
+4532: AND
+4533: IFFALSE 4542
+// ChangeMissionObjectives ( M2b ) ;
+4535: LD_STRING M2b
+4537: PPUSH
+4538: CALL_OW 337
+// end ;
+4542: END
 // every 0 0$01 trigger bobby_in_squad and cyrus_in_squad do
-3499: LD_EXP 3
-3503: PUSH
-3504: LD_EXP 6
-3508: AND
-3509: IFFALSE 3521
-3511: GO 3513
-3513: DISABLE
+4543: LD_EXP 3
+4547: PUSH
+4548: LD_EXP 6
+4552: AND
+4553: IFFALSE 4565
+4555: GO 4557
+4557: DISABLE
 // ChangeMissionObjectives ( M2c ) ;
-3514: LD_STRING M2c
-3516: PPUSH
-3517: CALL_OW 337
-3521: END
+4558: LD_STRING M2c
+4560: PPUSH
+4561: CALL_OW 337
+4565: END
+// every 0 0$01 trigger IsInArea ( JMM , trap ) do
+4566: LD_EXP 14
+4570: PPUSH
+4571: LD_INT 8
+4573: PPUSH
+4574: CALL_OW 308
+4578: IFFALSE 4610
+4580: GO 4582
+4582: DISABLE
+// begin macmilan_in_trap := true ;
+4583: LD_ADDR_EXP 8
+4587: PUSH
+4588: LD_INT 1
+4590: ST_TO_ADDR
+// Wait ( 0 0$01 ) ;
+4591: LD_INT 35
+4593: PPUSH
+4594: CALL_OW 67
+// Say ( JMM , D4b-JMM-1 ) ;
+4598: LD_EXP 14
+4602: PPUSH
+4603: LD_STRING D4b-JMM-1
+4605: PPUSH
+4606: CALL_OW 88
+// end ;
+4610: END
+// every 0 0$01 trigger GetDistUnits ( JMM , russian_meta_guards [ 1 ] ) < 11 do var i , hp ;
+4611: LD_EXP 14
+4615: PPUSH
+4616: LD_EXP 22
+4620: PUSH
+4621: LD_INT 1
+4623: ARRAY
+4624: PPUSH
+4625: CALL_OW 296
+4629: PUSH
+4630: LD_INT 11
+4632: LESS
+4633: IFFALSE 4826
+4635: GO 4637
+4637: DISABLE
+4638: LD_INT 0
+4640: PPUSH
+4641: PPUSH
+// begin hp := [ 650 , 700 , 750 ] [ Difficulty ] ;
+4642: LD_ADDR_VAR 0 2
+4646: PUSH
+4647: LD_INT 650
+4649: PUSH
+4650: LD_INT 700
+4652: PUSH
+4653: LD_INT 750
+4655: PUSH
+4656: EMPTY
+4657: LIST
+4658: LIST
+4659: LIST
+4660: PUSH
+4661: LD_OWVAR 67
+4665: ARRAY
+4666: ST_TO_ADDR
+// for i in russian_meta_guards do
+4667: LD_ADDR_VAR 0 1
+4671: PUSH
+4672: LD_EXP 22
+4676: PUSH
+4677: FOR_IN
+4678: IFFALSE 4696
+// SetLives ( i , hp ) ;
+4680: LD_VAR 0 1
+4684: PPUSH
+4685: LD_VAR 0 2
+4689: PPUSH
+4690: CALL_OW 234
+4694: GO 4677
+4696: POP
+4697: POP
+// DialogueOn ;
+4698: CALL_OW 6
+// Say ( russian_meta_guards [ russian_meta_guards ] , D6-FRus1-1 ) ;
+4702: LD_EXP 22
+4706: PUSH
+4707: LD_EXP 22
+4711: ARRAY
+4712: PPUSH
+4713: LD_STRING D6-FRus1-1
+4715: PPUSH
+4716: CALL_OW 88
+// Say ( JMM , D6-JMM-1 ) ;
+4720: LD_EXP 14
+4724: PPUSH
+4725: LD_STRING D6-JMM-1
+4727: PPUSH
+4728: CALL_OW 88
+// if IsOk ( Cyrus ) and cyrus_in_squad then
+4732: LD_EXP 16
+4736: PPUSH
+4737: CALL_OW 302
+4741: PUSH
+4742: LD_EXP 6
+4746: AND
+4747: IFFALSE 4761
+// Say ( Cyrus , D6-Cyrus-1 ) ;
+4749: LD_EXP 16
+4753: PPUSH
+4754: LD_STRING D6-Cyrus-1
+4756: PPUSH
+4757: CALL_OW 88
+// if IsOk ( Bobby ) and bobby_in_squad then
+4761: LD_EXP 15
+4765: PPUSH
+4766: CALL_OW 302
+4770: PUSH
+4771: LD_EXP 3
+4775: AND
+4776: IFFALSE 4790
+// Say ( Bobby , D6-Bobby-1 ) ;
+4778: LD_EXP 15
+4782: PPUSH
+4783: LD_STRING D6-Bobby-1
+4785: PPUSH
+4786: CALL_OW 88
+// DialogueOff ;
+4790: CALL_OW 7
+// Wait ( [ 0 0$04 , 0 0$03 , 0 0$02 ] [ Difficulty ] ) ;
+4794: LD_INT 140
+4796: PUSH
+4797: LD_INT 105
+4799: PUSH
+4800: LD_INT 70
+4802: PUSH
+4803: EMPTY
+4804: LIST
+4805: LIST
+4806: LIST
+4807: PUSH
+4808: LD_OWVAR 67
+4812: ARRAY
+4813: PPUSH
+4814: CALL_OW 67
+// meta_action := true ;
+4818: LD_ADDR_EXP 9
+4822: PUSH
+4823: LD_INT 1
+4825: ST_TO_ADDR
+// end ;
+4826: PPOPN 2
+4828: END
+// every 0 0$01 trigger GetDistUnitXY ( JMM , 93 , 1 ) < 5 and FilterAllUnits ( [ f_side , 1 ] ) > 1 do
+4829: LD_EXP 14
+4833: PPUSH
+4834: LD_INT 93
+4836: PPUSH
+4837: LD_INT 1
+4839: PPUSH
+4840: CALL_OW 297
+4844: PUSH
+4845: LD_INT 5
+4847: LESS
+4848: PUSH
+4849: LD_INT 22
+4851: PUSH
+4852: LD_INT 1
+4854: PUSH
+4855: EMPTY
+4856: LIST
+4857: LIST
+4858: PPUSH
+4859: CALL_OW 69
+4863: PUSH
+4864: LD_INT 1
+4866: GREATER
+4867: AND
+4868: IFFALSE 4885
+4870: GO 4872
+4872: DISABLE
+// Say ( JMM , D6a-JMM-1 ) ;
+4873: LD_EXP 14
+4877: PPUSH
+4878: LD_STRING D6a-JMM-1
+4880: PPUSH
+4881: CALL_OW 88
+4885: END
+// every 0 0$01 trigger IsDying ( JMM ) do
+4886: LD_EXP 14
+4890: PPUSH
+4891: CALL_OW 303
+4895: IFFALSE 4907
+4897: GO 4899
+4899: DISABLE
+// YouLost ( JMM ) ;
+4900: LD_STRING JMM
+4902: PPUSH
+4903: CALL_OW 104
+4907: END
+// every 0 0$01 trigger IsInArea ( Bobby , exitArea ) do
+4908: LD_EXP 15
+4912: PPUSH
+4913: LD_INT 10
+4915: PPUSH
+4916: CALL_OW 308
+4920: IFFALSE 4969
+4922: GO 4924
+4924: DISABLE
+// begin bobby_saved := true ;
+4925: LD_ADDR_EXP 11
+4929: PUSH
+4930: LD_INT 1
+4932: ST_TO_ADDR
+// SaveVariable ( GetLives ( Bobby ) , 01_BobbyLifePoints_1 ) ;
+4933: LD_EXP 15
+4937: PPUSH
+4938: CALL_OW 256
+4942: PPUSH
+4943: LD_STRING 01_BobbyLifePoints_1
+4945: PPUSH
+4946: CALL_OW 39
+// RemoveUnit ( Bobby ) ;
+4950: LD_EXP 15
+4954: PPUSH
+4955: CALL_OW 64
+// AddMedal ( Bobby , 1 ) ;
+4959: LD_STRING Bobby
+4961: PPUSH
+4962: LD_INT 1
+4964: PPUSH
+4965: CALL_OW 101
+// end ;
+4969: END
+// every 0 0$01 trigger IsInArea ( Cyrus , exitArea ) do
+4970: LD_EXP 16
+4974: PPUSH
+4975: LD_INT 10
+4977: PPUSH
+4978: CALL_OW 308
+4982: IFFALSE 5031
+4984: GO 4986
+4986: DISABLE
+// begin cyrus_saved := true ;
+4987: LD_ADDR_EXP 12
+4991: PUSH
+4992: LD_INT 1
+4994: ST_TO_ADDR
+// SaveVariable ( GetLives ( Cyrus ) , 01_CyrusLifePoints_1 ) ;
+4995: LD_EXP 16
+4999: PPUSH
+5000: CALL_OW 256
+5004: PPUSH
+5005: LD_STRING 01_CyrusLifePoints_1
+5007: PPUSH
+5008: CALL_OW 39
+// RemoveUnit ( Cyrus ) ;
+5012: LD_EXP 16
+5016: PPUSH
+5017: CALL_OW 64
+// AddMedal ( Cyrus , 1 ) ;
+5021: LD_STRING Cyrus
+5023: PPUSH
+5024: LD_INT 1
+5026: PPUSH
+5027: CALL_OW 101
+// end ;
+5031: END
+// every 0 0$01 trigger IsInArea ( JMM , exitArea ) do var i , to_reward , wait_for_them ;
+5032: LD_EXP 14
+5036: PPUSH
+5037: LD_INT 10
+5039: PPUSH
+5040: CALL_OW 308
+5044: IFFALSE 5494
+5046: GO 5048
+5048: DISABLE
+5049: LD_INT 0
+5051: PPUSH
+5052: PPUSH
+5053: PPUSH
+// begin if ( not cyrus_saved and cyrus_in_squad and IsOk ( Cyrus ) ) or ( not bobby_saved and bobby_in_squad and IsOk ( Bobby ) ) then
+5054: LD_EXP 12
+5058: NOT
+5059: PUSH
+5060: LD_EXP 6
+5064: AND
+5065: PUSH
+5066: LD_EXP 16
+5070: PPUSH
+5071: CALL_OW 302
+5075: AND
+5076: PUSH
+5077: LD_EXP 11
+5081: NOT
+5082: PUSH
+5083: LD_EXP 3
+5087: AND
+5088: PUSH
+5089: LD_EXP 15
+5093: PPUSH
+5094: CALL_OW 302
+5098: AND
+5099: OR
+5100: IFFALSE 5141
+// case Query ( Q2 ) of 1 :
+5102: LD_STRING Q2
+5104: PPUSH
+5105: CALL_OW 97
+5109: PUSH
+5110: LD_INT 1
+5112: DOUBLE
+5113: EQUAL
+5114: IFTRUE 5118
+5116: GO 5129
+5118: POP
+// wait_for_them := true ; 2 :
+5119: LD_ADDR_VAR 0 3
+5123: PUSH
+5124: LD_INT 1
+5126: ST_TO_ADDR
+5127: GO 5141
+5129: LD_INT 2
+5131: DOUBLE
+5132: EQUAL
+5133: IFTRUE 5137
+5135: GO 5140
+5137: POP
+// ; end ;
+5138: GO 5141
+5140: POP
+// if wait_for_them then
+5141: LD_VAR 0 3
+5145: IFFALSE 5214
+// repeat wait ( 0 0$01 ) ;
+5147: LD_INT 35
+5149: PPUSH
+5150: CALL_OW 67
+// until ( cyrus_saved and bobby_saved ) or ( cyrus_saved and not bobby_in_squad ) or ( bobby_saved and not cyrus_in_squad ) or ( IsDead ( Bobby ) and IsDead ( Cyrus ) ) ;
+5154: LD_EXP 12
+5158: PUSH
+5159: LD_EXP 11
+5163: AND
+5164: PUSH
+5165: LD_EXP 12
+5169: PUSH
+5170: LD_EXP 3
+5174: NOT
+5175: AND
+5176: OR
+5177: PUSH
+5178: LD_EXP 11
+5182: PUSH
+5183: LD_EXP 6
+5187: NOT
+5188: AND
+5189: OR
+5190: PUSH
+5191: LD_EXP 15
+5195: PPUSH
+5196: CALL_OW 301
+5200: PUSH
+5201: LD_EXP 16
+5205: PPUSH
+5206: CALL_OW 301
+5210: AND
+5211: OR
+5212: IFFALSE 5147
+// SaveVariable ( GetLives ( JMM ) , 01_JMMLifePoints_1 ) ;
+5214: LD_EXP 14
+5218: PPUSH
+5219: CALL_OW 256
+5223: PPUSH
+5224: LD_STRING 01_JMMLifePoints_1
+5226: PPUSH
+5227: CALL_OW 39
+// RemoveUnit ( JMM ) ;
+5231: LD_EXP 14
+5235: PPUSH
+5236: CALL_OW 64
+// to_reward := [ JMM ] ;
+5240: LD_ADDR_VAR 0 2
+5244: PUSH
+5245: LD_EXP 14
+5249: PUSH
+5250: EMPTY
+5251: LIST
+5252: ST_TO_ADDR
+// if bobby_saved then
+5253: LD_EXP 11
+5257: IFFALSE 5275
+// to_reward := to_reward ^ Bobby ;
+5259: LD_ADDR_VAR 0 2
+5263: PUSH
+5264: LD_VAR 0 2
+5268: PUSH
+5269: LD_EXP 15
+5273: ADD
+5274: ST_TO_ADDR
+// if cyrus_saved then
+5275: LD_EXP 12
+5279: IFFALSE 5297
+// to_reward := to_reward ^ Cyrus ;
+5281: LD_ADDR_VAR 0 2
+5285: PUSH
+5286: LD_VAR 0 2
+5290: PUSH
+5291: LD_EXP 16
+5295: ADD
+5296: ST_TO_ADDR
+// AddMedal ( JMM , 1 ) ;
+5297: LD_STRING JMM
+5299: PPUSH
+5300: LD_INT 1
+5302: PPUSH
+5303: CALL_OW 101
+// if not bobby_in_squad then
+5307: LD_EXP 3
+5311: NOT
+5312: IFFALSE 5325
+// AddMedal ( Bobby , - 1 ) ;
+5314: LD_STRING Bobby
+5316: PPUSH
+5317: LD_INT 1
+5319: NEG
+5320: PPUSH
+5321: CALL_OW 101
+// if not bobby_saved and ( IsDying ( Bobby ) or IsDead ( Bobby ) ) then
+5325: LD_EXP 11
+5329: NOT
+5330: PUSH
+5331: LD_EXP 15
+5335: PPUSH
+5336: CALL_OW 303
+5340: PUSH
+5341: LD_EXP 15
+5345: PPUSH
+5346: CALL_OW 301
+5350: OR
+5351: AND
+5352: IFFALSE 5365
+// AddMedal ( Bobby , - 2 ) ;
+5354: LD_STRING Bobby
+5356: PPUSH
+5357: LD_INT 2
+5359: NEG
+5360: PPUSH
+5361: CALL_OW 101
+// if not cyrus_in_squad then
+5365: LD_EXP 6
+5369: NOT
+5370: IFFALSE 5383
+// AddMedal ( Cyrus , - 1 ) ;
+5372: LD_STRING Cyrus
+5374: PPUSH
+5375: LD_INT 1
+5377: NEG
+5378: PPUSH
+5379: CALL_OW 101
+// if not cyrus_saved and ( IsDying ( Cyrus ) or IsDead ( Cyrus ) ) then
+5383: LD_EXP 12
+5387: NOT
+5388: PUSH
+5389: LD_EXP 16
+5393: PPUSH
+5394: CALL_OW 303
+5398: PUSH
+5399: LD_EXP 16
+5403: PPUSH
+5404: CALL_OW 301
+5408: OR
+5409: AND
+5410: IFFALSE 5423
+// AddMedal ( Cyrus , - 2 ) ;
+5412: LD_STRING Cyrus
+5414: PPUSH
+5415: LD_INT 2
+5417: NEG
+5418: PPUSH
+5419: CALL_OW 101
+// GiveMedals ( MAIN ) ;
+5423: LD_STRING MAIN
+5425: PPUSH
+5426: CALL_OW 102
+// RewardPeople ( to_reward ) ;
+5430: LD_VAR 0 2
+5434: PPUSH
+5435: CALL_OW 43
+// if bobby_saved then
+5439: LD_EXP 11
+5443: IFFALSE 5457
+// SaveCharacters ( Bobby , Bobby ) ;
+5445: LD_EXP 15
+5449: PPUSH
+5450: LD_STRING Bobby
+5452: PPUSH
+5453: CALL_OW 38
+// if cyrus_saved then
+5457: LD_EXP 12
+5461: IFFALSE 5475
+// SaveCharacters ( Cyrus , Cyrus ) ;
+5463: LD_EXP 16
+5467: PPUSH
+5468: LD_STRING Cyrus
+5470: PPUSH
+5471: CALL_OW 38
+// SaveCharacters ( JMM , JMM ) ;
+5475: LD_EXP 14
+5479: PPUSH
+5480: LD_STRING JMM
+5482: PPUSH
+5483: CALL_OW 38
+// SetNextMission ( 1 ) ;
+5487: LD_INT 1
+5489: PPUSH
+5490: CALL_OW 536
+// end ;
+5494: PPOPN 3
+5496: END
