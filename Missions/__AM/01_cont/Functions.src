@@ -65,6 +65,16 @@ if mode = 'road' then
    if GetFuel(unit) < 50 and not See(1, unit) and not HasTask(unit) then
       SetFuel(unit, 100);
 
+if mode = 'forest' then
+   if GetLives(unit) < 600 then
+      begin
+      ComMoveXY(unit, 42, 3);
+      SetRememberedX(unit, GetX(unit));
+      SetRememberedY(unit, GetY(unit));
+      send_troops_to_forest := true;
+      break;
+      end;
+
 if not HasTask(unit) then
    begin
    for i = 1 to coords do
