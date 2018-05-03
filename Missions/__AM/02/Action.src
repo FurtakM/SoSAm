@@ -157,7 +157,7 @@ begin
      end;
 
      InGameOff;
-     SetSide(FilterAllUnits([f_side, 4]), 1);
+     SetSide(FilterAllUnits([f_side, 4]) diff [Brian, Jerry], 1);
      ChangeMissionObjectives('M1');
      SaveForQuickRestart;
 
@@ -194,10 +194,10 @@ begin
 
      InGameOff;
 
-     If FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 1000]]]) > 0 then
+     If FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 800]]]) > 0 then
      begin
-          Say(Khatam, 'D2b-Khat-1');
           ComHeal(Khatam, FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 1000]]])[1]);
+          Say(Khatam, 'D2b-Khat-1');
      end;
 
 end;
@@ -298,18 +298,15 @@ end;
 
 // Find new AM soldiers
 
-Every 0$1 trigger FilterUnitsInArea(WaterScene, [f_side, 1]) > 0 AND NOT GetSide(dep1) = 1 AND NOT GetSide(dep2) = 1  do
+Every 1 trigger FilterUnitsInArea(WaterScene, [f_side, 1]) > 0 AND NOT GetSide(dep1) = 1 AND NOT GetSide(dep2) = 1  do
 var i;
 begin
     InGameOn;
-    ComTurnXY(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 72, 77);    
-    CenterOnUnits([Brian, Jerry]);
-
-    PrepareOtherAmericans;
-
+    SetLives(Jerry, 250);
     SetAttitude(3, 4, att_enemy, true);
-    SetAttitude(4, 3, att_enemy, true);
+    CenterOnUnits([Brian, Jerry]);
     for i in FilterUnitsInArea(RussiansWaterSpawn, [f_side, 3]) do ComFree(i);
+    for i in FilterAllUnits([f_side, 4]) do ComFree(i);
 
     wait(0$1);
 
@@ -338,8 +335,12 @@ begin
 end;
 
 // Brian dialog
-Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 AND GetLives(Brian) > 250 do
+Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 AND NOT IsOk(Brian) do
 begin
+     repeat
+     wait(0$1);
+     until GetLives(Brian) > 250;
+
      Say(Brian, 'DFb-Sol1-1');
      ComMoveXY(Brian, 78, 74);
      IF IsDead(Jerry) then Say(Brian, 'DFb-Sol1-1a')
@@ -473,7 +474,7 @@ begin
     if GetSex(temp[1]) = 2 then Say(temp[1], 'D4-FSol1-1');
     Say(Mikhail, 'D4-Mikh-2');
     if GetSex(temp[1]) = 1 then Say(temp[1], 'D4-Sol1-2');
-    if GetSex(temp[1]) = 2 then Say(temp[2], 'D4-FSol1-2');
+    if GetSex(temp[1]) = 2 then Say(temp[1], 'D4-FSol1-2');
     Say(Mikhail, 'D4-Mikh-3');
     if GetSex(temp[1]) = 1 then Say(temp[1], 'D4-Sol1-3');
     if GetSex(temp[1]) = 2 then Say(temp[1], 'D4-FSol1-3');
@@ -567,7 +568,7 @@ begin
     wait(0$5);
     Say(driver1, 'D5-Rus2-1');
 
-    wait(0$7);
+    wait(0$9);
 
     ComMoveXY([cargo1, cargo2], 7, 9);
     Say(driver1, 'D5-Rus2-1a');
@@ -607,7 +608,7 @@ Every 0$1 trigger GetLives(dep1) < 1000 OR GetLives(dep2) < 1000 do Say(JMM, ' D
 // Mihail
 
 // Mikhail in depot - change variable value
-Every 0$1 trigger IsInUnit(Mikhail) = dep1 do
+Every 0$1 trigger IsInUnit(Mikhail) = dep1 and not mikhailInbase = 3 do
 begin
      mikhailInBase = 1;
      mikhailStatus = 1;
@@ -618,8 +619,6 @@ end;
 // Mikhail ask  > kill/patrol/free
 Every 0$1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 1 AND GetSide(Mikhail) = 1 do
 begin
-     mikhailInBase = 4;
-
      enable;
      
      case query('QMikh2') of
@@ -642,8 +641,8 @@ begin
         AddComMoveXY(Mikhail, GetX(Mikhail) + 2, GetY(Mikhail));
 
         wait(0$5);
-        AddComMoveToArea(Mikhail, MikhailEnter);
-        mikhailStatus = 1;
+        ComMoveToArea(Mikhail, MikhailEnter);
+        mikhailInBase = 4;
      end;
 
      3: Begin
@@ -651,7 +650,7 @@ begin
         ComExitBuilding(Mikhail);
         wait(0$1);
         ComMoveToArea(Mikhail, MikhailEscape);
-        mikhailInbase = 0;
+        mikhailInbase = 3;
      end;
 
   end;
@@ -659,7 +658,7 @@ begin
 end;
 
 // Mikhail back to depot
-Every 1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 2 do
+Every 1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 4 do
 begin
      enable;
      
@@ -681,11 +680,11 @@ begin
 end;
 
 // Mikhail - Escape
-Every 0$1 trigger IsInUnit(Mikhail) do
+Every 0$1 trigger IsInUnit(Mikhail) and not mikhailInBase = 3 do
 begin
 enable;
 
-     IF FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_dist, IsInUnit(Mikhail), 10]]) = 1 then //AND FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_inside, IsInUnit(Mikhail)]]) = 1 then
+     IF FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_dist, IsInUnit(Mikhail), 10]]) = 1 then
      begin
        SetAttitude(1, 6, att_enemy, true);
        SetSide(Mikhail, 6);
@@ -697,7 +696,7 @@ enable;
 end;
 
 // Mikhail - Macmillan dialog about Mikhail's escape
-Every 0$1 trigger GetDistUnits(JMM, mikhailDepot) < 5 AND mikhailStatus = 3 do
+Every 0$1 trigger GetDistUnits(JMM, mikhailDepot) < 5 AND mikhailStatus = 3 AND NOT mikhailInBase = 3 do
 var tmp;
 begin
 
@@ -722,10 +721,17 @@ begin
 
 end;
 
+// Mikhail - shoot durring escape
+Every 0$1 trigger IsDying(Mikhail) AND mikhailStatus = 3 do
+begin
+enable;
+mikhailStatus = 2;
+end;
+
 // Mikhail - Remove from map
 Every 0$1 trigger IsInArea(Mikhail, MikhailEscape) AND GetSide(Mikhail) = 6 do
 begin
-     mikhailStatus = 3;
+     if not mikhailInBase = 3 then mikhailStatus = 3;
      RemoveUnit(Mikhail);
 end;
 
