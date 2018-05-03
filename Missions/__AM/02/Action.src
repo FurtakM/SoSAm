@@ -1,8 +1,11 @@
 // Mission start
 Every 1 do
+var tmp;
 begin
 
      CenterNowOnUnits(JMM);
+
+     tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Lisa];
 
      IF Cyrus AND Bobby then
      begin
@@ -29,6 +32,11 @@ begin
           wait(0$1);
           AddComTurnUnit(Lisa, JMM);
           ComTurnUnit([JMM, Cyrus, Bobby], Lisa);
+
+          ComMoveXY(tmp[1], 33, 55);
+          ComMoveXY(tmp[2], 30, 54);
+          AddComTurnUnit(tmp[1], JMM);
+          AddComTurnUnit(tmp[2], JMM);
 
           Say(Lisa, 'D1a-Lisa-2');
 
@@ -85,6 +93,11 @@ begin
           AddComTurnUnit(Lisa, JMM);
           ComTurnUnit([JMM, Cyrus], Lisa);
 
+          ComMoveXY(tmp[1], 33, 55);
+          ComMoveXY(tmp[2], 30, 54);
+          AddComTurnUnit(tmp[1], JMM);
+          AddComTurnUnit(tmp[2], JMM);
+
           Say(Lisa, 'D1a-Lisa-2');
 
 
@@ -109,6 +122,11 @@ begin
           AddComTurnUnit(Lisa, JMM);
           AddComTurnUnit([JMM], Lisa);
 
+          ComMoveXY(tmp[1], 33, 55);
+          ComMoveXY(tmp[2], 30, 54);
+          AddComTurnUnit(tmp[1], JMM);
+          AddComTurnUnit(tmp[2], JMM);
+
           Say(Lisa, 'D1b-Lisa-1');
 
      end;
@@ -125,7 +143,7 @@ begin
      end;
 
      SayRadio(Powell, 'D1-Pow-3');
-     SayRadio(JMM, 'D1-JMM-4');
+     Say(JMM, 'D1-JMM-4');
      SayRadio(Powell, 'D1-Pow-4');
      SayRadio(Powell, 'D1-Pow-4a');
 
@@ -178,7 +196,7 @@ begin
 
      If FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 1000]]]) > 0 then
      begin
-          Say(Khatam, 'D2a-Khat-6');
+          Say(Khatam, 'D2b-Khat-1');
           ComHeal(Khatam, FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 1000]]])[1]);
      end;
 
@@ -194,6 +212,8 @@ begin
      distanceTab = [ [Bobby, GetDistUnitArea(Bobby, DeadsSpawn)], [Cyrus, GetDistUnitArea(Cyrus, DeadsSpawn)], [Lisa, GetDistUnitArea(Lisa, DeadsSpawn)], [tmpMale[1], GetDistUnits(tmpMale[1], DeadsSpawn)], [tmpFemale[1], GetDistUnits(tmpFemale[1], DeadsSpawn)]  ];
 
      PrepareDeadSoldiers;
+
+     spotCorpses = 1;
 
      InGameOn;
      CenterOnXY(23, 12);
@@ -213,17 +233,42 @@ begin
                if distanceTab[i][1] = Lisa then Say(Lisa, 'DCorpses-Lisa-1');
                if distanceTab[i][1] = tmpMale[1] then Say(tmpMale[1], 'DCorpses-Sol1-1');
                if distanceTab[i][1] = tmpFemale[1] then Say(tmpFemale[1], 'DCorpses-FSol1-1');
+               SetLives(DyingSold, 50);
                break;
           end;
      end;
 
      Say(JMM, 'DCorpses-JMM-1');
+     SetLives(DyingSold, 50);
 
-     IF IsOK(Khatam) then Say(Khatam, 'DCorpses-Khat-1');
+     IF IsOK(Khatam) then
+     begin
+          repeat
+            wait(0$1);
+            ComHeal(Khatam, DyingSold);
+          until GetDistUnits(Khatam, DyingSold) < 2;
+
+          spotCorpses = 0;
+
+          SetLives(DyingSold, 4);
+          wait(0$2);
+
+          Say(Khatam, 'DCorpses-Khat-1');
+
+          SetLives(DyingSold, 0);
+     end;
 
      InGameOff;
 
      Say(JMM, 'DCorpses-JMM-2');
+
+end;
+
+// Corpes loop
+Every 0$1 trigger spotCorpses = 1 do
+begin
+     enable;
+     SetLives(DyingSold, 50);
 
 end;
 
@@ -234,7 +279,7 @@ var i;
 begin
     InGameOn;
     ComTurnXY(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 72, 77);    
-    CenterOnXY(72, 77);
+    CenterOnUnits([Brian, Jerry]);
 
     PrepareOtherAmericans;
 
@@ -252,7 +297,7 @@ end;
 
 // Kill russians near river
 
-Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 AND (IsOK(Brian) OR IsOK(Jerry)) do
+Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 do
 begin
 
     If NOT IsDead(Brian) then SetSide(Brian, 1);
@@ -266,12 +311,14 @@ begin
         Say(JMM, 'DFa-JMM-1a');
     end;
 
-    if GetLives(Brian) >= 500 then
-    begin
-        Say(Brian, 'DFb-Sol1-1');
-        ComMoveXY(Brian, 78, 74);
-        IF IsDead(Jerry) then Say(Brian, 'DFb-Sol1-1a')
-    end;    
+end;
+
+// Brian dialog
+Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 AND GetLives(Brian) > 250 do
+begin
+     Say(Brian, 'DFb-Sol1-1');
+     ComMoveXY(Brian, 78, 74);
+     IF IsDead(Jerry) then Say(Brian, 'DFb-Sol1-1a')
 end;
 
 // Contact with enemy bunker
@@ -303,7 +350,9 @@ begin
      Say(JMM, 'DX3-JMM-1');
      DialogueOff;
 
-     wait([0$3, 0$2, 0$1][Difficulty]);
+     for i in FilterUnitsInArea(SouthBaseRussianSpawn1, [[f_side, 3], [f_type, unit_human]]) do southBaseDefenders = southBaseDefenders ^ i;
+
+     wait([0$10, 0$15, 0$20][Difficulty]);
 
     repeat
     wait(0$1);
@@ -335,7 +384,7 @@ begin
 end;
 
 Every 0$1 trigger FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]) >= 1 do
-var tmp, temp1, temp2;
+var tmp, temp1, temp2, i;
 begin
      tmp = FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]);
      temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby];
@@ -346,8 +395,10 @@ begin
      IF IsInUnit(Bobby) = tmp[1] then Say(Bobby, 'DX2a-Bobby-1');
      IF IsInUnit(Cyrus) = tmp[1] then Say(Cyrus, 'DX2a-Cyrus-1');
      IF IsInUnit(Lisa) = tmp[1] then Say(Lisa, 'DX2a-Lisa-1');
-     IF IsInUnit(temp1[1]) = tmp[1] then Say(temp1[1], 'DX2a-Sol1-1');
-     IF IsInUnit(temp2[2]) = tmp[1] then Say(temp2[2], 'DX2a-FSol1-1');
+
+     for i in temp1 do if IsInUnit(i) = tmp[1] then Say(i, 'DX2a-Sol1-1');
+     for i in temp2 do if IsInUnit(i) = tmp[1] then Say(i, 'DX2a-FSol1-1');
+
      IF IsInUnit(JMM) = tmp[1] then Say(JMM, 'DX2b-JMM-1');
 
      Say(JMM, 'DX2a-JMM-2');
@@ -359,7 +410,7 @@ end;
 Every 0$1 trigger GetSide(dep1) = 1 OR GetSide(dep2) = 1 do
 begin
     DialogueOn;
-    SayRadio(JMM, 'D3-JMM-1');
+    Say(JMM, 'D3-JMM-1');
     SayRadio(Powell, 'D3-Pow-1');
     if IsOK(Cyrus) then Say(Cyrus, 'D3-Cyrus-1');  
     DialogueOff;    
@@ -372,16 +423,15 @@ var temp, i;
 begin
 
     temp = FilterAllUnits([[f_side, 1], [f_class, 2]]) diff [JMM];
-    PrepareTigers;
 
     DialogueOn;
-    SayRadio(JMM, 'D3a-JMM-1');
+    Say(JMM, 'D3a-JMM-1');
     SayRadio(Powell, 'D3a-Pow-1');
-    SayRadio(JMM, 'D3a-JMM-2');
+    Say(JMM, 'D3a-JMM-2');
     SayRadio(Powell, 'D3a-Pow-2');
-    SayRadio(JMM, 'D3a-JMM-3');
+    Say(JMM, 'D3a-JMM-3');
     SayRadio(Powell, 'D3a-Pow-3');
-    SayRadio(JMM, 'D3a-JMM-4');
+    Say(JMM, 'D3a-JMM-4');
     DialogueOff;
 
     ChangeMissionObjectives('M2');
@@ -391,8 +441,8 @@ begin
     InGameOn;
     PrepareRussianHeroes;
     CenterNowOnUnits(Mikhail);
-    ComTurnUnit(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), Mikhail);
-    ComTurnUnit(Mikhail, FilterAllUnits([[f_side, 1], [f_class, 2]][1]));
+    ComTurnUnit([JMM, temp[1]], Mikhail);
+    ComTurnUnit(Mikhail, temp[1]);
 
     Say(Mikhail, 'D4-Mikh-1');
     if GetSex(temp[1]) = 1 then Say(temp[1], 'D4-Sol1-1');
@@ -437,7 +487,7 @@ begin
             Say(Mikhail, 'D4b-Mikh-7');
             if GetSex(temp[1]) = 1 then Say(temp[1], 'D4b-Sol1-7');
             if GetSex(temp[1]) = 2 then Say(temp[1], 'D4b-FSol1-7');
-            Say(JMM, 'D4b-JMM-7');                 
+            Say(JMM, 'D4b-JMM-8');
             if GetSex(temp[1]) = 1 then Say(temp[1], 'D4b-Sol1-8');
             if GetSex(temp[1]) = 2 then Say(temp[1], 'D4b-FSol1-8');
             Say(JMM, 'D4b-JMM-9');
@@ -475,6 +525,9 @@ begin
         end;
 
     end;
+
+    PrepareTigers;
+
 end;
 
 // Spawn enemy cargo bay
@@ -520,47 +573,6 @@ begin
     Say(JMM, 'D5a-JMM-1');
 end;
 
-// End mission if you destroy all cargos
-Every 0$01 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape = 1 do
-begin
-    wait([9$0, 8$0, 7$0][Difficulty]);
-
-    IF cargoEscape = 1 then
-    begin
-        SayRadio(Powell, 'D6-Pow-1');
-        SayRadio(JMM, 'D6-JMM-1');
-        SayRadio(Powell, 'D6-Pow-2');
-        SayRadio(JMM, 'D6-JMM-2');
-
-        FinishMission;
-    end;
-end;  
-
-// End mission if one cargo escape - spawn attack
-Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape > 1 do
-var tmp;
-begin
-    wait([9$0, 8$0, 7$0][Difficulty]);
-    PrepareRussianAttack([1, 2, 3][Difficulty], RussianAttack);
-    lastBattle = 1;
-
-    tmp = FilterUnitsInArea(Battlefield, [[f_side, 3], [f_type, unit_human], [f_sex, sex_male]]);
-
-    Say(tmp[1], 'D9-Rus3-1');
-    Say(tmp[2], 'D9-Russ-1');
-end;
-
-// End mission after battle
-Every 0$7 trigger LastBattle = 1 AND FilterUnitsInArea(Battlefield, [[f_side, 3], [f_type, unit_human]]) = 0 do
-begin
-    SayRadio(Powell, 'D6-Pow-1');
-    SayRadio(JMM, 'D6-JMM-1');
-    SayRadio(Powell, 'D6-Pow-2');
-    SayRadio(JMM, 'D6-JMM-2');
-
-    FinishMission;
-end;
-
 // Macmillan's alert about attack depots
 Every 0$1 trigger GetLives(dep1) < 1000 OR GetLives(dep2) < 1000 do Say(JMM, ' D8-JMM-1');
 
@@ -601,7 +613,7 @@ begin
         AddComMoveXY(Mikhail, GetX(Mikhail) + 2, GetY(Mikhail));
 
         wait(0$5);
-        ComMoveToArea(Mikhail, MikhailEnter);
+        AddComMoveToArea(Mikhail, MikhailEnter);
      end;
 
      3: Begin

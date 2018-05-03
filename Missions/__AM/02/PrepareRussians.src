@@ -159,7 +159,7 @@ begin
 end;
 
 Export function PrepareRussianAttack(count, area);
-var i, veh, un;
+var i, veh, un, tmp;
 begin
         uc_side = 3;
         uc_nation = 3;
@@ -193,13 +193,18 @@ begin
 
                 hc_gallery = '';
                 hc_name = '';
-                PrepareHuman(false, 1, rand(RuSoldMinLevel,RuSoldMaxLevel));
+                PrepareHuman(1, 1, rand(RuSoldMinLevel,RuSoldMaxLevel));
 
                 un = CreateHuman;
 
                 PlaceUnitArea(un, area, false);
                 attackGroup = attackGroup ^ un;
         end;
+
+        tmp = FilterUnitsInArea(Battlefield, [[f_side, 3], [f_type, unit_human], [f_sex, sex_male]]);
+
+        Say(tmp[1], 'D9-Rus3-1');
+        Say(tmp[2], 'D9-Russ-1');
 
         for i in attackGroup do ComAgressiveMove(i, 54, 19);
 end;
