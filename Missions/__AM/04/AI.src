@@ -1,12 +1,11 @@
 // Execute's AI functions for Red and Magenta base
 
-Every 0$1 do
+Every 0$1 trigger AIEnable = 1 do
 begin
     enable;
 
     RepairBuilding(3, rubware0);
     HealUnitInBase(3, RussianHealArea, RussianBase, rubbrid0);
-    //BuildingVehicleAndAttackEnemy(3, rubfact0, Difficulty, 1, [42, 43], 1, 1, 22);
 
     if baseReadyToBuild = 2 then
     begin
@@ -14,6 +13,14 @@ begin
         HealUnitInBase(6, SecondRussianHealArea, SecondRussianBase, FilterAllUnits([[f_side, 6], [f_btype, 6]][1]));
     end;
 end;
+
+Every 0$1 + 15$0 trigger AIEnable = 1 do 
+begin
+    enable;
+    BuildingVehicleAndAttackEnemy(3, rubfact0, Difficulty, 1, [42, 43], 1, 1, 22);
+end;
+
+Every 0$1 do ResAllTechs(3, rubbrid0, 3);
 
 // Building base
 

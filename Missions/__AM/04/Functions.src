@@ -85,6 +85,7 @@ begin
     RuSoldMinLevel = 1;
     RuSoldMaxLevel = 2;
     RemoveUnit(ambbrwr1);
+    SetTech(51, 3, state_enabled);
   end;
 
     if Difficulty = 3 then
@@ -93,6 +94,9 @@ begin
     RuSoldMaxLevel = 3;
     RemoveUnit(ambbrwr0);
     RemoveUnit(ambbrwr1);
+    SetTech(51, 3, state_enabled);
+    SetTech(52, 3, state_enabled);
+    PlaceWeaponTurret(rubbunk0, ru_gun);
   end;
 
 end;
@@ -126,6 +130,46 @@ begin
                 end;
                 
         end; 
+end;
+
+// Finish mission
+
+Export function FinishMission;
+var tmp;
+begin
+
+        if buildOil = 1 and buildPower = 1 then
+        begin
+                AddMedal('oil', 1);
+        end else
+        begin
+                if buildOil = 1 and buildPower = 0 then AddMedal('oil', -1);
+                if buildOil = 0 and buildPower = 1 then AddMedal('oil', -2);
+                if buildOil = 0 and buildPower = 0 then AddMedal('oil', -3);
+        end;
+
+        if lostCounter < 3 then begin AddMedal('deaths', 1);
+        end else begin AddMedal('deaths', -1); end;
+
+        if honor = 1 then begin AddMedal('honour', 1);
+        end else begin AddMedal('honour', -1); end;
+
+        GiveMedals('Main');
+
+        RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human]]));
+
+        SaveCharacters(JMM, 'JMM');
+        SaveCharacters(Bobby, 'Bobby');
+        SaveCharacters(Cyrus, 'Cyrus');
+        SaveCharacters(Lisa, 'Lisa');
+        SaveCharacters(Brown, 'Brown');
+        SaveCharacters(Donaldson, 'Donaldson');
+        SaveCharacters(Frank, 'Frank');
+
+        SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human]]) diff [JMM, Bobby, Cyrus, Lisa, Brown, Donaldson, Frank],'04_other_survivors');
+
+        YouWin;
+
 end;
 
 // AI functions
@@ -248,7 +292,7 @@ begin
 END;
 
 Export function RespawnAttackInfantry(side, nation, soldierCount, sniperCount, bazookCount, mortalCount, medicCount, skil, spawnArea, healArea, targetSide, strategy);
-var i, un, damageUnit_list, medic_list, soldiersOK_list, enemyUnits, und, target1, target2;
+var i, j,  un, damageUnit_list, medic_list, soldiersOK_list, enemyUnits, und, target1, target2;
 begin
 
         for i = 1 to medicCount do
@@ -380,12 +424,14 @@ begin
                                         damageUnit_list = FilterAllUnits([[f_side, side], [f_and, [f_not, [f_lives, 550]],[f_lives, 250]]]);
                                         soldiersOK_list =  FilterAllUnits([[f_side, side], [f_or,[f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]], [f_lives, 1000]]);
 
-                                        for i in damageUnit_list + 0 do
+                                        if damageUnit_list > 0 then
                                         begin
-
-                                                        ComMoveToArea(damageUnit_list[i], healArea);
-                                                        AddComHeal(medic_list[i], damageUnit_list[i]);
-
+                                                for i in damageUnit_list  do
+                                                begin
+                                                        ComMoveToArea(i, healArea);
+                                                        for j in medic_list do 
+                                                        AddComHeal(j, i);
+                                                end;
                                         end;
 
                                         for i in soldiersOK_list do
@@ -443,38 +489,41 @@ begin
       end;
 
 
-      IF medicCount > 0 and FilterAllUnits([[f_side, 5], [f_type, unit_human], [f_lives, 550]]) > 0  then
+      IF medicCount > 0  then
         begin
                 repeat
 
-                                        wait(0$1);
+                        wait(0$1);
 
-                                        damageUnit_list = FilterAllUnits([[f_side, side], [f_and, [f_not, [f_lives, 550]],[f_lives, 250]]]);
-                                        soldiersOK_list =  FilterAllUnits([[f_side, side], [f_or,[f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]], [f_lives, 1000]]);
+                        damageUnit_list = FilterAllUnits([[f_side, side], [f_and, [f_not, [f_lives, 550]],[f_lives, 250]]]);
+                        soldiersOK_list =  FilterAllUnits([[f_side, side], [f_or,[f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]], [f_lives, 1000]]);
+                        
+                        if damageUnit_list > 0 then
+                        begin
+                                for i in damageUnit_list  do
+                                begin
+                                        ComMoveToArea(i, healArea);
+                                        for j in medic_list do 
+                                           AddComHeal(j, i);
+                                end;
+                        end;
 
-                                        for i in damageUnit_list  do
-                                        begin
 
-                                                        ComMoveToArea(damageUnit_list[i], healArea);
-                                                        AddComHeal(medic_list[i], damageUnit_list[i]);
+                        for i in soldiersOK_list do
+                        begin
 
-                                        end;
+                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
 
-                                        for i in soldiersOK_list do
-                                        begin
+                        If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                                begin
+                                ComAttackUnit(i, target1);
+                                end  else
+                                begin
+                                ComAttackUnit(i, target2);
+                                end;
 
-                                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                        If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                                begin
-                                                ComAttackUnit(i, target1);
-                                                end  else
-                                                begin
-                                                ComAttackUnit(i, target2);
-                                                end;
-
-                                        end;
+                        end;
 
                 until medicCount = 0;
 

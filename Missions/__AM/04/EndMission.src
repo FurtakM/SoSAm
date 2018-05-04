@@ -1,1 +1,41 @@
-//
+Every 0$1 trigger IsDead(Stolypin) do
+var i;
+begin
+     AIEnable = 0;
+     InGameOn;
+     SetAttitude(3, 1, att_friend, false);
+     SetAttitude(1, 6, att_friend, true);
+     SetAttitude(1, 5, att_friend, true);
+     ChangeSideFog(3, 1);
+     CenterOnXY(97, 91);
+
+     for i in FilterAllUnits([[f_side, 3], [f_type, unit_human]]) do
+     begin
+          ComExitBuilding(i);
+          wait(0$1);
+          ComExitVehicle(i);
+          wait(0$1);
+          ComMoveXY(i, 124, 98);
+     end;
+
+     for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do
+     begin
+          ComExitBuilding(i);
+          wait(0$1);
+          ComExitVehicle(i);
+          wait(0$1);
+          ComAgressiveMove(i, 124, 98);
+     end;
+     wait(0$3);
+
+     CenterOnXY(124, 98);
+
+end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_lives, 250]]) = 0 do FinishMission;
+Every 0$1 do
+var i; 
+begin
+    enable;
+    for i in FilterUnitsInArea(RussianEscape, [f_side, 3]) do RemoveUnit(i);
+end;
