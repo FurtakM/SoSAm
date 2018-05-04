@@ -1,0 +1,297 @@
+// export charactersList ; export JMM , Bobby , Cyrus , Lisa , Frank ; export Brown , Dickens , Woodruff , Knight , Claptopn , Campell , Donaldson ; export Brian , Jerry ; export debugMode ; starting begin Resetfog ;
+   0: CALL_OW 335
+// InGameOn ;
+   4: CALL_OW 8
+// RandomizeAll ;
+   8: CALL_OW 11
+// debugMode = 1 ;
+  12: LD_ADDR_EXP 16
+  16: PUSH
+  17: LD_INT 1
+  19: ST_TO_ADDR
+// charactersList = [ JMM , Bobby , Cyrus , Lisa , Brian , Jerry , Frank , Brown , Dickens , Woodruff , Campell , Knight , Claptopn , Donaldson ] ;
+  20: LD_ADDR_EXP 1
+  24: PUSH
+  25: LD_STRING JMM
+  27: PUSH
+  28: LD_STRING Bobby
+  30: PUSH
+  31: LD_STRING Cyrus
+  33: PUSH
+  34: LD_STRING Lisa
+  36: PUSH
+  37: LD_STRING Brian
+  39: PUSH
+  40: LD_STRING Jerry
+  42: PUSH
+  43: LD_STRING Frank
+  45: PUSH
+  46: LD_STRING Brown
+  48: PUSH
+  49: LD_STRING Dickens
+  51: PUSH
+  52: LD_STRING Woodruff
+  54: PUSH
+  55: LD_STRING Campell
+  57: PUSH
+  58: LD_STRING Knight
+  60: PUSH
+  61: LD_STRING Claptopn
+  63: PUSH
+  64: LD_STRING Donaldson
+  66: PUSH
+  67: EMPTY
+  68: LIST
+  69: LIST
+  70: LIST
+  71: LIST
+  72: LIST
+  73: LIST
+  74: LIST
+  75: LIST
+  76: LIST
+  77: LIST
+  78: LIST
+  79: LIST
+  80: LIST
+  81: LIST
+  82: ST_TO_ADDR
+// PrepareHeroes ;
+  83: CALL 88 0 0
+// end ; end_of_file
+  87: END
+// export function PrepareHeroes ; var i ; begin
+  88: LD_INT 0
+  90: PPUSH
+  91: PPUSH
+// JMM = PrepareUnit ( JMM , false ) ;
+  92: LD_ADDR_EXP 2
+  96: PUSH
+  97: LD_STRING JMM
+  99: PPUSH
+ 100: LD_INT 0
+ 102: PPUSH
+ 103: CALL 243 0 2
+ 107: ST_TO_ADDR
+// Knight = PrepareUnit ( GeorgeKnight , false ) ;
+ 108: LD_ADDR_EXP 10
+ 112: PUSH
+ 113: LD_STRING GeorgeKnight
+ 115: PPUSH
+ 116: LD_INT 0
+ 118: PPUSH
+ 119: CALL 243 0 2
+ 123: ST_TO_ADDR
+// PlaceHumanInUnit ( JMM , amvj ) ;
+ 124: LD_EXP 2
+ 128: PPUSH
+ 129: LD_INT 32
+ 131: PPUSH
+ 132: CALL_OW 52
+// PlaceUnitArea ( Brown , BrownSpawn , false ) ;
+ 136: LD_EXP 7
+ 140: PPUSH
+ 141: LD_INT 1
+ 143: PPUSH
+ 144: LD_INT 0
+ 146: PPUSH
+ 147: CALL_OW 49
+// ComTurnUnit ( Brown , amvj ) ;
+ 151: LD_EXP 7
+ 155: PPUSH
+ 156: LD_INT 32
+ 158: PPUSH
+ 159: CALL_OW 119
+// PlaceUnitArea ( Dickens , GammaPeople , false ) ;
+ 163: LD_EXP 8
+ 167: PPUSH
+ 168: LD_INT 2
+ 170: PPUSH
+ 171: LD_INT 0
+ 173: PPUSH
+ 174: CALL_OW 49
+// PlaceUnitArea ( Woodruff , GammaPeople , false ) ;
+ 178: LD_EXP 9
+ 182: PPUSH
+ 183: LD_INT 2
+ 185: PPUSH
+ 186: LD_INT 0
+ 188: PPUSH
+ 189: CALL_OW 49
+// PlaceUnitArea ( Knight , GammaPeople , false ) ;
+ 193: LD_EXP 10
+ 197: PPUSH
+ 198: LD_INT 2
+ 200: PPUSH
+ 201: LD_INT 0
+ 203: PPUSH
+ 204: CALL_OW 49
+// PlaceUnitArea ( Claptopn , GammaPeople , false ) ;
+ 208: LD_EXP 11
+ 212: PPUSH
+ 213: LD_INT 2
+ 215: PPUSH
+ 216: LD_INT 0
+ 218: PPUSH
+ 219: CALL_OW 49
+// PlaceUnitArea ( Donaldson , GammaPeople , false ) ;
+ 223: LD_EXP 13
+ 227: PPUSH
+ 228: LD_INT 2
+ 230: PPUSH
+ 231: LD_INT 0
+ 233: PPUSH
+ 234: CALL_OW 49
+// end ; end_of_file end_of_file
+ 238: LD_VAR 0 1
+ 242: RET
+// export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
+ 243: LD_INT 0
+ 245: PPUSH
+ 246: PPUSH
+// if exist_mode then
+ 247: LD_VAR 0 2
+ 251: IFFALSE 270
+// begin unit := CreateCharacter ( ident ) ;
+ 253: LD_ADDR_VAR 0 4
+ 257: PUSH
+ 258: LD_VAR 0 1
+ 262: PPUSH
+ 263: CALL_OW 34
+ 267: ST_TO_ADDR
+// end else
+ 268: GO 285
+// begin unit := NewCharacter ( ident ) ;
+ 270: LD_ADDR_VAR 0 4
+ 274: PUSH
+ 275: LD_VAR 0 1
+ 279: PPUSH
+ 280: CALL_OW 25
+ 284: ST_TO_ADDR
+// end ; result := unit ;
+ 285: LD_ADDR_VAR 0 3
+ 289: PUSH
+ 290: LD_VAR 0 4
+ 294: ST_TO_ADDR
+// end ; end_of_file
+ 295: LD_VAR 0 3
+ 299: RET
+// every 1 do
+ 300: GO 302
+ 302: DISABLE
+// begin CenterNowOnUnits ( amvj ) ;
+ 303: LD_INT 32
+ 305: PPUSH
+ 306: CALL_OW 87
+// ComMoveXY ( amvj , 51 , 26 ) ;
+ 310: LD_INT 32
+ 312: PPUSH
+ 313: LD_INT 51
+ 315: PPUSH
+ 316: LD_INT 26
+ 318: PPUSH
+ 319: CALL_OW 111
+// AddComMoveXY ( amvj , 53 , 23 ) ;
+ 323: LD_INT 32
+ 325: PPUSH
+ 326: LD_INT 53
+ 328: PPUSH
+ 329: LD_INT 23
+ 331: PPUSH
+ 332: CALL_OW 171
+// AddComMoveXY ( amvj , 52 , 19 ) ;
+ 336: LD_INT 32
+ 338: PPUSH
+ 339: LD_INT 52
+ 341: PPUSH
+ 342: LD_INT 19
+ 344: PPUSH
+ 345: CALL_OW 171
+// repeat wait ( 0 0$1 ) ;
+ 349: LD_INT 35
+ 351: PPUSH
+ 352: CALL_OW 67
+// CenterNowOnUnits ( amvj ) ;
+ 356: LD_INT 32
+ 358: PPUSH
+ 359: CALL_OW 87
+// until GetX ( amvj ) = 52 and GetY ( amvj ) = 19 ;
+ 363: LD_INT 32
+ 365: PPUSH
+ 366: CALL_OW 250
+ 370: PUSH
+ 371: LD_INT 52
+ 373: EQUAL
+ 374: PUSH
+ 375: LD_INT 32
+ 377: PPUSH
+ 378: CALL_OW 251
+ 382: PUSH
+ 383: LD_INT 19
+ 385: EQUAL
+ 386: AND
+ 387: IFFALSE 349
+// ComExitVehicle ( JMM ) ;
+ 389: LD_EXP 2
+ 393: PPUSH
+ 394: CALL_OW 121
+// wait ( 0 0$1 ) ;
+ 398: LD_INT 35
+ 400: PPUSH
+ 401: CALL_OW 67
+// ComTurnUnit ( JMM , Brown ) ;
+ 405: LD_EXP 2
+ 409: PPUSH
+ 410: LD_EXP 7
+ 414: PPUSH
+ 415: CALL_OW 119
+// ComTurnUnit ( Brown , JMM ) ;
+ 419: LD_EXP 7
+ 423: PPUSH
+ 424: LD_EXP 2
+ 428: PPUSH
+ 429: CALL_OW 119
+// Say ( JMM , D1-JMM-1 ) ;
+ 433: LD_EXP 2
+ 437: PPUSH
+ 438: LD_STRING D1-JMM-1
+ 440: PPUSH
+ 441: CALL_OW 88
+// ComMoveXY ( JMM , 48 , 11 ) ;
+ 445: LD_EXP 2
+ 449: PPUSH
+ 450: LD_INT 48
+ 452: PPUSH
+ 453: LD_INT 11
+ 455: PPUSH
+ 456: CALL_OW 111
+// AddComTurnUnit ( JMM , Brown ) ;
+ 460: LD_EXP 2
+ 464: PPUSH
+ 465: LD_EXP 7
+ 469: PPUSH
+ 470: CALL_OW 179
+// ComMoveXY ( Brown , 48 , 13 ) ;
+ 474: LD_EXP 7
+ 478: PPUSH
+ 479: LD_INT 48
+ 481: PPUSH
+ 482: LD_INT 13
+ 484: PPUSH
+ 485: CALL_OW 111
+// AddComTurnUnit ( Brown , JMM ) ;
+ 489: LD_EXP 7
+ 493: PPUSH
+ 494: LD_EXP 2
+ 498: PPUSH
+ 499: CALL_OW 179
+// Say ( Brown , D1-Brown-1 ) ;
+ 503: LD_EXP 7
+ 507: PPUSH
+ 508: LD_STRING D1-Brown-1
+ 510: PPUSH
+ 511: CALL_OW 88
+// InGameOff ;
+ 515: CALL_OW 9
+// end ; end_of_file
+ 519: END

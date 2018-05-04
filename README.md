@@ -1,11 +1,11 @@
-# American Remake Mod by SoS Team (Serpent, Nefarem)
+# American Remake Mod by SoS Team (Serpent, Nefarem, Prażanin)
 
 # Opis
 Todo
 
 # Stan prac
 - Am01: 0% []
-- Am02: 0% []
+- Am02: 100% []
 - Am03  0% []
 - Am04  0% []
 - Am05  0% []
@@ -51,3 +51,18 @@ Push:
 git push origin <twój_branch>
 ```
 
+# Zadania
+Serpent: 
+```
+Dokończenie misji 01_cont i rozpoczęcie prac nad misją 03.
+```
+
+Nefarem: 
+```
+Poprawienie błędów w misji 02 i rozpoczecie prac nad misją 04.
+```
+
+Prażanin: 
+```
+Stworzenie avatarów ludzi z Gammy.
+```

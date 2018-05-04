@@ -1,0 +1,35 @@
+// End mission if you destroy all cargos
+Every 0$01 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape = 1 do
+begin
+    wait([4$0, 3$0, 2$0][Difficulty]);
+
+    IF cargoEscape = 1 then
+    begin
+        SayRadio(Powell, 'D6-Pow-1');
+        Say(JMM, 'D6-JMM-1');
+        SayRadio(Powell, 'D6-Pow-2');
+        Say(JMM, 'D6-JMM-2');
+
+        FinishMission;
+    end;
+end;
+
+// End mission if one cargo escape - spawn attack
+Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND cargoEscape > 1 do
+var tmp;
+begin
+    wait([9$0, 8$0, 7$0][Difficulty]);
+    PrepareRussianAttack([1, 2, 3][Difficulty], RussianAttack);
+    lastBattle = 1;
+end;
+
+// End mission after battle
+Every 0$7 trigger LastBattle = 1 AND FilterUnitsInArea(Battlefield, [[f_side, 3], [f_type, unit_human]]) = 0 do
+begin
+    SayRadio(Powell, 'D6-Pow-1');
+    Say(JMM, 'D6-JMM-1');
+    SayRadio(Powell, 'D6-Pow-2');
+    Say(JMM, 'D6-JMM-2');
+
+    FinishMission;
+end;
