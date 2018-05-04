@@ -18,16 +18,12 @@ begin
     until GetX(amvj) = 52 AND GetY(amvj) = 19;
 
     ComExitVehicle(JMM);
-    wait(0$1);
-    ComTurnUnit(JMM, Brown);
     ComTurnUnit(Brown, JMM);
-    Say(JMM, 'D1-JMM-1');
-
-    ComMoveXY(JMM, 48, 11);
+    wait(0$01);
+    ComMoveXY(JMM, 46, 10);
     AddComTurnUnit(JMM, Brown);
-
-    ComMoveXY(Brown, 48, 13);
-    AddComTurnUnit(Brown, JMM);
+    wait(0$4);
+    Say(JMM, 'D1-JMM-1');
 
     for i := 1 to gammaSquad do
     begin
@@ -136,7 +132,7 @@ Every 0$1 trigger buildOil = 1 and buildPower = 1 do ChangeMissionObjectives('M1
 // Spawn first attack
 Every 3$0 do
 begin
-    //PrepareFirstAttack;
+    PrepareFirstAttack;
 end;
 
 // Fallback first attack
@@ -175,34 +171,37 @@ Every 0$1 trigger FilterAllUnits([[f_side, 5]]) = 0 and firstRussianAttack = 2 d
 // Donaldson dialog
 Every 0$01 trigger timeToSupport = 0$00 do 
 begin
+    startTimer = 0;
+    timerStatus = 0;
     SayRadio(Donaldson, 'D2-Don-1');
     Say(JMM, 'D2-JMM-1');
     SayRadio(Donaldson, 'D2-Don-2');
     Say(JMM, 'D2-JMM-2');
     SayRadio(Donaldson, 'D2-Don-3');
-    startTimer = 0;
-    timerStatus = 0;
 end;
 
 // Spawn Donaldson, Frank and squad
-Every 12$0 do 
+Every 12$0 do
+var tmp; 
 begin
     PrepareDonaldsonArmy;
     CenterNowOnUnits(Donaldson);
     
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_sex, 1]]) diff [Frank];
+
     DialogueOn;
-    DialogRandom(FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_sex, 1]]), 'D3-Sol1-1', 'D3-Sol1-1');
-    DialogRandom(FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_sex, 1]]), 'D3-Sol2-1', 'D3-Sol2-1');
+    DialogRandom(tmp, 'D3-Sol1-1', 'D3-Sol1-1');
+    DialogRandom(tmp, 'D3-Sol2-1', 'D3-Sol2-1');
     if Frank then Say(Frank, 'D3-Frank-1');
     Say(Donaldson, 'D3-Don-1');
     SayRadio(Donaldson, 'D3-Don-1a');
-    SayRadio(JMM, 'D3-JMM-1');
+    Say(JMM, 'D3-JMM-1');
     SayRadio(Donaldson, 'D3-Don-2');
     if FilterAllUnits([[f_side, 6], [f_type, unit_human]]) > 0 then
     begin
-        SayRadio(JMM, 'D3-JMM-2'); 
+        Say(JMM, 'D3-JMM-2'); 
         SayRadio(Donaldson, 'D3-Don-3');   
-        SayRadio(JMM, 'D3-JMM-3'); 
+        Say(JMM, 'D3-JMM-3'); 
         if Frank then Say(Frank, 'D3-Frank-4');
         DialogueOff;
 
@@ -215,7 +214,7 @@ begin
 
     end else
     begin
-        SayRadio(JMM, 'D3-JMM-4');
+        Say(JMM, 'D3-JMM-4');
         DialogueOff;
 
         if Frank then
@@ -235,6 +234,13 @@ begin
     frankScoutBase = 1;
 end;
 
+// Coop attack with Donaldson
+Every 7$0 trigger GetSide(Donaldson) = 4 and IsOK(Donaldson) do
+begin
+     SayRadio(Donaldson, 'D3b-Don-1');
+     donaldsonCoopAttack = 1;
+end;
+
 // Save Donaldson
 Every 0$1 trigger FilterUnitsInArea(DonaldsonArea, [[f_side, 1], [f_type, unit_human]]) > 0 do
 begin
@@ -245,13 +251,16 @@ end;
 // Frank incomming
 Every 2$0 trigger saveDonaldson = 1 do 
 begin
+    uc_side = 4;
+    uc_nation = 1;
+
     Frank = CreateCharacter('Frank');
     PlaceUnitArea(Frank, FrankSpawn, false);
 
     repeat
         wait(0$1);
-        ComMoveUnit(Frank, JMM);
-    until GetDistUnits(Frank, JMM) < 4;
+        ComMoveXY(Frank, 51, 15);
+    until GetDistUnits(Frank, JMM) < 6;
 
     CenterNowOnUnits([JMM, Frank]);
     DialogueOn;
@@ -354,4 +363,35 @@ begin
         startTimer = 1;
         timerStatus = 3;
     end;
+end;
+
+// Harrison rage
+Every 0$1 trigger timeToDestroyRuBase <= timeToDestroyRuBase / 2 and timerStatus = 3  do 
+begin
+    DialogueOn;
+    SayRadio(Harisson, 'D7a-Har-1');
+    DialogueOff;
+
+    ChangeMissionObjectives('M2a');
+end;
+
+// Lost command
+Every 0$1 trigger timeToDestroyRuBase <= 0$00 and timerStatus = 3 do 
+var tmp;
+begin
+    tmp = FilterAllUnits([f_side, 1]) diff [JMM];
+
+    DialogueOn;
+    if IsOK(Donaldson) then
+    begin
+        SayRadio(Harisson, 'D8-Har-1');
+    end else
+    begin
+        SayRadio(Harisson, 'D8-Har-1a');
+    end;
+    DialogueOff;
+
+    SetSide(tmp, 4);
+    ComAgressiveMove(tmp, 88, 89);
+
 end;

@@ -128,3 +128,19 @@ begin
     end;
 
 end;
+
+On UnitDestroyed(unit) Do
+begin
+    if GetType(unit) = unit_human and GetSide(unit) = 1 then lostCounter = lostCounter + 1;
+end;
+
+On Contact(side1, side2) Do
+var i;
+begin
+     if side1 = 1 and side2 = 6 and donaldsonCoopAttack = 1 then
+     begin
+          donaldsonCoopAttack = 0;
+          for i in FilterAllUnits([[f_side, 4]]) do ComAgressiveMove(i, 52, 64);
+
+     end;
+end;
