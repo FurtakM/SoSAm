@@ -43,20 +43,31 @@ Export function PrepareLisSquad;
 var i, un;
 begin
 
-   for i = 1 to 2 do
-   begin
+   uc_side = 4;
+   uc_nation = 1;
 
-           uc_side = 4;
-           uc_nation = 1;
+   hc_class := 2;
+   hc_sex := sex_male;
+   hc_gallery := 'SecondCharsGal';
+   hc_face_number := 62;
+   hc_name := 'Mike Turner';
+   hc_basic_skills := [0, 1, 0, 0];
+   hc_skills := [1, 2, 0, 0];
 
-           hc_gallery = '';
-           hc_name = '';
-           PrepareHuman(false, 2, rand(0,1));
+   un := CreateHuman;
+   PlaceUnitArea(un, LisaEngs, false);
 
-           un = CreateHuman;
-           PlaceUnitArea(un, LisaEngs, false);
+   hc_sex := sex_female;
+   hc_gallery := 'SecondCharsGal';
+   hc_face_number := 39;
+   hc_name := 'Hallie Jillian';
+   hc_basic_skills := [0, 0, 0, 1];
+   hc_skills := [0, 1, 0, 1];
 
-   end;
+   un := CreateHuman;
+   PlaceUnitArea(un, LisaEngs, false);
+
+   InitHc;
 
 end;
 

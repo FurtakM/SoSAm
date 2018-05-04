@@ -49,8 +49,8 @@ active_road_patrol := true;
 
 PlaceUnitXY(Bobby, 41, 71, false);
 ComHold(Bobby);
-PlaceUnitXY(Cyrus, 81, 23, false);
-ComMoveXY(Cyrus, 79, 32);
+PlaceUnitXY(Cyrus, 98, 51, false);
+ComMoveXY(Cyrus, 79, 34);
 ComCrawl(Cyrus);
 
 SaveForQuickRestart;
@@ -325,14 +325,15 @@ Say(JMM, 'D4b-JMM-1');
 End;
 
 // Macmilan see meta guards
-Every 0$01 trigger GetDistUnits(JMM, russian_meta_guards[1]) < 11 do
+Every 0$01 trigger GetDistUnits(JMM, russian_meta_guards[russian_meta_guards]) < 12 or GetLives(russian_meta_guards[russian_meta_guards]) < 999 do
 var i, hp;
 begin
 
-hp := [650, 700, 750][Difficulty];
+hp := [200, 150, 100][Difficulty];
 
 for i in russian_meta_guards do
-    SetLives(i, hp);
+    if IsOk(i) then
+       SetLives(i, GetLives(i)-hp);
 
 DialogueOn;
 Say(russian_meta_guards[russian_meta_guards], 'D6-FRus1-1');
@@ -392,8 +393,8 @@ begin
         repeat
          wait(0$01);
         until (cyrus_saved and bobby_saved)
-        or (cyrus_saved and not bobby_in_squad)
-        or (bobby_saved and not cyrus_in_squad)
+        or (cyrus_saved and (not bobby_in_squad or IsDying(Bobby) or IsDead(Bobby)))
+        or (bobby_saved and (not cyrus_in_squad or IsDying(Cyrus) or IsDead(Cyrus)))
         or (IsDead(Bobby) and IsDead(Cyrus));
 
      SaveVariable(GetLives(JMM), '01_JMMLifePoints_1');
