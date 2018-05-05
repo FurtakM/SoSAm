@@ -4,6 +4,7 @@ Map scripts: Nefarem
 Updates:
 1: 04.05.2018 godz. 20:00
 2: 05.05.2018 godz. 00:00
+3: 05.05.2018 godz. 19:00
 
 }
 
@@ -53,7 +54,7 @@ begin
 
     baseReadyToBuild = 0; // 0 - Depot no build, 1 - depot build, 2 - base finish
 
-    debugMode = 1; // 0 - Off (normal players) , 1 - ON (developers)
+    debugMode = 0; // 0 - Off (normal players) , 1 - ON (developers)
 
     firstRussianAttack = 0; // first attack and dialog
     saveDonaldson = 0; // 0 - no save, 1 - save
@@ -94,11 +95,12 @@ begin
 end;
 
 Every 0$1 trigger debugMode = 1 do
-var i; 
+var i, c1, c2, c3, c4, c5;
 begin
     enable;
     fogoff(true);
     for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
     SetResourceType(GetBase(ambdept0), 1, 9999);        
-    SetResourceType(GetBase(ambdept0), 2, 9999);  
+    SetResourceType(GetBase(ambdept0), 2, 9999);
+
 end;

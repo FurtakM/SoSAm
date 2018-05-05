@@ -108,7 +108,6 @@ begin
         begin
                 Say(JMM, 'D9c-JMM-1');
                 energyVDialog = 1;
-                display_strings = 'tsi';
         end else
         begin
                 if GetTech(35, 1) = state_researched and energyVDialog = 0 then
@@ -272,7 +271,7 @@ begin
     repeat begin
     wait(0$1);
 
-      for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) do
+      for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
       begin
 
         target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
@@ -380,10 +379,9 @@ begin
 
 
         // strategy , 1 - flank and attack oil drilling mine,  2 - front attack, 
-
+  
         if strategy = 1 then
         begin
-                
                 repeat
                         wait(0$3);
                         for i in soldiersOK_list do
@@ -393,121 +391,25 @@ begin
                                 AddComAgressiveMove(i, 75, 23);
                                 AddComAgressiveMove(i, 78, 8);
                         end;
-                until FilterUnitsInArea(EnemyTargetArea1, [f_side, 5]) > 0;
+                until FilterUnitsInArea(EnemyTargetArea1, [f_side, side]) > 0;
 
-       repeat begin
-       wait(0$3);
-
-                for i in soldiersOK_list do
-                begin
-
-
-                        target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                        target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                        begin
-                                        ComAttackUnit(i, target1);
-                                        end else
-                                        begin
-                                        ComAttackUnit(i, target2);
-                end;
-      end;
-
-
-      IF medicCount > 0  then
-        begin
                 repeat
-
-                                        wait(0$1);
-
-                                        damageUnit_list = FilterAllUnits([[f_side, side], [f_and, [f_not, [f_lives, 550]],[f_lives, 250]]]);
-                                        soldiersOK_list =  FilterAllUnits([[f_side, side], [f_or,[f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]], [f_lives, 1000]]);
-
-                                        if damageUnit_list > 0 then
-                                        begin
-                                                for i in damageUnit_list  do
-                                                begin
-                                                        ComMoveToArea(i, healArea);
-                                                        for j in medic_list do 
-                                                        AddComHeal(j, i);
-                                                end;
-                                        end;
-
-                                        for i in soldiersOK_list do
-                                        begin
-
-                                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                        If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                                begin
-                                                ComAttackUnit(i, target1);
-                                                end  else
-                                                begin
-                                                ComAttackUnit(i, target2);
-                                                end;
-
-                                        end;
-
-                until medicCount = 0;
-
-        end;
-
-      end until soldiersOK_list = 0;
-        end;
-
-        if strategy = 2 then
-        begin
-                
-                repeat
-                        wait(0$3);
-                        for i in soldiersOK_list do
-                        begin
-                                AddComAgressiveMove(i, 91, 63);
-                                AddComAgressiveMove(i, 75, 33);
-                        end;
-                until FilterUnitsInArea(EnemyTargetArea2, [f_side, 5]) > 0;
-
-       repeat begin
-       wait(0$3);
-
-                for i in soldiersOK_list do
-                begin
-
-
-                        target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                        target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                        begin
-                                        ComAttackUnit(i, target1);
-                                        end else
-                                        begin
-                                        ComAttackUnit(i, target2);
-                end;
-      end;
-
-
-      IF medicCount > 0  then
-        begin
-                repeat
-
                         wait(0$1);
-
                         damageUnit_list = FilterAllUnits([[f_side, side], [f_and, [f_not, [f_lives, 550]],[f_lives, 250]]]);
                         soldiersOK_list =  FilterAllUnits([[f_side, side], [f_or,[f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]], [f_lives, 1000]]);
-                        
-                        if damageUnit_list > 0 then
-                        begin
-                                for i in damageUnit_list  do
-                                begin
-                                        ComMoveToArea(i, healArea);
-                                        for j in medic_list do 
-                                           AddComHeal(j, i);
-                                end;
-                        end;
 
+                        IF medicCount > 0  then
+                        begin
+                                if damageUnit_list > 0 then
+                                begin
+                                        for i in damageUnit_list  do
+                                        begin
+                                                ComMoveToArea(i, healArea);
+                                                for j in medic_list do 
+                                                AddComHeal(j, i);
+                                        end;
+                                 end;
+                        end;
 
                         for i in soldiersOK_list do
                         begin
@@ -515,45 +417,172 @@ begin
                                 target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
                                 target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
 
-                        If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
                                 begin
-                                ComAttackUnit(i, target1);
-                                end  else
-                                begin
-                                ComAttackUnit(i, target2);
+                                        ComAttackUnit(i, target1);
+                                        end  else
+                                        begin
+                                        ComAttackUnit(i, target2);
                                 end;
 
                         end;
 
-                until medicCount = 0;
+                                        
+                        for i in soldiersOK_list do
+                        begin
+                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
 
+                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                                begin
+                                ComAttackUnit(i, target1);
+                                end else
+                                begin
+                                ComAttackUnit(i, target2);
+                        end;
+               end; until soldiersOK_list = [];
         end;
 
-      end until soldiersOK_list = 0;
+
+      if strategy = 2 then
+      begin
+                repeat
+                        wait(0$1);
+                        for i in soldiersOK_list do
+                        begin
+                                AddComAgressiveMove(i, 91, 63);
+                                AddComAgressiveMove(i, 75, 33);
+                        end;
+                until FilterUnitsInArea(EnemyTargetArea2, [f_side, side]) > 0;
+
+                repeat
+                        wait(0$3);
+                        damageUnit_list = FilterAllUnits([[f_side, side], [f_and, [f_not, [f_lives, 550]],[f_lives, 250]]]);
+                        soldiersOK_list =  FilterAllUnits([[f_side, side], [f_or,[f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]], [f_lives, 1000]]);
+
+                        IF medicCount > 0  then
+                        begin
+                                if damageUnit_list > 0 then
+                                begin
+                                        for i in damageUnit_list  do
+                                        begin
+                                                ComMoveToArea(i, healArea);
+                                                for j in medic_list do 
+                                                AddComHeal(j, i);
+                                        end;
+                                 end;
+                        end;
+
+                        for i in soldiersOK_list do
+                        begin
+
+                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                                begin
+                                        ComAttackUnit(i, target1);
+                                        end  else
+                                        begin
+                                        ComAttackUnit(i, target2);
+                                end;
+
+                        end;
+
+                                        
+                        for i in soldiersOK_list do
+                        begin
+                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                                begin
+                                ComAttackUnit(i, target1);
+                                end else
+                                begin
+                                ComAttackUnit(i, target2);
+                        end;
+               end; until soldiersOK_list = [];
         end;
-        
+
 END;
 
-export function RespawnAttackVehicle(area, side, vehCount, mehskill, nation, vehengine, vehcontrol, Ruenableweapon, ArenableWeapon, amEnableWeapon, repairArea, targetSide);
-var i, j, rutemp, artemp, amtemp,target1, target2, lastIndex1, lastIndex2, lastIndex3, veh, tempTable,  ruWeaponTab, arWeaponTab, amWeaponTab, ruChassisTab, arChassisTab, amChassisTab, Vehicle_list, VehicleOK_list, damageVehicle_list, emptyVehicle_list, mechanicInside_list, mechanicOutside_list;
+// Vehicle - Attack/Repair/Attack
+
+Export function RepairVehicle(side, repairArea, repX, repY, targetSide);
+var i,j, vehicleOK_list, damageVehicle_list, vehicleNeedRepair_list, vehicleDontNeedRepair_list, mechanicInside_list, mechanicOutside_list, target1, target2;
+begin
+    vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 660], [f_not, [f_empty]], [f_not, [f_weapon, 53]]]);
+    damageVehicle_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 660]]]);
+
+    vehicleNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 1000]]]);
+    vehicleDontNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_empty], [f_not, [f_weapon, 53]]]);
+
+    mechanicInside_list = [];
+    mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
+    
+    if damageVehicle_list > 0 then
+    begin
+        for i in damageVehicle_list do 
+        begin
+            ComMoveXY(i, repX, repY);
+            mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
+        end;
+    end;
+
+    if vehicleNeedRepair_list > 0 then
+    begin
+        for i in mechanicInside_list do 
+        begin
+            for j in vehicleNeedRepair_list do 
+            begin
+                ComExitVehicle(i);
+                wait(0$1);
+                ComRepairVehicle(i, j);
+            end;
+        end;
+    end;
+
+    if vehicleDontNeedRepair_list > 0 then
+    begin
+        ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
+    end;
+
+    if vehicleOK_list > 0 then
+    begin
+        for i in vehicleOK_list do
+        begin
+            target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+            target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+            If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+            begin
+                ComAttackUnit(i, target1);
+            end
+            else
+            begin
+                ComAttackUnit(i, target2);
+            end;
+        end; 
+    end;
+
+    for i in not FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]) do ComMoveXY(i, repX, repY);
+
+end;
+
+// Spawn vehicle and attack
+
+export function RespawnAttackVehicle(area, side, vehCount, mehskill, nation, vehEngine, vehControl, RUWeapons, ARWeapons, AMWeapon, targetSide);
+var i, j, un, veh, ruChassisTab, arChassisTab, amChassisTab, vehicleOK_list, target1, target2;
 begin
 
-  ruWeaponTab = ruenableweapon;
-  ruChassisTab = [21, 22, 23, 24];
-
-  arWeaponTab = arenableweapon;
-  arChassisTab = [11, 12, 13, 14];
-
-  amWeaponTab = amenableweapon;
-  amChassisTab = [1, 2, 3, 4, 5];
-
-  amtemp = amWeaponTab;
-  artemp = arWeaponTab;
-  rutemp = ruWeaponTab;
+  amChassisTab = [];
+  arChassisTab = [];
+  ruChassisTab = [];
 
   repeat
 
-  wait(0$1);
+  wait(0$01);
 
   IF nation = 1 then
   begin
@@ -563,26 +592,26 @@ begin
 
             vc_engine = vehengine;
             vc_control = vehcontrol;
-            vc_weapon = amWeaponTab[Rand(1, lastIndex1)];
+            vc_weapon = AMWeapon[Rand(1, AMWeapon)];
 
-            for j = 1 to amWeaponTab do
+            for j = 1 to AMWeapon do
             begin
-                 IF amWeaponTab[j] = 2 or amWeaponTab[j] = 3 then
+                 IF AMWeapon[j] = 2 or AMWeapon[j] = 3 then
                  begin
                       amChassisTab = [1,2,3,4,5];
-                      vc_chassis = amChassisTab[Rand(1,5)];
+                      vc_chassis = amChassisTab[Rand(1,amChassisTab)];
                  end;
 
-                 IF amWeaponTab[j] = 4 or amWeaponTab[j] = 5 or amWeaponTab[j] = 9 or amWeaponTab[j] = 11 or amWeaponTab[j] = 7 then
+                 IF AMWeapon[j] = 4 or AMWeapon[j] = 5 or AMWeapon[j] = 9 or AMWeapon[j] = 11 or AMWeapon[j] = 7 then
                  begin
                       amChassisTab = [2,3,4,5];
-                      vc_chassis = amChassisTab[Rand(1, 4)];
+                      vc_chassis = amChassisTab[Rand(1, amChassisTab)];
                  end;
 
-                 IF amWeaponTab[j] = 8 or amWeaponTab[j] = 6 or amWeaponTab[j] = 10 then
+                 IF AMWeapon[j] = 8 or AMWeapon[j] = 6 or AMWeapon[j] = 10 then
                  begin
                       amChassisTab = [4,5];
-                      vc_chassis = amChassisTab[Rand(1,2)];
+                      vc_chassis = amChassisTab[Rand(1, amChassisTab)];
                  end;
 
            end;
@@ -590,15 +619,15 @@ begin
             veh = CreateVehicle;
             PlaceUnitArea(veh, area, false);
 
-            IF vehcontrol = 1 then
+            IF vehControl = 1 then
             begin
 
-                 hc_class = 3;
-                 hc_name = '';
-                 hc_gallery = '';
-                 hc_sex = [Rand(sex_female,sex_male)];
-                 hc_skills = [mehskill, mehskill, mehskill, mehskill];
-                 PlaceHumanInUnit(CreateHuman, veh);
+                hc_gallery = '';
+                hc_name = '';
+                PrepareHuman(false, 3, mehskill);
+
+                un = CreateHuman;
+                PlaceHumanInUnit(un, veh);
 
             end;
 
@@ -615,24 +644,22 @@ begin
 
             vc_engine = vehengine;
             vc_control = vehcontrol;
-            vc_weapon = arWeaponTab[Rand(1, lastIndex2)];
+            vc_weapon = ARWeapons[Rand(1, ARWeapons)];
 
-            for j = 1 to arWeaponTab do
+            for j = 1 to ARWeapons do
             begin
 
-                 IF arWeaponTab[j] = 24 or arWeaponTab[j] = 22 or arWeaponTab[j] = 23 or arWeaponTab[j] = 30 then
+                 IF ARWeapons[j] = 24 or ARWeapons[j] = 22 or ARWeapons[j] = 23 or ARWeapons[j] = 30 then
                  begin
                       arChassisTab = [11, 12, 13, 14];
-                      vc_chassis = arChassisTab[Rand(1, 4)];
+                      vc_chassis = arChassisTab[Rand(1, arChassisTab)];
                  end;
 
-                 IF arWeaponTab[j] = 29 or arWeaponTab[j] = 28 or arWeaponTab[j] = 27 or arWeaponTab[j] = 26 or arWeaponTab[j] = 25 then
+                 IF ARWeapons[j] = 29 or ARWeapons[j] = 28 or ARWeapons[j] = 27 or ARWeapons[j] = 26 or ARWeapons[j] = 25 then
                  begin
                       arChassisTab = [13, 14];
-                      vc_chassis = arChassisTab[Rand(1, 2)];
+                      vc_chassis = arChassisTab[Rand(1, arChassisTab)];
                  end;
-
-                 arChassisTab = [11, 12, 13, 14];
 
            end;
 
@@ -642,12 +669,12 @@ begin
             IF vehcontrol = 1 then
             begin
 
-                 hc_class = 3;
-                 hc_name = '';
-                 hc_gallery = '';
-                 hc_sex = [Rand(sex_female,sex_male)];
-                 hc_skills = [Rand(0, mehskill), Rand(0, mehskill), mehskill, Rand(0, mehskill)];
-                 PlaceHumanInUnit(CreateHuman, veh);
+                hc_gallery = '';
+                hc_name = '';
+                PrepareHuman(false, 3, mehskill);
+
+                un = CreateHuman;
+                PlaceHumanInUnit(un, veh);
 
             end;
 
@@ -663,28 +690,25 @@ begin
             uc_side = side;
             uc_nation = nation;
 
-            ruChassisTab = [21, 22, 23, 24];
             vc_engine = vehengine;
             vc_control = vehcontrol;
-            vc_weapon = ruWeaponTab[Rand(1, lastIndex3)];
+            vc_weapon = RUWeapons[Rand(1, RUWeapons)];
 
 
-            for j = 1 to ruWeaponTab do
+            for j = 1 to RuWeapons do
             begin
 
-                 IF ruWeaponTab[j] = 42 or ruWeaponTab[j] = 43 or ruWeaponTab[j] = 44 or ruWeaponTab[j] = 45 or ruWeaponTab[j] = 49 then
-                 begin
-                      ruChassisTab = [21, 22, 23, 24];
-                      vc_chassis = ruChassisTab[Rand(1, 4)];
-                 end;
+                IF RUWeapons[j] = 42 or RUWeapons[j] = 43 or RUWeapons[j] = 44 or RUWeapons[j] = 45 or RUWeapons[j] = 49 then
+                begin
+                    ruChassisTab = [21, 22, 23, 24];
+                    vc_chassis = ruChassisTab[Rand(1, ruChassisTab)];
+                end;
 
-                 IF ruWeaponTab[j] = 46 or ruWeaponTab[j] = 47 then
-                 begin
-                      ruChassisTab = [23, 24];
-                      vc_chassis = ruChassisTab[Rand(1, 2)];
-                 end;
-
-                 ruChassisTab = [21, 22, 23, 24];
+                IF RUWeapons[j] = 46 or RUWeapons[j] = 47 then
+                begin
+                    ruChassisTab = [23, 24];
+                    vc_chassis = ruChassisTab[Rand(1, ruChassisTab)];
+                end;
 
            end;
 
@@ -695,12 +719,12 @@ begin
             IF vehcontrol = 1 then
             begin
 
-                 hc_class = 3;
-                 hc_name = '';
-                 hc_gallery = '';
-                 hc_sex = [Rand(sex_female,sex_male)];
-                 hc_skills = [Rand(0, mehskill), Rand(0, mehskill), mehskill, Rand(0, mehskill)];
-                 PlaceHumanInUnit(CreateHuman, veh);
+                hc_gallery = '';
+                hc_name = '';
+                PrepareHuman(false, 3, mehskill);
+
+                un = CreateHuman;
+                PlaceHumanInUnit(un, veh);
 
             end;
 
@@ -711,70 +735,30 @@ begin
 
   until i = vehCount;
 
-  repeat
-   wait(0$3);
+    repeat
+        wait(0$1);
+        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 661]]);
 
-       VehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 550]]);
-         damageVehicle_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not,[f_lives, 550]]]);
-         emptyVehicle_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_empty]]);
-
-         for i in damageVehicle_list do
-         begin
-           mechanicInside_list =  UnitsInside(i);
-         end;
-
-         mechanicOutside_list =  FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
-
-        IF damageVehicle_list > 0 then
+        IF vehicleOK_list > 0 then
         begin
 
-                for i in damageVehicle_list do
-                begin
-                   for j in mechanicInside_list do
-                   begin
-                        ComMoveToArea(damageVehicle_list, repairArea);
-                        AddComExitVehicle(j);
-                        AddComRepairVehicle(j, i);
-                   end;
-                end;
-
-        end;
-
-        IF emptyVehicle_list > 0 then
-        begin
-
-         for i in emptyVehicle_list  do
-         begin
-              for j in mechanicOutside_list do
-              begin
-                AddComEnterUnit(j, i);
-             end;
-
-        end;
-
-      end;
-
-      IF VehicleOK_list > 0 then
-      begin
-         for i in VehicleOK_list  do
-         begin
+            for i in vehicleOK_list  do
+            begin
 
             target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
             target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
 
-               If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                begin
-                  ComAttackUnit(i, target1);
-                end
-               else
-                begin
-                  ComAttackUnit(i, target2);
-                end;
-
+            If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+            begin
+                ComAttackUnit(i, target1);
+            end
+            else
+            begin
+                ComAttackUnit(i, target2);
+            end;
+        end;
       end;
-   end;
- until VehicleOK_list = 0 AND damageVehicle_list = 0;
-
+    until (FilterAllUnits([[f_side, side], [f_type, unit_vehicle]])) = 0;
 
 
 END;
