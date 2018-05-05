@@ -202,7 +202,7 @@ begin
         Say(JMM, 'D3-JMM-2'); 
         SayRadio(Donaldson, 'D3-Don-3');   
         Say(JMM, 'D3-JMM-3'); 
-        if Frank then Say(Frank, 'D3-Frank-4');
+        if Frank then Say(Frank, 'D3-Frank-2');
         DialogueOff;
 
         if Frank then
@@ -281,6 +281,9 @@ begin
     wait(0$5);
     InGameOff;
 end;
+
+// Russian build buldozer
+Every 12$0 trigger Difficulty = 2 or Difficulty = 3 do ComConstruct(rubfact0, 24, 1, 1, 53);
 
 // Ron ask -> good answer(10)/support need(5) - 3 min /negative answer(5) - 5 min to capture russian base
 // 1(3) 2(4)  3(5)
@@ -366,7 +369,7 @@ begin
 end;
 
 // Harrison rage
-Every 0$1 trigger timeToDestroyRuBase <= timeToDestroyRuBase / 2 and timerStatus = 3  do 
+Every 0$1 trigger timeToDestroyRuBase <= 4$00 and timerStatus = 3  do 
 begin
     DialogueOn;
     SayRadio(Harisson, 'D7a-Har-1');
@@ -393,5 +396,5 @@ begin
 
     SetSide(tmp, 4);
     ComAgressiveMove(tmp, 88, 89);
-
+    honor = 0;
 end;
