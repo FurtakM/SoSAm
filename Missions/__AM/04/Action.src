@@ -171,13 +171,14 @@ Every 0$1 trigger FilterAllUnits([[f_side, 5]]) = 0 and firstRussianAttack = 2 d
 // Donaldson dialog
 Every 0$01 trigger timeToSupport = 0$00 do 
 begin
-    startTimer = 0;
-    timerStatus = 0;
+    timerStatus = 4;
+    DialogueOn;
     SayRadio(Donaldson, 'D2-Don-1');
     Say(JMM, 'D2-JMM-1');
     SayRadio(Donaldson, 'D2-Don-2');
     Say(JMM, 'D2-JMM-2');
     SayRadio(Donaldson, 'D2-Don-3');
+    DialogueOff;
 end;
 
 // Spawn Donaldson, Frank and squad
@@ -191,7 +192,7 @@ begin
 
     DialogueOn;
     DialogRandom(tmp, 'D3-Sol1-1', 'D3-Sol1-1');
-    DialogRandom(tmp, 'D3-Sol2-1', 'D3-Sol2-1');
+    DialogRandom(FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_sex, 1], [f_class, 3]]), 'D3-Sol2-1', 'D3-Sol2-1');
     if Frank then Say(Frank, 'D3-Frank-1');
     Say(Donaldson, 'D3-Don-1');
     SayRadio(Donaldson, 'D3-Don-1a');
@@ -202,10 +203,10 @@ begin
         Say(JMM, 'D3-JMM-2'); 
         SayRadio(Donaldson, 'D3-Don-3');   
         Say(JMM, 'D3-JMM-3'); 
-        if Frank then Say(Frank, 'D3-Frank-2');
+        if IsOK(Frank) then Say(Frank, 'D3-Frank-3');
         DialogueOff;
 
-        if Frank then
+        if IsOK(Frank) then
         begin
             SetSide(Frank, 0);
             ComMoveToArea(Frank, FrankSpot);
@@ -217,7 +218,7 @@ begin
         Say(JMM, 'D3-JMM-4');
         DialogueOff;
 
-        if Frank then
+        if IsOK(Frank) then
         begin
             SetSide(Frank, 0);
             ComMoveToArea(Frank, FrankSpot);
@@ -242,10 +243,25 @@ begin
 end;
 
 // Save Donaldson
-Every 0$1 trigger FilterUnitsInArea(DonaldsonArea, [[f_side, 1], [f_type, unit_human]]) > 0 do
+Every 0$1 trigger saveDonaldson = 0 do
+var i, j;
 begin
-    saveDonaldson = 1;
-    SetSide(FilterAllUnits([[f_side, 4], [f_type, unit_human]]), 1);
+    enable;
+
+     for i in FilterAllUnits([[f_side, 4], [f_type, unit_human]]) do
+     begin
+          for j in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do
+          begin
+               If GetDistUnits(i, j) < 5 then
+               begin
+               
+                    saveDonaldson = 1;
+                    SetSide(FilterAllUnits([[f_side, 4], [f_type, unit_human]]), 1);
+
+               end;
+          end;
+     end;
+
 end;
 
 // Frank incomming
@@ -331,8 +347,7 @@ end;
 Every 0$01 trigger timerStatus = 2 and timeToSupport = 0$00 do 
 begin
 
-    startTimer = 0;
-    timerStatus = 0;
+    timerStatus = 4;
 
     if harrAnswer = 1 then
     begin
@@ -383,6 +398,8 @@ Every 0$1 trigger timeToDestroyRuBase <= 0$00 and timerStatus = 3 do
 var tmp;
 begin
     tmp = FilterAllUnits([f_side, 1]) diff [JMM];
+
+    saveDonaldson = 2;
 
     DialogueOn;
     if IsOK(Donaldson) then
