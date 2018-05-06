@@ -1,1 +1,67 @@
-//
+// Execute's AI functions for Red and Magenta base
+
+Every 0$1 trigger AIEnable = 1 do
+begin
+    enable;
+
+    RepairBuilding(3, rubware0);
+    HealUnitInBase(3, RussianHealArea, RussianBase, rubbrid0);
+
+    if baseReadyToBuild = 2 then
+    begin
+        RepairBuilding(6, FilterAllUnits([[f_side, 6], [f_btype, b_depot]][1]) );
+        HealUnitInBase(6, SecondRussianHealArea, SecondRussianBase, FilterAllUnits([[f_side, 6], [f_btype, 6]][1]));
+    end;
+end;
+
+Every 0$01 do
+begin
+     enable;
+     RepairVehicle(3, RussianAttackRepair, 111, 87, 1);
+end;
+
+Every 0$01 do
+begin
+     enable;
+     RepairVehicle(5, RussianAttackRepair, 111, 87, 1);
+end;
+
+Every 0$1 + 15$0 trigger AIEnable = 1 do 
+begin
+    enable;
+
+    if Difficulty = 1 then BuildingVehicleAndAttackEnemy(3, rubfact0, Difficulty + 1, 1, [42, 42, 43], 1, 1, 21);
+    if Difficulty = 2 then BuildingVehicleAndAttackEnemy(3, rubfact0, Difficulty + 1, 1, [42, 43], 1, 1, [21, 22]);
+    if Difficulty = 3 then BuildingVehicleAndAttackEnemy(3, rubfact0, Difficulty, 1, [43, 43, 43, 44], 1, 1, 22);
+
+
+end;
+
+Every 0$1 do ResAllTechs(3, rubbrid0, 3);
+
+// Building base
+
+Every 0$1 trigger baseReadyToBuild = 1 do
+var i, cargo;
+begin
+    cargo = FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_weapon, 51]]);
+
+    ComMoveXY(cargo[1], GetX(ruPDepot) - 5, GetY(ruPDepot) - 5);
+    wait(0$5);
+    AddComCollect(cargo[1], 41, 52);
+end; 
+
+Every 0$1 trigger GetResourceType(GetBase(ruPDepot), 1) >= 100  do
+var eng;
+begin
+    eng = FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_class, 2]]);
+
+    ComBuild(eng[1], 4, 39, 37, 3);
+    AddComBuild(eng[1], 29, 42, 54, 3);
+    AddComBuild(eng[1], 6, 38, 48,0);
+    AddComBuild(eng[1], 2, 32, 38, 2);
+    AddComBuild(eng[1], 26, 39, 55, 3);
+    AddComBuild(eng[1], 32, 31, 31, 3);
+    AddComBuild(eng[1], b_breastwork, 50, 51, 4);
+
+end;

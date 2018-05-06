@@ -18,19 +18,40 @@ hc_gallery := '';
 hc_name := '';
 
 // guard north / south
-for i = 1 to 8 do
+PrepareHuman(sex_male, 1, skill);
+hc_gallery := 'SecondCharsGal';
+hc_face_number := 69;
+hc_sex := sex_male;
+hc_name := 'Ilja Ivanov';
+
+un := CreateHuman;
+russian_troops_1 := Insert(russian_troops_1, 1, un);
+PlaceUnitArea(un, guard_north, false);
+
+PrepareHuman(sex_male, 1, skill);
+hc_gallery := 'SecondCharsGal';
+hc_face_number := 70;
+hc_name := 'Pavel Starczy';
+
+un := CreateHuman;
+russian_troops_1 := Insert(russian_troops_1, 2, un);
+PlaceUnitArea(un, guard_north, false);
+
+InitHc;
+
+for i = 1 to 7 do
     begin
-    PrepareHuman(sex_male, 1, skill);
+    PrepareHuman(false, 1, skill);
     un := CreateHuman;
 
     if i mod 2 = 0 then
        begin
-       russian_troops_1 := Insert(russian_troops_1, 1, un);
+       russian_troops_1 := Insert(russian_troops_1, russian_troops_1+1, un);
        PlaceUnitArea(un, guard_north, false);
        end
       else
        begin
-       russian_troops_2 := Insert(russian_troops_2, 1, un);
+       russian_troops_2 := Insert(russian_troops_2, russian_troops_2+1, un);
        PlaceUnitArea(un, guard_south, false);
        end;
     end;
