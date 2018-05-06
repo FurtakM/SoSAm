@@ -171,6 +171,77 @@ begin
 
 end;
 
+ // Serpent functions
+Export Function CutTreeInArea(bulldozer, area);
+var i, list, tmp, hex;
+begin
+if not bulldozer or GetLives(bulldozer) < 250 or (HasTask(bulldozer) and GetFuel(bulldozer) > 20) then
+   exit;
+
+if GetFuel(bulldozer) < 20 and not GetTag(bulldozer) = 21 then
+   begin
+   ComStop(bulldozer);
+   SetTag(bulldozer, 21);
+   exit;
+   end
+    else
+     if GetFuel(bulldozer) > 20 then
+        SetTag(bulldozer, 0);
+
+list := ListEnvironmentArea(area);
+tmp := [];
+
+for i = 1 to list do
+    if IsEnvironmentDestroyable(list[i][1], list[i][2]) then
+       begin
+       tmp := Replace(tmp, tmp+1, [list[i][1], list[i][2]]);
+       end;
+
+
+ComStop(bulldozer);
+
+hex := [GetX(bulldozer), GetY(bulldozer)];
+
+for i = tmp downto 1 do
+    begin
+    hex := GetClosestPoint(hex[1], hex[2], tmp);
+    AddComCutTreeOnHex(bulldozer, hex[1], hex[2]);
+    tmp := Delete(tmp, hex[3]);
+    end;
+End;
+
+Export Function AddComCutTreeOnHex(bulldozer, x, y);
+begin
+if IsEnvironment(x, y) and IsEnvironmentDestroyable(x, y) and ValidHex(x, y) and HexInfo(x, y) = -1 then
+   AddComMoveXY(bulldozer, x, y);
+End;
+
+Export Function GetClosestPoint(x, y, list);
+var i, dist, d, _x, _y, _i;
+begin
+
+dist := 99999;
+
+for i = 1 to list do
+    begin
+    d := GetDistXY(x, y, list[i][1], list[i][2]);
+
+    if d = 0 then
+       continue;
+
+    if d < dist then
+       begin
+       _x := list[i][1];
+       _y := list[i][2];
+       _i := i;
+       dist := d;
+       end;
+    end;
+
+result := [_x, _y, _i, dist];
+End;
+
+
 // AI functions
 
 Export function ResAllTechs(side, lab, nation);
@@ -230,7 +301,7 @@ begin
 
       for i = 1 to damageUnits do ComMoveToArea(damageUnits[i], healArea);
 
-      for i = 1 to sci_list do
+      for i in sci_list do
       begin
 
         ComExitBuilding(sci_list[i]);
@@ -238,7 +309,7 @@ begin
         for j in FilterUnitsInArea(healArea,[f_side, side]) do
         begin
 
-        AddComHeal(sci_list[i], j[j]);
+        AddComHeal(i, j);
         wait(1$0);
 
         end;
@@ -526,15 +597,16 @@ begin
         for i in damageVehicle_list do 
         begin
             ComMoveXY(i, repX, repY);
-            mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
         end;
     end;
 
     if vehicleNeedRepair_list > 0 then
     begin
-        for i in mechanicInside_list do 
+        for i in vehicleNeedRepair_list  do
         begin
-            for j in vehicleNeedRepair_list do 
+            mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
+            Display_strings = mechanicInside_list;
+            for j in mechanicInside_list do
             begin
                 ComExitVehicle(i);
                 wait(0$1);
@@ -546,6 +618,7 @@ begin
     if vehicleDontNeedRepair_list > 0 then
     begin
         ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
+        SetFuel(vehicleDontNeedRepair_list[1], 100);
     end;
 
     if vehicleOK_list > 0 then
