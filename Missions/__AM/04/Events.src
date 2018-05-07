@@ -11,7 +11,7 @@ begin
 
     if GetSide(building) = 6 and GetBType(building) = b_depot then
     begin
-        building = ruPDepot;
+        ruPDepot = building;
         baseReadyToBuild = 1; 
     end;  
     if GetBType(building) = 4 and GetSide(building) = 6 then for i in tmpSold do ComEnterUnit(i, building);
@@ -19,6 +19,7 @@ begin
     begin
         for i in tmpSci do ComEnterUnit(i, building);
         ResAllTechs(6, building, 3);
+        ruPLab = building;
     end; 
 
     if GetBType(building) = 2 and GetSide(building) = 6 then

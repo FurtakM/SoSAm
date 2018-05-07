@@ -131,45 +131,6 @@ begin
         end; 
 end;
 
-// Finish mission
-
-Export function FinishMission;
-var tmp;
-begin
-
-        if buildOil = 1 and buildPower = 1 then
-        begin
-                AddMedal('oil', 1);
-        end else
-        begin
-                if buildOil = 1 and buildPower = 0 then AddMedal('oil', -1);
-                if buildOil = 0 and buildPower = 1 then AddMedal('oil', -2);
-                if buildOil = 0 and buildPower = 0 then AddMedal('oil', -3);
-        end;
-
-        if lostCounter < 3 then begin AddMedal('deaths', 1);
-        end else begin AddMedal('deaths', -1); end;
-
-        if honor = 1 then begin AddMedal('honour', 1);
-        end else begin AddMedal('honour', -1); end;
-
-        GiveMedals('Main');
-
-        RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human]]));
-
-        SaveCharacters(JMM, 'JMM');
-        SaveCharacters(Bobby, 'Bobby');
-        SaveCharacters(Cyrus, 'Cyrus');
-        SaveCharacters(Lisa, 'Lisa');
-        SaveCharacters(Brown, 'Brown');
-        SaveCharacters(Donaldson, 'Donaldson');
-        SaveCharacters(Frank, 'Frank');
-
-        SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human]]) diff [JMM, Bobby, Cyrus, Lisa, Brown, Donaldson, Frank],'04_other_survivors');
-
-        YouWin;
-
-end;
 
  // Serpent functions
 Export Function CutTreeInArea(bulldozer, area);
@@ -296,7 +257,7 @@ begin
 
   damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
 
-    if damageUnits > 0 then
+    if damageUnits > 0 and sci_list > 0 then
     begin
 
       for i = 1 to damageUnits do ComMoveToArea(damageUnits[i], healArea);
@@ -304,7 +265,7 @@ begin
       for i in sci_list do
       begin
 
-        ComExitBuilding(sci_list[i]);
+        ComExitBuilding(i);
 
         for j in FilterUnitsInArea(healArea,[f_side, side]) do
         begin
@@ -342,22 +303,28 @@ begin
     repeat begin
     wait(0$1);
 
-      for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+      if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) > 0 then
       begin
 
-        target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-        target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+        for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+        begin
 
-               If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                begin
-                  ComAttackUnit(i, target1);
-                end
-               else
-                begin
-                  ComAttackUnit(i, target2);
-                end;
+          target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+          target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                 If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                 begin
+                    ComAttackUnit(i, target1);
+                  end
+                 else
+                  begin
+                    ComAttackUnit(i, target2);
+                  end;
+        end;
+
       end;
-      end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
+
+    end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
    end;
 END;
 
@@ -605,7 +572,6 @@ begin
         for i in vehicleNeedRepair_list  do
         begin
             mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
-            Display_strings = mechanicInside_list;
             for j in mechanicInside_list do
             begin
                 ComExitVehicle(i);
