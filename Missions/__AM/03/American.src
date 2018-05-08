@@ -1,9 +1,13 @@
-Export JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry;
+Export JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry, Cornel, Bierezov, Powell;
 Export Function PrepareAmerican;
-var i, un, tmp, others, vehicles;
+var i, un, tmp, others, vehicles, got_mech, empty;
 begin
+uc_side := 4;
+Powell := PrepareUnit('Powell', false);
+
 // load all units from prev mission
 uc_side := 1;
+uc_nation := 1;
 
 if debug then
    begin
@@ -42,13 +46,133 @@ if debug then
    if Jerry then
       tmp := Insert(tmp, tmp+1, Jerry);
 
-   others := CreateCharacterSet('02_other_survivors');
+   if TestCharacters('02_other_survivors') then
+      others := CreateCharacterSet('02_other_survivors');
 
    if others then
+      begin
       tmp := tmp ^ others;
+      DeleteCharacters('02_other_survivors');
+      end;
+
+   jmm_units := tmp;
 
    // load vehicles
+   vehicles := LoadVariable('02_tanks_1', 0);
+
+   if vehicles then
+      begin
+      got_mech := false;
+
+      if UnitFilter(tmp, [f_class, 3]) then
+         got_mech := true;
+
+      for i = 1 to vehicles do
+          begin
+          un := PrepareTank(1, 1, vehicles[i][1], vehicles[i][2], vehicles[i][3], vehicles[i][4], 20);
+
+          if not got_mech then
+             SetLives(un, vehicles[i][6]);
+
+          tmp := Insert(tmp, 1, un);
+          end;
+      end;
 
    // place on map
+   PlaceUnitXY(JMM, 194, 119, false);
+   
+
+   if tmp then
+      begin
+
+      for i in tmp do
+          begin
+          empty := FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]);
+
+          if GetType(i) = unit_human and empty then
+             PlaceHumanInUnit(i, empty[1])
+            else
+             PlaceUnitArea(i, startArea, false);
+
+          ComHold(i);
+          end;
+
+      end;
+
+   // bierezov
+   bierezov_exist := LoadVariable('02_mikhailStatus_1', false);
+
+   if not bierezov_exist then
+      exit;
+
+   Bierezov = PrepareUnit('Mikhail', false);
+   PlaceUnitArea(Bierezov, startArea, false);
 
 End;
+
+
+Export Function PrepareCornell;
+var tmp, un, i;
+begin
+uc_side := 4;
+uc_nation := 1;
+
+Cornel := PrepareUnit('Cornell', false);
+
+cornel_units := 8 - jmm_units;
+
+if cornel_units < 4 then
+   cornel_units := 4;
+
+for i = 1 to cornel_units do
+    begin
+    PrepareHuman(false, [1,1,1,2,4][rand(1,5)], 3);
+    un := CreateHuman;
+    tmp := Insert(tmp, tmp+1, un);
+    // PlaceUnitArea(un, cornelStartArea, false);
+    end;
+
+// place on map
+// PlaceUnitXY(Cornel, x, y, false);
+End;
+
+
+Export Function SelectGroup;
+var units, selected, i;
+begin
+units := [JMM, sel_changeable] ^
+         (jmm_units diff [JMM, Bierezov]) ^
+         [sel_not_hired, sel_not_changeable, Cornel, Bierezov] ^
+         [sel_changeable] ^ cornel_units;
+
+selected := JMM ^ CharacterSelection('Select five characters to go with you', 5, 5, units, []);
+cornel_units := jmm_units union cornel_units diff selected;
+
+for i in cornel_units do
+    if GetSide(i) = 1 then
+       SetSide(i, 4);
+
+for i in selected do
+    if GetSide(i) = 4 then
+       SetSide(i, 1);
+
+if GetSide(Bobby) = 4 then
+   DeleteCharacters('Bobby');
+
+if GetSide(Cyrus) = 4 then
+   DeleteCharacters('Cyrus');
+
+if GetSide(Lisa) = 4 then
+   DeleteCharacters('Lisa');
+
+if GetSide(Khatam) = 4 then
+   DeleteCharacters('Khatam');
+
+if GetSide(Brian) = 4 then
+   DeleteCharacters('Brian');
+
+if GetSide(Jerry) = 4 then
+   DeleteCharacters('Jerry');
+
+End;
+
