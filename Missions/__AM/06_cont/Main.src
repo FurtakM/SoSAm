@@ -1,0 +1,67 @@
+Export JMM, Gladstone, Frank, Woodruff, Lisa, Brown, Denis, Cyrus;
+Export Harisson, Doctor, Joan, JoanStatus;
+Export HarrSupp1, HarrSupp2;
+Export Kurt, KurtStatus, readyToEscape;
+
+Export contactWithRussian;
+Export firstTower;
+
+Export timerStatus;
+Export needCrates, timeToEnd, strings;
+Export remoteVehiclesBuild;
+
+Export unitLost;
+
+Export RuSolMinLevel, RuSolMaxLevel;  
+
+Export cratesStatus;
+
+Export debugMode;
+
+Starting
+begin
+    Resetfog;
+    RandomizeALl;
+
+    SetBName(rudepo, 'sverdlov');
+
+    // Variables
+
+    debugMode = 1; // 0 - for player, 1 - for developers
+
+    contactWithRussian = 0; // 0 - dont contact, 1 - contact
+    firstTower = 0; // var block event after build control tower 0 - no build, 1 - build, 2 - remote veh first
+
+    KurtStatus = 0; // 0 - no spawn, killed, 1 - escape with friendly attitude, 2 - escape with enemy attitude
+    readyToEscape = 0; // 0 - can't escape, 1  - can escape from map
+
+    JoanStatus = 0; // 0 - no spawn, die , 1 - survive
+
+    cratesStatus = 0; // 1 - many crates, 2 - rare crates
+
+    timerStatus = 1; // 0 - off, 1 - on
+    needCrates = [350, 500, 700][Difficulty]; // crates need to win
+    timeToEnd = 50$0; // time to end mission
+    remoteVehiclesBuild = 0; // 0 - no build, 1 - build
+
+    unitLost = 0;
+
+    strings = []; // table with strings to show
+
+    PrepareDifficulty;
+    PrepareRussian;
+    PrepareHeroes;
+
+end;
+
+Every 0$1 trigger debugMode = 1 do
+var i;
+begin
+    enable;
+    fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 2, 9999);
+    If IsSelected(rudepo) then your_side = 3;
+    If IsSelected(JMM) then your_side = 1;
+end;

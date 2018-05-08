@@ -1,0 +1,322 @@
+Export function PrepareHeroes;
+var veh;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+    
+    JMM = PrepareUnit('JMM', false);
+    Lisa = PrepareUnit('Lisa', false);
+    Brown = PrepareUnit('Brown', false);
+    Woodruff = PrepareUnit('EveWoodruff', false);
+    Gladstone = PrepareUnit('Gladstone', false);
+    Frank = PrepareUnit('Frank', false);
+    Harisson = PrepareUnit('Harisson', false);
+
+    hc_class := 4;
+    hc_sex := sex_male;
+    hc_gallery := '';
+    hc_name := '';
+    hc_skills := [1, 3, 1, 0];
+    
+    Doctor = CreateHuman;
+
+    HarrSupp1 = CreateHuman;
+    PlaceHumanInUnit(HarrSupp1, veh);
+
+    PlaceUnitArea(Lisa, PlayerSpawn, false);
+    PlaceUnitArea(Brown, PlayerSpawn, false);
+    PlaceUnitArea(Woodruff, PlayerSpawn, false);
+    PlaceUnitArea(Gladstone, PlayerSpawn, false);
+    PlaceUnitArea(Frank, PlayerSpawn, false);
+
+    SetClass(Brown, 2);
+
+    vc_engine = 1;
+    vc_control = 1;
+    vc_weapon = 12;
+    vc_chassis = 2;
+
+    veh = CreateVehicle;
+    PlaceUnitArea(veh, PlayerSpawn, false);
+    PlaceHumanInUnit(JMM, veh);
+    AddCargo(veh, 1, [100, 80, 50][Difficulty]);
+    SetFuel(veh, 50);
+             
+
+end;
+
+Export function PrepareDenis;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    Denis = PrepareUnit('Denis', false);
+    PlaceUnitArea(Denis, DenisSpawn, false);
+    SetClass(Denis, 4);
+    SetLives(Denis, 750);
+end;
+
+
+Export function HarrisonSupport;
+var un, veh;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    vc_engine = 1;
+    vc_control = 1;
+    vc_weapon = [4, 4, 2][Difficulty];
+    vc_chassis = 2;
+
+    veh = CreateVehicle;     
+    PlaceUnitArea(veh, HarrisonSupportArea, false);
+
+    hc_class := 2;
+    hc_sex := sex_male;
+    hc_gallery := 'SecondCharsGal';
+    hc_face_number := 52;
+    hc_name := 'Craig Brown';
+    hc_skills := [1, 3, 1, 0];
+
+    HarrSupp1 = CreateHuman;
+    PlaceHumanInUnit(HarrSupp1, veh);
+
+    vc_engine = 1;
+    vc_control = 1;
+    vc_weapon = [4, 2, 2][Difficulty];
+    vc_chassis = 2;
+
+    veh = CreateVehicle;     
+    PlaceUnitArea(veh, HarrisonSupportArea, false);
+    SetFuel(veh, 50);
+
+    hc_class := 1;
+    hc_sex := sex_female;
+    hc_gallery := 'SecondCharsGal';
+    hc_face_number := 45;
+    hc_name := 'Ingrid Jonsson';
+    hc_skills := [1, 3, 1, 0];
+
+    HarrSupp2 = CreateHuman;
+    PlaceHumanInUnit(HarrSupp2, veh);
+    SetFuel(veh, 45);
+
+end;
+
+Export function PrepareJoan;
+var tmp, rnd;
+begin
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]);
+    rnd = Rand(1, tmp);
+
+    uc_side = 4;
+
+    Joan = PrepareUnit('Joan', false);
+    PlaceUnitXYR(Joan, GetX(tmp[rnd]), GetY(tmp[rnd]), 2, true);
+    SetLives(Joan, 250);
+
+    InGameOn;
+    CenterNowOnUnits(Joan);
+    wait(0$2);
+    ComExitVehicle(tmp[rnd]);
+    ComExitBuilding(tmp[rnd]);
+    wait(0$1);
+    ComMoveUnit(tmp[rnd], Joan);
+    wait(0$2);
+    DialogueOn;
+
+    if tmp[rnd] = JMM then
+    begin
+        Say(JMM, 'D5b-JMM-1');
+        DialogueOff;
+        SetLives(Joan, 500);
+        ComTurnUnit(Joan, JMM);
+        ComTurnUnit(JMM, Joan);
+        wait(0$1);
+        Say(Joan, 'D5b-Joan-1');
+        Say(JMM, 'D5b-JMM-2');
+        Say(Joan, 'D5b-Joan-2');
+        Say(JMM, 'D5b-JMM-3');
+        Say(Joan, 'D5b-Joan-3');
+    end else
+    begin
+        Say(tmp[rnd], 'D5a-Sol1-1');
+        DialogueOff;
+        SetLives(Joan, 500);
+        ComTurnUnit(Joan, tmp[rnd]);
+        ComTurnUnit(tmp[rnd], Joan);
+        wait(0$1);
+        Say(Joan, 'D5a-Joan-1');
+        Say(tmp[rnd], 'D5a-Sol1-2');
+        Say(Joan, 'D5a-Joan-2');
+        Say(tmp[rnd], 'D5a-Sol1-3');
+        Say(Joan, 'D5a-Joan-3');
+        Say(tmp[rnd], 'D5a-Sol1-4');
+
+        ComExitVehicle(JMM);
+        ComExitBuilding(JMM);
+        wait(0$1);
+        repeat
+            wait(0$1);
+            ComMoveUnit([Joan, tmp[rnd]], JMM);
+        until GetDistUnits(Joan, JMM) < 5;
+
+        ComTurnUnit(Joan, JMM);
+        ComTurnUnit(JMM, Joan);
+        Say(Joan, 'D5a-Joan-4');
+        Say(JMM, 'D5a-JMM-4');
+        Say(Joan, 'D5a-Joan-5');
+        Say(JMM, 'D5a-JMM-5');
+        Say(Joan, 'D5a-Joan-6');
+    end;
+
+    Say(JMM, 'D6-JMM-1');
+    Say(Joan, 'D6-Joan-1');
+    Say(JMM, 'D6-JMM-2');
+    Say(Joan, 'D6-Joan-2');
+    Say(JMM, 'D6-JMM-3');
+    Say(Joan, 'D6-Joan-3');
+    Say(JMM, 'D6-JMM-4');
+
+    DialogueOff;
+    InGameOff;
+    SetSide(Joan, 1);
+
+    ChangeMissionObjectives('MJ');
+    JoanStatus = 1;
+
+end;
+
+Export function PrepareRandoms(number);
+var un;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    if number = 1 then
+    begin
+        hc_class := 1;
+        hc_sex := sex_male;
+        hc_gallery := '';
+        hc_name := 'Bobby Jorda';
+        hc_skills := [2, 1, 1, 1];
+
+        un = CreateHuman;
+        PlaceUnitArea(un, NewPeopleSpawn, true);
+        CenterNowOnUnits(un);
+        wait(0$1);
+        DialogueOn;
+        Say(un, 'D11b-Sol3-1');
+        Say(JMM, 'D11b-JMM-1');
+        DialogueOff;
+    end;
+
+    if number = 2 then
+    begin
+        hc_class := 3;
+        hc_sex := sex_male;
+        hc_gallery := 'SecondCharsGal';
+        hc_face_number := 55;
+        hc_name := 'George McCarthy';
+        hc_skills := [1, 2, 3, 1];
+
+        un = CreateHuman;
+        PlaceUnitArea(un, NewPeopleSpawn, true);
+        CenterNowOnUnits(un);
+        wait(0$1);
+        DialogueOn;
+        Say(un, 'D11d-Sol4-1');
+        Say(JMM, 'D11d-JMM-1');
+        DialogueOff;
+    end;
+
+    if number = 3 then
+    begin
+        hc_class := 3;
+        hc_sex := sex_female;
+        hc_gallery := 'SecondCharsGal';
+        hc_face_number := 45;
+        hc_name := 'Sylvia Creak';
+        hc_skills := [1, 3, 1, 1];
+
+        un = CreateHuman;
+        PlaceUnitArea(un, NewPeopleSpawn, true);
+        CenterNowOnUnits(un);
+        wait(0$1);
+        DialogueOn;
+        Say(un, 'D11e-FSol4-1');
+        DialogueOff;
+    end;
+
+    if number = 4 then
+    begin
+        hc_class := 3;
+        hc_sex := sex_female;
+        hc_gallery := 'SecondCharsGal';
+        hc_face_number := 46;
+        hc_name := 'Sylvia Creak';
+        hc_skills := [1, 3, 1, 1];
+
+        un = CreateHuman;
+        PlaceUnitArea(un, NewPeopleSpawn, true);
+        CenterNowOnUnits(un);
+        wait(0$1);
+        DialogueOn;
+        Say(un, 'D11e-FSol4-1');
+        DialogueOff;
+    end;
+
+    if number = 5 then
+    begin
+        hc_class := 1;
+        hc_sex := sex_female;
+        hc_gallery := 'SecondCharsGal';
+        hc_face_number := 37;
+        hc_name := 'Margherite Simpson';
+        hc_skills := [1, 1, 1, 1];
+
+        un = CreateHuman;
+        PlaceUnitArea(un, NewPeopleSpawn, true);
+        CenterNowOnUnits(un);
+        wait(0$1);
+        DialogueOn;
+        Say(un, 'D11c-FSol3-1');
+        Say(JMM, 'D11c-JMM-1');
+        DialogueOff;
+    end;
+ 
+    if number = 6 then
+    begin
+        hc_class := 1;
+        hc_sex := sex_male;
+        hc_gallery := '';
+        hc_name := 'Charles Brown';
+        hc_skills := [2, 1, 0, 1];
+
+        un = CreateHuman;
+        PlaceUnitArea(un, NewPeopleSpawn, true);
+        CenterNowOnUnits(un);
+        wait(0$1);
+        DialogueOn;
+        Say(un, 'D11f-Sol5-1');
+        DialogueOff;
+    end;
+
+    if number = 7 then
+    begin
+        hc_class := 1;
+        hc_sex := sex_female;
+        hc_gallery := '';
+        hc_name := 'Johanna Hollabd';
+        hc_skills := [1, 0, 0, 0];
+
+        un = CreateHuman;
+        PlaceUnitArea(un, NewPeopleSpawn, true);
+        CenterNowOnUnits(un);
+        wait(0$1);
+        DialogueOn;
+        Say(un, 'D11a-FSol2-1');
+        DialogueOff;
+    end;
+
+end;
