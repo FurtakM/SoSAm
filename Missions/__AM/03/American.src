@@ -1,4 +1,4 @@
-Export JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry, Cornel, Bierezov, Powell;
+Export JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry, Cornel, Bierezov, Powell, Lynch, Walker, Frank;
 Export Function PrepareAmerican;
 var i, un, tmp, others, vehicles, got_mech, empty;
 begin
@@ -136,16 +136,25 @@ for i = 1 to cornel_units do
 // PlaceUnitXY(Cornel, x, y, false);
 End;
 
+Export Function PrepareWesternBase;
+begin
+uc_side := 4;
+uc_nation := 1;
+
+// Henry Lynch
+
+End;
+
 
 Export Function SelectGroup;
 var units, selected, i;
 begin
 units := [JMM, sel_changeable] ^
-         (jmm_units diff [JMM, Bierezov]) ^
+         jmm_units ^
          [sel_not_hired, sel_not_changeable, Cornel, Bierezov] ^
          [sel_changeable] ^ cornel_units;
 
-selected := JMM ^ CharacterSelection('Select five characters to go with you', 5, 5, units, []);
+selected := JMM ^ CharacterSelection('Select five characters to go with you', 4, 4, units, []);
 cornel_units := jmm_units union cornel_units diff selected;
 
 for i in cornel_units do
