@@ -1,0 +1,149 @@
+Export function PrepareKurt; // team #Kurt ; )
+var tmp, rnd, dec, dec2;
+begin
+
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human]]);
+    rnd = Rand(1, tmp);
+
+    uc_side = 2;
+    uc_nation = 2;
+
+    Kurt = PrepareUnit('Kurt', false);
+    PlaceUnitXYR(Kurt, GetX(tmp[rnd]), GetY(tmp[rnd]), 2, true);
+    InGameOn;
+    CenterNowOnUnits(Kurt);
+    wait(0$2);
+    ComExitVehicle(tmp[rnd]);
+    ComExitBuilding(tmp[rnd]);
+    wait(0$1);
+    ComTurnUnit(Kurt, tmp[rnd]);
+    ComTurnUnit(tmp[rnd], Kurt);
+    DialogueOn;
+    Say(Kurt, 'D2-Kurt-1');
+
+    if tmp[rnd] = JMM then 
+    begin
+        Say(Kurt, 'D2-JMM-1');
+        Say(Kurt, 'D2-Kurt-2');
+        Say(Kurt, 'D2-JMM-2'); 
+        Say(Kurt, 'D2-Kurt-3');
+        Say(Kurt, 'D2-JMM-3'); 
+        Say(Kurt, 'D2-Kurt-4');
+        Say(Kurt, 'D2-JMM-4');
+        DialogueOff;
+    end else
+    begin
+        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-1');
+        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-1'); 
+        Say(Kurt, 'D2-Kurt-2');
+        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-2');
+        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-2');    
+        Say(Kurt, 'D2-Kurt-3');
+        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-3');
+        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-3');  
+        Say(Kurt, 'D2-Kurt-4');
+        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-4');
+        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-4');  
+        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-5');
+        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-5'); 
+        DialogueOff;
+    end;
+
+    dec = ShowQuery1;
+
+    if dec = 1 then
+    begin
+        DialogueOn;
+        Say(Kurt, 'D2a-Kurt-1');
+        DialogueOff;
+        InGameOff;
+        SetAttitude(1, 2, att_enemy, true);
+    end;
+
+    if dec = 2 then
+    begin
+        DialogueOn;
+        if tmp[rnd] = JMM then 
+        begin
+            Say(JMM, 'D2b-JMM-1'); 
+            Say(Kurt, 'D2b-Kurt-1');
+            Say(JMM, 'D2b-JMM-2');
+            Say(Kurt, 'D2b-Kurt-2'); 
+            DialogueOff;
+        end else
+        begin
+            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-1');
+            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-1'); 
+            Say(Kurt, 'D2b-Kurt-1');
+            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-2');
+            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-2');    
+            Say(Kurt, 'D2b-Kurt-2'); 
+            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2c-Sol1-3');
+            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2c-FSol1-3');   
+            DialogueOff;
+        end;
+        dec2 = ShowQuery2;
+
+        if dec2 = 1 then
+        begin
+            Say(Kurt, 'D2a-Kurt-1');
+            DialogueOff;
+            InGameOff;
+            SetAttitude(1, 2, att_enemy, true);
+        end;
+
+        if dec2 = 2 then
+        begin
+            if tmp[rnd] = JMM then 
+            begin
+                Say(JMM, 'D2c-JMM-1'); 
+                Say(Kurt, 'D2c-Kurt-1');
+                DialogueOff;
+                InGameOff;
+                ComMoveToArea(Kurt, KurtEscape);
+                readyToEscape = 1;
+            end else
+            begin
+                if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-1');
+                if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-1'); 
+                Say(Kurt, 'D2b-Kurt-1');
+                if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-2');
+                if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-2');    
+                Say(Kurt, 'D2b-Kurt-2'); 
+                DialogueOff;
+                InGameOff;
+                ComMoveToArea(Kurt, KurtEscape);
+                readyToEscape = 1;
+            end;
+        end;
+    end;
+
+    if dec = 3 then
+    begin
+        DialogueOn;
+        if tmp[rnd] = JMM then 
+        begin
+            Say(JMM, 'D2c-JMM-1'); 
+            Say(Kurt, 'D2c-Kurt-1');
+            DialogueOff;
+            InGameOff;
+            ComMoveToArea(Kurt, KurtEscape);
+            readyToEscape = 1;
+        end else
+        begin
+            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-1');
+            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-1'); 
+            Say(Kurt, 'D2b-Kurt-1');
+            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-2');
+            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-2');    
+            Say(Kurt, 'D2b-Kurt-2'); 
+            DialogueOff;
+            InGameOff;
+            ComMoveToArea(Kurt, KurtEscape);
+            readyToEscape = 1;
+        end;
+    end;
+        
+
+
+end;
