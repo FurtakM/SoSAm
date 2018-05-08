@@ -1,0 +1,79 @@
+Export Function Action;
+begin
+InGameOn;
+
+// move cornell force
+// todo
+
+Say(JMM, 'D1-JMM-1');
+Say(Cornel, 'D1-Con-1');
+Say(JMM, 'D1-JMM-2');
+Say(JMM, 'D1-JMM-2a');
+Say(Cornel, 'D1-Con-2');
+
+if bierezov_exist then
+   begin
+   ComTurnUnit(Cornel, Bierezov);
+   Wait(0$0.3);
+   Say(Cornel, 'D1a-Corn-1');
+
+   ComTurnUnit(JMM, Bierezov);
+   ComTurnUnit(Bierezov, JMM);
+
+   Say(JMM, 'D1a-JMM-1');
+
+   ComTurnUnit(JMM, Cornel);
+   ComTurnUnit(Cornel, JMM);
+
+   Say(Cornel, 'D1a-Corn-2');
+   Say(JMM, 'D1a-JMM-2');
+   Say(Cornel, 'D1a-Corn-3');
+   Say(JMM, 'D1a-JMM-3');
+   Say(Cornel, 'D1a-Corn-4');
+   Say(JMM, 'D1a-JMM-4');
+   Say(Cornel, 'D1a-Corn-5');
+
+   ComMoveXY(Bierezov, GetX(Cornel+4), GetY(Cornel));
+   AddComTurnUnit(Bierezov, Cornel);
+
+   Wait(0$0.3);
+   end;
+
+Say(JMM, 'D1b-JMM-1');
+Say(Cornel, 'D1b-Corn-1');
+Say(JMM, 'D1b-JMM-2');
+Say(Cornel, 'D1b-JMM-3');
+
+Wait(0$0.3);
+
+SayRadio(Powell, 'D1b-Pow-3');
+Say(JMM, 'D1b-JMM-4');
+Say(Cornel, 'D1b-Corn-4');
+
+if Khatam then
+   Say(Khatam, 'D1b-Khat-4')
+  else
+   SayX(UnitFilter(jmm_units, [f_sex, sex_male]) diff [JMM, Bobby, Cyrus, Khatam], 'D1b-Sol1-4');
+
+if Cyrus then
+   Say(Cyrus, 'D1b-Cyrus-4');
+
+if Lisa then
+   begin
+   Say(Lisa, 'D1b-Lisa-4');
+
+   if Cyrus then
+      Say(Cyrus, 'D1b-Cyrus-5');
+   end;
+
+InGameOff;
+
+SelectGroup;
+
+ChangeMissionObjectives('M1');
+
+DialogueOn;
+Say(JMM, 'D1d-JMM-1');
+Say(Cornel, 'D1d-Corn-1');
+DialogueOff;
+End;

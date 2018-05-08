@@ -16,6 +16,35 @@ if exist_mode then
 result := unit;
 End;
 
+// example: PrepareTank(1, 1, us_medium_wheeled, engine_combustion, control_manual, us_machine_gun, 80);
+Export Function PrepareTank(side, nation, chassis, engine, control, weapon, fuel);
+begin
+uc_side := side;
+uc_nation := nation;
+
+vc_chassis := chassis;
+vc_engine := engine;
+vc_control := control;
+vc_weapon := weapon;
+vc_fuel_battery := fuel;
+
+result := CreateVehicle;
+End;
+
+Export Function SayX(units, ident);
+var i;
+begin
+if not units then
+   exit;
+
+for i in ident do
+    if IsOk(i) then
+       begin
+       Say(i, ident);
+       break;
+       end;
+End;
+
 // Support function to fast spawn people in buildings - Author: Nefarem
 Export function RespawnInside(side, nation, build, skill, class, count);
 var i,l, un;
