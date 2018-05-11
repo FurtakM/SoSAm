@@ -7,16 +7,32 @@ Starting
 begin
 ResetFog;
 Init;
+SetDiplomacy;
 
 if debug then
    DebugMode;
+
+PrepareAmerican;
+PrepareCornell;
+PrepareWesternBase;
+Action;
 End;
 
 Export debug; // for test only!
 
+Export jmm_units, cornel_units, bierezov_exist;
 Function Init;
 begin
+debug := true;
+jmm_units := 0;
+cornel_units := 0;
+bierezov_exist := false;
+End;
 
+Function SetDiplomacy;
+begin
+SetAttitude(1, 4, att_friend, true);
+SetAttitude(3, 6, att_friend, true);
 End;
 
 Export Function DebugMode;

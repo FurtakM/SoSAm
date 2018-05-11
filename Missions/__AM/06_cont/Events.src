@@ -1,0 +1,18 @@
+On Contact(side1, side2) Do
+begin
+    if side1 = 1 and side2 = 3 then contactWithRussian = 1;
+end;
+
+On BuildingComplete(building) Do
+begin
+    if GetBType(building) = 36 and GetSide(building) = 1 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) = 0 and firstTower = 0 then
+    begin
+        firstTower = 1;
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3]]) diff [JMM], 'D3b-Mech1-1', 'D3b-Mech1-1');
+    end;
+end;
+
+On UnitDestroyed(unit) do 
+begin
+    if GetSide(unit) = 1 and GetType(unit) = unit_human then unitLost = unitLost + 1;
+end;

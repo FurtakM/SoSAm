@@ -1,0 +1,40 @@
+Every 0$01 trigger timeToEnd <= 0$00  do
+begin 
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+    for i in tmp do yourCrates = yourCrates + GetResourceType(GetBase(i), 1);
+
+    if yourCrates >= needCrates then
+    begin
+        FinishMission(yourCrates;
+    end;
+end;
+
+Export function FinishMission(crates);
+begin
+    if crates + 100 > crates then
+    begin
+        AddMedal('cans', 1);
+    end
+    else
+    begin
+        AddMedal('cans', -1);
+    end;
+
+    if unitLost >= 1  then
+    begin
+        AddMedal('people', 1);
+    end
+    else
+    begin
+        AddMedal('people', -1);
+    end;
+
+    if remoteVehiclesBuild = 1 then
+    begin
+        AddMedal('remote', 1);
+    end
+    else
+    begin
+        AddMedal('remote', -1);
+    end;
+end;

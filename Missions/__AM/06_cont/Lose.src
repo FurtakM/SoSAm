@@ -1,0 +1,11 @@
+Every 0$1 trigger IsDead(JMM) do YouLost('JMM');
+Every 0$01 trigger timeToEnd <= 0$00  do
+begin 
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+    for i in tmp do yourCrates = yourCrates + GetResourceType(GetBase(i), 1);
+
+    if yourCrates <= needCrates then
+    begin
+        YouLost('matmin'); 
+    end;
+end;

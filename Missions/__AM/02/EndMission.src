@@ -33,3 +33,61 @@ begin
 
     FinishMission;
 end;
+
+
+// Finish mission
+
+Export function FinishMission;
+var tmp;
+begin
+
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_weapon, 42], [f_lives, 251]]);
+
+    if tmp then
+       SaveVehicles(tmp, '02_tanks_1');
+
+    if mikhailStatus = 1 then SaveVariable(mikhailStatus,'02_mikhailStatus_1');
+    SaveVariable(GetResourceType(GetBase(dep1), 1), '02_resources_4');
+
+
+    if GetResourceType(GetBase(dep1), 1) >= 200 then
+    begin
+        AddMedal('Cans', 1);
+    end
+    else
+    begin
+        AddMedal('Cans', -1);
+    end;
+
+    if deadsCounter <= 3  then
+    begin
+        AddMedal('Deaths', 1);
+    end
+    else
+    begin
+        AddMedal('Deaths', -1);
+    end;
+
+    if mikhailStatus = 0 then AddMedal('Prisoner', -1);
+    if mikhailStatus = 1 then AddMedal('Prisoner',  1);
+    if mikhailStatus = 2 then AddMedal('Prisoner',  2);
+    if mikhailStatus = 3 then AddMedal('Prisoner', -2);
+
+    GiveMedals('MAIN');
+
+    RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human]]));
+
+    SaveCharacters(JMM, 'JMM');
+    SaveCharacters(Bobby, 'Bobby');
+    SaveCharacters(Cyrus, 'Cyrus');
+    SaveCharacters(Lisa, 'Lisa');
+    SaveCharacters(Khatam, 'Khatam');
+    if IsOK(Brian) then SaveCharacters(Brian, 'Brian');
+    if IsOk(Jerry) then SaveCharacters(Jerry, 'Jerry');
+    If mikhailStatus = 1 then SaveCharacters(Mikhail, 'Mikhail');
+
+    SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human]]) diff [JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry, Mikhail],'02_other_survivors');
+
+    YouWin;
+
+end;

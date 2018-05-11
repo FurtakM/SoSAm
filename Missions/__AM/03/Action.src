@@ -1,0 +1,138 @@
+Export Function Action;
+var i, units, vehicles;
+begin
+InGameOn;
+
+ComTurnUnit(JMM, Cornel);
+
+if Bierezov then
+   ComTurnUnit(Bierezov, Cornel);
+
+for i in jmm_units do
+    ComTurnUnit(i, Cornel);
+
+units := cornel_units union Cornel;
+
+repeat
+ wait(1);
+
+ for i in units do
+     ComMoveXY(i, GetX(JMM), GetY(JMM));
+
+until UnitFilter(units, [f_distxy, GetX(JMM), GetY(JMM), 10]) = units;
+
+for i in units do
+    ComTurnUnit(i, JMM);
+
+ComTurnUnit(Cornel, JMM);
+
+Say(JMM, 'D1-JMM-1');
+Say(Cornel, 'D1-Corn-1');
+
+ComMoveUnit(JMM, Cornel);
+ComMoveUnit(Cornel, JMM);
+
+repeat
+ wait(0$01);
+until GetDistUnits(JMM, Cornel) < 6;
+
+ComTurnUnit(JMM, Cornel);
+ComTurnUnit(Cornel, JMM);
+
+Say(JMM, 'D1-JMM-2');
+Say(JMM, 'D1-JMM-2a');
+Say(Cornel, 'D1-Corn-2');
+
+if bierezov_exist or debug then
+   begin
+   ComTurnUnit(Cornel, Bierezov);
+   Wait(0$0.3);
+   Say(Cornel, 'D1a-Corn-1');
+
+   ComTurnUnit(JMM, Bierezov);
+   ComTurnUnit(Bierezov, JMM);
+
+   Say(JMM, 'D1a-JMM-1');
+
+   ComTurnUnit(JMM, Cornel);
+   ComTurnUnit(Cornel, JMM);
+
+   Say(Cornel, 'D1a-Corn-2');
+   Say(JMM, 'D1a-JMM-2');
+   Say(Cornel, 'D1a-Corn-3');
+   Say(JMM, 'D1a-JMM-3');
+   Say(Cornel, 'D1a-Corn-4');
+   Say(JMM, 'D1a-JMM-4');
+   Say(Cornel, 'D1a-Corn-5');
+
+   ComMoveXY(Bierezov, GetX(Cornel), GetY(Cornel)-2);
+   AddComTurnUnit(Bierezov, Cornel);
+
+   Wait(0$0.3);
+   end;
+
+Say(JMM, 'D1b-JMM-1');
+Say(Cornel, 'D1b-Corn-1');
+Say(JMM, 'D1b-JMM-2');
+Say(Cornel, 'D1b-Corn-2');
+Say(JMM, 'D1b-JMM-3');
+
+Wait(0$0.3);
+
+SayRadio(Powell, 'D1b-Pow-3');
+Say(JMM, 'D1b-JMM-4');
+Say(Cornel, 'D1b-Corn-4');
+
+if Khatam then
+   Say(Khatam, 'D1b-Khat-4')
+  else
+   SayX(UnitFilter(cornel_units, [f_sex, sex_male]) diff [Cornel], 'D1b-Sol1-4');
+
+if Cyrus then
+   Say(Cyrus, 'D1b-Cyrus-4');
+
+if Lisa then
+   begin
+   Say(Lisa, 'D1b-Lisa-4');
+
+   if Cyrus then
+      begin
+      if not IsInUnit(Cyrus) then
+         ComTurnUnit(Cyrus, Lisa);
+
+      Say(Cyrus, 'D1b-Cyrus-5');
+      end;
+   end;
+
+SelectGroup;
+
+
+Say(JMM, 'D1d-JMM-1');
+Say(Cornel, 'D1d-Corn-1');
+
+for i in jmm_units^cornel_units^JMM do
+    ComHold(i);
+
+vehicles := FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]]);
+
+if vehicles then
+   begin
+
+   if UnitFilter(cornel_units, [f_driving]) then
+      for i in UnitFilter(cornel_units, [f_driving]) do
+          ComExitVehicle(i);
+
+   ComExitVehicle(IsDrivenBy(vehicles[1]));
+   SetSide(vehicles[1], 4);
+   ComEnterUnit(Cornel, vehicles[1]);
+
+   repeat
+    wait(0$01);
+   until IsInUnit(Cornel);
+
+   end;
+
+InGameOff;
+
+ChangeMissionObjectives('M1');
+End;

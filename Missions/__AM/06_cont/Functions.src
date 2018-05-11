@@ -1,0 +1,225 @@
+Export Function PrepareUnit(ident, exist_mode);
+var unit;
+begin
+
+if exist_mode then
+begin
+   unit := CreateCharacter(ident);
+  end else
+  begin
+   unit := NewCharacter(ident);
+  end; 
+
+result := unit;
+End;
+
+Export function DialogRandom(characters, dialogMID, dialogFID);
+var i, rnd;
+begin
+    rnd = rand(1, characters);  
+
+    for i = 1 to characters do
+    begin
+
+       if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
+       if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
+
+    end;
+  
+end;
+
+Export function RespawnInside(side, nation, build, skill, class, count);
+var i,l, un;
+begin
+
+   for i = 1 to count do
+   begin
+
+      uc_side = side;
+      uc_nation = nation;
+
+      hc_gallery = '';
+      hc_name = '';
+      PrepareHuman(false, class, skill);
+
+      un = CreateHuman;
+      PlaceHumanInUnit(un,build);
+
+   end;
+
+END;
+
+Export Function PrepareSolBun(skill, b);
+var un, dir;
+begin
+uc_side := GetSide(b);
+uc_nation := GetNation(b);
+
+PrepareHuman(false, 1, skill);
+
+dir := GetDir(b) - 3;
+
+if dir < 0 then
+   dir := 6 + dir;
+
+un := CreateHuman;
+SetDir(un, dir);
+PlaceHumanInUnit(un, b);
+End;
+
+Export function PrepareDifficulty;
+begin
+    if Difficulty = 1 then
+    begin
+        RuSolMinLevel = 2;
+        RuSolMaxLevel = 5;
+    end;
+
+    if Difficulty = 2 then
+    begin
+        RuSolMinLevel = 3;
+        RuSolMaxLevel = 6;
+    end;
+
+    if Difficulty = 3 then
+    begin
+        RuSolMinLevel = 5;
+        RuSolMaxLevel = 6;
+    end;
+end;
+
+Export function ShowQuery1;
+begin
+    case query('QKill') of
+        1: begin result = 1; end;
+        2: begin result = 2; end;
+        3: begin result = 3; end;
+    end;
+end;
+
+Export function ShowQuery2;
+begin
+    case query('QKill2') of
+        1: begin result = 1; end;
+        2: begin result = 2; end;
+    end;
+end;
+
+// AI functions
+
+Export function ResAllTechs(side, lab, nation);
+var i, tech, cout;
+begin
+
+  For i = 1 to 72 do
+    If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true then AddComResearch(lab, i);
+
+end;
+
+Export function RepairBuilding(side, building);
+var buildings_list, i,engineerOk_list, j;
+begin
+
+        engineerOk_list = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000]]);
+        buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+        if buildings_list > 0 and engineerOk_list > 0 then
+        begin
+
+                for i in engineerOk_list do
+                begin
+                     for j in buildings_list do
+                     begin
+
+                        AddComExitBuilding(i);
+                        wait(0$1);
+                        AddComRepairBuilding(i, j);
+
+                    end;
+                end;
+        end;
+
+        if buildings_list = 0 then
+        begin
+
+           for i in engineerOK_list do
+           begin
+             ComEnterUnit(i, building);
+          end;
+
+        end;
+END;
+
+
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list,  i, j, damageUnits;
+begin
+
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
+
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+
+    if damageUnits > 0 and sci_list > 0 then
+    begin
+
+      for i = 1 to damageUnits do ComMoveToArea(damageUnits[i], healArea);
+
+      for i in sci_list do
+      begin
+
+        ComExitBuilding(i);
+
+        for j in FilterUnitsInArea(healArea,[f_side, side]) do
+        begin
+
+        AddComHeal(i, j);
+        wait(1$0);
+
+        end;
+      end;
+
+    end else
+    begin
+
+    AddComEnterUnit(sci_list, build);
+
+  end;
+
+END;
+
+Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, targetSide, weaponTab, engine, control, chassis);
+var i, j, lastIndex, weaponTabTemp, temp, target1, target2;
+begin
+
+     IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
+     begin
+
+       for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
+
+    end;
+
+    IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount then
+    begin
+
+
+    repeat begin
+    wait(0$1);
+
+      for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+      begin
+
+        target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+        target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+               If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                begin
+                  ComAttackUnit(i, target1);
+                end
+               else
+                begin
+                  ComAttackUnit(i, target2);
+                end;
+      end;
+      end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
+   end;
+END;
