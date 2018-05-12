@@ -85,3 +85,17 @@ begin
      SetDir(un, dir);
      PlaceHumanInUnit(un, b);
 End;
+
+Export Function InVeh(unit);
+var filter, i;
+begin
+result := false;
+filter := FilterAllUnits([[f_side, 1], [f_weapon, us_machine_gun]]);
+
+for i in filter do
+    if IsDrivenBy(i) = unit then
+       begin
+       result := true;
+       break;
+       end;
+End;
