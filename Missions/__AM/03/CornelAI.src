@@ -71,7 +71,7 @@ repeat
 
  if crates then
     ComCollect(has_eng, crates[1], crates[2]);
-until GetResourceType(GetBase(dep), mat_cans) >= 100;
+until GetResourceType(GetBase(dep), mat_cans) >= 40;
 
 blist := [ [b_armoury, 256, 111, 2],
            [b_breastwork, 243, 112, 2] ];
@@ -91,6 +91,9 @@ repeat
 until FilterAllUnits([[f_side, 4], [f_btype, b_breastwork], [f_not, [f_constructed]]]);
 
 sol := filter diff has_eng;
+
+if GetClass(sol[1]) > 1 then
+   SetClass(sol[1], 1);
 
 ComExitBuilding(sol[1]);
 AddComEnterUnit(sol[1], FilterAllUnits([[f_side, 4], [f_btype, b_breastwork]])[1]);

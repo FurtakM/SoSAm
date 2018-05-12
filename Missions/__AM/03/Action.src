@@ -584,11 +584,18 @@ if not filter then
 
 for i in filter do
     begin
+
+    if IsDrivenBy(i) and GetType(i) = unit_human then
+       begin
+       ComExitVehicle(i);
+       Wait(3);
+       end;
+
     // macmilan on end
     if i = JMM then
        begin
 
-       if show_query then
+       if show_query and FilterAllUnits([[f_side, 1], [f_type, unit_human]]) > 1 then
           begin
           show_query := false;
 
