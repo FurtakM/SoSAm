@@ -68,7 +68,9 @@ has_eng := UnitFilter(filter, [f_class, 2]);
 repeat
  wait(0$01);
  crates := GetListOfCratesInArea(cornelBaseArea);
- ComCollect(has_eng, crates[1], crates[2]);
+
+ if crates then
+    ComCollect(has_eng, crates[1], crates[2]);
 until GetResourceType(GetBase(dep), mat_cans) >= 100;
 
 blist := [ [b_armoury, 256, 111, 2],
