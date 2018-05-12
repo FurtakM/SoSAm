@@ -12,6 +12,7 @@ SetDiplomacy;
 if debug then
    DebugMode;
 
+PrepareRussian;
 PrepareAmerican;
 PrepareCornell;
 PrepareWesternBase;
@@ -20,23 +21,49 @@ End;
 
 Export debug; // for test only!
 
-Export jmm_units, cornel_units, bierezov_exist;
+Export jmm_units, jmm_on_west, cornel_units, bierezov_exist, cornel_active,
+       cornel_attack, cornel_counter, cornel_prepared, frank_can_return,
+       solar_builded, frank_send_to_scout, jmm_in_veh, bobby_in_veh, cyrus_in_veh,
+       lisa_in_veh, crates_counter, end_mission_allowed, save_others, save_group, show_query, wait_for_them,
+       veh_on_meta;
 Function Init;
 begin
-debug := true;
+debug := false;
 jmm_units := 0;
 cornel_units := 0;
 bierezov_exist := false;
+jmm_on_west := false;
+cornel_active := false;
+cornel_attack := false;
+cornel_prepared := false;
+cornel_counter := 2$00;
+frank_can_return := false;
+solar_builded := false;
+frank_send_to_scout := false;
+jmm_in_veh := false;
+bobby_in_veh := false;
+cyrus_in_veh := false;
+lisa_in_veh := false;
+crates_counter := [1200, 1000, 800][Difficulty];
+end_mission_allowed := false;
+save_others := [];
+save_group := [];
+show_query := false;
+wait_for_them := false;
+veh_on_meta := false;
 End;
 
 Function SetDiplomacy;
 begin
 SetAttitude(1, 4, att_friend, true);
+SetAttitude(1, 8, att_friend, true);
 SetAttitude(3, 6, att_friend, true);
+SetAttitude(4, 6, att_neutral, true);
+SetAttitude(3, 8, att_neutral, true);
 End;
 
 Export Function DebugMode;
 begin
-
+FogOff(1);
 End;
 

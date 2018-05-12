@@ -1,4 +1,4 @@
-Export JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry, Cornel, Bierezov, Powell, Lynch, Walker, Frank;
+Export JMM, Bobby, Cyrus, Lisa, Khatam, Brian, Jerry, Cornel, Bierezov, Powell, Lynch, Walker, Turner, Jillian, Frank;
 Export Function PrepareAmerican;
 var i, un, tmp, others, vehicles, got_mech, empty;
 begin
@@ -18,8 +18,8 @@ if debug then
        others := others ^ un;
        end;
 
-   vehicles := [[ru_medium_tracked, engine_combustion, control_manual, ru_cargo_bay, 30, 504],
-                [ru_medium_tracked, engine_combustion, control_manual, ru_heavy_machine_gun, 30, 750]];
+   vehicles := [[ru_medium_wheeled, engine_combustion, control_manual, ru_cargo_bay, 90, 504],
+                [ru_medium_wheeled, engine_combustion, control_manual, ru_cargo_bay, 80, 750]];
    end;
 
    // load from save
@@ -73,7 +73,7 @@ if debug then
 
       for i = 1 to vehicles do
           begin
-          un := PrepareTank(1, 3, vehicles[i][1], vehicles[i][2], vehicles[i][3], vehicles[i][4], 20);
+          un := PrepareTank(1, 3, vehicles[i][1], vehicles[i][2], vehicles[i][3], vehicles[i][4], 40);
 
           if not got_mech then
              SetLives(un, vehicles[i][6]);
@@ -144,12 +144,28 @@ PlaceUnitXY(Cornel, 191, 106, false);
 End;
 
 Export Function PrepareWesternBase;
+var i;
 begin
-uc_side := 4;
-uc_nation := 1;
+uc_side := 8;
 
 // Henry Lynch
+Lynch := PrepareUnit('Lynch', false);
 
+// Michael Walker
+Walker := PrepareUnit('Walker', false);
+
+// Mike Turner
+Turner := PrepareUnit('Turner', false);
+
+// Hallie Jillian
+Jillian := PrepareUnit('Jillian', false);
+
+
+for i in [Lynch, Walker, Turner, Jillian] do
+    begin
+    PlaceUnitArea(i, westBaseArea, false);
+    ComHold(i);
+    end;
 End;
 
 
