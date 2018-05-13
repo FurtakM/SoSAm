@@ -1,0 +1,42 @@
+Export function PrepareCutsceneAttack;
+var i, un, veh;
+begin
+    for i = 1 to 10 do
+    begin
+
+        uc_side = 6;
+        uc_nation = 3;
+
+        hc_gallery = '';
+        hc_name = '';
+        PrepareHuman(false, 1, 3);
+
+        un = CreateHuman;
+        PlaceUnitArea(un, BattleSceneTroops, false);
+
+    end;
+
+    for i = 1 to 4 do
+    begin
+
+        uc_side = 6;
+        uc_nation = 3;
+
+        vc_engine = 1;
+        vc_control = 1;
+        vc_weapon = [42, 43, 44][Rand(1,3)];
+        vc_chassis = 22;
+
+        veh = CreateVehicle;
+        PlaceUnitArea(veh, BattleSceneTanks, false);
+
+        hc_gallery = '';
+        hc_name = '';
+        PrepareHuman(false, 3, 4);
+
+        un = CreateHuman;
+        PlaceHumanInUnit(un, veh);
+
+    end;
+
+end;

@@ -289,3 +289,47 @@ begin
 
 
 END;
+
+
+Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, targetSide, weaponTab, engine, control, chassis);
+var i, j, temp, target1, target2;
+begin
+
+    if FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
+        for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
+
+    repeat
+        wait(0$1);
+    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount;
+
+    repeat begin
+        wait(0$1);
+
+        for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+        begin
+
+            target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+            target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                begin
+                    ComAttackUnit(i, target1);
+                end else begin
+                    ComAttackUnit(i, target2);
+                end;
+        end;
+    end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
+END;
+
+Export function RebuildBuildings(side, destroyedBuildings);
+var i;
+begin
+    if FilterAllUnits([[f_side, side], [f_class, 2]]) > 0 and FilterAllUnits([[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]) = 0 and destroyedBuildings > 0  then
+    begin
+        for i in FilterAllUnits([[f_side, side], [f_class, 2]]) do 
+        begin
+            AddComExitBuilding(i);
+            AddComBuild(i, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
+        end;
+    end;
+end;

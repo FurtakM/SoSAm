@@ -1,0 +1,559 @@
+// export Donaldson , Harisson ; export debugMode ; starting begin Resetfog ;
+   0: CALL_OW 335
+// RandomizeAll ;
+   4: CALL_OW 11
+// PrepareHeroes ;
+   8: CALL 51 0 0
+// PrepareSoldiers ;
+  12: CALL 122 0 0
+// PrepareCutsceneAttack ;
+  16: CALL 277 0 0
+// debugMode = 1 ;
+  20: LD_ADDR_EXP 3
+  24: PUSH
+  25: LD_INT 1
+  27: ST_TO_ADDR
+// end ;
+  28: END
+// every 0 0$1 trigger debugMode = 1 do
+  29: LD_EXP 3
+  33: PUSH
+  34: LD_INT 1
+  36: EQUAL
+  37: IFFALSE 50
+  39: GO 41
+  41: DISABLE
+// begin enable ;
+  42: ENABLE
+// fogoff ( true ) ;
+  43: LD_INT 1
+  45: PPUSH
+  46: CALL_OW 344
+// end ; end_of_file
+  50: END
+// export function PrepareHeroes ; begin
+  51: LD_INT 0
+  53: PPUSH
+// uc_side = 1 ;
+  54: LD_ADDR_OWVAR 20
+  58: PUSH
+  59: LD_INT 1
+  61: ST_TO_ADDR
+// uc_nation = 1 ;
+  62: LD_ADDR_OWVAR 21
+  66: PUSH
+  67: LD_INT 1
+  69: ST_TO_ADDR
+// Harisson = PrepareUnit ( Harisson , false ) ;
+  70: LD_ADDR_EXP 2
+  74: PUSH
+  75: LD_STRING Harisson
+  77: PPUSH
+  78: LD_INT 0
+  80: PPUSH
+  81: CALL 547 0 2
+  85: ST_TO_ADDR
+// Donaldson = PrepareUnit ( Donaldson , false ) ;
+  86: LD_ADDR_EXP 1
+  90: PUSH
+  91: LD_STRING Donaldson
+  93: PPUSH
+  94: LD_INT 0
+  96: PPUSH
+  97: CALL 547 0 2
+ 101: ST_TO_ADDR
+// PlaceUnitArea ( Donaldson , GammaSpawn , false ) ;
+ 102: LD_EXP 1
+ 106: PPUSH
+ 107: LD_INT 5
+ 109: PPUSH
+ 110: LD_INT 0
+ 112: PPUSH
+ 113: CALL_OW 49
+// end ;
+ 117: LD_VAR 0 1
+ 121: RET
+// export function PrepareSoldiers ; var i ; begin
+ 122: LD_INT 0
+ 124: PPUSH
+ 125: PPUSH
+// uc_side = 1 ;
+ 126: LD_ADDR_OWVAR 20
+ 130: PUSH
+ 131: LD_INT 1
+ 133: ST_TO_ADDR
+// uc_nation = 1 ;
+ 134: LD_ADDR_OWVAR 21
+ 138: PUSH
+ 139: LD_INT 1
+ 141: ST_TO_ADDR
+// for i in FilterAllUnits ( [ [ f_side , 1 ] , [ f_btype , b_bunker ] ] ) do
+ 142: LD_ADDR_VAR 0 2
+ 146: PUSH
+ 147: LD_INT 22
+ 149: PUSH
+ 150: LD_INT 1
+ 152: PUSH
+ 153: EMPTY
+ 154: LIST
+ 155: LIST
+ 156: PUSH
+ 157: LD_INT 30
+ 159: PUSH
+ 160: LD_INT 32
+ 162: PUSH
+ 163: EMPTY
+ 164: LIST
+ 165: LIST
+ 166: PUSH
+ 167: EMPTY
+ 168: LIST
+ 169: LIST
+ 170: PPUSH
+ 171: CALL_OW 69
+ 175: PUSH
+ 176: FOR_IN
+ 177: IFFALSE 205
+// RespawnInside ( 1 , 1 , i , 4 , 1 , 1 ) ;
+ 179: LD_INT 1
+ 181: PPUSH
+ 182: LD_INT 1
+ 184: PPUSH
+ 185: LD_VAR 0 2
+ 189: PPUSH
+ 190: LD_INT 4
+ 192: PPUSH
+ 193: LD_INT 1
+ 195: PPUSH
+ 196: LD_INT 1
+ 198: PPUSH
+ 199: CALL 740 0 6
+ 203: GO 176
+ 205: POP
+ 206: POP
+// for i in FilterAllUnits ( [ [ f_side , 1 ] , [ f_btype , 31 ] ] ) do
+ 207: LD_ADDR_VAR 0 2
+ 211: PUSH
+ 212: LD_INT 22
+ 214: PUSH
+ 215: LD_INT 1
+ 217: PUSH
+ 218: EMPTY
+ 219: LIST
+ 220: LIST
+ 221: PUSH
+ 222: LD_INT 30
+ 224: PUSH
+ 225: LD_INT 31
+ 227: PUSH
+ 228: EMPTY
+ 229: LIST
+ 230: LIST
+ 231: PUSH
+ 232: EMPTY
+ 233: LIST
+ 234: LIST
+ 235: PPUSH
+ 236: CALL_OW 69
+ 240: PUSH
+ 241: FOR_IN
+ 242: IFFALSE 270
+// RespawnInside ( 1 , 1 , i , 4 , 1 , 1 ) ;
+ 244: LD_INT 1
+ 246: PPUSH
+ 247: LD_INT 1
+ 249: PPUSH
+ 250: LD_VAR 0 2
+ 254: PPUSH
+ 255: LD_INT 4
+ 257: PPUSH
+ 258: LD_INT 1
+ 260: PPUSH
+ 261: LD_INT 1
+ 263: PPUSH
+ 264: CALL 740 0 6
+ 268: GO 241
+ 270: POP
+ 271: POP
+// end ; end_of_file
+ 272: LD_VAR 0 1
+ 276: RET
+// export function PrepareCutsceneAttack ; var i , un , veh ; begin
+ 277: LD_INT 0
+ 279: PPUSH
+ 280: PPUSH
+ 281: PPUSH
+ 282: PPUSH
+// for i = 1 to 10 do
+ 283: LD_ADDR_VAR 0 2
+ 287: PUSH
+ 288: DOUBLE
+ 289: LD_INT 1
+ 291: DEC
+ 292: ST_TO_ADDR
+ 293: LD_INT 10
+ 295: PUSH
+ 296: FOR_TO
+ 297: IFFALSE 371
+// begin uc_side = 6 ;
+ 299: LD_ADDR_OWVAR 20
+ 303: PUSH
+ 304: LD_INT 6
+ 306: ST_TO_ADDR
+// uc_nation = 3 ;
+ 307: LD_ADDR_OWVAR 21
+ 311: PUSH
+ 312: LD_INT 3
+ 314: ST_TO_ADDR
+// hc_gallery =  ;
+ 315: LD_ADDR_OWVAR 33
+ 319: PUSH
+ 320: LD_STRING 
+ 322: ST_TO_ADDR
+// hc_name =  ;
+ 323: LD_ADDR_OWVAR 26
+ 327: PUSH
+ 328: LD_STRING 
+ 330: ST_TO_ADDR
+// PrepareHuman ( false , 1 , 3 ) ;
+ 331: LD_INT 0
+ 333: PPUSH
+ 334: LD_INT 1
+ 336: PPUSH
+ 337: LD_INT 3
+ 339: PPUSH
+ 340: CALL_OW 380
+// un = CreateHuman ;
+ 344: LD_ADDR_VAR 0 3
+ 348: PUSH
+ 349: CALL_OW 44
+ 353: ST_TO_ADDR
+// PlaceUnitArea ( un , BattleSceneTroops , false ) ;
+ 354: LD_VAR 0 3
+ 358: PPUSH
+ 359: LD_INT 1
+ 361: PPUSH
+ 362: LD_INT 0
+ 364: PPUSH
+ 365: CALL_OW 49
+// end ;
+ 369: GO 296
+ 371: POP
+ 372: POP
+// for i = 1 to 4 do
+ 373: LD_ADDR_VAR 0 2
+ 377: PUSH
+ 378: DOUBLE
+ 379: LD_INT 1
+ 381: DEC
+ 382: ST_TO_ADDR
+ 383: LD_INT 4
+ 385: PUSH
+ 386: FOR_TO
+ 387: IFFALSE 540
+// begin uc_side = 6 ;
+ 389: LD_ADDR_OWVAR 20
+ 393: PUSH
+ 394: LD_INT 6
+ 396: ST_TO_ADDR
+// uc_nation = 3 ;
+ 397: LD_ADDR_OWVAR 21
+ 401: PUSH
+ 402: LD_INT 3
+ 404: ST_TO_ADDR
+// vc_engine = 1 ;
+ 405: LD_ADDR_OWVAR 39
+ 409: PUSH
+ 410: LD_INT 1
+ 412: ST_TO_ADDR
+// vc_control = 1 ;
+ 413: LD_ADDR_OWVAR 38
+ 417: PUSH
+ 418: LD_INT 1
+ 420: ST_TO_ADDR
+// vc_weapon = [ 42 , 43 , 44 ] [ Rand ( 1 , 3 ) ] ;
+ 421: LD_ADDR_OWVAR 40
+ 425: PUSH
+ 426: LD_INT 42
+ 428: PUSH
+ 429: LD_INT 43
+ 431: PUSH
+ 432: LD_INT 44
+ 434: PUSH
+ 435: EMPTY
+ 436: LIST
+ 437: LIST
+ 438: LIST
+ 439: PUSH
+ 440: LD_INT 1
+ 442: PPUSH
+ 443: LD_INT 3
+ 445: PPUSH
+ 446: CALL_OW 12
+ 450: ARRAY
+ 451: ST_TO_ADDR
+// vc_chassis = 22 ;
+ 452: LD_ADDR_OWVAR 37
+ 456: PUSH
+ 457: LD_INT 22
+ 459: ST_TO_ADDR
+// veh = CreateVehicle ;
+ 460: LD_ADDR_VAR 0 4
+ 464: PUSH
+ 465: CALL_OW 45
+ 469: ST_TO_ADDR
+// PlaceUnitArea ( veh , BattleSceneTanks , false ) ;
+ 470: LD_VAR 0 4
+ 474: PPUSH
+ 475: LD_INT 2
+ 477: PPUSH
+ 478: LD_INT 0
+ 480: PPUSH
+ 481: CALL_OW 49
+// hc_gallery =  ;
+ 485: LD_ADDR_OWVAR 33
+ 489: PUSH
+ 490: LD_STRING 
+ 492: ST_TO_ADDR
+// hc_name =  ;
+ 493: LD_ADDR_OWVAR 26
+ 497: PUSH
+ 498: LD_STRING 
+ 500: ST_TO_ADDR
+// PrepareHuman ( false , 3 , 4 ) ;
+ 501: LD_INT 0
+ 503: PPUSH
+ 504: LD_INT 3
+ 506: PPUSH
+ 507: LD_INT 4
+ 509: PPUSH
+ 510: CALL_OW 380
+// un = CreateHuman ;
+ 514: LD_ADDR_VAR 0 3
+ 518: PUSH
+ 519: CALL_OW 44
+ 523: ST_TO_ADDR
+// PlaceHumanInUnit ( un , veh ) ;
+ 524: LD_VAR 0 3
+ 528: PPUSH
+ 529: LD_VAR 0 4
+ 533: PPUSH
+ 534: CALL_OW 52
+// end ;
+ 538: GO 386
+ 540: POP
+ 541: POP
+// end ; end_of_file
+ 542: LD_VAR 0 1
+ 546: RET
+// export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
+ 547: LD_INT 0
+ 549: PPUSH
+ 550: PPUSH
+// if exist_mode then
+ 551: LD_VAR 0 2
+ 555: IFFALSE 574
+// unit := CreateCharacter ( ident ) else
+ 557: LD_ADDR_VAR 0 4
+ 561: PUSH
+ 562: LD_VAR 0 1
+ 566: PPUSH
+ 567: CALL_OW 34
+ 571: ST_TO_ADDR
+ 572: GO 589
+// unit := NewCharacter ( ident ) ;
+ 574: LD_ADDR_VAR 0 4
+ 578: PUSH
+ 579: LD_VAR 0 1
+ 583: PPUSH
+ 584: CALL_OW 25
+ 588: ST_TO_ADDR
+// result := unit ;
+ 589: LD_ADDR_VAR 0 3
+ 593: PUSH
+ 594: LD_VAR 0 4
+ 598: ST_TO_ADDR
+// end ;
+ 599: LD_VAR 0 3
+ 603: RET
+// export function PrepareSolBun ( skill , b ) ; var un , dir ; begin
+ 604: LD_INT 0
+ 606: PPUSH
+ 607: PPUSH
+ 608: PPUSH
+// uc_side := GetSide ( b ) ;
+ 609: LD_ADDR_OWVAR 20
+ 613: PUSH
+ 614: LD_VAR 0 2
+ 618: PPUSH
+ 619: CALL_OW 255
+ 623: ST_TO_ADDR
+// uc_nation := GetNation ( b ) ;
+ 624: LD_ADDR_OWVAR 21
+ 628: PUSH
+ 629: LD_VAR 0 2
+ 633: PPUSH
+ 634: CALL_OW 248
+ 638: ST_TO_ADDR
+// PrepareHuman ( false , 1 , skill ) ;
+ 639: LD_INT 0
+ 641: PPUSH
+ 642: LD_INT 1
+ 644: PPUSH
+ 645: LD_VAR 0 1
+ 649: PPUSH
+ 650: CALL_OW 380
+// dir := GetDir ( b ) - 3 ;
+ 654: LD_ADDR_VAR 0 5
+ 658: PUSH
+ 659: LD_VAR 0 2
+ 663: PPUSH
+ 664: CALL_OW 254
+ 668: PUSH
+ 669: LD_INT 3
+ 671: MINUS
+ 672: ST_TO_ADDR
+// if dir < 0 then
+ 673: LD_VAR 0 5
+ 677: PUSH
+ 678: LD_INT 0
+ 680: LESS
+ 681: IFFALSE 697
+// dir := 6 + dir ;
+ 683: LD_ADDR_VAR 0 5
+ 687: PUSH
+ 688: LD_INT 6
+ 690: PUSH
+ 691: LD_VAR 0 5
+ 695: PLUS
+ 696: ST_TO_ADDR
+// un := CreateHuman ;
+ 697: LD_ADDR_VAR 0 4
+ 701: PUSH
+ 702: CALL_OW 44
+ 706: ST_TO_ADDR
+// SetDir ( un , dir ) ;
+ 707: LD_VAR 0 4
+ 711: PPUSH
+ 712: LD_VAR 0 5
+ 716: PPUSH
+ 717: CALL_OW 233
+// PlaceHumanInUnit ( un , b ) ;
+ 721: LD_VAR 0 4
+ 725: PPUSH
+ 726: LD_VAR 0 2
+ 730: PPUSH
+ 731: CALL_OW 52
+// end ;
+ 735: LD_VAR 0 3
+ 739: RET
+// export function RespawnInside ( side , nation , build , skill , class , count ) ; var i , l , un ; begin
+ 740: LD_INT 0
+ 742: PPUSH
+ 743: PPUSH
+ 744: PPUSH
+ 745: PPUSH
+// for i = 1 to count do
+ 746: LD_ADDR_VAR 0 8
+ 750: PUSH
+ 751: DOUBLE
+ 752: LD_INT 1
+ 754: DEC
+ 755: ST_TO_ADDR
+ 756: LD_VAR 0 6
+ 760: PUSH
+ 761: FOR_TO
+ 762: IFFALSE 843
+// begin uc_side = side ;
+ 764: LD_ADDR_OWVAR 20
+ 768: PUSH
+ 769: LD_VAR 0 1
+ 773: ST_TO_ADDR
+// uc_nation = nation ;
+ 774: LD_ADDR_OWVAR 21
+ 778: PUSH
+ 779: LD_VAR 0 2
+ 783: ST_TO_ADDR
+// hc_gallery =  ;
+ 784: LD_ADDR_OWVAR 33
+ 788: PUSH
+ 789: LD_STRING 
+ 791: ST_TO_ADDR
+// hc_name =  ;
+ 792: LD_ADDR_OWVAR 26
+ 796: PUSH
+ 797: LD_STRING 
+ 799: ST_TO_ADDR
+// PrepareHuman ( false , class , skill ) ;
+ 800: LD_INT 0
+ 802: PPUSH
+ 803: LD_VAR 0 5
+ 807: PPUSH
+ 808: LD_VAR 0 4
+ 812: PPUSH
+ 813: CALL_OW 380
+// un = CreateHuman ;
+ 817: LD_ADDR_VAR 0 10
+ 821: PUSH
+ 822: CALL_OW 44
+ 826: ST_TO_ADDR
+// PlaceHumanInUnit ( un , build ) ;
+ 827: LD_VAR 0 10
+ 831: PPUSH
+ 832: LD_VAR 0 3
+ 836: PPUSH
+ 837: CALL_OW 52
+// end ;
+ 841: GO 761
+ 843: POP
+ 844: POP
+// end ; end_of_file
+ 845: LD_VAR 0 7
+ 849: RET
+// every 1 do
+ 850: GO 852
+ 852: DISABLE
+// begin InGameOn ;
+ 853: CALL_OW 8
+// CenterOnXY ( 53 , 40 ) ;
+ 857: LD_INT 53
+ 859: PPUSH
+ 860: LD_INT 40
+ 862: PPUSH
+ 863: CALL_OW 84
+// wait ( 0 0$5 ) ;
+ 867: LD_INT 175
+ 869: PPUSH
+ 870: CALL_OW 67
+// CenterNowOnUnits ( Donaldson ) ;
+ 874: LD_EXP 1
+ 878: PPUSH
+ 879: CALL_OW 87
+// Say ( Donaldson , D1-Don-1 ) ;
+ 883: LD_EXP 1
+ 887: PPUSH
+ 888: LD_STRING D1-Don-1
+ 890: PPUSH
+ 891: CALL_OW 88
+// SayRadio ( Harisson , D1-Har-1 ) ;
+ 895: LD_EXP 2
+ 899: PPUSH
+ 900: LD_STRING D1-Har-1
+ 902: PPUSH
+ 903: CALL_OW 94
+// Say ( Donaldson , D1-Don-2 ) ;
+ 907: LD_EXP 1
+ 911: PPUSH
+ 912: LD_STRING D1-Don-2
+ 914: PPUSH
+ 915: CALL_OW 88
+// SayRadio ( Harisson , D1-Har-2 ) ;
+ 919: LD_EXP 2
+ 923: PPUSH
+ 924: LD_STRING D1-Har-2
+ 926: PPUSH
+ 927: CALL_OW 94
+// InGameOff ;
+ 931: CALL_OW 9
+// end ; end_of_file
+ 935: END
