@@ -1,0 +1,54 @@
+ON UnitDestroyed(un) do
+begin
+    if GetSide(un) = 3 and GetType(un) = unit_building then
+    begin
+        
+        if GetBType(un) = 31 or  GetBType(un) = 32 or  GetBType(un) = 36 or  GetBType(un) = 0 or  GetBType(un) = 24 or  GetBType(un) = 17 or  GetBType(un) = 25 or  GetBType(un) = 19 or  GetBType(un) = 20 or  GetBType(un) = 18 or  GetBType(un) = 21 or  GetBType(un) = 23 or  GetBType(un) = 16  or  GetBType(un) = 6 or  GetBType(un) = 29 or  GetBType(un) = 26 or  GetBType(un) = 30 or  GetBType(un) = 28 or  GetBType(un) = 27 or  GetBType(un) = 33 or  GetBType(un) = 2 or GetBType(un) = 4 then
+        begin
+            destroyedBuildings = destroyedBuildings ^  GetBType(un);
+            destroyedBuildings = destroyedBuildings ^  GetX(un);
+            destroyedBuildings = destroyedBuildings ^  GetY(un);
+            destroyedBuildings = destroyedBuildings ^  GetDir(un);
+        end;
+
+        if GetBType(un) = 1  then
+        begin
+            destroyedBuildings = destroyedBuildings ^  0;
+            destroyedBuildings = destroyedBuildings ^  GetX(un);
+            destroyedBuildings = destroyedBuildings ^  GetY(un);
+            destroyedBuildings = destroyedBuildings ^  GetDir(un);
+        end;
+
+        if GetBType(un) = 3  then
+        begin
+            destroyedBuildings = destroyedBuildings ^  2;
+            destroyedBuildings = destroyedBuildings ^  GetX(un);
+            destroyedBuildings = destroyedBuildings ^  GetY(un);
+            destroyedBuildings = destroyedBuildings ^  GetDir(un);
+        end;
+
+        if GetBType(un) = 5  then
+        begin
+            destroyedBuildings = destroyedBuildings ^  4;
+            destroyedBuildings = destroyedBuildings ^  GetX(un);
+            destroyedBuildings = destroyedBuildings ^  GetY(un);
+            destroyedBuildings = destroyedBuildings ^  GetDir(un);
+        end;
+            
+    end;
+
+end;
+
+On BuildingComplete(building) Do
+begin
+    if GetSide(building) = 3 then
+    begin
+        destroyedBuildings := Delete( destroyedBuildings, 1);
+        destroyedBuildings := Delete( destroyedBuildings, 1);
+        destroyedBuildings := Delete( destroyedBuildings, 1);
+        destroyedBuildings := Delete( destroyedBuildings, 1); 
+    end;
+
+    if GetSide(building) = 3 and [GetBType(building) = 0 or GetBType(building) = 2 or GetBType(building) = 4] then ComUpgrade(building);
+        
+end;

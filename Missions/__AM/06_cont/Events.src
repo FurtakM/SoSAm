@@ -16,3 +16,29 @@ On UnitDestroyed(unit) do
 begin
     if GetSide(unit) = 1 and GetType(unit) = unit_human then unitLost = unitLost + 1;
 end;
+
+On VehicleConstructed(vehicle, building) Do
+var i, un, crates;
+begin
+
+    if GetWeapon(vehicle) = 51 and GetSide(vehicle) = 3 then
+    begin
+        crates = GetResourceType(GetBase(rudepo), 1);
+        SetResourceType(GetBase(rudepo), 1, crates - 100);
+        AddCargo(vehicle, 1, 100);
+    end;
+
+    if building = rufabsupp then SetSide(vehicle, 6);
+    if GetSide(building) = 3 and IsOk(building) then
+    begin
+        uc_side = 3;
+        uc_nation = 3;
+
+        hc_gallery := '';
+        hc_name := '';
+
+        PrepareMechanic(false, rand(RuSolMinLevel, RuSolMaxLevel)); 
+        PlaceHumanInUnit(CreateHuman, building);   
+    end; 
+
+end;

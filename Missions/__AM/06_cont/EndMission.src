@@ -1,11 +1,12 @@
 Every 0$01 trigger timeToEnd <= 0$00  do
+var i, tmp, yourCrates;
 begin 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
     for i in tmp do yourCrates = yourCrates + GetResourceType(GetBase(i), 1);
 
     if yourCrates >= needCrates then
     begin
-        FinishMission(yourCrates;
+        FinishMission(yourCrates);
     end;
 end;
 
@@ -14,27 +15,42 @@ begin
     if crates + 100 > crates then
     begin
         AddMedal('cans', 1);
-    end
-    else
-    begin
+        SaveVariable(1, '06_crates_1');
+    end else begin
         AddMedal('cans', -1);
+        SaveVariable(0, '06_crates_1');
     end;
 
-    if unitLost >= 1  then
+    if unitLost > 2 then
     begin
         AddMedal('people', 1);
-    end
-    else
-    begin
+    end else begin
         AddMedal('people', -1);
     end;
+
+    SaveVariable(remoteVehiclesBuild, '06_remoteVehs_1');
 
     if remoteVehiclesBuild = 1 then
     begin
         AddMedal('remote', 1);
-    end
-    else
-    begin
-        AddMedal('remote', -1);
+    end else begin
+        if GetTech(18, 1) = state_enabled then
+        begin
+            AddMedal('remote', - 1);
+        end else
+        begin
+            AddMedal('remote', - 2);
+        end;
     end;
+
+    SaveVariable(KurtStatus, '06_KurtStatus_1');
+
+    GiveMedals('Main');
+    RewardPeople([[f_side, 1], [f_type, unit_human]]);
+
+    SaveCharacters(JMM, 'JMM');
+
+    YouWin;
+
+
 end;

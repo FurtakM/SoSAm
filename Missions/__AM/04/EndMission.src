@@ -70,15 +70,38 @@ begin
         RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human]]));
 
         SaveCharacters(JMM, 'JMM');
-        SaveCharacters(Bobby, 'Bobby');
-        SaveCharacters(Cyrus, 'Cyrus');
-        SaveCharacters(Lisa, 'Lisa');
-        SaveCharacters(Brown, 'Brown');
-        SaveCharacters(Donaldson, 'Donaldson');
-        SaveCharacters(Frank, 'Frank');
+        If IsOK(Bobby) then SaveCharacters(Bobby, 'Bobby');
+        If IsOK(Cyrus) then SaveCharacters(Cyrus, 'Cyrus');
+        If IsOK(Lisa) then SaveCharacters(Lisa, 'Lisa');
+        If IsOK(Brown) then SaveCharacters(Brown, 'Brown');
+        If IsOK(Donaldson) then SaveCharacters(Donaldson, 'Donaldson');
+        If IsOK(Frank) then SaveCharacters(Frank, 'Frank');
 
         SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human]]) diff [JMM, Bobby, Cyrus, Lisa, Brown, Donaldson, Frank],'04_other_survivors');
+        SaveBase(GammBaseArea);
 
         YouWin;
+
+end;
+
+Export function SaveBase(area);
+var i, gammaBase, buildings;
+begin
+
+    gammaBase = [];
+    buildings = FilterUnitsInArea(area, [[f_side, 1], [f_type, unit_building], [f_ok]]);
+
+    for i in buildings do
+    begin
+                if GetBType(i) in [b_lab, b_lab_half, b_lab_full] then 
+                        gammaBase = gammaBase ^ [ [GetBType(i), GetX(i), GetY(i) ,GetDir(i) ,GetBLevel(i), GetNation(i), GetLabKind(i,1), GetLabKind(i,2) ] ]
+                else
+                if GetBType(i) in [b_bunker] then
+                        gammaBase = gammaBase ^ [ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i), GetBWeapon(i)] ]
+                else
+                        gammaBase = gammaBase ^ [ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i)] ];
+    end;
+
+	SaveVariable(gammaBase,'GammaBase');
 
 end;
