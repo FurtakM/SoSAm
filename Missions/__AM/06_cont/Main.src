@@ -1,3 +1,22 @@
+{
+Map scripts: Nefarem
+
+    Global variables:
+
+    '06_crates_1',  = 0 - low start resources in mission 09.
+    '06_crates_1',  = 1 - many start resources in mission 09.
+
+    '06_remoteVehs_1', = 0 - no additional remote vehicles in mission 08.
+    '06_remoteVehs_1', = 1 - additional remote vehicles in mission 08.
+
+    '06_KurtStatus_1', = 0 - probably killed, bad and expensive mercenariues in mission 12.
+    '06_KurtStatus_1', = 1 - escape with friendly attitude, better and cheaper mercenaries in mission 12.
+    '06_KurtStatus_1', = 2 - escape with enemy attitude, cheaper mercanries in mission 12.
+
+    '06_JoanStatus_1', = 0 - Joan die in this mission.
+    '06_JoanStatus_1', = 1 - Joan survive this mission.
+}
+
 Export JMM, Gladstone, Frank, Woodruff, Lisa, Brown, Denis, Cyrus;
 Export Harisson, Doctor, Joan, JoanStatus;
 Export HarrSupp1, HarrSupp2;
@@ -12,6 +31,8 @@ Export remoteVehiclesBuild;
 
 Export unitLost;
 Export ruDestroyedBuildings;
+Export tamedApemans;
+Export disableHealAI;
 
 Export RuSolMinLevel, RuSolMaxLevel;  
 
@@ -29,7 +50,7 @@ begin
 
     // Variables
 
-    debugMode = 1; // 0 - for player, 1 - for developers
+    debugMode = 0; // 0 - for player, 1 - for developers
 
     contactWithRussian = 0; // 0 - dont contact, 1 - contact
     firstTower = 0; // var block event after build control tower 0 - no build, 1 - build, 2 - remote veh first
@@ -48,11 +69,15 @@ begin
 
     sendedConvoys = 0; // how many convoys escape map
 
+    tamedApemans = 0; // how many russian scientist tamed apemans
+
     unitLost = 0;
     ruDestroyedBuildings = [];
+    disableHealAI = 0; 
 
     strings = []; // table with strings to show
 
+    PrepareNature;
     PrepareDifficulty;
     PrepareRussian;
     PrepareHeroes;
