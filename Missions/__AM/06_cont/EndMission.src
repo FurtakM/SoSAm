@@ -49,8 +49,14 @@ begin
     RewardPeople([[f_side, 1], [f_type, unit_human]]);
 
     SaveCharacters(JMM, 'JMM');
+    If IsOK(Lisa) then SaveCharacters(Lisa, 'Lisa');
+    If IsOK(Brown) then SaveCharacters(Brown, 'Brown');
+    If IsOK(Frank) then SaveCharacters(Frank, 'Frank');
+    If IsOK(Denis) then SaveCharacters(Denis, 'Denis');
+    If IsOK(Joan) then SaveCharacters(Joan, 'Joan');
+    SaveVariable(JoanStatus, '06_JoanStatus_1');
+
+    SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human]]) diff [JMM, Lisa, Brown, Frank, Denis, Joan], '06_other_survivors');
 
     YouWin;
-
-
 end;

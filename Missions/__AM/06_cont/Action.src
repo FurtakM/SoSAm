@@ -33,13 +33,27 @@ begin
             DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol1-1', 'DR0-Sol1-1');
             DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
          end;
-        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
      end;
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
     Say(JMM, 'DR0-JMM-1');
 end;
 
-
-
+// Frank dialog
+Every 5$0 trigger IsOk(Frank) and FilterAllUnits([[f_side, 1], [f_class, 16]]) > 0 do 
+begin
+    DialogueOn;
+    Say(Frank, 'D10-Frank-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Frank, Lisa], 'D10-Sol1-1', 'D10-FSol1-1');
+    Say(Frank, 'D10-Frank-2');
+    if IsOK(Lisa) then
+    begin
+        Say(Lisa, 'D10-Lisa-2');
+    end
+    else
+    begin
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Frank], 'D10-Sol1-2', 'D10-FSol1-2');
+    end;
+end;
 
 // Harrison support and dialog with him
 Every 10$0 do 
@@ -54,7 +68,7 @@ begin
     if contactWithRussian = 1 then begin Say(JMM, 'DRem-JMM-1');
     end else begin Say(JMM, 'DRem-JMM-1a'); end;
     SayRadio(Harisson, 'DRem-Har-2');  
-    // add dialog if Denis die in before mission
+    // add dialog if Denis die in before mission ident: DRem-JMM-2a
     Say(JMM, 'DRem-JMM-2'); 
     SayRadio(Harisson, 'DRem-Har-3'); 
     Say(JMM, 'DRem-JMM-3');  
@@ -83,10 +97,26 @@ begin
 end;
 
 // Build opto lab
-Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, 15]]) > 0 do 
+Every 0$6 trigger CheckOptoLab and IsOk(Denis) do 
 begin
     Say(Denis, 'DR1-Den-1');
     Say(JMM, 'DR1-JMM-1');
+end;
+
+Function CheckOptoLab;
+var i;
+begin
+    result = false;
+
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype,b_lab_half],[f_btype,b_lab_full]]]) do
+    begin     
+        if (GetLabKind(i, 1) = b_lab_opto) or (GetLabKind(i, 2) = b_lab_opto) then
+        begin
+            result = true;
+            break;
+        end;
+    break;
+    end;
 end;
 
 // Research remote control
@@ -116,7 +146,7 @@ begin
 end;
 
 // All ready to test remote veh
-Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) > 0 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) > 0 do 
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) > 0 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) > 0 and CheckMehInside do 
 var i, j,  tmpControlTowers, tmpRemoteVehs, tmpMechanicInside;
 begin
 
@@ -124,7 +154,7 @@ begin
     tmpRemoteVehs = FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]);
     tmpMechanicInside = [];
 
-    for i = 1 to tmpControlTowers do
+    for i in tmpControlTowers do
     begin
 
         if IsInUnit(JMM) = i and GetClass(JMM) = 3 then
@@ -142,10 +172,9 @@ begin
         begin
 
             InGameOn;
-            for j = 1 to tmpControlTowers do
-              if GetClass(UnitsInside(tmpControlTowers[j])) = 3 then tmpMechanicInside = tmpMechanicInside ^ tmpControlTowers[i];
+            for j in UnitsInside(i) do
+                if GetClass(j) = 3 then tmpMechanicInside = tmpMechanicInside ^ j;
 
-            display_strings = [UnitsInside(tmpControlTowers[i]), tmpMechanicInside];
             if GetSex(tmpMechanicInside[1]) = 1 then Say(tmpMechanicInside[1], 'D4a-Mech1-1');
             if GetSex(tmpMechanicInside[1]) = 2 then Say(tmpMechanicInside[1], 'D4a-FMech1-1');
 
@@ -160,6 +189,26 @@ begin
 
         end;
     end;
+end;
+
+function CheckMehInside;
+var i, j;
+begin
+    result = false;
+
+    for i in FilterAllUnits([[f_side, 1], [f_btype, 36]]) do 
+    begin
+        for j in UnitsInside(i) do 
+        begin
+            if GetClass(j) = 3 then
+            begin
+                result = true;
+                break;
+            end;
+                
+        end;
+    end;
+    
 end;
 
 // Spawn Kurt + dialog
