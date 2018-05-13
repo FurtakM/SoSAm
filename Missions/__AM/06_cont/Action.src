@@ -30,10 +30,10 @@ begin
              //  Say(Cyrus, 'DR0-Cyrus-1'); add later
          end else
          begin
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]][1]) diff [JMM, Gladstone], 'DR0-Sol1-1', 'DR0-Sol1-1');
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]][2]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol1-1', 'DR0-Sol1-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
          end;
-        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]][1]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
      end;
     Say(JMM, 'DR0-JMM-1');
 end;
@@ -148,7 +148,7 @@ begin
             display_strings = [UnitsInside(tmpControlTowers[i]), tmpMechanicInside];
             if GetSex(tmpMechanicInside[1]) = 1 then Say(tmpMechanicInside[1], 'D4a-Mech1-1');
             if GetSex(tmpMechanicInside[1]) = 2 then Say(tmpMechanicInside[1], 'D4a-FMech1-1');
-            display_strings = tmpMechanicInside;
+
             CenterNowOnUnits(tmpRemoteVehs[1]);
             LinkVehicleToHuman(tmpRemoteVehs[1], tmpMechanicInside[1]);
             wait(0$1);
@@ -212,7 +212,11 @@ begin
 end;
 
 // Remote vehicles
-Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_control, control_remote]]) >= 2 do remoteVehiclesBuild = 1;
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_control, control_remote]]) >= 2 do
+begin
+    ChangeMissionObjectives('MRa');
+    remoteVehiclesBuild = 1;
+end; 
 
 // Spawn randoms
 Every 13$0 do PrepareRandoms(1);
@@ -261,4 +265,24 @@ begin
     Say(JMM, 'D12e-JMM-1');
     DialogueOff;
     cratesStatus = 2;
+end;
+
+// Send russian convoy
+Every 0$1 trigger FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_weapon, 51]]) > 0 do 
+var i;
+begin
+    enable;
+    for i in FilterAllUnits([[f_side, 6]]) do ComAgressiveMove(i, 138, 168);
+end;
+
+// Remove russian convoy
+Every 0$1 trigger FilterUnitsInArea(ConvoyEscape, [[f_side, 6], [f_weapon, 51]]) > 0 do
+var i;
+begin
+    enable;
+    for i in FilterUnitsInArea(ConvoyEscape, [[f_side, 6]]) do
+    begin
+        if FilterUnitsInArea(ConvoyEscape, [[f_side, 6], [f_weapon, 51]]) > 0 then sendedConvoys = sendedConvoys + 1;
+        RemoveUnit(i);
+    end;
 end;

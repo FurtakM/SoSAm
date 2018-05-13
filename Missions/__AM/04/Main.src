@@ -7,12 +7,26 @@ Updates:
 3: 05.05.2018 godz. 19:00
 4: 06.05.2018 godz. 15:00
 5: 07.05.2018 godz. 17:00
+6: 13.05.2018 godz. 14:00
+
+Global variables:
+
+Save all buildings in Gamma base near depot + second oil mine on east.
+SaveVariable(gammaBase,'GammaBase');
+
+Labolatories:
+gammaBase = gammaBase ^ [ [GetBType(i), GetX(i), GetY(i) ,GetDir(i) ,GetBLevel(i), GetNation(i), GetLabKind(i,1), GetLabKind(i,2) ] ]
+
+Turrets:
+gammaBase = gammaBase ^ [ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i), GetBWeapon(i)] ]
+
+Normal buildings:
+gammaBase = gammaBase ^ [ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i)] ];
 }
 
-Export charactersList; // have all heroes who taking part in this mission
 Export JMM, Bobby, Cyrus, Lisa, Frank; // heroes from before missions
+Export RandomBeforeMission; // random from before missions
 Export Brown, Dickens, Woodruff, Knight, Claptopn, Campell, Donaldson; // heroes mission 04
-Export Brian, Jerry; // randoms from before missions
 Export Harisson;
 Export Stolypin; // russian commander
 
@@ -86,8 +100,6 @@ begin
 
     escapeAvalaible = 0; // delete units from map
 
-    charactersList = ['JMM', 'Bobby', 'Cyrus', 'Lisa', 'Brian', 'Jerry', 'Frank', 'Brown', 'Dickens', 'Woodruff', 'Campell', 'Knight', 'Claptopn', 'Donaldson'];
-    
     PrepareDifficulty;
     PrepareRussianBase;
     PrepareRussianCommander;
@@ -99,7 +111,7 @@ begin
 end;
 
 Every 0$1 trigger debugMode = 1 do
-var i, c1, c2, c3, c4, c5;
+var i;
 begin
     enable;
     fogoff(true);

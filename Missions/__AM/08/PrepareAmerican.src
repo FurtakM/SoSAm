@@ -1,0 +1,20 @@
+Export function PrepareHeroes;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    Harisson = PrepareUnit('Harisson', false);
+    Donaldson = PrepareUnit('Donaldson', false);
+
+    PlaceUnitArea(Donaldson, GammaSpawn, false);
+end;
+
+Export function PrepareSoldiers;
+var i;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    for i in FilterAllUnits([[f_side, 1], [f_btype, b_bunker]]) do RespawnInside(1, 1, i, 4, 1, 1);
+    for i in FilterAllUnits([[f_side, 1], [f_btype, 31]]) do RespawnInside(1, 1, i, 4, 1, 1);
+end;
