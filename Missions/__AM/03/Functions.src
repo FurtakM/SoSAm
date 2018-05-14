@@ -99,3 +99,30 @@ for i in filter do
        break;
        end;
 End;
+
+Export Function FindFreePlace(blist);
+var i;
+begin
+result := false;
+
+if not blist then
+   exit;
+
+for i in blist do
+    if UnitsInside(i) < 6 then
+       begin
+       result := i;
+       break;
+       end;
+End;
+
+Export Function Count(timer, mode);
+begin
+if not timer then
+   exit;
+
+if mode in ['asc', 'up', '+'] then
+   result := timer + 0$01
+  else
+   result := timer - 0$01;
+End;

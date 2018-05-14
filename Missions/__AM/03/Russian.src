@@ -1,8 +1,11 @@
 Export Pokryshkin;
-Export ru_patrol, ru_forest;
+Export ru_patrol, ru_forest, ru_vehicles;
+Export ru_firepoints_south, ru_alert, ru_alert_xy;
 Export Function PrepareRussian;
 var i, b, un, veh, tw, bar, skill, vehicles, spot_xy;
 begin
+ru_alert := false;
+
 tw := FilterAllUnits([[f_side, 3], [f_or, [f_btype, b_breastwork], [f_btype, b_bunker]]]);
 bar := FilterAllUnits([[f_side, 3], [f_btype, b_armoury]]);
 
@@ -42,7 +45,7 @@ for i in spot_xy do
     PlaceHumanInUnit(CreateHuman, veh);
     end;
 
-for i = 1 to [3,4,5][Difficulty] do
+for i = 1 to [3, 4, 5][Difficulty] do
     begin
     PrepareHuman(false, 1, skill);
     un := CreateHuman;
@@ -55,6 +58,13 @@ for i = 1 to [2, 3, 4][Difficulty] do
     PrepareHuman(false, 1, skill);
     un := CreateHuman;
     PlaceUnitArea(un, forestSouthGuardArea, false);
+    ru_patrol := ru_patrol ^ un;
     end;
 
+ru_vehicles := vehicles;
+ru_firepoints_south := [ [ [131,121], [113,90], [93,62] ],
+                         [ [106,54],  [120,80], [143,120] ],
+                         [ [154,116], [140,93], [130,58] ],
+                         [ [105,106], [134,98], [159,113] ],
+                       ];
 End;
