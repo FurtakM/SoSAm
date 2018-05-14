@@ -83,21 +83,21 @@ begin
 
         damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 650]]]);
 
-        if damageUnits > 0 then
+        if damageUnits > 0 and sci_list > 0 then
         begin
 
                 for i = 1 to damageUnits do
                         ComMoveToArea(damageUnits[i], healArea);
 
-                for i = 1 to sci_list do
+                for i in sci_list do
                 begin
 
-                ComExitBuilding(sci_list[i]);
+                ComExitBuilding(i);
 
                 for j in FilterUnitsInArea(healArea,[f_side, side]) do
                 begin
 
-                    AddComHeal(sci_list[i], j[j]);
+                    AddComHeal(i, j);
                     wait(1$0);
 
             end;

@@ -218,14 +218,21 @@ begin
      InGameOn;
      CenterOnXY(23, 12);
 
-     ComMoveXY(FilterAllUnits([[f_side, 1]]), 23, 12);
-
      min = distanceTab[1][2];
 
      for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Khatam] do
          if IsOK(i) then distanceTab = distanceTab ^ [ [i, GetDistUnitArea(i, DeadsSpawn)] ];
 
      for i = 2 to distanceTab do if distanceTab[i][2] < min then min = distanceTab[i][2];
+
+     for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM] do
+     begin
+          ComMoveToArea(i, DeadCutscene);
+          ComMoveToArea(JMM, JMMAreaCutscene);
+          AddComTurnXY(i, 23, 11);
+          AddComTurnXY(JMM, 23, 11);
+          SetLives(DyingSold, 250);
+     end;
 
      for i = 2 to distanceTab do
      begin
@@ -311,7 +318,7 @@ begin
     wait(0$1);
 
     InGameOff;
-    Say(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]))], 'DF-Sol1-1');
+    Say(Brian, 'DF-Sol1-1');
     Say(JMM, 'DF-JMM-1'); 
 
 end;
@@ -598,7 +605,14 @@ end;
 
 Every 0$1 trigger cargoEscape > 1 do
 begin
-    Say(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]]))], 'D5a-Sol1-1');
+
+    If IsOK(Jerry) then
+    begin
+         Say(Jerry, 'D5a-Sol1-1');
+    end else
+    begin
+         Say(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]]))], 'D5a-Sol1-1');
+    end;
     Say(JMM, 'D5a-JMM-1');
 end;
 
