@@ -1,6 +1,7 @@
 Every 1 do 
+var i;
 begin
-    InGameOn;
+    //InGameOn;
 
     CenterOnXY(53, 40);
 
@@ -12,6 +13,13 @@ begin
     SayRadio(Harisson, 'D1-Har-1');
     Say(Donaldson, 'D1-Don-2');
     SayRadio(Harisson, 'D1-Har-2');
+
+    CenterOnXY(53, 40);
+
+    repeat
+        wait(0$1);
+        for i in FilterAllUnits([[f_side, 6]]) do ComAgressiveMove(i, 54, 20);
+    until FilterAllUnits([[f_side, 6], [f_type, unit_human]]) = 0;
 
     InGameOff;
 end;

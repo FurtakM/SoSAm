@@ -48,3 +48,226 @@ begin
    end;
 
 END;
+
+Export function PrepareDifficulty;
+begin
+    if Difficulty = 1 then
+    begin
+        RuSolMinLevel = 4;
+        RuSolMaxLevel = 6;
+    end;
+
+    if Difficulty = 2 then
+    begin
+        RuSolMinLevel = 5;
+        RuSolMaxLevel = 6;
+        SetTech(57, 3, state_enabled);
+    end;
+
+    if Difficulty = 3 then
+    begin
+        RuSolMinLevel = 6;
+        RuSolMaxLevel = 7;
+        SetTech(57, 3, state_enabled);
+        SetTech(52, 3, state_enabled);
+    end;
+end;
+
+
+Export function BuildRussianBase;
+var i, engineers, buildingsTab;
+begin
+
+    engineers = FilterAllUnits([[f_side, 3], [f_class, 2]]);
+    //type, x, y, dir
+    buildingsTab = [
+        [b_depot, 90, 86, 3],
+        [b_armoury, 75, 79, 2],
+        [b_armoury, 113, 94, 4],
+        [b_oil_mine, 106, 97, 3],
+        [b_oil_power, 93, 97, 5],
+        [b_workshop, 100, 89, 3],
+        [b_ext_gun, 96, 89, 1],
+        [b_bunker, 78, 94, 1],
+        [b_bunker, 95, 82, 3],
+        [b_bunker, 104, 85, 2],
+        [b_bunker, 81, 78, 2],
+        [b_turret, 109, 90, 3],
+        [b_turret, 88, 79, 3],
+        [b_turret, 76, 87, 1],
+        [b_oil_power, 96, 97, 5],
+        [b_oil_power, 85, 84, 2], 
+        [b_lab, 88, 95, 0],
+        [b_ext_noncombat, 103, 89, 4],
+        [b_ext_track, 97, 86, 2],
+        [b_ext_computer, 100, 85, 3]
+    ];
+
+    for i := 1 to buildingsTab do
+        AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
+
+end;
+
+Export function ResAllTechs(side, lab, nation);
+var i, tech, cout;
+begin
+
+  For i = 1 to 72 do
+    If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true then AddComResearch(lab, i);
+
+end;
+
+Export function EnterBunkerOrBarrack(side, area);
+var i,j, soldiers_list, turretList, temp, barrackList;
+begin
+
+
+    soldiers_list = FilterAllUnits([[f_side, side], [f_class, 1], [f_outside], [f_lives, 700]]);
+    turretList = FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
+    barrackList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
+
+    if barrackList > 0 then
+    begin
+
+        if turretList = 0 then
+        begin
+            for i in soldiers_list do ComEnterUnit(i, barrackList[1]);
+        end else
+        begin
+            for i in barrackList do 
+            begin
+                ComEnterUnit(UnitsInside(i), turretList[1]);
+            end;
+        end;
+
+    end;
+
+end;
+
+Export function RepairBuilding(side, building);
+var buildings_list, i,engineerOk_list, j;
+begin
+
+        engineerOk_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 2], [f_class, 16]], [f_lives, 1000]]);
+        buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+        if buildings_list > 0 and engineerOk_list > 0 then
+        begin
+
+                for i in engineerOk_list do
+                begin
+                     for j in buildings_list do
+                     begin
+
+                        AddComExitBuilding(i);
+                        wait(0$1);
+                        AddComRepairBuilding(i, j);
+
+                    end;
+                end;
+        end;
+
+        if buildings_list = 0 then
+        begin
+
+           for i in engineerOK_list do
+           begin
+             ComEnterUnit(i, building);
+          end;
+
+        end;
+END;
+
+Export function RebuildBuildings(side, destroyedBuildings);
+var i;
+begin
+    if FilterAllUnits([[f_side, side], [f_class, 2]]) > 0 and FilterAllUnits([[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]) = 0 and destroyedBuildings > 0  then
+    begin
+        for i in FilterAllUnits([[f_side, side], [f_class, 2]]) do 
+        begin
+            AddComExitBuilding(i);
+            AddComBuild(i, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
+        end;
+    end;
+end;
+
+
+
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list,  i, j, damageUnits;
+begin
+
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
+
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+
+    if damageUnits > 0 and sci_list > 0 then
+    begin
+
+      for i = 1 to damageUnits do ComMoveToArea(damageUnits[i], healArea);
+
+      for i in sci_list do
+      begin
+
+        ComExitBuilding(i);
+
+        for j in FilterUnitsInArea(healArea,[f_side, side]) do
+        begin
+
+        AddComHeal(i, j);
+        wait(1$0);
+
+        end;
+      end;
+
+    end else
+    begin
+
+    AddComEnterUnit(sci_list, build);
+
+  end;
+
+END;
+
+Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, targetSide, weaponTab, engine, control, chassis);
+var i, j, lastIndex, weaponTabTemp, temp, target1, target2;
+begin
+
+     IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
+     begin
+
+       for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
+
+    end;
+
+    IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount then
+    begin
+ 
+
+    repeat begin
+    wait(0$1);
+
+      if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) > 0 then
+      begin
+
+        for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+        begin
+
+          target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+          target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                 If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                 begin
+                    ComAttackUnit(i, target1);
+                  end
+                 else
+                  begin
+                    ComAttackUnit(i, target2);
+                  end;
+        end;
+
+      end;
+
+    end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
+   end;
+END;
