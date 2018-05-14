@@ -174,6 +174,8 @@ InGameOff;
 
 ChangeMissionObjectives('M1');
 
+SaveForQuickRestart;
+
 cornel_active := true;
 End;
 
@@ -352,6 +354,8 @@ until GetDistUnits(Frank, JMM) < 8;
 
 InGameOn;
 
+CenterOnUnits(JMM);
+
 if IsInUnit(JMM) then
    ComFree(JMM);
 
@@ -383,6 +387,8 @@ Say(Frank, 'D6-Frank-1');
 
 if Lisa and GetDistUnits(Lisa, Frank) < 20 and IsOk(Lisa) then
    begin
+   ComFree(Lisa);
+
     repeat
      wait(0$01);
     until GetDistUnits(Lisa, Frank) < 7;
@@ -454,9 +460,16 @@ if frank_send_to_scout then
    end
     else
      SetSide(Frank, 1);
+                         
+repeat
+ wait(0$01);
+ time_to_prepare := Count(time_to_prepare, '-');
 
+ if debug then
+    debug_strings := time_to_prepare;
 
-Wait([12$00, 11$00, 10$00][Difficulty]);
+until time_to_prepare = 0$00;
+
 cornel_prepared := true;
 End;
 
@@ -569,7 +582,6 @@ if i then
   else
    Say(Cyrus, 'D2c-Cyrus-1a');
 End;
-
 
 // end mission
 Every 0$01 trigger FilterUnitsInArea(endMArea, [f_side, 1]) do
