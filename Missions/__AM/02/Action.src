@@ -384,7 +384,7 @@ begin
 
      for i in FilterUnitsInArea(SouthBaseRussianSpawn1, [[f_side, 3], [f_type, unit_human]]) do southBaseDefenders = southBaseDefenders ^ i;
 
-     wait([0$10, 0$15, 0$20][Difficulty]);
+     wait([0$13, 0$12, 0$9][Difficulty]);
 
     repeat
     wait(0$1);
@@ -402,16 +402,36 @@ begin
 end;
 
 // Dialog about tanks
-Every 0$1 trigger FilterUnitsInArea(SouthBase, [[f_side, 3], [f_type, unit_human], [f_class, 3]]) = 0 do
+Every 0$1 do
+var i, tmp;
 begin
-     If IsOK(Bobby) then
-     begin
-          Say(Bobby, 'DX2-Bobby-1'); 
-          Say(JMM, 'DX2-JMM-1a');
-     end else
-     begin
-          Say(JMM, 'DX2-JMM-1');
-     end;
+    enable;
+
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human]]);
+
+    for i in tmp do begin
+        if GetDistUnits(i, vehicle1) < 4 or GetDistUnits(i, vehicle2) < 4  then
+        begin
+            Disable;
+            CenterOnUnits([vehicle1, vehicle2]);
+
+            If IsOK(Bobby) then
+            begin
+                DialogueOn;
+                Say(Bobby, 'DX2-Bobby-1'); 
+                Say(JMM, 'DX2-JMM-1a');
+                DialogueOff;
+                Disable;
+            end else
+            begin
+                DialogueOn;
+                Say(JMM, 'DX2-JMM-1');
+                DialogueOff;
+                Disable;
+            end;
+        end;
+
+    end;
 
 end;
 
@@ -422,7 +442,7 @@ begin
      temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby];
      temp2 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_female]]) diff [Lisa];
 
-     Say(JMM, 'DX2a-JMM-1');
+     if NOT IsInUnit(JMM) then Say(JMM, 'DX2a-JMM-1');
 
      IF IsInUnit(Bobby) = tmp[1] then Say(Bobby, 'DX2a-Bobby-1');
      IF IsInUnit(Cyrus) = tmp[1] then Say(Cyrus, 'DX2a-Cyrus-1');
@@ -433,7 +453,7 @@ begin
 
      IF IsInUnit(JMM) = tmp[1] then Say(JMM, 'DX2b-JMM-1');
 
-     Say(JMM, 'DX2a-JMM-2');
+     if NOT IsInUnit(JMM) then Say(JMM, 'DX2a-JMM-2');
 
 end;
 
@@ -570,12 +590,18 @@ begin
     wait(rand(1$0, 2$0) + 0$30);
 
     PrepareCargoBays;
+    cargoRespawn = 1;
+    ComMoveXY([cargo1, cargo2, driver1, driver2], 36, 13);
+    AddComMoveXY([cargo1, cargo2, driver1, driver2], 40, 20);
     ComMoveXY([cargo1, cargo2, driver1, driver2], 53, 16);
 
     wait(0$5);
     Say(driver1, 'D5-Rus2-1');
 
-    wait(0$9);
+end;
+
+Every 0$1 trigger GetLives(cargo1) < 999 or GetLives(cargo2) < 999 and cargoRespawn = 1 do
+begin
 
     ComMoveXY([cargo1, cargo2], 7, 9);
     Say(driver1, 'D5-Rus2-1a');
@@ -605,6 +631,9 @@ end;
 
 Every 0$1 trigger cargoEscape > 1 do
 begin
+
+    SetRestrict(b_armoury, 1, true);
+    SetRestrict(31, 1, true);
 
     If IsOK(Jerry) then
     begin
@@ -775,4 +804,10 @@ enable;
      end;
   end;
   end;
+end;
+
+// Capture base
+Every 0$1 trigger LastBattle = 1 and FilterUnitsInArea(NorthBase, [[f_side, 3], [f_type, unit_human]]) > 2 and FilterUnitsInArea(NorthBase, [[f_side, 1], [f_or, [f_type, unit_human], [f_occupied]]]) = 0 do 
+begin
+    SetSide(dep1, 3);
 end;
