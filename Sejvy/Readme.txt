@@ -1,2 +1,2 @@
-﻿Ścieżka do której należy wrzucić folder sejvy:
+﻿Ścieżka do której należy wrzucić sejvy:
 \Original War\UserProfiles\AmRemakeMod\<YourProfile>\CampaignSaves
