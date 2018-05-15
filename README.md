@@ -6,7 +6,7 @@ Todo
 # Stan prac
 - Am01: 100% 
 - Am02: 100% 
-- Am03  5% []
+- Am03  100% [dokonać poprawek]
 - Am04  100% []
 - Am05  0% []
 - Am06  95% [] 
