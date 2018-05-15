@@ -34,13 +34,16 @@ End;
 Export Function SayX(units, ident);
 var i;
 begin
+result := false;
+
 if not units then
    exit;
 
-for i in ident do
+for i in units do
     if IsOk(i) then
        begin
        Say(i, ident);
+       result := i;
        break;
        end;
 End;
