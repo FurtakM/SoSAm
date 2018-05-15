@@ -509,6 +509,11 @@ ComTurnUnit(Frank, JMM);
 
 Say(Frank, 'D6-Frank-1');
 
+PlaceSeeing(69, 20, 1, -20);
+RemoveSeeing(69, 20, 1);
+PlaceSeeing(190, 31, 1, -20);
+RemoveSeeing(190, 31, 1);
+
 if Lisa and GetDistUnits(Lisa, Frank) < 20 and IsOk(Lisa) then
    begin
    ComFree(Lisa);
@@ -742,11 +747,11 @@ until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 5;
 SayRadio(Cornel, 'D5-Corn-1');
 SaveCharacters(Cornel, 'Cornel');
 
+ChangeSideFog(4, 8);
+
 Wait(0$01);
 
 NormalAttack(3, Cornel);
-
-ChangeSideFog(4, 8);
 End;
 
 // end mission
@@ -787,10 +792,10 @@ for i in filter do
           2: wait_for_them := false;
           end;
 
-          save_group := save_group ^ JMM;
-          RemoveUnit(JMM);
           end;
 
+       save_group := save_group ^ JMM;
+       RemoveUnit(JMM);
        end; // end macmilan
 
     if i = Lisa then
@@ -889,7 +894,7 @@ if veh_on_meta then
      else
       AddMedal('Solar2', -2);
 
-counter := save_group ^ save_others;
+counter := save_group + save_others;
 
 if counter = 10 then
    AddMedal('No', 1)

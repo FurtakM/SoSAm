@@ -31,12 +31,18 @@ for i in tw do
     PrepareSolBun(skill, i);
     end;
 
+for i in bar do
+    begin
+    PrepareHuman(false, 1, skill);
+    PlaceHumanInUnit(CreateHuman, i);
+    end;
+
 spot_xy := [ [100,9], [135,60], [41,6],  [22,9], [84,14] ];
 vehicles := [ ];
 
 for i in spot_xy do
     begin
-    veh := PrepareTank(3, 3, ru_medium_tracked, engine_combustion, control_manual, [ru_heavy_machine_gun, ru_gatling_gun][rand(1,2)], 100);
+    veh := PrepareTank(3, 3, ru_medium_tracked, engine_combustion, control_manual, [ru_heavy_machine_gun, ru_gatling_gun, ru_gun][rand(1,3)], 100);
     vehicles := Insert(vehicles, vehicles+1, veh);
     SetDir(veh, 3);
     PlaceUnitXY(veh, i[1], i[2], false);
@@ -45,7 +51,7 @@ for i in spot_xy do
     PlaceHumanInUnit(CreateHuman, veh);
     end;
 
-for i = 1 to [3, 4, 5][Difficulty] do
+for i = 1 to [5, 7, 8][Difficulty] do
     begin
     PrepareHuman(false, 1, skill);
     un := CreateHuman;
