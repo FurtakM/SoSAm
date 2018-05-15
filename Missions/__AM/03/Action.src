@@ -514,6 +514,10 @@ RemoveSeeing(69, 20, 1);
 PlaceSeeing(190, 31, 1, -20);
 RemoveSeeing(190, 31, 1);
 
+CenterOnXY(69, 20);
+Wait(0$02);
+CenterNowOnUnits(JMM);
+
 if Lisa and GetDistUnits(Lisa, Frank) < 20 and IsOk(Lisa) then
    begin
    ComFree(Lisa);
@@ -635,7 +639,7 @@ if frank_send_to_scout then
 
    repeat
     wait(0$01);
-   until See(1, Frank);
+   until GetDistUnits(JMM, Frank) < 9;
 
    SetSide(Frank, 1);
    Say(Frank, 'D6a-Frank-1');
@@ -713,22 +717,10 @@ if i then
 End;
 
 
-Every 0$04 trigger IsInArea(Cornel, cornelKappaArea) do
+Every 0$01 trigger IsInArea(Cornel, cornelKappaArea) do
 var i;
-begin
-
-if frank_send_to_scout then
-   begin
-   SayRadio(Frank, 'D3b-Frank-1');
-   end;
-
-
+begin 
 DoNotAttack(3, Cornel);
-
-Wait(0$10);
-
-SayRadio(Cornel, 'D4-Corn-1');
-
 send_attack_on_cornel := true;
 
 if ru_vehicles then
@@ -739,6 +731,15 @@ if ru_patrol then
    for i in ru_patrol do
        ComAgressiveMove(i, 215, 69);
 
+
+if frank_send_to_scout then
+   begin
+   SayRadio(Frank, 'D3b-Frank-1');
+   end;
+
+Wait(0$04);
+
+SayRadio(Cornel, 'D4-Corn-1');
 
 repeat
  wait(0$01);
@@ -1024,4 +1025,9 @@ ResetFog;
 InGameOff;
 End;
 
+Every 0$30 trigger GetDistUnits(JMM, Cornel) < 3 and FilterAllUnits([[f_side, 4], [f_type, unit_building]]) do
+begin
+enable;
+SayRadio(Powell, 'DWarn-Pow-1');
+End;
 
