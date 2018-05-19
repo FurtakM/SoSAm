@@ -9,8 +9,8 @@ ResetFog;
 Init;
 SetDiplomacy;
 
-//if debug then
-   //DebugMode;
+if debug then
+   DebugMode;
 
 PrepareRussian;
 PrepareAmerican;
@@ -25,10 +25,10 @@ Export jmm_units, jmm_on_west, cornel_units, bierezov_exist, cornel_active,
        cornel_attack, cornel_counter, cornel_prepared, frank_can_return,
        solar_builded, frank_send_to_scout, jmm_in_veh, bobby_in_veh, cyrus_in_veh,
        lisa_in_veh, crates_counter, end_mission_allowed, save_others, save_group, show_query, wait_for_them,
-       veh_on_meta, time_to_prepare, send_spec_patrol, prepare_siege, send_attack_on_cornel, game_end;
+       veh_on_meta, time_to_prepare, send_spec_patrol, prepare_siege, send_attack_on_cornel, game_end, lose_counter;
 Function Init;
 begin
-debug := true; // test
+debug := false; // test
 jmm_units := 0;
 cornel_units := 0;
 bierezov_exist := false;
@@ -56,6 +56,7 @@ send_spec_patrol := false;
 prepare_siege := false;
 send_attack_on_cornel := false;
 game_end := false;
+lose_counter := 0;
 End;
 
 Function SetDiplomacy;
@@ -68,6 +69,7 @@ SetAttitude(3, 8, att_neutral, true);
 End;
 
 Export Function DebugMode;
+var i;
 begin
 FogOff(1);
 debug_strings := [];
