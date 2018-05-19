@@ -438,6 +438,7 @@ if (inarea1 and inarea2) or (dead1 and inarea2) or (dead2 and inarea1) then
        if IsInArea(tmp[1], cyrusEscape) then
           begin
           RemoveUnit(tmp[1]);
+          jmm_units := jmm_units diff tmp[1];
           tmp := tmp diff tmp[1];
           end;
 
@@ -823,42 +824,6 @@ for i in filter do
        RemoveUnit(Khatam);
        end;
 
-    if i = Jerry then
-       begin
-       save_group := save_group ^ Jerry;
-       RemoveUnit(Jerry);
-       end;
-
-    if i = Brian then
-       begin
-       save_group := save_group ^ Brian;
-       RemoveUnit(Brian);
-       end;
-
-    if i = Lynch then
-       begin
-       save_group := save_group ^ Lynch;
-       RemoveUnit(Lynch);
-       end;
-
-    if i = Turner then
-       begin
-       save_group := save_group ^ Turner;
-       RemoveUnit(Turner);
-       end;
-
-    if i = Jillian then
-       begin
-       save_group := save_group ^ Jillian;
-       RemoveUnit(Jillian);
-       end;
-
-    if i = Walker then
-       begin
-       save_group := save_group ^ Walker;
-       RemoveUnit(Walker);
-       end;
-
     if i = Frank then
        begin
        save_group := save_group ^ Frank;
@@ -879,7 +844,7 @@ Every 0$01 trigger (not show_query and not wait_for_them) or (wait_for_them and 
 EndMission;
 
 Export Function EndMission;
-var counter, i;
+var i;
 begin
 // medals
 if solar_builded then
@@ -895,12 +860,10 @@ if veh_on_meta then
      else
       AddMedal('Solar2', -2);
 
-counter := save_group + save_others;
-
-if counter = 10 then
+if lose_counter = 0 then
    AddMedal('No', 1)
     else
-     if counter < 10 and counter > 6 then
+     if lose_counter > 0 and lose_counter < 4 then
         AddMedal('No', -1)
          else
           AddMedal('UpTo4', -1);
@@ -929,18 +892,6 @@ if Frank in save_group then
 
 if Khatam in save_group then
    SaveCharacters(Khatam, 'Khatam');
-
-if Lynch in save_group then
-   SaveCharacters(Lynch, 'Lynch');
-
-if Walker in save_group then
-   SaveCharacters(Walker, 'Walker');
-
-if Turner in save_group then
-   SaveCharacters(Turner, 'Turner');
-
-if Jillian in save_group then
-   SaveCharacters(Jillian, 'Jillian');
 
 if save_others then
    SaveCharacters(save_others, '03_others');

@@ -9,14 +9,16 @@ var unit;
 begin
 
 if exist_mode then
-   begin
-   unit := CreateCharacter(ident);
-   DeleteCharacters(ident);
-   end
+   unit := CreateCharacter(ident)
   else
    unit := NewCharacter(ident);
 
 result := unit;
+End;
+
+Export Function KickCharacter(ident);
+begin
+DeleteCharacters('"'&ident&'"');
 End;
 
 // example: PrepareTank(1, 1, us_medium_wheeled, engine_combustion, control_manual, us_machine_gun, 80);
