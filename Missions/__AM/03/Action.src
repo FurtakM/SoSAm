@@ -196,7 +196,12 @@ if jmm_units then
             ComHold(i);
        end;
 
-ComMoveUnit(JMM, Lynch);
+if IsInUnit(JMM) then
+   ComExitVehicle(JMM);
+
+Wait(10);
+
+AddComMoveUnit(JMM, Lynch);
 
 repeat
  wait(0$01);
@@ -745,13 +750,13 @@ if frank_send_to_scout then
    SayRadio(Frank, 'D3b-Frank-1');
    end;
 
-Wait(0$04);
+Wait(0$03);
 
 SayRadio(Cornel, 'D4-Corn-1');
 
 repeat
  wait(0$01);
-until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 5;
+until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 6;
 
 SayRadio(Cornel, 'D5-Corn-1');
 SaveCharacters(Cornel, 'Cornel');
