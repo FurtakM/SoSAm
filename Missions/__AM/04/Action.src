@@ -107,6 +107,7 @@ begin
 
     timerStatus = 1;
     startTimer = 1;
+    bonusAvalaible = 1;
 
     wait(0$3);
 
@@ -444,4 +445,15 @@ begin
     SetSide(tmp, 4);
     ComAgressiveMove(tmp, 88, 89);
     honor = 0;
+end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 6], [f_type, unit_human]]) = 0 and baseReadyToBuild = 0 and bonusAvalaible = 1 do
+var i, tmp;
+begin
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1]]);
+
+    for i in tmp do 
+    begin
+        AddExperience(i, rand(1,4), 500);
+    end;
 end;
