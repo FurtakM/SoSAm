@@ -490,7 +490,7 @@ ComMoveUnit(Frank, JMM);
 Say(JMM, 'D6-JMM-1');
 
 repeat
- wait(0$01);
+ wait(3);
 until GetDistUnits(JMM, Frank) < 8;
 
 if Lisa and GetDistUnits(Lisa, Frank) < 20 then
@@ -594,6 +594,8 @@ if frank_send_to_scout then
    end
     else
      SetSide(Frank, 1);
+
+send_attack_on_cornel_base := true;
                          
 repeat
  wait(0$01);
@@ -628,6 +630,10 @@ SayRadio(Cornel, 'D3a-Corn-2');
 
 cornel_attack := true;
 
+Wait(0$03);
+
+AddMoreTanks();
+
 if frank_send_to_scout then
    begin
    InitHc;
@@ -644,6 +650,7 @@ if frank_send_to_scout then
 
    SetSide(Frank, 1);
    Say(Frank, 'D6a-Frank-1');
+   ComWalk(Frank);
    end;
 End;
 
@@ -754,10 +761,12 @@ ChangeSideFog(4, 8);
 Wait(0$01);
 
 NormalAttack(3, Cornel);
+
+send_attack_on_cornel := false;
 End;
 
 // end mission
-Every 0$02 trigger FilterUnitsInArea(endMArea, [f_side, 1]) or game_end do
+Every 0$01 trigger FilterUnitsInArea(endMArea, [f_side, 1]) or game_end do
 var i, filter;
 begin
 enable;
@@ -830,7 +839,7 @@ for i in filter do
        RemoveUnit(Frank);
        end;
 
-    if IsOk(i) and GetType(i) = unit_human and not i in save_group then
+    if IsOk(i) and GetType(i) = unit_human and (not i in save_group) then
        begin
        save_others := save_others ^ i;
        RemoveUnit(i);
@@ -840,12 +849,14 @@ for i in filter do
 
 End;
 
-Every 0$01 trigger (not show_query and not wait_for_them) or (wait_for_them and FilterAllUnits([[f_side, 1], [f_type, unit_human]]) = 0) do
+Every 0$01 trigger (not show_query and not wait_for_them) or FilterAllUnits([[f_side, 1], [f_type, unit_human]]) = 0 do
 EndMission;
 
 Export Function EndMission;
 var i;
 begin
+Wait(0$02);
+
 // medals
 if solar_builded then
    AddMedal('Solar1', 1)
@@ -879,29 +890,44 @@ RewardPeople(save_group^save_others);
 SaveCharacters(JMM, 'JMM');
 
 if Bobby in save_group then
-   SaveCharacters(Bobby, 'Bobby');
+   SaveCharacters(Bobby, 'Bobby')
+  else
+   DeleteCharacters('Bobby');
 
 if Cyrus in save_group then
-   SaveCharacters(Cyrus, 'Cyrus');
+   SaveCharacters(Cyrus, 'Cyrus')
+  else
+   DeleteCharacters('Cyrus');
 
 if Lisa in save_group then
-   SaveCharacters(Lisa, 'Lisa');
+   SaveCharacters(Lisa, 'Lisa')
+  else
+   DeleteCharacters('Lisa');
 
 if Frank in save_group then
-   SaveCharacters(Frank, 'Frank');
+   SaveCharacters(Frank, 'Frank')
+  else
+   DeleteCharacters('Frank');
 
 if Khatam in save_group then
-   SaveCharacters(Khatam, 'Khatam');
+   SaveCharacters(Khatam, 'Khatam')
+  else
+   DeleteCharacters('Khatam');
 
 if save_others then
    SaveCharacters(save_others, '03_others');
 
+DeleteCharacters('Brian');
+DeleteCharacters('Jimmy');
 
-if Bierezov then
+
+if Bierezov and IsOk(Bierezov) then
    begin
    ResetFog;
    DisplayEndingScene;
-   end;
+   end
+  else
+   DeleteCharacters('Cornel');
 
 YouWin;
 End;
