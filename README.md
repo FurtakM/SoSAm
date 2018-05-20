@@ -59,6 +59,7 @@ Dokończenie misji 05.
 
 Nefarem: 
 ```
+Dokończenie misji 08.
 
 ```
 

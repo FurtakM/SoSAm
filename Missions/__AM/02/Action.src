@@ -580,7 +580,7 @@ begin
 
     PrepareTigers;
     RussianTrap;
-
+    tigersRespawn = 1;
 end;
 
 // Spawn enemy cargo bay
@@ -593,20 +593,35 @@ begin
     cargoRespawn = 1;
     ComMoveXY([cargo1, cargo2, driver1, driver2], 36, 13);
     AddComMoveXY([cargo1, cargo2, driver1, driver2], 40, 20);
-    ComMoveXY([cargo1, cargo2, driver1, driver2], 53, 16);
+    AddComMoveXY([cargo1, cargo2, driver1, driver2], 53, 16);
 
     wait(0$5);
     Say(driver1, 'D5-Rus2-1');
 
 end;
 
-Every 0$1 trigger GetLives(cargo1) < 999 or GetLives(cargo2) < 999 and cargoRespawn = 1 do
+Every 0$1 trigger cargoRespawn = 1 do
+var i, j, tmp1, tmp2;
 begin
+    enable;
+    tmp1 = FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_weapon, ru_cargo_bay]]);
+    tmp2 = FilterAllUnits([[f_side, 1], [f_nation, 1]]);
+   
+    for i in tmp1 do
+    begin
+        for j in tmp2 do
+        begin
+            if GetDistUnits(i, j) < 7 then
+            begin
+                Disable;
+                ComMoveXY([cargo1, cargo2], 7, 9);
+                Say(driver1, 'D5-Rus2-1a');
 
-    ComMoveXY([cargo1, cargo2], 7, 9);
-    Say(driver1, 'D5-Rus2-1a');
+                cargoEscape = 1;
+            end;
+        end;
+    end;
 
-    cargoEscape = 1;
 end;
 
 // Escape cargo from map
@@ -810,4 +825,15 @@ end;
 Every 0$1 trigger LastBattle = 1 and FilterUnitsInArea(NorthBase, [[f_side, 3], [f_type, unit_human]]) > 2 and FilterUnitsInArea(NorthBase, [[f_side, 1], [f_or, [f_type, unit_human], [f_occupied]]]) = 0 do 
 begin
     SetSide(dep1, 3);
+end;
+
+Every 0$1 trigger tigersRespawn = 1 and FilterAllUnits([[f_side, 0], [f_class, 14]]) = 0 do
+var i, tmp;
+begin
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1]]);
+
+    for i in tmp do 
+    begin
+        AddExperience(i, rand(1,4), 300);
+    end;
 end;
