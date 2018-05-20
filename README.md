@@ -6,7 +6,7 @@ Todo
 # Stan prac
 - Am01: 100% 
 - Am02: 100% 
-- Am03  100% []
+- Am03  100%
 - Am04  100% []
 - Am05  5% []
 - Am06  95% [] 
@@ -54,15 +54,15 @@ git push origin <twój_branch>
 # Zadania
 Serpent: 
 ```
-Dokończenie misji 01_cont i rozpoczęcie prac nad misją 03.
+Dokończenie misji 05.
 ```
 
 Nefarem: 
 ```
-Poprawienie błędów w misji 02 i rozpoczecie prac nad misją 04.
+
 ```
 
 Prażanin: 
 ```
-Stworzenie avatarów ludzi z Gammy.
+
 ```
