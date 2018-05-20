@@ -6,9 +6,9 @@ Todo
 # Stan prac
 - Am01: 100% 
 - Am02: 100% 
-- Am03  100% [dokonać poprawek]
+- Am03  100% []
 - Am04  100% []
-- Am05  0% []
+- Am05  5% []
 - Am06  95% [] 
 - Am07  0% []
 - Am08  5% []
