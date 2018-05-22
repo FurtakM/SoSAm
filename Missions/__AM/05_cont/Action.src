@@ -1,0 +1,198 @@
+Export Function Action;
+begin
+InGameOn;
+
+CenterNowOnXY(28, 51);
+
+Wait(3);
+
+Say(JMM, 'D1d-JMM-1a');
+SayRadio(Harrison, 'D1d-Har-1');
+
+InGameOff;
+
+ChangeMissionObjectives('M1');
+
+Wait(0$2);
+
+Say(JMM, 'D2-JMM-1');
+Say(Gladstone, 'D2-Glad-1');
+Say(JMM, 'D2-JMM-2');
+Say(Gladstone, 'D2-Glad-2');
+Say(JMM, 'D2-JMM-3');
+End;
+
+// Delta builded
+Every 0$01 trigger FilterAllUnits([[[f_side, 1], [f_not, [f_constructed]], [f_btype, b_depot]]]) and not deltaBuilded do
+begin
+deltaBuilded := true;
+Delta := FilterAllUnits([[[f_side, 1], [f_not, [f_constructed]], [f_btype, b_depot]]])[1];
+SetBName(Delta, 'Delta');
+End;
+
+// Tame allowed
+Every 0$2 trigger GetTech(tech_ApeLang, 1) = state_researched do
+begin
+DialogueOn;
+
+Say(Gladstone, 'D3-Glad-1');
+Say(JMM, 'D3-JMM-1');
+Say(Gladstone, 'D3-Glad-2');
+Say(JMM, 'D3-JMM-2');
+
+DialogueOff;
+End;
+
+// First Apeman Tamed
+On ApemanTamed(apeman, sci) do
+begin
+if GetSide(sci) = 1 then
+   apeman_counter := apeman_counter + 1;
+
+if not first_apeman_tamed then
+   begin
+   first_apeman_tamed := true;
+
+   if sci = Gladstone then
+      Say(Gladstone, 'D7b-Glad-1');
+
+   if sci = Denis then
+      Say(Denis, 'D7a-Den-1');
+
+   if not sci in [JMM, Gladstone, Denis, Lisa, Frank, Bobby, Cyrus, Donaldson] then
+      begin
+
+      if GetSex(sci) = sex_male then
+         Say(sci, 'D7c-Sci1-1')
+        else
+         Say(sci, 'D7c-FSci1-1');
+
+      Say(Gladstone, 'D7c-Glad-1');
+      end;
+
+   if Lisa then
+      Say(Lisa, 'D8-Lisa-1'); 
+   end;
+
+End;
+
+// Apeman Psych researched
+Every 0$1 trigger GetTech(tech_ApePsych, 1) = state_researched do
+var sol;
+begin
+DialogueOn;
+
+if Frank then
+   Say(Frank, 'D8a-Frank-1');
+
+sol := SayX(UnitFilter(others, [f_sex, sex_male]), 'D8a-Sol1-1');
+
+if Denis and GetSide(Denis) = 1 then
+   Say(Denis, 'D8a-Den-1');
+
+if sol or Denis or Frank then
+   begin
+   SayX(UnitFilter(others, [[f_class, 4], [f_sex, sex_male]]) diff sol, 'D8a-Sci1-1');
+   Say(JMM, 'D8a-JMM-1');
+   end;
+
+DialogueOff;
+End;
+
+// First apeman eng
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_class, class_apeman_engineer]]) do
+begin
+ChangeMissionObjectives('M1a');
+
+Case Query('Q2') of
+1: end_mission := true;
+2: end_the_mission_allowed := true;
+end;
+
+End;
+
+
+// Denis arrives
+Every 0$2 trigger FilterAllUnits([[f_side, 1], [f_btype, b_lab]]) and FilterAllUnits([[f_side, 1], [f_btype, b_workshop]]) and Delta do
+begin
+Wait(rand(0$20, 0$40));
+
+PlaceUnitArea(Denis, [denisArea1, denisArea2, denisArea3][Difficulty], false);
+ComHold(Denis);
+
+InGameOn;
+DialogueOn;
+
+CenterNowOnUnits(JMM);
+
+Say(Denis, 'DD-Den-1');
+Say(JMM, 'DD-JMM-1');
+Say(Denis, 'DD-Den-2');
+
+Wait(3);
+
+DialogueOff;
+InGameOff;
+
+repeat
+ wait(0$01);
+until See(1, Denis) or IsDead(Denis);
+
+if IsDead(Denis) then
+   exit;
+
+SetSide(Denis, 1);
+
+Say(Denis, 'DD-Den-2a');
+
+repeat
+ wait(0$01);
+until GetBType(IsInUnit(Denis)) in [b_lab, b_lab_half, b_lab_full] or IsDead(Denis);
+
+if IsDead(Denis) then
+   exit;
+
+Say(Denis, 'DD-Den-2b');
+
+ComChangeProfession(Denis, 4);
+
+Wait(0$02);
+
+DialogueOn;
+
+CenterNowOnUnits(Denis);
+
+Say(JMM, 'D4-JMM-1');
+Say(Denis, 'D4-Den-1');
+Say(JMM, 'D4-JMM-2');
+Say(Denis, 'D4-Den-2');
+
+DialogueOff;
+
+ChangeMissionObjectives('M2');
+
+radar_allowed := true;
+
+SetTech(tech_radar, 1, state_enabled);
+SetRestrict(b_lab_half, 1, state_enabled);
+SetRestrict(b_lab_opto, 1, state_enabled);
+SetRestrict(b_ext_radar, 1, state_enabled);
+End;
+
+// Arab Spotted
+On Contact(s1, s2) do
+if s1 = 1 and s2 = 2 and not arab_spotted then
+   arab_spotted := true;
+
+
+On EndTheMissionRaised(p) do
+begin
+end_the_mission_allowed := false;
+end_mission := true;
+End;
+
+// End Mission
+Every 0$1 trigger end_mission do
+begin
+// todo
+End;
