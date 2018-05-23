@@ -1,0 +1,49 @@
+// Start mission
+Every 1 do
+var tmp;
+begin
+
+    tmp = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
+
+    InGameOn;
+    CenterNowOnUnits(tmp[1]);
+
+    ComEnterUnit([JMM, DeltaDoctor], tmp[1]);
+    Say(JMM, 'D1-JMM-1');
+    Say(DeltaDoctor, 'D1-Sci-1');
+    Say(JMM, 'D1-JMM-2');
+    Say(DeltaDoctor, 'D1-Sci-2');
+    Say(JMM, 'D1-JMM-3');
+    If IsOK(Denis) then Say(DeltaDoctor, 'D1-Sci-3')
+    else Say(DeltaDoctor, 'D1-Sci-3a');
+    Say(JMM, 'D1-JMM-4');
+    Say(DeltaDoctor, 'D1-Sci-4');
+    Say(JMM, 'D1-JMM-5');
+    Say(DeltaDoctor, 'D1-Sci-5');
+    Say(JMM, 'D1-JMM-6');
+    SayRadio(Harisson, 'D1-Har-6');
+    Say(JMM, 'D1-JMM-7');
+    SayRadio(Harisson, 'D1-Har-7');
+    If IsOK(Denis) then Say(JMM, 'D1-JMM-8');
+    Say(JMM, 'D1-JMM-8a');
+    SayRadio(Harisson, 'D1-Har-8');
+    Say(JMM, 'D1-JMM-9');
+    SayRadio(Harisson, 'D1-Har-9');
+    Say(JMM, 'D1-JMM-10');
+    If IsOK(Denis) then Say(JMM, 'D1-JMM-10a');
+
+    SelectAndSaveCharacters;
+
+    SetResourceType(tmp[1], 1, 250);
+
+    InGameOff;
+    Query('Q1');
+
+
+
+end;
+
+Every 0$1 trigger IsInArea(JMM, ExitArea) do 
+begin
+    ChangeMap(6, '%_cont');
+end;

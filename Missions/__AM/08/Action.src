@@ -23,3 +23,67 @@ begin
 
     InGameOff;
 end;
+
+// Arrive two soldiers from Delta base
+Every 3$0 do 
+begin
+    PrepareSupportFromDelta;
+    firstAttack = 1;
+    DialogRandom(FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_human]]), 'D2-Sol1-1', 'D2-FSol1-1');
+    If IsOK(Donaldson) then Say(Donaldson, 'D2-Don-1');
+end;
+
+Every 0$1 trigger firstAttack = 1 do  RespawnAttackInfantry(6, 3, [rand(5, 6), 6, rand(5, 7)][Difficulty], 0, 0, 0, 0, rand(RuSolMinLevel, RuSolMaxLevel), RussianAttackSpawn, RussianHealArea, 1, rand(1,3));
+Every 0$1 trigger firstAttack = 1 do  RespawnAttackVehicle(RussianAttackSpawn, 6, rand(3, 5), rand(RuSolMinLevel, RuSolMaxLevel), 3, 1, 3, [42, 43, 44, 46], [], [], 1);
+
+
+// Spawn John
+Every 0$1 do 
+begin
+    wait([7$0, 8$0, 9$0, 10$0][Rand(1,4)]);
+    PrepareMacmillanSquad;
+    JMMArrive = 1;
+    Say(JMM, 'D3-JMM-1');
+    If IsOK(Donaldson) then
+    begin
+        Say(Donaldson, 'D3-Don-1');
+    end else
+    begin
+        DialogRandom(FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_human], [f_sex, 1]]), 'D3-Sol1-1', 'D3-Sol1-1');
+        Say(JMM, 'D3-JMM-2');
+    end; 
+    If IsOK(Joan) then
+    begin
+        Say(Joan, 'D3a-Joan-1');
+        Say(JMM, 'D3a-JMM-1');
+    end; 
+
+end;
+
+// Dialog with Powell about Harrison
+Every 13$0 trigger JMMArrive = 1  do 
+begin
+    DialogueOn;
+    SayRadio(Powell, 'D4-Pow-1');
+    Say(JMM, 'D4-JMM-1');
+    SayRadio(Powell, 'D4-Pow-2');
+    Say(JMM, 'D4-JMM-2');
+    SayRadio(Powell, 'D4-Pow-3');
+    DialogueOff;
+end;
+
+// Dialog about support
+Every 28$0 do 
+begin
+    DialogueOn;
+    SayRadio(Powell, 'D4a-Pow-1');
+    DialogueOff;
+end;
+
+// Sikorsky
+Every 38$0 do 
+begin
+    PrepareSikorsky;
+    PrepareSikorskyArmy;
+    PrepareSikorskyTanks;
+end;

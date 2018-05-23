@@ -105,6 +105,23 @@ begin
     end;
 end;
 
+Export function EnchancedSaveCharacters(charactersList, ident);
+var i;
+begin
+
+    for i in charactersList do
+    begin
+         if IsOk(i) then
+         begin
+              SaveCharacters(i, ident);
+         end else
+         begin
+              DeleteCharacters(ident);
+        end;
+    end;
+end;
+
+
 // AI functions
 
 Export function ResAllTechs(side, lab, nation);
@@ -341,6 +358,29 @@ begin
   end;
 
 end;
+
+Export function AttackNearBuildings(side, enemySide);
+var i, j, turretsList, enemyBuildings;
+begin
+    turretsList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 31], [f_btype, 32], [f_btype, 33]]]);
+    enemyBuildings = FilterAllUnits([[f_side, enemySide], [f_type, unit_building], [f_empty]]);
+
+    if turretsList > 0 and enemyBuildings > 0 then
+    begin
+        for i in turretsList do
+        begin
+            for j in enemyBuildings do
+            begin
+                display_strings = [GetDistUnits(i, j)];
+                if GetDistUnits(i, j) < 20 then
+                begin
+                    ComAttackUnit(i, j);
+                end;
+            end;
+        end;
+    end;
+
+END;
 
 // Other functions
 
