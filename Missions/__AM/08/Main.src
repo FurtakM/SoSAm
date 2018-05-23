@@ -1,15 +1,22 @@
-//
+{
+    Mission scripts: Nefarem
+    Status: 15%
+}
 
 
-
-Export Donaldson, Harisson;
-Export Borodin;
+Export JMM, Joan, Frank, Denis, Lisa, Gladstone, Brown, Dickens, Woodruff, Knight, Claptopn, Campell, Donaldson; // heroes mission 08
+Export Sikorsky, SikorskyTank, SikorskyArrive; // Sikorsky
+Export Harisson, Powell; // Am commanders
+Export Borodin; // Ru commander
 
 Export RuSolMinLevel, RuSolMaxLevel;
 
 Export russianAI;
 Export ruDepot, ruLab, ruFab;
 Export ruDestroyBuilds;
+Export firstAttack;
+
+Export JMMArrive;
 
 Export debugMode;
 
@@ -17,6 +24,11 @@ Starting
 begin
     Resetfog;
     RandomizeAll;
+
+    JMMArrive = 0; // 0 - don't arrive, 1 - arrive
+    SikorskyArrive = 0;  // 0 - don't arrive, 1 - arrive
+
+    firstAttack = 0;
 
     russianAI = 0; // 0 - off, 1 - on
     ruDestroyBuilds = [];
@@ -35,8 +47,14 @@ begin
     BuildRussianBase;
 end;
 
-Every 0$1 trigger debugMode = 1 do 
+Every 0$1 trigger debugMode = 1 do
+var i;
 begin
     enable;
     fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 2, 9999);
+    If IsSelected(ruDepot) then your_side = 3;
+    If IsSelected(amdepo) then your_side = 1;
 end;

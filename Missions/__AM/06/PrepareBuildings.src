@@ -1,0 +1,34 @@
+Export function PrepareDeltaBase;
+var i, j, building, buildings;
+begin
+
+// [[GetBType(i), GetBLevel(i), GetX(i), GetY(i), GetDir(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)]];
+    buildings = LoadVariable('buildingsInDelta', []);
+
+    uc_side = 1;
+    uc_nation = 1;
+
+    for i = 1 to buildings do
+        begin
+
+        for j := 1 to buildings do
+        begin
+
+            bc_type = buildings[i][1];
+            bc_level = buildings[i][2];
+
+            if bc_type = b_lab_half or bc_type =  b_lab_full then
+            begin
+                bc_kind1 = buildings[i][6];
+                bc_kind2 = buildings[i][7];
+            end;
+
+            building = CreateAndPlaceBuildingXYD(buildings[i][3], buildings[i][4], buildings[i][5]);
+
+            if GetBType(bc_type = b_bunker) then PlaceWeaponTurret(building, buildings[i][8]);
+
+        end;
+    end;
+
+
+End;
