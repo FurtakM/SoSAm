@@ -11,6 +11,8 @@ SayRadio(Harrison, 'D1d-Har-1');
 
 InGameOff;
 
+SaveForQuickRestart;
+
 ChangeMissionObjectives('M1');
 
 Wait(0$2);
@@ -20,12 +22,26 @@ Say(Gladstone, 'D2-Glad-1');
 Say(JMM, 'D2-JMM-2');
 Say(Gladstone, 'D2-Glad-2');
 Say(JMM, 'D2-JMM-3');
+
+// Weather LNW Mode On
+SetWeather(1, 30, 50);
+
+Wait(rand(4$00, 5$00));
+
+SetWeather(0, 30, 50);
+// Weather LNW Mode Off
 End;
 
 // Delta builded
 Every 0$01 trigger FilterAllUnits([[[f_side, 1], [f_not, [f_constructed]], [f_btype, b_depot]]]) and not deltaBuilded do
 begin
 deltaBuilded := true;
+End;
+
+// Rename new depot
+Every 0$01 trigger not Delta and deltaBuilded and FilterAllUnits([[[f_side, 1], [f_not, [f_constructed]], [f_btype, b_depot]]]) do
+begin
+enable;
 Delta := FilterAllUnits([[[f_side, 1], [f_not, [f_constructed]], [f_btype, b_depot]]])[1];
 SetBName(Delta, 'Delta');
 End;
@@ -43,38 +59,7 @@ Say(JMM, 'D3-JMM-2');
 DialogueOff;
 End;
 
-// First Apeman Tamed
-On ApemanTamed(apeman, sci) do
-begin
-if GetSide(sci) = 1 then
-   apeman_counter := apeman_counter + 1;
-
-if not first_apeman_tamed then
-   begin
-   first_apeman_tamed := true;
-
-   if sci = Gladstone then
-      Say(Gladstone, 'D7b-Glad-1');
-
-   if sci = Denis then
-      Say(Denis, 'D7a-Den-1');
-
-   if not sci in [JMM, Gladstone, Denis, Lisa, Frank, Bobby, Cyrus, Donaldson] then
-      begin
-
-      if GetSex(sci) = sex_male then
-         Say(sci, 'D7c-Sci1-1')
-        else
-         Say(sci, 'D7c-FSci1-1');
-
-      Say(Gladstone, 'D7c-Glad-1');
-      end;
-
-   if Lisa then
-      Say(Lisa, 'D8-Lisa-1'); 
-   end;
-
-End;
+// First apeman tamed --> moved to Events
 
 // Apeman Psych researched
 Every 0$1 trigger GetTech(tech_ApePsych, 1) = state_researched do
@@ -174,25 +159,220 @@ ChangeMissionObjectives('M2');
 radar_allowed := true;
 
 SetTech(tech_radar, 1, state_enabled);
-SetRestrict(b_lab_half, 1, state_enabled);
 SetRestrict(b_lab_opto, 1, state_enabled);
 SetRestrict(b_ext_radar, 1, state_enabled);
 End;
 
-// Arab Spotted
-On Contact(s1, s2) do
-if s1 = 1 and s2 = 2 and not arab_spotted then
-   arab_spotted := true;
-
-
-On EndTheMissionRaised(p) do
+// Arab spotted
+Every 0$1 trigger arab_spotted do
+var sol, sol2;
 begin
-end_the_mission_allowed := false;
-end_mission := true;
+sol := SayX(UnitFilter(others, [f_sex, sex_male]), 'D5-Sol1-1');
+
+if not sol then
+   exit;
+
+repeat
+ wait(0$01);
+until not ar_forces;
+
+if IsOk(sol) then
+   begin
+   sol2 := others diff sol;
+   end
+  else
+   exit; // non-sense dialog
+
+if not Lisa and not sol2 then
+   exit; // also non-sense dialog
+
+DialogueOn;
+
+if Lisa then
+   Say(Lisa, 'D5a-Lisa-1')
+  else
+   if sol2 then
+      case GetSex(sol2[1]) of
+           sex_male: Say(sol2[1], 'D5-Sol2-1');
+           sex_female: Say(sol2[1], 'D5-FSol2-1');
+      end;
+
+Say(sol, 'D5-Sol1-2');
+
+if Lisa then
+   Say(Lisa, 'D5a-Lisa-2')
+  else
+   if sol2 then
+      case GetSex(sol2[1]) of
+           sex_male: Say(sol2[1], 'D5-Sol2-2');
+           sex_female: Say(sol2[1], 'D5-FSol2-2');
+      end;
+
+Say(sol, 'D5a-Sol1-3');
+
+if Lisa then
+   Say(Lisa, 'D5a-Lisa-3');
+
+if not sol2 then
+   begin
+   DialogueOff;
+   exit;
+   end;
+
+case GetSex(sol2[1]) of
+     sex_male: Say(sol2[1], 'D5-Sol2-3');
+     sex_female: Say(sol2[1], 'D5-FSol2-3');
+end;
+
+Say(sol, 'D5-Sol1-4');
+
+case GetSex(sol2[1]) of
+     sex_male: Say(sol2[1], 'D5-Sol2-4');
+     sex_female: Say(sol2[1], 'D5-FSol2-4');
+end;
+
+Say(sol, 'D5-Sol1-5');
+
+case GetSex(sol2[1]) of
+     sex_male: Say(sol2[1], 'D5-Sol2-5');
+     sex_female: Say(sol2[1], 'D5-FSol2-5');
+end;
+
+DialogueOff;
+End;
+
+Every 0$01 trigger FilterAllUnits([[f_side, 1], [f_class, class_apeman_engineer]]) >= 5 do
+begin
+ChangeMissionObjectives('M1b');
+apeman_army := true;
+End;
+
+// Radar researched
+Every 0$1 trigger GetTech(tech_radar, 1) = state_researched do
+begin
+ChangeMissionObjectives('M2a');
+radar_researched := true;
+End;
+
+// Radar builded
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_or, [f_weapon, us_radar], [f_bweapon, us_radar]]]) do
+begin
+ChangeMissionObjectives('M2b');
+radar_builded := true;
+End;
+
+// All apemans were killed
+Every 0$3 trigger FilterAllUnits([[f_side, 0], [f_class, class_apeman]]) = 0 and not first_apeman_tamed do
+YouLost('Apeman');
+
+// Secrect Bonus
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_class, class_apeman_engineer]]) >= 7 do
+var i, filter;
+begin
+filter := FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 4]]) ^ JMM;
+
+if filter then
+   for i in filter do
+       AddExperience(i, 4, 12500);
 End;
 
 // End Mission
 Every 0$1 trigger end_mission do
+var i, tmp;
 begin
-// todo
+
+if FilterAllUnits([f_side, 2]) then  // delete trash from map
+   for i in FilterAllUnits([f_side, 2]) do
+       RemoveUnit(i);
+
+// medals
+if apeman_army then
+   AddMedal('Tame', 1)
+  else
+   AddMedal('Tame', -1);
+
+if radar_researched then
+   begin
+   SaveVariable(true, 'radarResInDelta');
+   AddMedal('Radar', 1);
+   end
+  else
+   if radar_allowed then
+      AddMedal('Radar', -2)
+     else
+      AddMedal('Radar', -1);
+
+if radar_builded then
+   AddMedal('BuildRadar', 1)
+  else
+   AddMedal('BuildRadar', -1);
+
+tmp := FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]);
+
+RewardPeople(tmp);
+
+// save characters for next nefek's missions
+SaveCharacters(JMM, 'JMM');
+
+if IsOk(Gladstone) then
+   begin
+   SaveCharacters(Gladstone, 'Gladstone');
+   SaveVariable(true, 'GladstoneInDelta');
+   end;
+
+if IsOk(Denis) and GetSide(Denis) = 1 then
+   begin
+   SaveCharacters(Denis, 'Denis');
+   SaveVariable(true, 'DenisInDelta');
+   end;
+
+if IsOk(Lisa) then
+   begin
+   SaveCharacters(Lisa, 'Lisa');
+   SaveVariable(true, 'LisaInDelta');
+   end;
+
+if IsOk(Frank) then
+   begin
+   SaveCharacters(Frank, 'Frank');
+   SaveVariable(true, 'FrankInDelta');
+   end;
+
+if IsOk(Bobby) then
+   begin
+   SaveCharacters(Bobby, 'Bobby');
+   SaveVariable(true, 'BobbyInDelta');
+   end;
+
+if IsOk(Cyrus) then
+   begin
+   SaveCharacters(Cyrus, 'Cyrus');
+   SaveVariable(true, 'CyrusInDelta');
+   end;
+
+if others then
+   SaveCharacters(others, 'othersInDelta');
+
+if FilterAllUnits([[f_side, 1], [f_class, class_apeman_engineer]]) then
+   SaveCharacters(FilterAllUnits([[f_side, 1], [f_class, class_apeman_engineer]]), 'apeInDelta');
+
+tmp := [];
+
+if FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]]) then
+   for i in FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]]) do
+       tmp := tmp ^ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)];
+
+if tmp then
+   SaveVariable(tmp, 'vehiclesInDelta');
+
+tmp := [];
+
+if FilterAllUnits([[f_side, 1], [f_type, unit_building]]) then
+   for i in FilterAllUnits([[f_side, 1], [f_type, unit_building]]) do
+       tmp := tmp ^ [GetBType(i), GetBLevel(i), GetX(i), GetY(i), GetDir(i), GetLabKind(i, 1), GetLabKind(i, 2)];
+
+if tmp then
+   SaveVariable(tmp, 'buildingsInDelta');
+
+YouWin; // your history end's here Tomato
 End;

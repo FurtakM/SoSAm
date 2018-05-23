@@ -64,3 +64,37 @@ for i = 1 to amount do
     PlaceUnitArea(CreateHuman, area, false);
     end;
 End;
+
+
+Export Function Attack(unit, enemy_list);
+var target, targets_list;
+begin
+if not unit then
+   exit;
+
+targets_list := [];
+
+
+target := UnitFilter(enemy_list, [[f_lives, 250], [f_not, [f_weapon, us_cargo_bay]], [f_type, unit_vehicle], [f_empty]]);
+
+if target and not IsInUnit(unit) then
+   begin
+   ComEnterUnit(unit, NearestUnitToUnit(target, unit));
+   exit;
+   end;
+
+targets_list := [UnitFilter(enemy_list, [[f_type, unit_human], [f_not, [f_inside]]]),
+                 UnitFilter(enemy_list, [f_type, unit_vehicle]),
+                 UnitFilter(enemy_list, [[f_type, unit_building], [f_not, [f_empty]]]),
+                 enemy_list
+                 ];
+
+for target in targets_list do
+    begin
+    if target then
+       if GetTag(unit) = 11 and (GetType(NearestUnitToUnit(target, unit)) = unit_building or GetWeapon(NearestUnitToUnit(target, unit)) = us_cargo_bay) then
+          ComPlaceDelayedCharge(unit, 0, 0, NearestUnitToUnit(target, unit))
+         else
+          ComAttackUnit(unit, NearestUnitToUnit(target, unit));
+    end;
+End;
