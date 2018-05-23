@@ -72,12 +72,15 @@ begin
 if not unit then
    exit;
 
+if IsInUnit(unit) then
+   unit := IsDrivenBy(unit);
+
 targets_list := [];
 
 
 target := UnitFilter(enemy_list, [[f_lives, 250], [f_not, [f_weapon, us_cargo_bay]], [f_type, unit_vehicle], [f_empty]]);
 
-if target and not IsInUnit(unit) then
+if GetDistUnits(NearestUnitToUnit(target, unit), unit) < 11 and not IsInUnit(unit) then
    begin
    ComEnterUnit(unit, NearestUnitToUnit(target, unit));
    exit;
@@ -93,7 +96,10 @@ for target in targets_list do
     begin
     if target then
        if GetTag(unit) = 11 and (GetType(NearestUnitToUnit(target, unit)) = unit_building or GetWeapon(NearestUnitToUnit(target, unit)) = us_cargo_bay) then
-          ComPlaceDelayedCharge(unit, 0, 0, NearestUnitToUnit(target, unit))
+          begin
+          ComPlaceDelayedCharge(unit, 0, 0, NearestUnitToUnit(target, unit));
+          AddComWait(unit, 0$02);
+          end
          else
           ComAttackUnit(unit, NearestUnitToUnit(target, unit));
     end;

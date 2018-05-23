@@ -24,11 +24,11 @@ Say(Gladstone, 'D2-Glad-2');
 Say(JMM, 'D2-JMM-3');
 
 // Weather LNW Mode On
-SetWeather(1, 30, 50);
+SetWeather(2, 100, 150);
 
 Wait(rand(4$00, 5$00));
 
-SetWeather(0, 30, 50);
+SetWeather(0, 100, 150);
 // Weather LNW Mode Off
 End;
 
@@ -174,7 +174,7 @@ if not sol then
 
 repeat
  wait(0$01);
-until not ar_forces;
+until FilterAllUnits([[f_side, 2], [f_type, unit_vehicle]]) = 0;
 
 if IsOk(sol) then
    begin
@@ -306,6 +306,8 @@ if radar_builded then
    AddMedal('BuildRadar', 1)
   else
    AddMedal('BuildRadar', -1);
+
+GiveMedals('MAIN');
 
 tmp := FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]);
 
