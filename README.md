@@ -7,8 +7,8 @@ Todo
 - Am01: 100% 
 - Am02: 100% 
 - Am03  100%
-- Am04  100% []
-- Am05  5% []
+- Am04  100%
+- Am05  100%
 - Am06  95% [] 
 - Am07  0% []
 - Am08  5% []
@@ -54,7 +54,7 @@ git push origin <twój_branch>
 # Zadania
 Serpent: 
 ```
-Dokończenie misji 05.
+Dokończenie misji 07.
 ```
 
 Nefarem: 
@@ -65,5 +65,5 @@ Dokończenie misji 08.
 
 Prażanin: 
 ```
-
+Dodanie okrzyków dla JMM.
 ```
