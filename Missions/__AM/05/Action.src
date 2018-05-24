@@ -15,7 +15,7 @@ AddComExitVehicle([JMM, Gladstone]);
 
 repeat
  wait(0$01);
-until IsInArea(JMM, gammaBaseArea) and not IsInUnit(JMM) and IsInArea(Gladstone, gammaBaseArea) and not IsInUnit(Gladstone);
+until not IsInUnit(JMM) and not IsInUnit(Gladstone);
 
 ComTurnUnit(JMM, Gladstone);
 ComTurnUnit(Gladstone, JMM);
@@ -54,7 +54,13 @@ for i in [FilterUnitsInArea(gammaBaseArea, [[f_not, [f_inside]], [f_type, unit_h
 if team then
    begin
    ComExitBuilding(team);
-   AddComTurnUnit(team, JMM);
+   AddComMoveUnit(team, JMM);
+
+   repeat
+    wait(1);
+   until GetDistUnits(JMM, NearestUnitToUnit(team, JMM)) < 6;
+
+   ComTurnUnit(team, JMM);
    end;
 
 if Lisa then
@@ -72,7 +78,8 @@ if sol then
 Say(JMM, 'D1-JMM-1');
 Say(JMM, 'D1-JMM-1a');
 
-ComTurnUnit(JMM, Lisa);
+ComTurnUnit(JMM, Gladstone);
+ComTurnUnit(team, Gladstone);
 
 if Frank then
    begin
@@ -93,6 +100,8 @@ if sol then
    end;
 
 Say(Gladstone, 'D1-Glad-2');
+
+ComTurnUnit(team, JMM);
 Say(JMM, 'D1-JMM-2');
 
 ComTurnUnit(JMM, Gladstone);
@@ -229,7 +238,7 @@ if Cyrus in save_group then
 
 if Frank in save_group then
    begin
-   SaveCharacters(Cyrus, 'Frank');
+   SaveCharacters(Frank, 'Frank');
    SaveVariable(true, 'FrankInDelta');
    end;
 
