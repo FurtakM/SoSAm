@@ -17,7 +17,7 @@ for i = 1 to amount do
     tmp := Insert(tmp, 1, un);
     PlaceUnitArea(un, area, false);
 
-    if i mod 3 = 0 then
+    if i mod 2 = 0 then
        SetTag(un, 11);
     end;
 
@@ -76,7 +76,7 @@ if force then
 
 repeat
  wait(0$01);
-until FilterAllUnits([f_side, 2]) = 0;
+until FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0;
 
 Wait(timer);
 
@@ -86,21 +86,15 @@ force := PrepareArabianTroops([5, 6, 6][Difficulty], skill, [arArea1, arArea2][r
 // tricky eng
 if Difficulty > 1 and Delta then
    begin
-   veh := PrepareTank(2, 2, ar_light_trike, engine_solar, control_manual, 22, 100);
-   SetDir(veh, 4);
-   PlaceUnitArea(veh, arArea1, false);
-
    uc_side := 2;
    uc_nation := 2;
 
    PrepareHuman(false, 2, skill);
    eng := CreateHuman;
-   PlaceHumanInUnit(eng, veh);
+   PlaceUnitArea(eng, arArea1, false);
 
    Wait(3);
 
-   ComMoveUnit(IsDrivenBy(eng), Delta);
-   AddComExitVehicle(eng);
    AddComEnterUnit(eng, Delta);
    end;
 
@@ -114,7 +108,7 @@ repeat
     if GetSide(Delta) = 2 and IsOk(eng) and not IsInUnit(eng) then
        ComEnterUnit(eng, Delta);
 
-until FilterAllUnits([f_side, 2]) = 0;
+until FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0;
 
 
 ap_killers := PrepareArabianTroops([1, 2, 2][Difficulty], skill, arArea1);
