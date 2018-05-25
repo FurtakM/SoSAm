@@ -1,4 +1,5 @@
 Export Function Action;
+var m;
 begin
 InGameOn;
 
@@ -23,14 +24,18 @@ Say(JMM, 'D2-JMM-2');
 Say(Gladstone, 'D2-Glad-2');
 Say(JMM, 'D2-JMM-3');
 
+Wait(rand(0$30, 1$00));
+
 // Weather LNW Mode On
-{SetWeather(2, 100, 150);
+SetWeather(2, 90, 150);
 
-PlaySoundXYLoop(-1, -1, 'Rain.wav');
+m := PlaySoundXYLoop(-100, -1, 'Rain');
 
-Wait(rand(4$00, 5$00));
+Wait(rand(3$00, 5$00));
 
-SetWeather(0, 100, 150);}
+StopSound(m);
+
+SetWeather(0, 90, 150);
 // Weather LNW Mode Off
 End;
 
