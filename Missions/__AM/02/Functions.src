@@ -250,13 +250,14 @@ end;
 Export Function SaveVehicles(vehicles, ident);
 var i, tmp;
 begin
+tmp = [];
 if not vehicles then
    exit;
 
 
-for i in tmp do
+for i in vehicles do
     begin
-    tmp := tmp ^ [GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), GetFuel(i), GetLives(i)];
+    tmp := Insert(tmp, 1, [GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), GetFuel(i), GetLives(i)]);
     end;
 
 SaveVariable(tmp, ident);

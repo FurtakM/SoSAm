@@ -50,10 +50,7 @@ begin
     // First AM bunker
     if GetBType(building) = b_bunker and GetSide(building) = 1 and bunkerDialog = 0 then
     begin
-        if GetBType(building) = b_factory and GetSide(building) = 1 and bunkerDialog = 0 then
-        begin
             bunkerDialog = 1;
-
             if IsOK(Claptopn) then
             begin
                 Say(Claptopn, 'D11-Eng1-1');
@@ -66,11 +63,10 @@ begin
                 begin
                     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM], 'D11-Eng1-1', 'D11-Eng1-1');
                 end;
-            end; 
         end;
         if energyVDialog = 0 then EnergyDialog;
-        bunkerDialog = 1;
-    end;
+
+    end; 
 
     // Oil mine and power
     if GetBType(building) = b_oil_mine and GetSide(building) = 1 then buildOil = 1;
@@ -101,31 +97,6 @@ begin
             end;
         end; 
         if energyVDialog = 0 then EnergyDialog;    
-    end;
-
-    // First AM bunker
-    if GetBType(building) = b_bunker and GetSide(building) = 1 and bunkerDialog = 0 then
-    begin
-        if GetBType(building) = b_factory and GetSide(building) = 1 and bunkerDialog = 0 then
-        begin
-            bunkerDialog = 1;
-
-            if IsOK(Claptopn) then
-            begin
-                Say(Claptopn, 'D11-Eng1-1');
-            end else
-            begin;
-                if FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3], [f_sex, 1]]) diff [JMM] > 0 then
-                begin
-                    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 2], [f_sex, 1]]) diff [JMM], 'D11-Eng1-1', 'D11-Eng1-1');
-                end else
-                begin
-                    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM], 'D11-Eng1-1', 'D11-Eng1-1');
-                end;
-            end; 
-        end;
-        if energyVDialog = 0 then EnergyDialog;
-        bunkerDialog = 1;
     end;
 
 end;
