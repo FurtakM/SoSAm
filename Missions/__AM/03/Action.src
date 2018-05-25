@@ -174,6 +174,8 @@ InGameOff;
 
 ChangeMissionObjectives('M1');
 
+SaveForQuickRestart;
+
 cornel_active := true;
 End;
 
@@ -194,7 +196,12 @@ if jmm_units then
             ComHold(i);
        end;
 
-ComMoveUnit(JMM, Lynch);
+if IsInUnit(JMM) then
+   ComExitVehicle(JMM);
+
+Wait(10);
+
+AddComMoveUnit(JMM, Lynch);
 
 repeat
  wait(0$01);
@@ -312,6 +319,10 @@ jmm_on_west := true;
 Wait(0$30);
 
 frank_can_return := true;
+
+Wait(Rand(3$00, 4$00));
+
+send_spec_patrol := true;
 End;
 
 Every 0$01 trigger FilterAllUnits([[[f_side, 1], [f_weapon, ru_cargo_bay], [f_distxy, 63, 100, 5]]]) and not jmm_on_west do
@@ -331,6 +342,127 @@ for i in filter do
     end;
 End;
 
+// russian spec patrol
+Every 0$01 trigger send_spec_patrol do
+var dead1, dead2, inarea1, inarea2, sol, tmp;
+var i;
+begin
+if not ru_spec_patrol then
+   exit;
+
+dead1 := false;
+dead2 := false;
+inarea1 := false;
+inarea2 := false;
+tmp := [];
+
+ComAgressiveMove(ru_spec_patrol, 75, 101);
+
+repeat
+ wait(0$01);
+until See(1, ru_spec_patrol[1]);
+
+ComStop(ru_spec_patrol);
+
+Wait(0$02);
+
+DialogueOn;
+Say(ru_spec_patrol[1], 'D8-Rus1-1');
+Say(JMM, 'D8-JMM-1');
+DialogueOff;
+
+ComMoveToArea(ru_spec_patrol, retreatArea);
+
+repeat
+ wait(0$01);
+
+ if not dead1 and IsDead(ru_spec_patrol[1]) then
+    dead1 := true;
+
+ if not dead2 and IsDead(ru_spec_patrol[2]) then
+    dead2 := true;
+
+ if not inarea1 and IsInArea(ru_spec_patrol[1], baseBorder) then
+    inarea1 := true;
+
+ if not inarea2 and IsInArea(ru_spec_patrol[2], baseBorder) then
+    inarea2 := true;
+
+until (dead1 and dead2) or (dead1 and inarea2) or (dead2 and inarea1) or
+      (inarea1 and inarea2);
+
+
+if (inarea1 and inarea2) or (dead1 and inarea2) or (dead2 and inarea1) then
+   begin
+   prepare_siege := true;
+
+   DialogueOn;
+
+   if (inarea1 and inarea2) then
+      Say(JMM, 'D8b-JMM-1a')
+     else
+      Say(JMM, 'D8b-JMM-1');
+
+   SayX(UnitFilter(jmm_units, [f_sex, sex_male]) diff [Bobby, Cyrus, Walker, Frank], 'D8b-Sol1-1');
+
+   if Cyrus and Cyrus in jmm_units then
+      Say(Cyrus, 'D8b-Cyrus-1')
+     else
+      Say(JMM, 'D8b-JMM-1a');
+
+   if Lisa and Lisa in jmm_units then
+      Say(Lisa, 'D8b-Lisa-2');
+
+   if Bobby and Bobby in jmm_units then
+      Say(Bobby, 'D8b-Bobby-1')
+     else
+      sol := SayX(UnitFilter(jmm_units, [f_sex, sex_male]) diff [Bobby, Cyrus, Walker, Frank], 'D8b-Sol2-1');
+
+   DialogueOff;
+
+   if Cyrus and Cyrus in jmm_units then
+      tmp := Insert(tmp, 1, Cyrus);
+
+   if Bobby and Bobby in jmm_units then
+      tmp := Insert(tmp, 1, Bobby);
+
+   if sol then
+      tmp := Insert(tmp, 1, sol);
+
+   if tmp then
+      begin
+      SetSide(tmp, 8);
+
+      ComFree(tmp);
+      AddComMoveToArea(tmp, cyrusEscape);
+      AddComHold(tmp);
+
+      repeat
+       wait(0$01);
+
+       if IsInArea(tmp[1], cyrusEscape) then
+          begin
+          RemoveUnit(tmp[1]);
+          jmm_units := jmm_units diff tmp[1];
+          tmp := tmp diff tmp[1];
+          end;
+
+      until tmp = 0;
+      end;
+
+
+   Wait(0$30);
+
+   if ru_spec_patrol then
+      for i in ru_spec_patrol do
+          RemoveUnit(i);
+   end
+  else
+   begin
+   prepare_siege := false;
+   Say(JMM, 'D8a-JMM-1');
+   end;
+End;
 
 // frank return
 Every 0$10 trigger frank_can_return do
@@ -352,6 +484,8 @@ until GetDistUnits(Frank, JMM) < 8;
 
 InGameOn;
 
+CenterOnUnits(JMM);
+
 if IsInUnit(JMM) then
    ComFree(JMM);
 
@@ -361,7 +495,7 @@ ComMoveUnit(Frank, JMM);
 Say(JMM, 'D6-JMM-1');
 
 repeat
- wait(0$01);
+ wait(3);
 until GetDistUnits(JMM, Frank) < 8;
 
 if Lisa and GetDistUnits(Lisa, Frank) < 20 then
@@ -381,8 +515,19 @@ ComTurnUnit(Frank, JMM);
 
 Say(Frank, 'D6-Frank-1');
 
+PlaceSeeing(69, 20, 1, -20);
+RemoveSeeing(69, 20, 1);
+PlaceSeeing(190, 31, 1, -20);
+RemoveSeeing(190, 31, 1);
+
+CenterOnXY(69, 20);
+Wait(0$02);
+CenterNowOnUnits(JMM);
+
 if Lisa and GetDistUnits(Lisa, Frank) < 20 and IsOk(Lisa) then
    begin
+   ComFree(Lisa);
+
     repeat
      wait(0$01);
     until GetDistUnits(Lisa, Frank) < 7;
@@ -455,8 +600,17 @@ if frank_send_to_scout then
     else
      SetSide(Frank, 1);
 
+send_attack_on_cornel_base := true;
+                         
+repeat
+ wait(0$01);
+ time_to_prepare := Count(time_to_prepare, '-');
 
-Wait([12$00, 11$00, 10$00][Difficulty]);
+ if debug then
+    debug_strings := time_to_prepare;
+
+until time_to_prepare = 0$00;
+
 cornel_prepared := true;
 End;
 
@@ -481,6 +635,10 @@ SayRadio(Cornel, 'D3a-Corn-2');
 
 cornel_attack := true;
 
+Wait(0$03);
+
+AddMoreTanks();
+
 if frank_send_to_scout then
    begin
    InitHc;
@@ -493,10 +651,11 @@ if frank_send_to_scout then
 
    repeat
     wait(0$01);
-   until See(1, Frank);
+   until GetDistUnits(JMM, Frank) < 9;
 
    SetSide(Frank, 1);
    Say(Frank, 'D6a-Frank-1');
+   ComWalk(Frank);
    end;
 End;
 
@@ -571,11 +730,54 @@ if i then
 End;
 
 
+Every 0$01 trigger IsInArea(Cornel, cornelKappaArea) do
+var i;
+begin 
+DoNotAttack(3, Cornel);
+send_attack_on_cornel := true;
+
+if ru_vehicles then
+   for i in ru_vehicles do
+       ComAgressiveMove(i, 215, 69);
+
+if ru_patrol then
+   for i in ru_patrol do
+       ComAgressiveMove(i, 215, 69);
+
+
+if frank_send_to_scout then
+   begin
+   SayRadio(Frank, 'D3b-Frank-1');
+   end;
+
+Wait(0$03);
+
+SayRadio(Cornel, 'D4-Corn-1');
+
+repeat
+ wait(0$01);
+until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 6;
+
+SayRadio(Cornel, 'D5-Corn-1');
+SaveCharacters(Cornel, 'Cornel');
+
+ChangeSideFog(4, 8);
+
+Wait(0$01);
+
+NormalAttack(3, Cornel);
+
+send_attack_on_cornel := false;
+End;
+
 // end mission
-Every 0$01 trigger FilterUnitsInArea(endMArea, [f_side, 1]) do
+Every 0$01 trigger FilterUnitsInArea(endMArea, [f_side, 1]) or game_end do
 var i, filter;
 begin
 enable;
+
+if not game_end then
+   game_end := true;
 
 filter := FilterUnitsInArea(endMArea, [f_side, 1]);
 
@@ -584,11 +786,13 @@ if not filter then
 
 for i in filter do
     begin
-
-    if IsDrivenBy(i) and GetType(i) = unit_human then
+              
+    if IsOk(i) and GetType(i) = unit_vehicle then
        begin
-       ComExitVehicle(i);
-       Wait(3);
+       veh_on_meta := true;
+       ComExitVehicle(IsInUnit(i));
+       RemoveUnit(i);
+       Wait(10);
        end;
 
     // macmilan on end
@@ -606,13 +810,8 @@ for i in filter do
 
           end;
 
-       if not wait_for_them or FilterAllUnits([[f_side, 1], [f_type, unit_human]]) = 1 then
-          begin
-          save_group := save_group ^ JMM;
-          RemoveUnit(JMM);
-          EndMission;
-          end;
-
+       save_group := save_group ^ JMM;
+       RemoveUnit(JMM);
        end; // end macmilan
 
     if i = Lisa then
@@ -639,69 +838,30 @@ for i in filter do
        RemoveUnit(Khatam);
        end;
 
-    if i = Jerry then
-       begin
-       save_group := save_group ^ Jerry;
-       RemoveUnit(Jerry);
-       end;
-
-    if i = Brian then
-       begin
-       save_group := save_group ^ Brian;
-       RemoveUnit(Brian);
-       end;
-
-    if i = Lynch then
-       begin
-       save_group := save_group ^ Lynch;
-       RemoveUnit(Lynch);
-       end;
-
-    if i = Turner then
-       begin
-       save_group := save_group ^ Turner;
-       RemoveUnit(Turner);
-       end;
-
-    if i = Jillian then
-       begin
-       save_group := save_group ^ Jillian;
-       RemoveUnit(Jillian);
-       end;
-
-    if i = Walker then
-       begin
-       save_group := save_group ^ Walker;
-       RemoveUnit(Walker);
-       end;
-
     if i = Frank then
        begin
        save_group := save_group ^ Frank;
        RemoveUnit(Frank);
        end;
 
-    if IsOk(i) and GetType(i) = unit_human and not i in save_group then
+    if IsOk(i) and GetType(i) = unit_human and (not i in save_group) then
        begin
        save_others := save_others ^ i;
        RemoveUnit(i);
        end;
-
-    if IsOk(i) and GetType(i) = unit_vehicle then
-       begin
-       veh_on_meta := true;
-       RemoveUnit(i);
-       end;
-
     end;
     
 
 End;
 
+Every 0$01 trigger (not show_query and not wait_for_them) or FilterAllUnits([[f_side, 1], [f_type, unit_human]]) = 0 do
+EndMission;
 
 Export Function EndMission;
-var counter;
+var i;
 begin
+Wait(0$02);
+
 // medals
 if solar_builded then
    AddMedal('Solar1', 1)
@@ -716,43 +876,140 @@ if veh_on_meta then
      else
       AddMedal('Solar2', -2);
 
-counter := save_group ^ save_others;
-
-if counter = 10 then
+if lose_counter = 0 then
    AddMedal('No', 1)
     else
-     if counter < 10 and counter > 6 then
+     if lose_counter > 0 and lose_counter < 4 then
         AddMedal('No', -1)
          else
           AddMedal('UpTo4', -1);
 
 GiveMedals('MAIN');
 
+if IsDead(Pokryshkin) then
+   for i in save_group^save_others do
+       AddExperience(i, skill_combat, 1500);
+
 RewardPeople(save_group^save_others);
 
 SaveCharacters(JMM, 'JMM');
 
 if Bobby in save_group then
-   SaveCharacters(Bobby, 'Bobby');
+   SaveCharacters(Bobby, 'Bobby')
+  else
+   DeleteCharacters('Bobby');
 
 if Cyrus in save_group then
-   SaveCharacters(Cyrus, 'Cyrus');
+   SaveCharacters(Cyrus, 'Cyrus')
+  else
+   DeleteCharacters('Cyrus');
 
 if Lisa in save_group then
-   SaveCharacters(Lisa, 'Lisa');
+   SaveCharacters(Lisa, 'Lisa')
+  else
+   DeleteCharacters('Lisa');
 
 if Frank in save_group then
-   SaveCharacters(Frank, 'Frank');
+   SaveCharacters(Frank, 'Frank')
+  else
+   DeleteCharacters('Frank');
 
 if Khatam in save_group then
-   SaveCharacters(Khatam, 'Khatam');
+   SaveCharacters(Khatam, 'Khatam')
+  else
+   DeleteCharacters('Khatam');
 
 if save_others then
    SaveCharacters(save_others, '03_others');
 
-// todo
+DeleteCharacters('Brian');
+DeleteCharacters('Jimmy');
+
+
+if Bierezov and IsOk(Bierezov) then
+   begin
+   ResetFog;
+   DisplayEndingScene;
+   end
+  else
+   DeleteCharacters('Cornel');
 
 YouWin;
 End;
 
+Export Function DisplayEndingScene;
+var i, filter, fake_cornel, fake_bierezov, fake_russians;
+begin
+InGameOn;
+
+PlaceSeeing(208, 62, 1, -10);
+RemoveSeeing(208, 62, 1);
+
+filter := FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]);
+
+if filter then
+   for i in filter do
+       RemoveUnit(i);
+
+filter := FilterAllUnits([[f_side, 4], [f_type, unit_human]]);
+
+if filter then
+   for i in filter do
+       SetLives(i, 0);
+
+
+uc_side := 4;
+fake_cornel := PrepareUnit('Cornell', false);
+PlaceUnitXY(fake_cornel, 208, 62, false);
+SetLives(fake_cornel, 100);
+DoNotAttack(3, fake_cornel);
+SetAttitude(4, 3, att_friend, true);
+
+uc_side := 3;
+uc_nation := 3;
+
+InitHc;
+
+fake_bierezov := PrepareUnit('Mikhail', false);
+
+PrepareHuman(1, 1, 0);
+fake_russians := fake_russians ^ CreateHuman;
+fake_russians := fake_russians ^ CreateHuman;
+
+PrepareHuman(2, 4, 0);
+fake_russians := fake_russians ^ CreateHuman;
+
+PlaceUnitArea(fake_bierezov, endingSceneArea, false);
+ComMoveXY(fake_bierezov, 210, 63);
+AddComTurnXY(fake_bierezov, 208, 62);
+
+for i in fake_russians do
+    begin
+    PlaceUnitArea(i, endingSceneArea, false);
+
+    ComMoveXY(i, 215, 67);
+    AddComTurnXY(i, 208, 62);
+
+    if GetClass(i) = 4 then
+       ComHeal(i, fake_cornel);
+    end;
+
+Wait(0$01);
+
+CenterNowOnXY(208, 62);
+PlaceSeeing(208, 62, 1, -10);
+
+Wait(0$15);
+
+RemoveSeeing(208, 62, 1);
+ResetFog;
+
+InGameOff;
+End;
+
+Every 0$30 trigger GetDistUnits(JMM, Cornel) < 3 and FilterAllUnits([[f_side, 4], [f_type, unit_building]]) do
+begin
+enable;
+SayRadio(Powell, 'DWarn-Pow-1');
+End;
 

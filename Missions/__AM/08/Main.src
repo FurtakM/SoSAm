@@ -1,30 +1,22 @@
-//
-
 {
- 90, 86, 3  26: placed red-ru1 Ru. warehouse 
- 75, 79, 2  30: placed red-ru1 Ru. barracks 
- 88, 95, 0  36: placed red-ru1 Ru. upgraded bridge full 
-106, 97, 3  42: placed red-ru1 Ru. oil drilling tower 
- 93, 97, 5  44: placed red-ru1 Ru. oil power 
- 96, 97, 5  45: placed red-ru1 Ru. oil power 
-100, 89, 3  46: placed red-ru1 Ru. factory 
-103, 89, 4  52: placed red-ru1 Ru. non-combat ext. 
- 97, 86, 2  53: placed red-ru1 Ru. track ext. 
-100, 85, 3  54: placed red-ru1 Ru. computer ext. 
- 96, 89, 1  55: placed red-ru1 Ru. gun ext. 
- 85, 97, 2  56: placed red-ru1 Ru. oil power 
- 81, 78, 2  57: placed red-ru1 Ru. bunker 
- 76, 87, 1  64: placed red-ru1 Ru. automatic turret 
- 78, 94, 1  71: placed red-ru1 Ru. bunker 
- 95, 82, 3  78: placed red-ru1 Ru. bunker 
-104, 85, 2  82: placed red-ru1 Ru. bunker 
-113, 94, 4  88: placed red-ru1 Ru. armoury 
-109, 90, 3 102: placed red-ru1 Ru. automatic turret 
- 88, 79, 3 110: placed red-ru1 Ru. automatic turret 
-
+    Mission scripts: Nefarem
+    Status: 15%
 }
 
-Export Donaldson, Harisson;
+
+Export JMM, Joan, Frank, Denis, Lisa, Gladstone, Brown, Dickens, Woodruff, Knight, Claptopn, Campell, Donaldson; // heroes mission 08
+Export Sikorsky, SikorskyTank, SikorskyArrive; // Sikorsky
+Export Harisson, Powell; // Am commanders
+Export Borodin; // Ru commander
+
+Export RuSolMinLevel, RuSolMaxLevel;
+
+Export russianAI;
+Export ruDepot, ruLab, ruFab;
+Export ruDestroyBuilds;
+Export firstAttack;
+
+Export JMMArrive;
 
 Export debugMode;
 
@@ -33,15 +25,36 @@ begin
     Resetfog;
     RandomizeAll;
 
-    PrepareHeroes;
-    PrepareSoldiers;
-    PrepareCutsceneAttack;
+    JMMArrive = 0; // 0 - don't arrive, 1 - arrive
+    SikorskyArrive = 0;  // 0 - don't arrive, 1 - arrive
+
+    firstAttack = 0;
+
+    russianAI = 0; // 0 - off, 1 - on
+    ruDestroyBuilds = [];
 
     debugMode = 1;
+
+    PrepareDifficulty;
+
+    PrepareHeroes;
+    PrepareSoldiers;
+
+    PrepareRussianCommander;
+    PrepareRussians;
+    PrepareCutsceneAttack;
+
+    BuildRussianBase;
 end;
 
-Every 0$1 trigger debugMode = 1 do 
+Every 0$1 trigger debugMode = 1 do
+var i;
 begin
     enable;
     fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 2, 9999);
+    If IsSelected(ruDepot) then your_side = 3;
+    If IsSelected(amdepo) then your_side = 1;
 end;

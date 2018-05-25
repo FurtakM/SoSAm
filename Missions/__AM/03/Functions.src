@@ -34,13 +34,16 @@ End;
 Export Function SayX(units, ident);
 var i;
 begin
+result := false;
+
 if not units then
    exit;
 
-for i in ident do
+for i in units do
     if IsOk(i) then
        begin
        Say(i, ident);
+       result := i;
        break;
        end;
 End;
@@ -98,4 +101,31 @@ for i in filter do
        result := true;
        break;
        end;
+End;
+
+Export Function FindFreePlace(blist);
+var i;
+begin
+result := false;
+
+if not blist then
+   exit;
+
+for i in blist do
+    if UnitsInside(i) < 6 then
+       begin
+       result := i;
+       break;
+       end;
+End;
+
+Export Function Count(timer, mode);
+begin
+if not timer then
+   exit;
+
+if mode in ['asc', 'up', '+'] then
+   result := timer + 0$01
+  else
+   result := timer - 0$01;
 End;

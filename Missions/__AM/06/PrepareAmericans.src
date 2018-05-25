@@ -1,0 +1,91 @@
+Export function PrepareHeroes;
+var i, tmp;
+begin
+
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
+
+    uc_side = 1;
+    uc_nation = 1;
+
+    JMM = PrepareUnit('JMM', true);
+    Harisson = PrepareUnit('Harisson', false);
+
+    PlaceUnitXYR(JMM, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+    SetClass(JMM, 1);
+
+    if LoadVariable('GladstoneInDelta', 0) = 1 then
+    begin    
+        Gladstone = PrepareUnit('Gladstone', true);
+        PlaceUnitXYR(Gladstone, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Gladstone, 4);
+    end;
+
+    if LoadVariable('DenisInDelta', 0) = 1 then
+    begin    
+        Denis = PrepareUnit('Denis', true);
+        PlaceUnitXYR(Denis, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Denis, 4);
+    end;
+
+    if LoadVariable('FrankInDelta', 0) = 1 then
+    begin    
+        Frank = PrepareUnit('Frank', true);
+        PlaceUnitXYR(Frank, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Frank, 1);
+    end;
+
+    if LoadVariable('LisaInDelta', 0) = 1 then
+    begin    
+        Lisa = PrepareUnit('Lisa', true);
+        PlaceUnitXYR(Lisa, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Lisa, 1);
+    end;
+
+    if LoadVariable('BobbyInDelta', 0) = 1 then
+    begin    
+        Bobby = PrepareUnit('Bobby', true);
+        PlaceUnitXYR(Bobby, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Bobby, 1);
+    end;
+
+    if LoadVariable('CyrusInDelta', 0) = 1 then
+    begin    
+        Cyrus = PrepareUnit('Cyrus', true);
+        PlaceUnitXYR(Cyrus, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Cyrus, 1);
+    end;
+
+    others = CreateCharacter('othersInDelta');
+
+    for i in others do 
+    begin
+        PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
+        SetClass(i, [1,2,3,4][Rand(1,4)]);
+    end;
+
+
+end;
+
+Export function PrepareRandoms;
+var i, un, tmp;
+begin
+
+    uc_side = 1;
+    uc_nation = 1;
+
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
+
+    for i = 1 to 5 do 
+    begin
+        hc_gallery = '';
+        hc_name = '';
+        PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], rand(1, 4));
+
+        un = CreateHuman;
+        PlaceUnitXYR(un, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
+    end;
+
+    PrepareHuman(sex_male, 4, 6);
+    deltaDoctor = CreateHuman;
+    PlaceUnitXYR(deltaDoctor, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+end;

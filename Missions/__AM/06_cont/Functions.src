@@ -105,6 +105,23 @@ begin
     end;
 end;
 
+Export function EnchancedSaveCharacters(charactersList, ident);
+var i;
+begin
+
+    for i in charactersList do
+    begin
+         if IsOk(i) then
+         begin
+              SaveCharacters(i, ident);
+         end else
+         begin
+              DeleteCharacters(ident);
+        end;
+    end;
+end;
+
+
 // AI functions
 
 Export function ResAllTechs(side, lab, nation);
@@ -120,7 +137,7 @@ Export function RepairBuilding(side, building);
 var buildings_list, i,engineerOk_list, j;
 begin
 
-        engineerOk_list = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000]]);
+        engineerOk_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 2], [f_class, 16]], [f_lives, 1000]]);
         buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
         if buildings_list > 0 and engineerOk_list > 0 then
@@ -228,8 +245,7 @@ begin
       begin
         ComCollect(cargo_list[1],crate_list[1],crate_list[2]);
         SetFuel(cargo_list[1], 100);
-      end else
-        ComGet(cargo_list[1],crate_list[1],crate_list[2]);
+      end;
         clear_crates:=false;
       repeat
         wait(0$1);
@@ -311,6 +327,62 @@ begin
         end;
     end;
 end;
+
+Export function EscapeToBarrack(side, build, area);
+var i,j, soldiers_list, turretList, temp, specialClass_list;
+begin
+
+
+    soldiers_list = FilterAllUnits([[f_side, side], [f_class, 1], [f_outside], [f_lives, 700]]);
+    turretList = FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
+    specialClass_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 5], [f_class, 8], [f_class, 9]]]);
+
+    temp = UnitsInside(build) diff specialClass_list;
+
+  if turretList = 0 and temp = 0  then
+  begin
+     for i in soldiers_list do
+     begin
+       if IsOK(build) then ComEnterUnit(i, build);
+     end;
+  end else
+  begin
+    for i = 1 to turretList do
+    begin
+     for j = 1 to temp do
+     begin
+       ComExitBuilding(temp[j]);
+      AddComEnterUnit(temp[j], turretList[i]);
+      end;
+    end;
+  end;
+
+end;
+
+Export function AttackNearBuildings(side, enemySide);
+var i, j, turretsList, enemyBuildings;
+begin
+    turretsList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 31], [f_btype, 32], [f_btype, 33]]]);
+    enemyBuildings = FilterAllUnits([[f_side, enemySide], [f_type, unit_building], [f_empty]]);
+
+    if turretsList > 0 and enemyBuildings > 0 then
+    begin
+        for i in turretsList do
+        begin
+            for j in enemyBuildings do
+            begin
+                display_strings = [GetDistUnits(i, j)];
+                if GetDistUnits(i, j) < 20 then
+                begin
+                    ComAttackUnit(i, j);
+                end;
+            end;
+        end;
+    end;
+
+END;
+
+// Other functions
 
 Export function RespawnAttackInfantry(side, nation, soldierCount, sniperCount, bazookCount, mortalCount, medicCount, skil, spawnArea, healArea, targetSide, strategy);
 var i, j,  un, damageUnit_list, medic_list, soldiersOK_list, enemyUnits, und, target1, target2;

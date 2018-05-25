@@ -154,12 +154,12 @@ begin
 end;
 
 Export function PrepareRussianAttack(count, area);
-var i, veh, un, tmp;
+var i, veh, un, tmp, target1, target2;
 begin
         uc_side = 3;
         uc_nation = 3;
 
-        for i := 1 to count do
+        for i := 1 to count + rand(1, 3) do
         begin
                 vc_engine = 1;
                 vc_control = 1;
@@ -201,5 +201,23 @@ begin
         Say(tmp[1], 'D9-Rus3-1');
         Say(tmp[2], 'D9-Russ-1');
 
-        for i in attackGroup do ComAgressiveMove(i, 54, 19);
+        repeat
+                wait(0$1);
+
+                for i in FilterUnitsInArea(Battlefield, [[f_side, 3]]) do
+                begin
+                        target1 := NearestUnitToUnit(FilterAllUnits([f_side, 1]), i);
+                        target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, 1], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                        If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                        begin
+                                ComAttackUnit(i, target1);
+                        end
+                        else
+                        begin
+                                ComAttackUnit(i, target2);
+                        end;
+                end;
+
+        until FilterUnitsInArea(Battlefield, [[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_occupied]]]) = 0;
 end;

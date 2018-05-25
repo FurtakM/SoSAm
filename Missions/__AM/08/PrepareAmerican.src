@@ -3,10 +3,23 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
-    Harisson = PrepareUnit('Harisson', false);
     Donaldson = PrepareUnit('Donaldson', false);
+    Brown = PrepareUnit('Brown', false);
+    Dickens = PrepareUnit('Dickens', false);
+    Campell = PrepareUnit('Campell', false);
+    Knight = PrepareUnit('Knight', false);
+    Claptopn = PrepareUnit('Claptopn', false);
+    Joan = PrepareUnit('Joan', false);
 
-    PlaceUnitArea(Donaldson, GammaSpawn, false);
+    Harisson = PrepareUnit('Harisson', false);
+    Powell = PrepareUnit('Powell', false);
+
+    PlaceUnitArea(Donaldson, GammaSpawn, false);  
+    PlaceUnitArea(Dickens, GammaSpawn, false);
+    PlaceUnitArea(Campell, GammaSpawn, false);
+    PlaceUnitArea(Knight, GammaSpawn, false);
+    PlaceUnitArea(Claptopn, GammaSpawn, false);
+    PlaceUnitArea(Joan, GammaSpawn, false);
 end;
 
 Export function PrepareSoldiers;
@@ -17,4 +30,68 @@ begin
 
     for i in FilterAllUnits([[f_side, 1], [f_btype, b_bunker]]) do RespawnInside(1, 1, i, 4, 1, 1);
     for i in FilterAllUnits([[f_side, 1], [f_btype, 31]]) do RespawnInside(1, 1, i, 4, 1, 1);
+end;
+
+Export function PrepareSupportFromDelta;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    Denis = PrepareUnit('Denis', false);
+    Brown = PrepareUnit('Brown', false);
+
+    PlaceUnitArea(Denis, GammaSupport, false);
+    PlaceUnitArea(Brown, GammaSupport, false);
+
+    ComMoveXY([Denis, Brown], 53, 19);
+
+    firstAttack = 1;
+end;
+
+Export function PrepareMacmillanSquad;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    JMM = PrepareUnit('JMM', false);
+    Lisa = PrepareUnit('Lisa', false);
+    Gladstone = PrepareUnit('Gladstone', false);
+    Frank = PrepareUnit('Frank', false);
+    Woodruff = PrepareUnit('Woodruff', false);
+
+    PlaceUnitArea(JMM, GammaSupport, false);
+    PlaceUnitArea(Lisa, GammaSupport, false);
+    PlaceUnitArea(Gladstone, GammaSupport, false);
+    PlaceUnitArea(Frank, GammaSupport, false);
+    PlaceUnitArea(Woodruff, GammaSupport, false);
+
+    ComMoveXY([JMM, Lisa, Gladstone, Frank, Woodruff], 53, 19);
+end;
+
+Export function PrepareSikorsky;
+begin
+    uc_side = 4;
+    uc_nation = 1;
+
+    Sikorsky = PrepareUnit('Sikorsky', false);
+
+    vc_engine = 1;
+    vc_control = 1;
+    vc_weapon = [5, 3, 4][Difficulty];
+    vc_chassis = [4, 3, 2][Difficulty];
+
+    SikorskyTank = CreateVehicle;
+
+    PlaceUnitArea(SikorskyTank, SikorskySpawn, false);
+    PlaceHumanInUnit(Sikorsky, SikorskyTank);
+end;
+
+Export function PrepareSikorskyArmy;
+begin
+    RespawnAttackInfantry(4, 1, [rand(5, 8), rand(4, 6), rand(3, 5)][Difficulty], 0, 0, 0, [3, 2, 1], rand(3, 6), SikorskySpawn, SikorskyHealArea, 3, 3);
+end;
+
+Export function PrepareSikorskyTanks;
+begin
+    RespawnAttackVehicle(SikorskySpawn, 4, [4, 3, 3], [rand(4, 6), rand(4, 5), rand(3, 4)][Difficulty], 1, 1, 1, [], [], [6, 4, 3], 3);
 end;

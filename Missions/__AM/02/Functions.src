@@ -83,21 +83,21 @@ begin
 
         damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 650]]]);
 
-        if damageUnits > 0 then
+        if damageUnits > 0 and sci_list > 0 then
         begin
 
                 for i = 1 to damageUnits do
                         ComMoveToArea(damageUnits[i], healArea);
 
-                for i = 1 to sci_list do
+                for i in sci_list do
                 begin
 
-                ComExitBuilding(sci_list[i]);
+                ComExitBuilding(i);
 
                 for j in FilterUnitsInArea(healArea,[f_side, side]) do
                 begin
 
-                    AddComHeal(sci_list[i], j[j]);
+                    AddComHeal(i, j);
                     wait(1$0);
 
             end;
@@ -157,17 +157,17 @@ begin
     end;
 end;
 
-Export function DefendBases(area, enemySide, defendersList, build);
+Export function DefendBases(area, enemySide, defendersList, build, count);
 var i, j;
 begin
-    if FilterUnitsInArea(area, [[f_side, enemySide], [f_type, unit_human]]) > 0 then
+    if FilterUnitsInArea(area, [[f_side, enemySide], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) > count then
     begin
         for i in defendersList do
         begin
             AddComExitBuilding(i);
             wait(0$1);
 
-            for j in FilterUnitsInArea(area, [[f_side, enemySide], [f_type, unit_human]]) do
+            for j in FilterUnitsInArea(area, [[f_side, enemySide], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) do
                 AddComAgressiveMove(i, GetX(j), GetY(j));
         end;
     end else
@@ -228,7 +228,6 @@ begin
 
      IF Difficulty = 2 then
      begin
-         RemoveUnit(brw3);
          RemoveUnit(brw4);
 
          SetFuel([vehicle1, vehicle2], 50);
