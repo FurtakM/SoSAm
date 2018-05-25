@@ -1,9 +1,10 @@
 Export function PrepareDeltaBase;
-var i, j, building, buildings;
+var i, j, building, buildings, lab, tmp;
 begin
 
-// [[GetBType(i), GetBLevel(i), GetX(i), GetY(i), GetDir(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)]];
     buildings = LoadVariable('buildingsInDelta', []);
+
+    SetResourceVisibility (68, 40, 1);
 
     uc_side = 1;
     uc_nation = 1;
@@ -30,5 +31,50 @@ begin
         end;
     end;
 
+    lab = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
+    tmp = FilterAllUnits([[f_side, 1], [f_btype, b_depot]]);
+
+    if lab > 0 and lab > 0 then baseCorrect = 1;
+
+    if baseCorrect = 0 then
+    begin
+        for i in FilterAllUnits([[f_side, 1], [f_type, unit_building]]) do RemoveUnit(i);
+
+        uc_nation = 1;
+        uc_side = 1;
+
+        bc_level = 5;
+        bc_type = b_depot;
+        CreateAndPlaceBuildingXYD(50, 22, 0);
+
+        bc_type = b_bunker;
+        building = CreateAndPlaceBuildingXYD(68, 24, 4);
+        PlaceWeaponTurret(building, [4, 11][Rand(1,2)]);
+        building = CreateAndPlaceBuildingXYD(71, 34, 4);
+        PlaceWeaponTurret(building, [4, 11][Rand(1,2)]);
+
+        bc_type = 31;
+        CreateAndPlaceBuildingXYD(51, 7, 3);
+
+        bc_type = b_oil_mine;
+        CreateAndPlaceBuildingXYD(68, 40, 1);
+
+        bc_type = b_workshop;
+        CreateAndPlaceBuildingXYD(38, 20, 2);
+
+        bc_type = b_armoury;
+        CreateAndPlaceBuildingXYD(38, 20, 2);
+
+        bc_type = b_solar_power;
+        CreateAndPlaceBuildingXYD(46, 12, 1);
+        CreateAndPlaceBuildingXYD(48, 11, 2);
+        CreateAndPlaceBuildingXYD(49, 11, 3);
+
+        bc_type = b_lab_half;
+        bc_kind1 = b_lab_opto;
+        bc_kind2 = b_lab_basic;
+        CreateAndPlaceBuildingXYD(42, 15, 2);
+
+    end;
 
 End;

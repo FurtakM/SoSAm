@@ -1,14 +1,20 @@
 // Start mission
 Every 1 do
-var tmp;
+var i, j, lab, tmp;
 begin
 
-    tmp = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
+    lab = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
 
     InGameOn;
-    CenterNowOnUnits(tmp[1]);
+    CenterNowOnUnits(lab[1]);
 
-    ComEnterUnit([JMM, DeltaDoctor], tmp[1]);
+    If IsOK(Denis) then
+    begin
+     SetTech(tech_radar, 1, state_researched);
+     SetRestrict(b_ext_radar, 1, true);
+    end;
+
+    ComEnterUnit([JMM, DeltaDoctor, Denis], lab[1]);
     Say(JMM, 'D1-JMM-1');
     Say(DeltaDoctor, 'D1-Sci-1');
     Say(JMM, 'D1-JMM-2');
@@ -17,6 +23,12 @@ begin
     If IsOK(Denis) then Say(DeltaDoctor, 'D1-Sci-3')
     else Say(DeltaDoctor, 'D1-Sci-3a');
     Say(JMM, 'D1-JMM-4');
+
+    tmp = FilterAllUnits([[f_side, 1], [f_class, 4], [f_not, [f_inside]]]);
+
+    for i in FilterAllUnits([f_side, 0]) do
+        for j in tmp do AddComTameXY(j, GetX(i), GetY(i));
+
     Say(DeltaDoctor, 'D1-Sci-4');
     Say(JMM, 'D1-JMM-5');
     Say(DeltaDoctor, 'D1-Sci-5');
@@ -34,16 +46,33 @@ begin
 
     SelectAndSaveCharacters;
 
-    SetResourceType(tmp[1], 1, 250);
+    SetResourceType(GetBase(lab[1]), 1, 250);
 
     InGameOff;
     Query('Q1');
-
-
+    SetAreaMapShow(ExitArea, 1);
 
 end;
 
-Every 0$1 trigger IsInArea(JMM, ExitArea) do 
+Every 0$1 trigger FilterUnitsExceptArea(ExitArea, [[f_side, 1], [f_type, unit_human]]) = 0 do 
+var i;
 begin
+
+    if FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle]]) > 0 then
+    begin
+        for i in FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle]]) do 
+        begin
+            if GetWeapon(i) = us_cargo_bay then
+            begin
+                yourVehicles = yourVehicles ^ [ [GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), GetCargoType(i), GetCargo(i, GetCargoType(i)) ] ];
+            end else 
+            begin
+                yourVehicles = yourVehicles ^ [ [GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)] ];
+            end;
+        end;  
+
+        SaveVariable(yourVehicles, '06_VehiclesIn06_1');  
+    end;
+
     ChangeMap(6, '%_cont');
 end;
