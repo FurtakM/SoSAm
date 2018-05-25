@@ -12,9 +12,6 @@ begin
     for i = 1 to buildings do
         begin
 
-        for j := 1 to buildings do
-        begin
-
             bc_type = buildings[i][1];
             bc_level = buildings[i][2];
 
@@ -26,15 +23,14 @@ begin
 
             building = CreateAndPlaceBuildingXYD(buildings[i][3], buildings[i][4], buildings[i][5]);
 
-            if bc_type = b_bunker then PlaceWeaponTurret(building, buildings[i][8]);
+            if GetBType(building) = b_bunker then PlaceWeaponTurret(building, buildings[i][8]);
 
-        end;
     end;
 
     lab = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
     tmp = FilterAllUnits([[f_side, 1], [f_btype, b_depot]]);
 
-    if lab > 0 and lab > 0 then baseCorrect = 1;
+    if lab > 0 and tmp > 0 then baseCorrect = 1;
 
     if baseCorrect = 0 then
     begin
