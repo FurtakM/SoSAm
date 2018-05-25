@@ -1,8 +1,10 @@
 Export function PrepareHeroes;
-var i, tmp;
+var i, tmp, ape;
 begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
+
+    SetBName(tmp[1], 'delta');
 
     uc_side = 1;
     uc_nation = 1;
@@ -55,14 +57,79 @@ begin
         SetClass(Cyrus, 1);
     end;
 
+    if LoadVariable('DonaldsonInDelta', 0) = 1 then
+    begin
+        Donaldson = PrepareUnit('Donaldson', true);
+        PlaceUnitXYR(Donaldson, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Donaldson, 1);
+    end;
+
+    if LoadVariable('BrownInDelta', 0) = 1 then
+    begin
+        Brown = PrepareUnit('Brown', true);
+        PlaceUnitXYR(Brown, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+        SetClass(Brown, 2);
+    end;
+    
     others = CreateCharacter('othersInDelta');
 
     for i in others do 
     begin
-        PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
+        PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
         SetClass(i, [1,2,3,4][Rand(1,4)]);
     end;
 
+    apemans = CreateCharacter('apeInDelta');
+
+    uc_nation = 0;
+
+    {if apemans < 6 then
+    begin
+        for i := 1 to 5 do
+        begin
+            PlaceUnitXYR(apemans[i], GetX(tmp[1]), GetY(tmp[1]), 50,  false);
+            yourApemans = yourApemans ^ apemans[i];
+        end;
+    end
+    else
+    begin
+        for i in apemans do 
+        begin
+            PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 50,  false);
+            yourApemans = yourApemans ^ i;
+        end; 
+    end;  }
+
+        for i in apemans do
+        begin
+            PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 50,  false);
+            yourApemans = yourApemans ^ i;
+        end;
+end;
+
+Export function LoadVehicles;
+var i, veh, tmp, vehicles;
+begin
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
+
+    uc_side = 1;
+    uc_nation = 1;
+//[GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)];
+    vehicles = LoadVariable('vehiclesInDelta', []);
+
+    for i = 1 to 15 do
+    begin                          
+        vc_chassis = vehicles[i+1]; 
+        vc_engine = vehicles[i+2];     
+        vc_control = vehicles[i+3];  
+        vc_weapon = vehicles[i+4];
+
+        i = i + 4;
+
+        veh = CreateVehicle;
+
+        PlaceUnitXYR(veh, GetX(tmp[1]), GetY(tmp[1]), 20, false);
+    end;
 
 end;
 
@@ -75,16 +142,18 @@ begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
 
-    for i = 1 to 5 do 
+    for i = 1 to 6 + Difficulty do 
     begin
         hc_gallery = '';
         hc_name = '';
-        PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], rand(1, 4));
+        PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], rand(3, 5) - Difficulty);
 
         un = CreateHuman;
         PlaceUnitXYR(un, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
     end;
 
+    hc_gallery = '';
+    hc_name = 'Dr. Michael Mills';
     PrepareHuman(sex_male, 4, 6);
     deltaDoctor = CreateHuman;
     PlaceUnitXYR(deltaDoctor, GetX(tmp[1]), GetY(tmp[1]), 5,  false);

@@ -28,6 +28,17 @@ begin
   
 end;
 
+Export function EnchancedSaveCharacters(charactersList, ident);
+var i;
+begin
+
+    for i in charactersList do
+    begin
+         if IsOk(i) then SaveCharacters(i, ident);
+    end;
+end;
+
+
 Export function RespawnInside(side, nation, build, skill, class, count);
 var i,l, un;
 begin
@@ -102,22 +113,6 @@ begin
     case query('QKill2') of
         1: begin result = 1; end;
         2: begin result = 2; end;
-    end;
-end;
-
-Export function EnchancedSaveCharacters(charactersList, ident);
-var i;
-begin
-
-    for i in charactersList do
-    begin
-         if IsOk(i) then
-         begin
-              SaveCharacters(i, ident);
-         end else
-         begin
-              DeleteCharacters(ident);
-        end;
     end;
 end;
 
@@ -362,7 +357,7 @@ end;
 Export function AttackNearBuildings(side, enemySide);
 var i, j, turretsList, enemyBuildings;
 begin
-    turretsList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 31], [f_btype, 32], [f_btype, 33]]]);
+    turretsList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 31], [f_btype, 32], [f_btype, 33], [f_btype, 4], [f_btype, 5]]]);
     enemyBuildings = FilterAllUnits([[f_side, enemySide], [f_type, unit_building], [f_empty]]);
 
     if turretsList > 0 and enemyBuildings > 0 then

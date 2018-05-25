@@ -11,9 +11,9 @@ result := unit;
 End;
 
 Export function SelectAndSaveCharacters;
-var i, yourPeople, selectedPeople;
+var i, yourPeople, selectedPeople, test;
 begin
-    yourPeople = FilterAllUnits([f_type, unit_human]) diff [JMM, DeltaDoctor, Denis];
+    yourPeople = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, DeltaDoctor, Denis];
 
     selectedPeople = CharacterSelection('text', 5, 5,
                                 [sel_change_class, JMM,
@@ -25,44 +25,56 @@ begin
     SaveCharacters(JMM, 'JMM');
     SaveCharacters(DeltaDoctor, 'DeltaDoctor');
     SaveCharacters(Denis, 'Denis');
+    SaveCharacters(yourApemans, 'ApeIn06');
 
     if Lisa in selectedPeople then
     begin
         SaveCharacters(Lisa, 'Lisa');
-        SaveVariable(true, 'LisaIn06');
+        SaveVariable(1, 'LisaIn06');
     end;
 
     if Bobby in selectedPeople then
     begin
         SaveCharacters(Bobby, 'Bobby');
-        SaveVariable(true, 'BobbyIn06');
+        SaveVariable(1, 'BobbyIn06');
     end;
 
     if Cyrus in selectedPeople then
     begin
         SaveCharacters(Cyrus, 'Cyrus');
-        SaveVariable(true, 'CyrusIn06');
+        SaveVariable(1, 'CyrusIn06');
     end;
 
     if Frank in selectedPeople then
     begin
-        SaveCharacters(Cyrus, 'Frank');
-        SaveVariable(true, 'FrankIn06');
+        SaveCharacters(Frank, 'Frank');
+        SaveVariable(1, 'FrankIn06');
     end;
 
     if Brown in selectedPeople then
     begin
         SaveCharacters(Brown, 'Brown');
-        SaveVariable(true, 'BrownIn06');
+        SaveVariable(1, 'BrownIn06');
     end;
 
     if Donaldson in selectedPeople then
     begin
         SaveCharacters(Donaldson, 'Donaldson');
-        SaveVariable(true, 'DonaldsonIn06');
+        SaveVariable(1, 'DonaldsonIn06');
+    end;
+
+    if Gladstone in selectedPeople then
+    begin
+        SaveCharacters(Gladstone, 'Gladstone');
+        SaveVariable(1, 'GladstoneIn06');
     end;
 
     SetSide(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 4);
     for i in selectedPeople do SetSide(i, 1);
+    for i in yourApemans do SetSide(i, 1);
     SetSide(JMM, 1);
+
+    SaveCharacters(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Lisa, Bobby, Cyrus, Frank, Brown, Donaldson, Gladstone], 'OthersIn06');
+    SaveCharacters(FilterAllUnits([[f_side, 4], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [DeltaDoctor], 'OthersStayInDelta');
+
 end;
