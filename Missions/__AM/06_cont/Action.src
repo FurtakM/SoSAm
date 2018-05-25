@@ -1,6 +1,9 @@
 // Start mission
 Every 0$01 do
 begin
+
+     If FilterAllUnits([[f_side, 1], [f_class, 2]]) = 0 then SetClass(JMM, 2);
+
     ChangeMissionObjectives('M1');
 
     case difficulty of
@@ -27,14 +30,14 @@ begin
      begin
          If IsOK(Cyrus) then
          begin
-             //  Say(Cyrus, 'DR0-Cyrus-1'); add later
+            Say(Cyrus, 'DR0-Cyrus-1');
          end else
          begin
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol1-1', 'DR0-Sol1-1');
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol1-1', 'DR0-Sol1-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
          end;
      end;
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
     Say(JMM, 'DR0-JMM-1');
 end;
 
@@ -43,7 +46,7 @@ Every 5$0 trigger IsOk(Frank) and FilterAllUnits([[f_side, 1], [f_class, 16]]) >
 begin
     DialogueOn;
     Say(Frank, 'D10-Frank-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Frank, Lisa], 'D10-Sol1-1', 'D10-FSol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human],[f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa], 'D10-Sol1-1', 'D10-FSol1-1');
     Say(Frank, 'D10-Frank-2');
     if IsOK(Lisa) then
     begin
@@ -51,7 +54,7 @@ begin
     end
     else
     begin
-        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Frank], 'D10-Sol1-2', 'D10-FSol1-2');
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank], 'D10-Sol1-2', 'D10-FSol1-2');
     end;
 end;
 

@@ -42,6 +42,28 @@ begin
 
 END;
 
+// Save characters if he live else delete from characters list.
+// Example: EnchancedSaveCharacters(JMM, 'JMM');
+
+Export function EnchancedSaveCharacters(charactersList, ident);
+var i;
+begin
+
+    for i in charactersList do
+    begin
+         if IsOk(i) then
+         begin
+              SaveCharacters(i, ident);
+         end else
+         begin
+              DeleteCharacters(ident);
+        end;
+    end;
+end;
+
+
+// AI Functions:
+
 // Vehicle - Attack/Repair/Attack (need edit in code - orders)
 // Function to repair you damage vehicles in battlefield.
 // Example: RepairVehicle(3, AreaRep, 20, 52);
@@ -319,6 +341,7 @@ begin
                 end;
         end;
     end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
+    
 END;
 
 Export function RebuildBuildings(side, destroyedBuildings);
@@ -332,4 +355,27 @@ begin
             AddComBuild(i, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
         end;
     end;
-end;
+END;
+
+Export function AttackNearBuildings(side, enemySide);
+var i, j, turretsList, enemyBuildings;
+begin
+    turretsList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 31], [f_btype, 32], [f_btype, 33], [f_btype, 4], [f_btype, 5]]]);
+    enemyBuildings = FilterAllUnits([[f_side, enemySide], [f_type, unit_building], [f_empty]]);
+
+    if turretsList > 0 and enemyBuildings > 0 then
+    begin
+        for i in turretsList do
+        begin
+            for j in enemyBuildings do
+            begin
+                display_strings = [GetDistUnits(i, j)];
+                if GetDistUnits(i, j) < 20 then
+                begin
+                    ComAttackUnit(i, j);
+                end;
+            end;
+        end;
+    end;
+
+END;
