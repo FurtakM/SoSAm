@@ -4,7 +4,7 @@ begin
 
     uc_side = 1;
     uc_nation = 1;
-    //JMM, Lisa, Bobby, Cyrus, Frank, Brown, Donaldson, Gladstone, Denis, DeltaDoctor; OthersIn06
+    
     JMM = PrepareUnit('JMM', true);
     Harisson = PrepareUnit('Harisson', false);
     DeltaDoctor = PrepareUnit('DeltaDoctor', true);
@@ -112,7 +112,7 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
-    others = CreateCharacter('OthersIn06');
+    others = CreateCharacterSet('OthersIn06');
 
     for i in others do 
     begin
@@ -147,7 +147,8 @@ begin
     vc_weapon = [4, 4, 2][Difficulty];
     vc_chassis = 2;
 
-    veh = CreateVehicle;     
+    veh = CreateVehicle;
+    SetDir(veh, 2);
     PlaceUnitArea(veh, HarrisonSupportArea, false);
 
     hc_class := 2;
@@ -165,7 +166,8 @@ begin
     vc_weapon = [4, 2, 2][Difficulty];
     vc_chassis = 2;
 
-    veh = CreateVehicle;     
+    veh = CreateVehicle;
+    SetDir(veh, 2);
     PlaceUnitArea(veh, HarrisonSupportArea, false);
     SetFuel(veh, 50);
 
@@ -185,7 +187,7 @@ end;
 Export function PrepareJoan;
 var tmp, rnd;
 begin
-    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]);
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]);
     rnd = Rand(1, tmp);
 
     uc_side = 4;
