@@ -42,7 +42,7 @@ begin
 end;
 
 // Frank dialog
-Every 5$0 trigger IsOk(Frank) and FilterAllUnits([[f_side, 1], [f_class, 16]]) > 0 do 
+Every 5$0 trigger IsOk(Frank) and FilterAllUnits([[f_side, 1], [f_class, 16]]) > 0 do
 begin
     DialogueOn;
     Say(Frank, 'D10-Frank-1');
@@ -56,10 +56,12 @@ begin
     begin
         DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank], 'D10-Sol1-2', 'D10-FSol1-2');
     end;
+    DialogueOff;
+
 end;
 
 // Harrison support and dialog with him
-Every 10$0 do 
+Every 10$30 do
 begin
     HarrisonSupport;
     CenterNowOnUnits(IsInUnit(HarrSupp1));
@@ -71,18 +73,28 @@ begin
     if contactWithRussian = 1 then begin Say(JMM, 'DRem-JMM-1');
     end else begin Say(JMM, 'DRem-JMM-1a'); end;
     SayRadio(Harisson, 'DRem-Har-2');  
-    // add dialog if Denis die in before mission ident: DRem-JMM-2a
-    Say(JMM, 'DRem-JMM-2'); 
+    if LoadVariable('DenisInDelta', 0) = 1 then begin Say(JMM, 'DRem-JMM-2');
+    end else begin Say(JMM, 'DRem-JMM-2a'); end;  
     SayRadio(Harisson, 'DRem-Har-3'); 
     Say(JMM, 'DRem-JMM-3');  
     SayRadio(Harisson, 'DRem-Har-4'); 
-    Say(JMM, 'DRem-JMM-4');  
-    SayRadio(Harisson, 'DRem-Har-5');
+
+    if LoadVariable('DenisInDelta', 0) = 1 then
+    begin
+        Say(JMM, 'DRem-JMM-4');  
+        SayRadio(Harisson, 'DRem-Har-5');
+    end else
+    begin
+        SetRestrict(36, 1, true);
+        SetTech(15, 1, state_enabled);
+        ChangeMissionObjectives('MR');
+    end;
+
     DialogueOff;
 end;
 
 // Denis spawn
-Every 15$0 do
+Every 15$0 trigger LoadVariable('DenisInDelta', 0) = 1  do
 begin
     PrepareDenis;
     CenterNowOnUnits(Denis);
@@ -271,24 +283,23 @@ begin
 end; 
 
 // Spawn randoms
-Every 13$0 do PrepareRandoms(1);
-Every 20$0 do PrepareRandoms(2);
-Every 28$0 do PrepareRandoms(3);
-Every 32$0 do PrepareRandoms(4);
-Every 38$0 do PrepareRandoms(5);
-Every 42$0 do PrepareRandoms(6);
-Every 45$0 do PrepareRandoms(7);
+Every 4$0 do PrepareRandoms(1);
+Every 10$0 do PrepareRandoms(2);
+Every 28$0 do PrepareRandoms(4);
+Every 32$0 do PrepareRandoms(5);
+Every 48$0 do PrepareRandoms(6);
+Every 42$0 do PrepareRandoms(7);
 
 // Dialogs from Delta base
 
-Every 5$0 do 
+Every 5$20 do
 begin
     DialogueOn;
     SayRadio(DeltaDoctor, 'D12a-Sci-1');
     Say(JMM, 'D12a-JMM-1');
     DialogueOff;
     cratesStatus = 1;
-end;
+end; 
 
 Every 13$0 do 
 begin
@@ -324,15 +335,15 @@ Every 0$1 trigger FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_weapon
 var i;
 begin
     enable;
-    for i in FilterAllUnits([[f_side, 6]]) do ComAgressiveMove(i, 138, 168);
+    for i in FilterAllUnits([[f_side, 6], [f_or, [f_type, unit_human], [f_type, unit_vehicle]]]) do ComAgressiveMove(i, 138, 168);
 end;
 
 // Remove russian convoy
-Every 0$1 trigger FilterUnitsInArea(ConvoyEscape, [[f_side, 6], [f_weapon, 51]]) > 0 do
+Every 0$1 do
 var i;
 begin
     enable;
-    for i in FilterUnitsInArea(ConvoyEscape, [[f_side, 6]]) do
+    for i in FilterUnitsInArea(ConvoyEscape, [[f_or, [f_side, 3], [f_side, 6]]]) do
     begin
         if FilterUnitsInArea(ConvoyEscape, [[f_side, 6], [f_weapon, 51]]) > 0 then sendedConvoys = sendedConvoys + 1;
         RemoveUnit(i);
