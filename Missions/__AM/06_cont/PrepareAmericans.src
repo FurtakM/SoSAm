@@ -9,7 +9,10 @@ begin
     Harisson = PrepareUnit('Harisson', false);
     DeltaDoctor = PrepareUnit('DeltaDoctor', true);
 
-    PlaceUnitArea(JMM, PlayerSpawn, false);
+    veh = FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]);
+
+    if veh > 0 then begin PlaceHumanInUnit(JMM, veh[1]);
+    end else begin PlaceUnitArea(JMM, PlayerSpawn, false); end;
 
     if LoadVariable('LisaIn06', 0) = 1 then
     begin  
@@ -122,7 +125,19 @@ begin
         end else begin PlaceUnitArea(i, PlayerSpawn, false); end;
     end;
 
-end;
+end; 
+
+Export function PreparePlayerApemans;
+var i, veh;
+begin
+    uc_side = 1;
+    uc_nation = 0;
+
+    ape = CreateCharacterSet('ApeIn06');
+
+    for i in ape do PlaceUnitArea(i, PlayerSpawn, false);
+
+end; 
 
 Export function PrepareDenis;
 begin
