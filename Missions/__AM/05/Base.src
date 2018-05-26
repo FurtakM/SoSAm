@@ -127,10 +127,13 @@ if lab and UnitFilter(team, [f_class, 4]) then
    begin
    filter := UnitFilter(team, [f_class, 4]);
 
-   for i = 1 to 6 do
+   for i = 1 to filter do
        begin
-       PlaceHumanInUnit(filter[1], lab[1]);
-       filter := Delete(filter, 1);
+
+       if (i > 6) then
+          break;
+
+       PlaceHumanInUnit(filter[i], lab[1]);
        end;
 
    team := team diff filter;
