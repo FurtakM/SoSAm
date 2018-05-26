@@ -114,10 +114,12 @@ if bar and UnitFilter(team, [f_class, 1]) then
    begin
    filter := UnitFilter(team, [f_class, 1]);
 
-   for i = 1 to 6 do
+   for i = 1 to filter do
        begin
-       PlaceHumanInUnit(filter[1], bar[1]);
-       filter := Delete(filter, 1);
+       if (i <= 6) then
+          PlaceHumanInUnit(filter[i], bar[1])
+         else
+          PlaceUnitArea(filter[i], gammaBaseArea, false);
        end;
 
    team := team diff filter;
@@ -129,11 +131,10 @@ if lab and UnitFilter(team, [f_class, 4]) then
 
    for i = 1 to filter do
        begin
-
-       if (i > 6) then
-          break;
-
-       PlaceHumanInUnit(filter[i], lab[1]);
+       if (i <= 6) then
+          PlaceHumanInUnit(filter[i], lab[1])
+         else
+          PlaceUnitArea(filter[i], gammaBaseArea, false);
        end;
 
    team := team diff filter;
@@ -143,10 +144,12 @@ if fac and UnitFilter(team, [f_class, 3]) then
    begin
    filter := UnitFilter(team, [f_class, 3]);
 
-   for i = 1 to 6 do
+   for i = 1 to filter do
        begin
-       PlaceHumanInUnit(filter[1], fac[1]);
-       filter := Delete(filter, 1);
+       if (i <= 6) then
+          PlaceHumanInUnit(filter[i], fac[1])
+         else
+          PlaceUnitArea(filter[i], gammaBaseArea, false);
        end;
 
    team := team diff filter;
