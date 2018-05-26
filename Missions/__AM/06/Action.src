@@ -47,6 +47,7 @@ begin
     SelectAndSaveCharacters;
 
     SetResourceType(GetBase(lab[1]), 1, 250);
+    If FilterAllUnits([[f_side, 1], [f_btype, b_oil_mine]]) > 0 then SetResourceType(GetBase(lab[1]), 2, 300);
 
     InGameOff;
     Query('Q1');
@@ -64,10 +65,10 @@ begin
         begin
             if GetWeapon(i) = us_cargo_bay then
             begin
-                yourVehicles = yourVehicles ^ [ [GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), GetCargoType(i), GetCargo(i, GetCargoType(i)) ] ];
+                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), GetCargoType(i), GetCargo(i, GetCargoType(i)) ] ];
             end else 
             begin
-                yourVehicles = yourVehicles ^ [ [GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)] ];
+                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)] ];
             end;
         end;  
 
