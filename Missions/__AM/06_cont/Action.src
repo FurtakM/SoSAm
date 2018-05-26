@@ -33,8 +33,8 @@ begin
             Say(Cyrus, 'DR0-Cyrus-1');
          end else
          begin
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol1-1', 'DR0-Sol1-1');
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone, Frank], 'DR0-Sol1-1', 'DR0-Sol1-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone, Frank], 'DR0-Sol2-1', 'DR0-Sol2-1');
          end;
      end;
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]) diff [JMM, Gladstone], 'DR0-Sol2-1', 'DR0-Sol2-1');
@@ -148,7 +148,7 @@ begin
          DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 4]]) diff [JMM], 'DR2-Sci1-1', 'DR2-FSci1-1');
     end;
     Say(JMM, 'DR2-JMM-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_class, 4]]]) diff [JMM], 'DR2-Sol1-1', 'DR2-Sol1-11');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Denis, Gladstone], 'DR2-Sol1-1', 'DR2-Sol1-11');
     Say(JMM, 'DR2-JMM-2');
     DialogueOff;
 end;
@@ -158,6 +158,14 @@ Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) = 0 and FilterAll
 begin
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3]]) diff [JMM], 'D3a-Mech1-1', 'D3a-Mech1-1');
     firstTower = 2;
+end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_building]]) = 0 do
+var i;
+begin
+     for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) do
+         AddExperience(i, 1, 10000);
+
 end;
 
 // All ready to test remote veh
@@ -287,8 +295,8 @@ Every 4$0 do PrepareRandoms(1);
 Every 10$0 do PrepareRandoms(2);
 Every 28$0 do PrepareRandoms(4);
 Every 32$0 do PrepareRandoms(5);
-Every 48$0 do PrepareRandoms(6);
-Every 42$0 do PrepareRandoms(7);
+Every 35$30 do PrepareRandoms(6);
+Every 37$20 do PrepareRandoms(7);
 
 // Dialogs from Delta base
 
