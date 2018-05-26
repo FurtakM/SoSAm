@@ -1,5 +1,5 @@
 Export function PrepareHeroes;
-var i, tmp, ape;
+var i, tmp, ape, test;
 begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
@@ -71,7 +71,7 @@ begin
         SetClass(Brown, 2);
     end;
     
-    others = CreateCharacter('othersInDelta');
+    others = CreateCharacterSet('othersInDelta');
 
     for i in others do 
     begin
@@ -79,11 +79,11 @@ begin
         SetClass(i, [1,2,3,4][Rand(1,4)]);
     end;
 
-    apemans = CreateCharacter('apeInDelta');
+    apemans = CreateCharacterSet('apeInDelta');
 
     uc_nation = 0;
 
-    {if apemans < 6 then
+    if apemans > 6 then
     begin
         for i := 1 to 5 do
         begin
@@ -98,13 +98,8 @@ begin
             PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 50,  false);
             yourApemans = yourApemans ^ i;
         end; 
-    end;  }
+    end;  
 
-        for i in apemans do
-        begin
-            PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 50,  false);
-            yourApemans = yourApemans ^ i;
-        end;
 end;
 
 Export function LoadVehicles;
@@ -113,12 +108,12 @@ begin
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
 
     uc_side = 1;
-    uc_nation = 1;
-//[GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)];
+
     vehicles = LoadVariable('vehiclesInDelta', []);
 
-    for i = 1 to 15 do
-    begin                          
+    for i = 1 to vehicles do
+    begin
+        uc_nation = vehicles[i];
         vc_chassis = vehicles[i+1]; 
         vc_engine = vehicles[i+2];     
         vc_control = vehicles[i+3];  
