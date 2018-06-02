@@ -59,7 +59,7 @@ begin
         AddMedal('Cans', -1);
     end;
 
-    if deadsCounter <= 3  then
+    if deadsCounter < 2  then
     begin
         AddMedal('Deaths', 1);
     end
@@ -78,10 +78,10 @@ begin
     RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human]]));
 
     SaveCharacters(JMM, 'JMM');
-    SaveCharacters(Bobby, 'Bobby');
-    SaveCharacters(Cyrus, 'Cyrus');
-    SaveCharacters(Lisa, 'Lisa');
-    SaveCharacters(Khatam, 'Khatam');
+    if IsOK(Bobby) then SaveCharacters(Bobby, 'Bobby');
+    if IsOK(Cyrus) then SaveCharacters(Cyrus, 'Cyrus');
+    if IsOK(Lisa) then SaveCharacters(Lisa, 'Lisa');
+    if IsOK(Khatam) then SaveCharacters(Khatam, 'Khatam');
     if IsOK(Brian) then SaveCharacters(Brian, 'Brian');
     if IsOk(Jerry) then SaveCharacters(Jerry, 'Jerry');
     If mikhailStatus = 1 then SaveCharacters(Mikhail, 'Mikhail');

@@ -19,9 +19,11 @@ begin
     repeat
         wait(0$1);
         for i in FilterAllUnits([[f_side, 6]]) do ComAgressiveMove(i, 54, 20);
-    until FilterAllUnits([[f_side, 6], [f_type, unit_human]]) = 0;
+    until FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_lives, 250]]) = 0;
 
     InGameOff;
+
+    SaveForQuickRestart;
 end;
 
 // Arrive two soldiers from Delta base
@@ -38,12 +40,11 @@ Every 0$1 trigger firstAttack = 1 do  RespawnAttackVehicle(RussianAttackSpawn, 6
 
 
 // Spawn John
-Every 0$1 do 
+Every 9$0 do
 begin
-    wait([7$0, 8$0, 9$0, 10$0][Rand(1,4)]);
     PrepareMacmillanSquad;
-    JMMArrive = 1;
     Say(JMM, 'D3-JMM-1');
+
     If IsOK(Donaldson) then
     begin
         Say(Donaldson, 'D3-Don-1');
@@ -57,6 +58,14 @@ begin
         Say(Joan, 'D3a-Joan-1');
         Say(JMM, 'D3a-JMM-1');
     end; 
+
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM], 'DCa-Sol1-1', 'DCa-Sol1-1');
+    Say(JMM, 'DCb-JMM-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM], 'DCb-Sol1-1', 'DCb-Sol1-1');
+    Say(JMM, 'DCb-JMM-2');
+
+    JMMArrive = 1;
+    secondAttack = 1;
 
 end;
 
@@ -73,7 +82,7 @@ begin
 end;
 
 // Dialog about support
-Every 28$0 do 
+Every 20$0 trigger JMMArrive = 1 do
 begin
     DialogueOn;
     SayRadio(Powell, 'D4a-Pow-1');
@@ -81,7 +90,7 @@ begin
 end;
 
 // Sikorsky
-Every 38$0 do 
+Every 30$0 trigger JMMArrive = 1 do
 begin
     PrepareSikorsky;
     PrepareSikorskyArmy;

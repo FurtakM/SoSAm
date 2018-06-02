@@ -1,6 +1,6 @@
 On BuildingComplete(building) Do
 var i, tmpSold, tmpEng, tmpMeh, tmpSci, tmpSoldInside, cargo;
-begin
+begin               
 
     tmpSold = FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_class, 1], [f_not, [f_inside]]]);
     tmpSoldInside = FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_class, 1], [f_inside]]);
@@ -107,14 +107,17 @@ begin
 end;
 
 On Contact(side1, side2) Do
-var i;
+var i, tmp;
 begin
+     tmp = FilterAllUnits([f_side, 1]);
+
      if side1 = 1 and side2 = 6 and donaldsonCoopAttack = 1 then
      begin
           donaldsonCoopAttack = 0;
           for i in FilterAllUnits([[f_side, 4]]) do ComAgressiveMove(i, 52, 64);
 
      end;
+
 end;
 
 On VehicleConstructed(vehicle, building) Do
