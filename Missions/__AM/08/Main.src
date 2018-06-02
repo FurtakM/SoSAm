@@ -14,9 +14,12 @@ Export RuSolMinLevel, RuSolMaxLevel;
 Export russianAI;
 Export ruDepot, ruLab, ruFab;
 Export ruDestroyBuilds;
-Export firstAttack;
+Export firstAttack, secondAttack;
 
 Export JMMArrive;
+
+Export varEvent1;
+Export test;
 
 Export debugMode;
 
@@ -28,12 +31,16 @@ begin
     JMMArrive = 0; // 0 - don't arrive, 1 - arrive
     SikorskyArrive = 0;  // 0 - don't arrive, 1 - arrive
 
-    firstAttack = 0;
+    firstAttack = 0; // first attack durring arrive two men from Delta
+    secondAttack = 0; // seoncd attack durring arrive Macmillan
 
     russianAI = 0; // 0 - off, 1 - on
-    ruDestroyBuilds = [];
+    ruDestroyBuilds = []; // russian destroyed buildings
 
-    debugMode = 1;
+    varEvent1 = 0; // Block event
+    test = 0$00;
+
+    debugMode = 1; // 0 - player, 1 - developer
 
     PrepareDifficulty;
 
@@ -57,4 +64,10 @@ begin
     for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 2, 9999);
     If IsSelected(ruDepot) then your_side = 3;
     If IsSelected(amdepo) then your_side = 1;
+end;
+
+Every 0$1  do
+begin
+enable;
+display_strings =  JMMArrive;
 end;

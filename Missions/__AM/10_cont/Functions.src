@@ -1,0 +1,251 @@
+Export Function PrepareUnit(ident, exist_mode);
+var unit;
+begin
+
+if exist_mode then
+   unit := CreateCharacter(ident)
+  else
+   unit := NewCharacter(ident);
+
+result := unit;
+End;
+
+Export function DialogRandom(characters, dialogMID, dialogFID);
+var i, rnd;
+begin
+    rnd = rand(1, characters);  
+
+    for i = 1 to characters do
+    begin
+
+       if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
+       if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
+
+    end;
+  
+end;
+
+// AI functions
+
+Export function BuildRussianBase(position);
+var i, engineers, buildingsTab;
+begin
+
+    // 1 - west , 2 - middle, 3 - east 
+
+    // 49, 74, 3 { 49: placed red-ru1 Ru. warehouse, rudepo }
+// 73, 88, 5 { 53: placed red-ru1 Ru. barracks, ruarm1 }
+// 75, 76, 5 { 57: placed red-ru1 Ru. bunker }
+// 77, 75, 5 { 59: placed red-ru1 Ru. bunker }
+// 69, 68, 3 { 60: placed red-ru1 Ru. bunker }
+ //66, 66, 3 { 65: placed red-ru1 Ru. bunker }
+// 63, 90, 5 { 66: placed red-ru1 Ru. automatic turret }
+/// 64, 88, 5 { 75: placed red-ru1 Ru. automatic turret }
+// 72, 82, 5 { 76: placed red-ru1 Ru. automatic turret }
+///59, 96, 5 { 83: placed red-ru1 Ru. bunker }
+// 56, 96, 0 { 84: placed red-ru1 Ru. bunker }
+ //43, 79, 5 { 86: placed red-ru1 Ru. siberium mine }
+// 49, 86, 1 { 87: placed red-ru1 Ru. factory, rufab }
+// 45, 86, 1 { 90: placed red-ru1 Ru. track ext. }
+// 49, 89, 0 { 91: placed red-ru1 Ru. gun ext. }
+// 46, 83, 2 { 92: placed red-ru1 Ru. rocket ext. }
+// 49, 82, 3 { 93: placed red-ru1 Ru. siberium ext. }
+// 53, 90, 5 { 94: placed red-ru1 Ru. computer ext. }
+// 42, 74, 1 { 97: placed red-ru1 Ru. upgraded bridge full, rulab1 }
+// 56, 77, 2 { 98: placed red-ru1 Ru. upgraded bridge full, rulab2 }
+// 56, 62, 3 {100: placed red-ru1 Ru. barracks, ruarm2 }
+// 51, 61, 3 {109: placed red-ru1 Ru. bunker }
+// 42, 60, 3 {111: placed red-ru1 Ru. bunker }
+// 36, 58, 3 {112: placed red-ru1 Ru. bunker }
+// 39, 59, 3 {113: placed red-ru1 Ru. bunker }
+// 61, 64, 3 {114: placed red-ru1 Ru. bunker }
+// 43, 68, 3 {115: placed red-ru1 Ru. oil drilling tower }
+// 60, 75, 1 {116: placed red-ru1 Ru. siberium power }
+// 45, 67, 2 {117: placed red-ru1 Ru. siberium power }
+// 41, 64, 5 {118: placed red-ru1 Ru. siberium power }
+
+    if position = 1 then
+    begin
+        engineers = FilterAllUnits([[f_side, 3], [f_class, 2]]);
+        //type, x, y, dir
+        buildingsTab = [
+            [b_depot, 90, 86, 3],
+            [b_armoury, 75, 79, 2],
+            [b_armoury, 113, 94, 4],
+            [b_oil_mine, 106, 97, 3],
+            [b_oil_power, 93, 97, 5],
+            [b_workshop, 100, 89, 3],
+            [b_ext_gun, 96, 89, 1],
+            [b_bunker, 78, 94, 1],
+            [b_bunker, 95, 82, 3],
+            [b_bunker, 104, 85, 2],
+            [b_bunker, 81, 78, 2],
+            [b_turret, 109, 90, 3],
+            [b_turret, 88, 79, 3],
+            [b_turret, 76, 87, 1],
+            [b_oil_power, 96, 97, 5],
+            [b_oil_power, 85, 84, 2], 
+            [b_lab, 88, 95, 0],
+            [b_ext_noncombat, 103, 89, 4],
+            [b_ext_track, 97, 86, 2],
+            [b_ext_computer, 100, 85, 3]
+        ];
+
+        for i := 1 to buildingsTab do
+            AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
+
+    end;
+
+end;
+
+Export Function IntBazooka(side, targetSide);
+var ta, c, i, list, filter;
+begin
+
+      list   := FilterAllUnits([[f_side, side], [f_class, class_bazooker]]);
+      filter := FilterAllUnits([[f_side, targetSide], [f_not, [f_type, unit_building]]]);
+
+      c := Rand(1, 3);
+
+         for i = 1 to list do
+         for ta in filter do
+             begin
+
+              if GetDistUnits(list[i], ta) <= 13 then
+                 begin
+
+                      Case c of
+                      1: ComTimeShift(list[i], GetX(ta), GetY(ta));
+                      2: ComSpaceShift(list[i], GetX(ta) + Rand(-1,1), GetY(ta) + Rand(-1,1));
+                      3: ;
+                      end;
+
+                 end;
+             end;
+
+End;
+
+Export function ResAllTechs(side, lab, nation);
+var i, tech, cout;
+begin
+
+  For i = 1 to 72 do
+    If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true then AddComResearch(lab, i);
+
+end;
+
+Export function EnterBunkerOrBarrack(side, area);
+var i,j, soldiers_list, turretList, temp, barrackList;
+begin
+
+
+    soldiers_list = FilterAllUnits([[f_side, side], [f_class, 1], [f_outside], [f_lives, 700]]);
+    turretList = FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
+    barrackList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
+
+    if barrackList > 0 then
+    begin
+
+        if turretList = 0 then
+        begin
+            for i in soldiers_list do ComEnterUnit(i, barrackList[1]);
+        end else
+        begin
+            for i in barrackList do 
+            begin
+                ComEnterUnit(UnitsInside(i), turretList[1]);
+            end;
+        end;
+
+    end;
+
+end;
+
+Export function RepairBuilding(side, building);
+var buildings_list, i,engineerOk_list, j;
+begin
+
+        engineerOk_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 2], [f_class, 16]], [f_lives, 1000]]);
+        buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+        if buildings_list > 0 and engineerOk_list > 0 then
+        begin
+
+                for i in engineerOk_list do
+                begin
+                     for j in buildings_list do
+                     begin
+
+                        AddComExitBuilding(i);
+                        wait(0$1);
+                        AddComRepairBuilding(i, j);
+
+                    end;
+                end;
+        end;
+
+        if buildings_list = 0 then
+        begin
+
+           for i in engineerOK_list do
+           begin
+             ComEnterUnit(i, building);
+          end;
+
+        end;
+END;
+
+Export function RebuildBuildings(side, destroyedBuildings);
+var i;
+begin
+    if FilterAllUnits([[f_side, side], [f_class, 2]]) > 0 and FilterAllUnits([[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]) = 0 and destroyedBuildings > 0  then
+    begin
+        for i in FilterAllUnits([[f_side, side], [f_class, 2]]) do 
+        begin
+            AddComExitBuilding(i);
+            AddComBuild(i, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
+        end;
+    end;
+end;
+
+
+
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list,  i, j, damageUnits;
+begin
+
+    sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 250]]);
+
+    damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+
+    if damageUnits > 0 and sci_list > 0 then
+    begin
+
+      for i = 1 to damageUnits do ComMoveToArea(damageUnits[i], healArea);
+
+      for i in sci_list do
+      begin
+
+        ComExitBuilding(i);
+
+        for j in FilterUnitsInArea(healArea,[f_side, side]) do
+        begin
+
+        AddComHeal(i, j);
+        wait(1$0);
+
+        end;
+      end;
+
+    end else
+    begin
+
+    AddComEnterUnit(sci_list, build);
+
+  end;
+
+END;
+
+{$ENDREGION}
+
+

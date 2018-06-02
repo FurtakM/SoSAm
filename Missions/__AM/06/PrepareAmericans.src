@@ -113,17 +113,21 @@ begin
 
     for i = 1 to vehicles do
     begin
-        uc_nation = vehicles[i];
-        vc_chassis = vehicles[i+1]; 
-        vc_engine = vehicles[i+2];     
-        vc_control = vehicles[i+3];  
-        vc_weapon = vehicles[i+4];
+        if vehicles[i+4] = 11 then
+        begin
+             uc_nation = vehicles[i];
+             vc_chassis = vehicles[i+1];
+             vc_engine = vehicles[i+2];
+             vc_control = vehicles[i+3];
+             vc_weapon = vehicles[i+4];
+
+             veh = CreateVehicle;
+             PlaceUnitXYR(veh, GetX(tmp[1]), GetY(tmp[1]), 40, false);
+
+        end;
 
         i = i + 4;
 
-        veh = CreateVehicle;
-
-        PlaceUnitXYR(veh, GetX(tmp[1]), GetY(tmp[1]), 40, false);
     end;
 
 end;
