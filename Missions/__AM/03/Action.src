@@ -762,7 +762,7 @@ repeat
 until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 6;
 
 SayRadio(Cornel, 'D5-Corn-1');
-SaveCharacters(Cornel, 'Cornel');
+SaveCharacters(Cornel, mission_prefix&'Cornel');
 
 ChangeSideFog(4, 8);
 
@@ -895,38 +895,28 @@ if IsDead(Pokryshkin) then
 
 RewardPeople(save_group^save_others);
 
-SaveCharacters(JMM, 'JMM');
+SaveCharacters(JMM, mission_prefix&'JMM');
 
 if Bobby in save_group then
-   SaveCharacters(Bobby, 'Bobby')
-  else
-   DeleteCharacters('Bobby');
+   SaveCharacters(Bobby, mission_prefix&'Bobby');
 
 if Cyrus in save_group then
-   SaveCharacters(Cyrus, 'Cyrus')
-  else
-   DeleteCharacters('Cyrus');
+   SaveCharacters(Cyrus, mission_prefix&'Cyrus');
 
 if Lisa in save_group then
-   SaveCharacters(Lisa, 'Lisa')
-  else
-   DeleteCharacters('Lisa');
+   SaveCharacters(Lisa, mission_prefix&'Lisa');
 
 if Frank in save_group then
-   SaveCharacters(Frank, 'Frank')
-  else
-   DeleteCharacters('Frank');
+   SaveCharacters(Frank, mission_prefix&'Frank');
 
 if Khatam in save_group then
-   SaveCharacters(Khatam, 'Khatam')
-  else
-   DeleteCharacters('Khatam');
+   SaveCharacters(Khatam, mission_prefix&'Khatam');
 
 if save_others then
    SaveCharacters(save_others, '03_others');
 
-DeleteCharacters('Brian');
-DeleteCharacters('Jimmy');
+DeleteCharacters(mission_prefix&'Brian');
+DeleteCharacters(mission_prefix&'Jimmy');
 
 
 if Bierezov and IsOk(Bierezov) then
@@ -935,7 +925,7 @@ if Bierezov and IsOk(Bierezov) then
    DisplayEndingScene;
    end
   else
-   DeleteCharacters('Cornel');
+   DeleteCharacters(mission_prefix&'Cornel');
 
 YouWin;
 End;
