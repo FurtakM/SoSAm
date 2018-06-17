@@ -34,7 +34,7 @@ Brown := PrepareUnit('Brown', (not debug));
 if Brown then
    team := team ^ Brown;
 
-others4 := CreateCharacterSet('04_other_survivors');
+others4 := CreateCharacterSet('04_other_survivors');   
 
 if not Lisa then
    begin
@@ -66,7 +66,7 @@ if others3 then
    team := team ^ others3;
 
 // place units in base
-dep := FilterAllUnits([f_btype, b_depot]);
+dep := FilterAllUnits([f_btype, b_depot])[1];
 bar := FilterAllUnits([f_btype, b_armoury]);
 lab := FilterAllUnits([f_or, [f_btype, b_lab_half], [f_btype, b_lab]]);
 fac := FilterAllUnits([f_btype, b_factory]);
@@ -104,10 +104,10 @@ if bun and UnitFilter(team, [f_class, 1]) then
           break;
 
        PlaceHumanInUnit(filter[1], i);
+       team := team diff filter[1];
        filter := Delete(filter, 1);
        end;
 
-   team := team diff filter;
    end;
 
 if bar and UnitFilter(team, [f_class, 1]) then
@@ -115,7 +115,7 @@ if bar and UnitFilter(team, [f_class, 1]) then
    filter := UnitFilter(team, [f_class, 1]);
 
    for i = 1 to filter do
-       begin
+       begin     
        if (i <= 6) then
           PlaceHumanInUnit(filter[i], bar[1])
          else
@@ -215,7 +215,7 @@ for i in blist do
 
     b := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]);
 
-    if GetBType(i[1]) = b_bunker then
+    if GetBType(b) = b_bunker then
        begin
        PlaceWeaponTurret(b, i[7]);
        end;

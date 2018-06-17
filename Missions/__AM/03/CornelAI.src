@@ -28,25 +28,35 @@ if has_eng and not dep then
 
    repeat
     wait(0$01);
-   until FilterAllUnits([[f_side, 4], [f_btype, b_depot], [f_not, [f_constructed]]]);
+   until FilterAllUnits([[f_side, 4], [f_btype, b_depot]]);
 
-   dep := FilterAllUnits([[f_side, 4], [f_btype, b_depot]])[1];
+   ComMoveXY(filter, 264, 120);
+
+   repeat
+    wait(0$01);
+   until FilterAllUnits([[f_side, 4], [f_btype, b_depot], [f_not, [f_constructed]]]);
    end
   else
    begin
    SetSide(dep, 4);
+   end;
 
-   for i = 1 to 3 do
-       begin
-       ComEnterUnit(filter[i], dep);
-       AddComChangeProfession(filter[i], 2);
-       AddComExitBuilding(filter[i]);
-       end;
+dep := FilterAllUnits([[f_side, 4], [f_btype, b_depot]])[1];
+
+for i = 1 to 3-has_eng do
+    begin
+
+    if GetClass(filter[i]) = 2 then
+       continue;
+
+    ComEnterUnit(filter[i], dep);
+    AddComChangeProfession(filter[i], 2);
+    AddComExitBuilding(filter[i]);
+    end;
 
    repeat
     wait(0$01);
    until UnitFilter(filter, [f_class, 2]) = 3;
-   end;
 
 if IsInUnit(Cornel) then
    begin
@@ -60,9 +70,10 @@ if IsInUnit(Cornel) then
    AddComEnterUnit(Cornel, dep);
    end;
 
-ComEnterUnit(Bierezov, dep);
+if Bierezov then
+   ComEnterUnit(Bierezov, dep);
 
-has_eng := UnitFilter(filter, [f_class, 2]);
+has_eng := UnitFilter(cornel_units, [f_class, 2]);
 
 repeat
  wait(0$01);
@@ -84,15 +95,13 @@ repeat
 until FilterAllUnits([[f_side, 4], [f_btype, b_armoury], [f_not, [f_constructed]]]);
 
 AddComEnterUnit(filter diff has_eng, FilterAllUnits([[f_side, 4], [f_btype, b_armoury]])[1]);
+AddComChangeProfession(filter diff has_eng, 1);
 
 repeat
  wait(0$01);
 until FilterAllUnits([[f_side, 4], [f_btype, b_breastwork], [f_not, [f_constructed]]]);
 
-sol := filter diff has_eng;
-
-if GetClass(sol[1]) > 1 then
-   SetClass(sol[1], 1);
+sol := UnitFilter(cornel_units, [f_class, 1]);
 
 ComExitBuilding(sol[1]);
 AddComEnterUnit(sol[1], FilterAllUnits([[f_side, 4], [f_btype, b_breastwork]])[1]);
