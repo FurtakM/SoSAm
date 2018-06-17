@@ -15,12 +15,9 @@ begin
     PlaceUnitXYR(JMM, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
     SetClass(JMM, 1);
 
-    if LoadVariable('GladstoneInDelta', 0) = 1 then
-    begin    
-        Gladstone = PrepareUnit('Gladstone', true);
-        PlaceUnitXYR(Gladstone, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
-        SetClass(Gladstone, 4);
-    end;
+    Gladstone = PrepareUnit('Gladstone', true);
+    PlaceUnitXYR(Gladstone, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+    SetClass(Gladstone, 4);
 
     Denis = PrepareUnit('Denis', true);
     PlaceUnitXYR(Denis, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
@@ -71,10 +68,7 @@ begin
     others = CreateCharacterSet('othersInDelta');
 
     for i in others do 
-    begin
         PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
-        SetClass(i, [1,2,3,4][Rand(1,4)]);
-    end;
 
     apemans = CreateCharacterSet('apeInDelta');
 
@@ -138,6 +132,9 @@ begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
 
+    if FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis] then
+       deltaDoctor := (FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis])[1];
+
     for i = 1 to 6 + Difficulty do 
     begin
         hc_gallery = '';
@@ -147,6 +144,9 @@ begin
         un = CreateHuman;
         PlaceUnitXYR(un, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
     end;
+
+    if deltaDoctor then
+       exit;
 
     hc_gallery = '';
     hc_name = 'Dr. Michael Mills';
