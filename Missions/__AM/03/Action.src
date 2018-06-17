@@ -793,10 +793,19 @@ for i in filter do
     if IsOk(i) and GetType(i) = unit_vehicle then
        begin
        veh_on_meta := true;
-       ComExitVehicle(IsInUnit(i));
+       Save(IsInUnit(i));
        RemoveUnit(i);
-       Wait(10);
        end;
+    
+
+    if IsOk(i) and GetType(i) = unit_human then
+       Save(i);
+    end;
+
+End;
+
+Export Function Save(i);
+begin
 
     // macmilan on end
     if i = JMM then
@@ -852,9 +861,6 @@ for i in filter do
        save_others := save_others ^ i;
        RemoveUnit(i);
        end;
-    end;
-    
-
 End;
 
 Every 0$01 trigger (not show_query and not wait_for_them) or FilterAllUnits([[f_side, 1], [f_type, unit_human]]) = 0 do
@@ -914,10 +920,6 @@ if Khatam in save_group then
 
 if save_others then
    SaveCharacters(save_others, '03_others');
-
-DeleteCharacters(mission_prefix&'Brian');
-DeleteCharacters(mission_prefix&'Jimmy');
-
 
 if Bierezov and IsOk(Bierezov) then
    begin
