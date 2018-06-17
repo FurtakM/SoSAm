@@ -135,3 +135,22 @@ begin
         SetSide(UnitsInside(vehicle), 6);
     end;
 end;
+
+On Command(comandid) do
+var i, j, tmp;
+begin
+        for i in FilterAllUnits([[f_side, 1], [f_or, [f_type, unit_human], [f_type, unit_vehicle]]]) do
+        begin
+
+            if GetTaskList(i) > 0 then
+            begin
+
+                for j = 1 to GetTaskList(i) do
+                begin
+                    tmp = GetTaskList(i)[j][4];
+                    if (GetSide(tmp) = 4 or GetSide(tmp) = 0) then
+                        ComStop(i);
+                end;
+            end;
+        end;
+end;

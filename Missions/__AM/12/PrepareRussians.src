@@ -1,0 +1,31 @@
+Export function PrepareWestBase;
+var i, un;
+begin
+    RespawnInside(3, 3, ruwestdepot, 10, 2, 6);
+    RespawnInside(3, 3, rueastdepot, 10, 2, 6);
+    RespawnInside(3, 3, rulab1, 10, 4, 6);
+    RespawnInside(3, 3, rulab2, 10, 4, 6);
+    RespawnInside(3, 3, rulab3, 10, 4, 6);
+
+    for i in FilterAllUnits([[f_side, 3], [f_btype, b_bunker]]) do RespawnInside(3, 3, i, 10, 1, 1);
+
+    
+   for i = 1 to 6 do
+   begin
+
+      uc_side = 3;
+      uc_nation = 3;
+
+      hc_gallery = '';
+      hc_name = '';
+      PrepareHuman(false, 4, 10);
+
+      un = CreateHuman;
+      PlaceHumanInUnit(un, ruheadlab);
+
+      RuScientists = RuScientists ^ un;
+
+   end;
+
+end;
+

@@ -13,7 +13,7 @@ begin
 end;
 
 // Meet Cathy and others
-Every 0$1 trigger GetDistUnits(JMM, Simms) < 9 do
+Every 0$1 trigger GetDistUnits(JMM, Simms) < 12 do
 begin
     InGameOn;
     ComExitVehicle(JMM);
@@ -23,6 +23,7 @@ begin
     ComTurnUnit(JMM, Simms);
     wait(0$2);
     ComTurnUnit([Simms, Joan, Denis, Khatam], JMM);
+    CenterNowOnUnits([JMM, Simms]);
     Say(Simms, 'D2a-Sim-1');
     Say(JMM, 'D2a-JMM-1');
     ComTurnUnit(JMM, Joan);
@@ -36,12 +37,12 @@ begin
     Say(Khatam, 'D2c-Khat-1');
     InGameOff;
     SetSide(FilterAllUnits([f_side, 4]), 1);
-    ChangeMissionObjectives('M1');
+    ChangeMissionObjectives('M1a');
     joinEpsilon = 1;
 end;
 
 // Build Siberite lab + power
-Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 do 
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full], [f_and, [f_btype, b_lab_siberium], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 do 
 begin
     DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-1', 'D3-Sci1-1');
     Say(Gary, 'D3-Gary-1');
@@ -86,9 +87,10 @@ end;
 // Respawn Russian convoy
 Every 2$1 trigger joinEpsilon = 1 do 
 begin
-    //RespawnRussian(position);
     SayRadio(AmScout, 'D4-FSol1-1');
     ChangeMissionObjectives('M3');
+    PrepareRussians;
+    BuildRussianBase(1);
 end;
 
 // Dialog about Arabians and trait
