@@ -3,7 +3,7 @@ var unit;
 begin
 
 if exist_mode then
-   unit := CreateCharacter(ident)
+   unit := CreateCharacter(mission_prefix_prev&ident)
   else
    unit := NewCharacter(ident);
 
@@ -15,57 +15,56 @@ var i, yourPeople, selectedPeople, test;
 begin
     yourPeople = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, DeltaDoctor, Denis];
 
-    selectedPeople = CharacterSelection('text', 5, 5,
+    selectedPeople = CharacterSelection('text', [5, rand(4,5), 4][Difficulty], [5, rand(4,5), 4][Difficulty],
                                 [sel_change_class, JMM,
                                  sel_dont_change_class,
                                  sel_not_hired,sel_changeable, sel_change_class]^yourPeople^
                                 [sel_dont_change_class, sel_not_changeable, Denis, DeltaDoctor],
                                 [class_soldier, class_mechanic, [class_engineer, 1], class_scientistic]);
 
-    SaveCharacters(JMM, 'JMM');
+    SaveCharacters(JMM, mission_prefix&'JMM');
     SaveCharacters(DeltaDoctor, 'DeltaDoctor');
-    SaveCharacters(Denis, 'Denis');
-    SaveCharacters(yourApemans, 'ApeIn06');
+    SaveCharacters(Denis, mission_prefix&'Denis');
 
     if Lisa in selectedPeople then
     begin
-        SaveCharacters(Lisa, 'Lisa');
+        SaveCharacters(Lisa, mission_prefix&'Lisa');
         SaveVariable(1, 'LisaIn06');
     end;
 
     if Bobby in selectedPeople then
     begin
-        SaveCharacters(Bobby, 'Bobby');
+        SaveCharacters(Bobby, mission_prefix&'Bobby');
         SaveVariable(1, 'BobbyIn06');
     end;
 
     if Cyrus in selectedPeople then
     begin
-        SaveCharacters(Cyrus, 'Cyrus');
+        SaveCharacters(Cyrus, mission_prefix&'Cyrus');
         SaveVariable(1, 'CyrusIn06');
     end;
 
     if Frank in selectedPeople then
     begin
-        SaveCharacters(Frank, 'Frank');
+        SaveCharacters(Frank, mission_prefix&'Frank');
         SaveVariable(1, 'FrankIn06');
     end;
 
     if Brown in selectedPeople then
     begin
-        SaveCharacters(Brown, 'Brown');
+        SaveCharacters(Brown, mission_prefix&'Brown');
         SaveVariable(1, 'BrownIn06');
     end;
 
     if Donaldson in selectedPeople then
     begin
-        SaveCharacters(Donaldson, 'Donaldson');
+        SaveCharacters(Donaldson, mission_prefix&'Donaldson');
         SaveVariable(1, 'DonaldsonIn06');
     end;
 
     if Gladstone in selectedPeople then
     begin
-        SaveCharacters(Gladstone, 'Gladstone');
+        SaveCharacters(Gladstone, mission_prefix&'Gladstone');
         SaveVariable(1, 'GladstoneIn06');
     end;
 
@@ -76,7 +75,8 @@ begin
 
     SetSkill(yourApemans, 2, 5);
 
-    SaveCharacters(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Lisa, Bobby, Cyrus, Frank, Brown, Donaldson, Gladstone], 'OthersIn06');
+    SaveCharacters(yourApemans, 'ApeIn06');
+    SaveCharacters(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Lisa, Bobby, Cyrus, Frank, Brown, Donaldson, Gladstone], 'OthersIn06');
     SaveCharacters(FilterAllUnits([[f_side, 4], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [DeltaDoctor], 'OthersStayInDelta');
 
 end;

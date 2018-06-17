@@ -5,6 +5,11 @@ begin
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]);
     rnd = Rand(1, tmp);
 
+    repeat
+        wait(0$3);
+    until NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, tmp[rnd], 25]]);
+    
+    blockSpawn = 1;
     uc_side = 2;
     uc_nation = 2;
 
@@ -137,7 +142,7 @@ begin
             readyToEscape = 1;
         end;
     end;
+
+    blockSpawn = 0;
         
-
-
 end;

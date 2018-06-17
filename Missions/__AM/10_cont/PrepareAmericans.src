@@ -1,0 +1,86 @@
+Export function PrepareJMMTeam;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    JMM = PrepareUnit('JMM', false);
+    Gary = PrepareUnit('Gary', false);
+    Cyrus = PrepareUnit('Cyrus', false);
+    Bobby = PrepareUnit('Bobby', false);
+    Lisa = PrepareUnit('Lisa', false);
+
+    PlaceHumanInUnit(JMM, playerVehs[1]);
+    PlaceHumanInUnit(Gary, playerVehs[2]);
+    PlaceHumanInUnit(Cyrus, playerVehs[3]);
+    PlaceHumanInUnit(Bobby, playerVehs[4]);
+    PlaceHumanInUnit(Lisa, playerVehs[5]);
+end;
+
+Export function PrepareVehicles;
+var i, veh;
+begin
+    uc_side = 1;
+    uc_nation = 1;
+
+    for i := 1 to 5 do
+    begin
+        vc_engine = 1;
+        vc_control = 1;
+        vc_weapon = [3, 4, 5, 12][Rand(1, 4)];
+        vc_chassis = 3;
+
+        veh = CreateVehicle;
+        SetDir(veh, 1);
+        PlaceUnitArea(veh, PlayerSpawn, false);
+        playerVehs = playerVehs ^ veh;
+
+        if vc_weapon = 12 then AddCargo(veh, [1, 3][Rand(1, 2)], Rand(1, 10) * 10);
+            
+    end;
+
+end;
+
+Export function PrepareCathyTeam;
+begin
+    uc_side = 4;
+    uc_nation = 1;
+
+    Simms = PrepareUnit('Simms', false);
+    Denis = PrepareUnit('Denis', false);
+    Joan = PrepareUnit('Joan', false);
+    Khatam = PrepareUnit('Khatam', false);
+    Gladstone = PrepareUnit('Gladstone', false);
+    Gladstone = PrepareUnit('DeltaDoctor', false);
+
+    hc_class := 2;
+    hc_sex := sex_male;
+    hc_gallery := 'SecondCharsGal';
+    hc_face_number := 60;
+    hc_name := 'Steve Holland';
+    hc_skills := [1, 7, 1, 0];
+
+    Steve = CreateHuman;
+
+    PlaceUnitArea(Simms, CathyTeamSpawn, false);
+    PlaceUnitArea(Denis, CathyTeamSpawn, false);
+    PlaceUnitArea(Joan, CathyTeamSpawn, false);
+    PlaceUnitArea(Khatam, CathyTeamSpawn, false);
+    PlaceUnitArea(Gladstone, CathyTeamSpawn, false);
+    PlaceUnitArea(DeltaDoctor, CathyTeamSpawn, false);
+    PlaceUnitArea(Steve, CathyTeamSpawn, false);
+
+    SetClass([Khatam, Denis], 4);
+
+    AddComBuild(Steve, b_depot, 101, 30, 2);
+
+    uc_side = 1;
+
+    hc_class := 1;
+    hc_sex := sex_female;
+    hc_gallery := '';
+    hc_name := '';
+    hc_skills := [1, 7, 1, 0];
+
+    AmScout = CreateHuman;
+
+end;

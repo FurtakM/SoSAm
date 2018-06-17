@@ -1,0 +1,602 @@
+// export RuScientists ; starting begin Resetfog ;
+   0: CALL_OW 335
+// RandomizeAll ;
+   4: CALL_OW 11
+// RuScientists = [ ] ;
+   8: LD_ADDR_EXP 1
+  12: PUSH
+  13: EMPTY
+  14: ST_TO_ADDR
+// PrepareWestBase ;
+  15: CALL 35 0 0
+// end ;
+  19: END
+// every 0 0$1 do
+  20: GO 22
+  22: DISABLE
+// begin display_strings = RuScientists ;
+  23: LD_ADDR_OWVAR 47
+  27: PUSH
+  28: LD_EXP 1
+  32: ST_TO_ADDR
+// enable ;
+  33: ENABLE
+// end ; end_of_file end_of_file
+  34: END
+// export function PrepareWestBase ; var i , un ; begin
+  35: LD_INT 0
+  37: PPUSH
+  38: PPUSH
+  39: PPUSH
+// RespawnInside ( 3 , 3 , ruwestdepot , 10 , 2 , 6 ) ;
+  40: LD_INT 3
+  42: PPUSH
+  43: LD_INT 3
+  45: PPUSH
+  46: LD_INT 6
+  48: PPUSH
+  49: LD_INT 10
+  51: PPUSH
+  52: LD_INT 2
+  54: PPUSH
+  55: LD_INT 6
+  57: PPUSH
+  58: CALL 323 0 6
+// RespawnInside ( 3 , 3 , rueastdepot , 10 , 2 , 6 ) ;
+  62: LD_INT 3
+  64: PPUSH
+  65: LD_INT 3
+  67: PPUSH
+  68: LD_INT 4
+  70: PPUSH
+  71: LD_INT 10
+  73: PPUSH
+  74: LD_INT 2
+  76: PPUSH
+  77: LD_INT 6
+  79: PPUSH
+  80: CALL 323 0 6
+// RespawnInside ( 3 , 3 , rulab1 , 10 , 4 , 6 ) ;
+  84: LD_INT 3
+  86: PPUSH
+  87: LD_INT 3
+  89: PPUSH
+  90: LD_INT 91
+  92: PPUSH
+  93: LD_INT 10
+  95: PPUSH
+  96: LD_INT 4
+  98: PPUSH
+  99: LD_INT 6
+ 101: PPUSH
+ 102: CALL 323 0 6
+// RespawnInside ( 3 , 3 , rulab2 , 10 , 4 , 6 ) ;
+ 106: LD_INT 3
+ 108: PPUSH
+ 109: LD_INT 3
+ 111: PPUSH
+ 112: LD_INT 47
+ 114: PPUSH
+ 115: LD_INT 10
+ 117: PPUSH
+ 118: LD_INT 4
+ 120: PPUSH
+ 121: LD_INT 6
+ 123: PPUSH
+ 124: CALL 323 0 6
+// RespawnInside ( 3 , 3 , rulab3 , 10 , 4 , 6 ) ;
+ 128: LD_INT 3
+ 130: PPUSH
+ 131: LD_INT 3
+ 133: PPUSH
+ 134: LD_INT 44
+ 136: PPUSH
+ 137: LD_INT 10
+ 139: PPUSH
+ 140: LD_INT 4
+ 142: PPUSH
+ 143: LD_INT 6
+ 145: PPUSH
+ 146: CALL 323 0 6
+// for i in FilterAllUnits ( [ [ f_side , 3 ] , [ f_btype , b_bunker ] ] ) do
+ 150: LD_ADDR_VAR 0 2
+ 154: PUSH
+ 155: LD_INT 22
+ 157: PUSH
+ 158: LD_INT 3
+ 160: PUSH
+ 161: EMPTY
+ 162: LIST
+ 163: LIST
+ 164: PUSH
+ 165: LD_INT 30
+ 167: PUSH
+ 168: LD_INT 32
+ 170: PUSH
+ 171: EMPTY
+ 172: LIST
+ 173: LIST
+ 174: PUSH
+ 175: EMPTY
+ 176: LIST
+ 177: LIST
+ 178: PPUSH
+ 179: CALL_OW 69
+ 183: PUSH
+ 184: FOR_IN
+ 185: IFFALSE 213
+// RespawnInside ( 3 , 3 , i , 10 , 1 , 1 ) ;
+ 187: LD_INT 3
+ 189: PPUSH
+ 190: LD_INT 3
+ 192: PPUSH
+ 193: LD_VAR 0 2
+ 197: PPUSH
+ 198: LD_INT 10
+ 200: PPUSH
+ 201: LD_INT 1
+ 203: PPUSH
+ 204: LD_INT 1
+ 206: PPUSH
+ 207: CALL 323 0 6
+ 211: GO 184
+ 213: POP
+ 214: POP
+// for i = 1 to 6 do
+ 215: LD_ADDR_VAR 0 2
+ 219: PUSH
+ 220: DOUBLE
+ 221: LD_INT 1
+ 223: DEC
+ 224: ST_TO_ADDR
+ 225: LD_INT 6
+ 227: PUSH
+ 228: FOR_TO
+ 229: IFFALSE 316
+// begin uc_side = 3 ;
+ 231: LD_ADDR_OWVAR 20
+ 235: PUSH
+ 236: LD_INT 3
+ 238: ST_TO_ADDR
+// uc_nation = 3 ;
+ 239: LD_ADDR_OWVAR 21
+ 243: PUSH
+ 244: LD_INT 3
+ 246: ST_TO_ADDR
+// hc_gallery =  ;
+ 247: LD_ADDR_OWVAR 33
+ 251: PUSH
+ 252: LD_STRING 
+ 254: ST_TO_ADDR
+// hc_name =  ;
+ 255: LD_ADDR_OWVAR 26
+ 259: PUSH
+ 260: LD_STRING 
+ 262: ST_TO_ADDR
+// PrepareHuman ( false , 4 , 10 ) ;
+ 263: LD_INT 0
+ 265: PPUSH
+ 266: LD_INT 4
+ 268: PPUSH
+ 269: LD_INT 10
+ 271: PPUSH
+ 272: CALL_OW 380
+// un = CreateHuman ;
+ 276: LD_ADDR_VAR 0 3
+ 280: PUSH
+ 281: CALL_OW 44
+ 285: ST_TO_ADDR
+// PlaceHumanInUnit ( un , ruheadlab ) ;
+ 286: LD_VAR 0 3
+ 290: PPUSH
+ 291: LD_INT 3
+ 293: PPUSH
+ 294: CALL_OW 52
+// RuScientists = RuScientists ^ un ;
+ 298: LD_ADDR_EXP 1
+ 302: PUSH
+ 303: LD_EXP 1
+ 307: PUSH
+ 308: LD_VAR 0 3
+ 312: ADD
+ 313: ST_TO_ADDR
+// end ;
+ 314: GO 228
+ 316: POP
+ 317: POP
+// end ; end_of_file end_of_file end_of_file
+ 318: LD_VAR 0 1
+ 322: RET
+// export function RespawnInside ( side , nation , build , skill , class , count ) ; var i , l , un , tmp ; begin
+ 323: LD_INT 0
+ 325: PPUSH
+ 326: PPUSH
+ 327: PPUSH
+ 328: PPUSH
+ 329: PPUSH
+// for i = 1 to count do
+ 330: LD_ADDR_VAR 0 8
+ 334: PUSH
+ 335: DOUBLE
+ 336: LD_INT 1
+ 338: DEC
+ 339: ST_TO_ADDR
+ 340: LD_VAR 0 6
+ 344: PUSH
+ 345: FOR_TO
+ 346: IFFALSE 427
+// begin uc_side = side ;
+ 348: LD_ADDR_OWVAR 20
+ 352: PUSH
+ 353: LD_VAR 0 1
+ 357: ST_TO_ADDR
+// uc_nation = nation ;
+ 358: LD_ADDR_OWVAR 21
+ 362: PUSH
+ 363: LD_VAR 0 2
+ 367: ST_TO_ADDR
+// hc_gallery =  ;
+ 368: LD_ADDR_OWVAR 33
+ 372: PUSH
+ 373: LD_STRING 
+ 375: ST_TO_ADDR
+// hc_name =  ;
+ 376: LD_ADDR_OWVAR 26
+ 380: PUSH
+ 381: LD_STRING 
+ 383: ST_TO_ADDR
+// PrepareHuman ( false , class , skill ) ;
+ 384: LD_INT 0
+ 386: PPUSH
+ 387: LD_VAR 0 5
+ 391: PPUSH
+ 392: LD_VAR 0 4
+ 396: PPUSH
+ 397: CALL_OW 380
+// un = CreateHuman ;
+ 401: LD_ADDR_VAR 0 10
+ 405: PUSH
+ 406: CALL_OW 44
+ 410: ST_TO_ADDR
+// PlaceHumanInUnit ( un , build ) ;
+ 411: LD_VAR 0 10
+ 415: PPUSH
+ 416: LD_VAR 0 3
+ 420: PPUSH
+ 421: CALL_OW 52
+// end ;
+ 425: GO 345
+ 427: POP
+ 428: POP
+// end ;
+ 429: LD_VAR 0 7
+ 433: RET
+// export function ResAllTechs ( side , lab , nation ) ; var i , tech , cout ; begin
+ 434: LD_INT 0
+ 436: PPUSH
+ 437: PPUSH
+ 438: PPUSH
+ 439: PPUSH
+// for i = 1 to 72 do
+ 440: LD_ADDR_VAR 0 5
+ 444: PUSH
+ 445: DOUBLE
+ 446: LD_INT 1
+ 448: DEC
+ 449: ST_TO_ADDR
+ 450: LD_INT 72
+ 452: PUSH
+ 453: FOR_TO
+ 454: IFFALSE 512
+// if GetTech ( i , side ) = state_enabled and TechNationAvailable ( i , nation ) = true then
+ 456: LD_VAR 0 5
+ 460: PPUSH
+ 461: LD_VAR 0 1
+ 465: PPUSH
+ 466: CALL_OW 321
+ 470: PUSH
+ 471: LD_INT 1
+ 473: EQUAL
+ 474: PUSH
+ 475: LD_VAR 0 5
+ 479: PPUSH
+ 480: LD_VAR 0 3
+ 484: PPUSH
+ 485: CALL_OW 482
+ 489: PUSH
+ 490: LD_INT 1
+ 492: EQUAL
+ 493: AND
+ 494: IFFALSE 510
+// AddComResearch ( lab , i ) ;
+ 496: LD_VAR 0 2
+ 500: PPUSH
+ 501: LD_VAR 0 5
+ 505: PPUSH
+ 506: CALL_OW 184
+ 510: GO 453
+ 512: POP
+ 513: POP
+// end ;
+ 514: LD_VAR 0 4
+ 518: RET
+// export function RepairBuilding ( side , building , area ) ; var buildings_list , i , engineerOkInside , engineerOkOutside , j ; begin
+ 519: LD_INT 0
+ 521: PPUSH
+ 522: PPUSH
+ 523: PPUSH
+ 524: PPUSH
+ 525: PPUSH
+ 526: PPUSH
+// engineerOkInside = UnitsInside ( building ) ;
+ 527: LD_ADDR_VAR 0 7
+ 531: PUSH
+ 532: LD_VAR 0 2
+ 536: PPUSH
+ 537: CALL_OW 313
+ 541: ST_TO_ADDR
+// engineerOkOutside = FilterUnitsInArea ( area , [ [ f_side , side ] , [ f_class , 2 ] , [ f_lives , 1000 ] ] ) ;
+ 542: LD_ADDR_VAR 0 8
+ 546: PUSH
+ 547: LD_VAR 0 3
+ 551: PPUSH
+ 552: LD_INT 22
+ 554: PUSH
+ 555: LD_VAR 0 1
+ 559: PUSH
+ 560: EMPTY
+ 561: LIST
+ 562: LIST
+ 563: PUSH
+ 564: LD_INT 25
+ 566: PUSH
+ 567: LD_INT 2
+ 569: PUSH
+ 570: EMPTY
+ 571: LIST
+ 572: LIST
+ 573: PUSH
+ 574: LD_INT 24
+ 576: PUSH
+ 577: LD_INT 1000
+ 579: PUSH
+ 580: EMPTY
+ 581: LIST
+ 582: LIST
+ 583: PUSH
+ 584: EMPTY
+ 585: LIST
+ 586: LIST
+ 587: LIST
+ 588: PPUSH
+ 589: CALL_OW 70
+ 593: ST_TO_ADDR
+// buildings_list = FilterUnitsInArea ( area , [ [ [ f_side , side ] , [ f_type , unit_building ] , [ f_not , [ f_lives , 1000 ] ] ] ] ) ;
+ 594: LD_ADDR_VAR 0 5
+ 598: PUSH
+ 599: LD_VAR 0 3
+ 603: PPUSH
+ 604: LD_INT 22
+ 606: PUSH
+ 607: LD_VAR 0 1
+ 611: PUSH
+ 612: EMPTY
+ 613: LIST
+ 614: LIST
+ 615: PUSH
+ 616: LD_INT 21
+ 618: PUSH
+ 619: LD_INT 3
+ 621: PUSH
+ 622: EMPTY
+ 623: LIST
+ 624: LIST
+ 625: PUSH
+ 626: LD_INT 3
+ 628: PUSH
+ 629: LD_INT 24
+ 631: PUSH
+ 632: LD_INT 1000
+ 634: PUSH
+ 635: EMPTY
+ 636: LIST
+ 637: LIST
+ 638: PUSH
+ 639: EMPTY
+ 640: LIST
+ 641: LIST
+ 642: PUSH
+ 643: EMPTY
+ 644: LIST
+ 645: LIST
+ 646: LIST
+ 647: PUSH
+ 648: EMPTY
+ 649: LIST
+ 650: PPUSH
+ 651: CALL_OW 70
+ 655: ST_TO_ADDR
+// if buildings_list > 0 and engineerOkInside > 0 then
+ 656: LD_VAR 0 5
+ 660: PUSH
+ 661: LD_INT 0
+ 663: GREATER
+ 664: PUSH
+ 665: LD_VAR 0 7
+ 669: PUSH
+ 670: LD_INT 0
+ 672: GREATER
+ 673: AND
+ 674: IFFALSE 702
+// for i in engineerOkInside do
+ 676: LD_ADDR_VAR 0 6
+ 680: PUSH
+ 681: LD_VAR 0 7
+ 685: PUSH
+ 686: FOR_IN
+ 687: IFFALSE 700
+// ComExitBuilding ( i ) ;
+ 689: LD_VAR 0 6
+ 693: PPUSH
+ 694: CALL_OW 122
+ 698: GO 686
+ 700: POP
+ 701: POP
+// if engineerOkOutside > 0 then
+ 702: LD_VAR 0 8
+ 706: PUSH
+ 707: LD_INT 0
+ 709: GREATER
+ 710: IFFALSE 764
+// begin for i in engineerOkOutside do
+ 712: LD_ADDR_VAR 0 6
+ 716: PUSH
+ 717: LD_VAR 0 8
+ 721: PUSH
+ 722: FOR_IN
+ 723: IFFALSE 762
+// for j in buildings_list do
+ 725: LD_ADDR_VAR 0 9
+ 729: PUSH
+ 730: LD_VAR 0 5
+ 734: PUSH
+ 735: FOR_IN
+ 736: IFFALSE 758
+// ComRepairBuilding ( i , j [ 1 ] ) ;
+ 738: LD_VAR 0 6
+ 742: PPUSH
+ 743: LD_VAR 0 9
+ 747: PUSH
+ 748: LD_INT 1
+ 750: ARRAY
+ 751: PPUSH
+ 752: CALL_OW 130
+ 756: GO 735
+ 758: POP
+ 759: POP
+ 760: GO 722
+ 762: POP
+ 763: POP
+// end ; if buildings_list = 0 then
+ 764: LD_VAR 0 5
+ 768: PUSH
+ 769: LD_INT 0
+ 771: EQUAL
+ 772: IFFALSE 805
+// for i in engineerOkOutside do
+ 774: LD_ADDR_VAR 0 6
+ 778: PUSH
+ 779: LD_VAR 0 8
+ 783: PUSH
+ 784: FOR_IN
+ 785: IFFALSE 803
+// ComEnterUnit ( i , building ) ;
+ 787: LD_VAR 0 6
+ 791: PPUSH
+ 792: LD_VAR 0 2
+ 796: PPUSH
+ 797: CALL_OW 120
+ 801: GO 784
+ 803: POP
+ 804: POP
+// end ; end_of_file
+ 805: LD_VAR 0 4
+ 809: RET
+// on UnitDestroyed ( unit ) do var i ;
+ 810: LD_INT 0
+ 812: PPUSH
+// begin for i := 1 to RuScientists do
+ 813: LD_ADDR_VAR 0 2
+ 817: PUSH
+ 818: DOUBLE
+ 819: LD_INT 1
+ 821: DEC
+ 822: ST_TO_ADDR
+ 823: LD_EXP 1
+ 827: PUSH
+ 828: FOR_TO
+ 829: IFFALSE 871
+// if RuScientists [ i ] = unit then
+ 831: LD_EXP 1
+ 835: PUSH
+ 836: LD_VAR 0 2
+ 840: ARRAY
+ 841: PUSH
+ 842: LD_VAR 0 1
+ 846: EQUAL
+ 847: IFFALSE 869
+// RuScientists = Delete ( RuScientists , i ) ;
+ 849: LD_ADDR_EXP 1
+ 853: PUSH
+ 854: LD_EXP 1
+ 858: PPUSH
+ 859: LD_VAR 0 2
+ 863: PPUSH
+ 864: CALL_OW 3
+ 868: ST_TO_ADDR
+ 869: GO 828
+ 871: POP
+ 872: POP
+// end ; end_of_file
+ 873: PPOPN 2
+ 875: END
+// every 0 0$1 do
+ 876: GO 878
+ 878: DISABLE
+// begin enable ;
+ 879: ENABLE
+// RepairBuilding ( 3 , ruwestdepot , RuWestBase ) ;
+ 880: LD_INT 3
+ 882: PPUSH
+ 883: LD_INT 6
+ 885: PPUSH
+ 886: LD_INT 9
+ 888: PPUSH
+ 889: CALL 519 0 3
+// RepairBuilding ( 3 , rueastdepot , RuEastBase ) ;
+ 893: LD_INT 3
+ 895: PPUSH
+ 896: LD_INT 4
+ 898: PPUSH
+ 899: LD_INT 10
+ 901: PPUSH
+ 902: CALL 519 0 3
+// end ;
+ 906: END
+// every 0 0$1 do
+ 907: GO 909
+ 909: DISABLE
+// begin ResAllTechs ( 3 , rulab1 , 3 ) ;
+ 910: LD_INT 3
+ 912: PPUSH
+ 913: LD_INT 91
+ 915: PPUSH
+ 916: LD_INT 3
+ 918: PPUSH
+ 919: CALL 434 0 3
+// ResAllTechs ( 3 , rulab2 , 3 ) ;
+ 923: LD_INT 3
+ 925: PPUSH
+ 926: LD_INT 47
+ 928: PPUSH
+ 929: LD_INT 3
+ 931: PPUSH
+ 932: CALL 434 0 3
+// ResAllTechs ( 3 , rulab3 , 3 ) ;
+ 936: LD_INT 3
+ 938: PPUSH
+ 939: LD_INT 44
+ 941: PPUSH
+ 942: LD_INT 3
+ 944: PPUSH
+ 945: CALL 434 0 3
+// ResAllTechs ( 3 , ruheadlab , 3 ) ;
+ 949: LD_INT 3
+ 951: PPUSH
+ 952: LD_INT 3
+ 954: PPUSH
+ 955: LD_INT 3
+ 957: PPUSH
+ 958: CALL 434 0 3
+// end ;
+ 962: END

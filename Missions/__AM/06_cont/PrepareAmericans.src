@@ -7,9 +7,12 @@ begin
     
     JMM = PrepareUnit('JMM', true);
     Harisson = PrepareUnit('Harisson', false);
-    DeltaDoctor = PrepareUnit('DeltaDoctor', true);
+    DeltaDoctor = CreateCharacter('DeltaDoctor');
 
-    PlaceUnitArea(JMM, PlayerSpawn, false);
+    veh = FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]);
+
+    if veh > 0 then begin PlaceHumanInUnit(JMM, veh[1]);
+    end else begin PlaceUnitArea(JMM, PlayerSpawn, false); end;
 
     if LoadVariable('LisaIn06', 0) = 1 then
     begin  
@@ -122,7 +125,19 @@ begin
         end else begin PlaceUnitArea(i, PlayerSpawn, false); end;
     end;
 
-end;
+end; 
+
+Export function PreparePlayerApemans;
+var i, veh;
+begin
+    uc_side = 1;
+    uc_nation = 0;
+
+    ape = CreateCharacterSet('ApeIn06');
+
+    for i in ape do PlaceUnitArea(i, PlayerSpawn, false);
+
+end; 
 
 Export function PrepareDenis;
 begin
@@ -190,6 +205,11 @@ begin
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]);
     rnd = Rand(1, tmp);
 
+    repeat
+        wait(0$3);
+    until NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, tmp[rnd], 30]]) AND NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, JMM, 30]]);
+    
+    blockSpawn = 1;
     uc_side = 4;
 
     Joan = PrepareUnit('Joan', false);
@@ -265,12 +285,18 @@ begin
 
     ChangeMissionObjectives('MJ');
     JoanStatus = 1;
+    blockSpawn = 0;
 
 end;
 
 Export function PrepareRandoms(number);
 var un;
 begin
+
+    repeat
+        wait(0$3);
+    until blockSpawn = 0;
+
     uc_side = 1;
     uc_nation = 1;
 

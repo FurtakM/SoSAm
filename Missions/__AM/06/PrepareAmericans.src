@@ -15,19 +15,13 @@ begin
     PlaceUnitXYR(JMM, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
     SetClass(JMM, 1);
 
-    if LoadVariable('GladstoneInDelta', 0) = 1 then
-    begin    
-        Gladstone = PrepareUnit('Gladstone', true);
-        PlaceUnitXYR(Gladstone, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
-        SetClass(Gladstone, 4);
-    end;
+    Gladstone = PrepareUnit('Gladstone', true);
+    PlaceUnitXYR(Gladstone, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+    SetClass(Gladstone, 4);
 
-    if LoadVariable('DenisInDelta', 0) = 1 then
-    begin    
-        Denis = PrepareUnit('Denis', true);
-        PlaceUnitXYR(Denis, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
-        SetClass(Denis, 4);
-    end;
+    Denis = PrepareUnit('Denis', true);
+    PlaceUnitXYR(Denis, GetX(tmp[1]), GetY(tmp[1]), 5,  false);
+    SetClass(Denis, 4);
 
     if LoadVariable('FrankInDelta', 0) = 1 then
     begin    
@@ -74,16 +68,13 @@ begin
     others = CreateCharacterSet('othersInDelta');
 
     for i in others do 
-    begin
         PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
-        SetClass(i, [1,2,3,4][Rand(1,4)]);
-    end;
 
     apemans = CreateCharacterSet('apeInDelta');
 
     uc_nation = 0;
 
-    if apemans > 6 then
+    if apemans > 5 then
     begin
         for i := 1 to 5 do
         begin
@@ -113,17 +104,21 @@ begin
 
     for i = 1 to vehicles do
     begin
-        uc_nation = vehicles[i];
-        vc_chassis = vehicles[i+1]; 
-        vc_engine = vehicles[i+2];     
-        vc_control = vehicles[i+3];  
-        vc_weapon = vehicles[i+4];
+        if vehicles[i+4] = 11 OR vehicles[i] = 3 then
+        begin
+             uc_nation = vehicles[i];
+             vc_chassis = vehicles[i+1];
+             vc_engine = vehicles[i+2];
+             vc_control = vehicles[i+3];
+             vc_weapon = vehicles[i+4];
+
+             veh = CreateVehicle;
+             PlaceUnitXYR(veh, GetX(tmp[1]), GetY(tmp[1]), 40, false);
+
+        end;
 
         i = i + 4;
 
-        veh = CreateVehicle;
-
-        PlaceUnitXYR(veh, GetX(tmp[1]), GetY(tmp[1]), 20, false);
     end;
 
 end;
@@ -137,6 +132,9 @@ begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
 
+    if FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis] then
+       deltaDoctor := (FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis])[1];
+
     for i = 1 to 6 + Difficulty do 
     begin
         hc_gallery = '';
@@ -146,6 +144,9 @@ begin
         un = CreateHuman;
         PlaceUnitXYR(un, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
     end;
+
+    if deltaDoctor then
+       exit;
 
     hc_gallery = '';
     hc_name = 'Dr. Michael Mills';

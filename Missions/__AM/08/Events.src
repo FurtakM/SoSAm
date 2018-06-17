@@ -51,3 +51,15 @@ begin
     end;
 
 end;
+
+On UnitGoesToRed(unit) Do
+begin
+
+    if GetType(unit) = unit_vehicle and GetControl(unit) = control_computer and varEvent1 = 0 then
+    begin
+        varEvent1 = 1;
+        CenterNowOnUnits(unit);
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM], 'DC-Sol1-1', 'DC-FSol1-1');
+    end;
+
+end;

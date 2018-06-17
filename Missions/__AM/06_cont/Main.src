@@ -24,10 +24,12 @@ Map scripts: Nefarem
     3 - 26.05.2018 godz. 01:00
     4 - 26.05.2018 godz. 13:00
     5 - 26.05.2018 godz. 15:00
+    6 - 26.05.2018 godz. 18:00
+    7 - 17.06.2018
 }
 
 Export JMM, Lisa, Bobby, Cyrus, Frank, Brown, Donaldson, Gladstone, Denis, DeltaDoctor;
-Export others;
+Export others, ape;
 Export Harisson, Joan, JoanStatus;
 Export HarrSupp1, HarrSupp2;
 Export Kurt, KurtStatus, readyToEscape;
@@ -38,6 +40,7 @@ Export firstTower;
 Export timerStatus;
 Export needCrates, timeToEnd, strings;
 Export remoteVehiclesBuild;
+Export blockSpawn;
 
 Export unitLost;
 Export ruDestroyedBuildings;
@@ -51,10 +54,12 @@ Export sendedConvoys;
 
 Export debugMode;
 
+Export mission_prefix, mission_prefix_prev;
+
 Starting
 begin
     Resetfog;
-    RandomizeALl;
+    RandomizeAll;
 
     SetBName(rudepo, 'sverdlov');
 
@@ -62,8 +67,13 @@ begin
 
     debugMode = 0; // 0 - for player, 1 - for developers
 
+    mission_prefix := '06c_';
+    mission_prefix_prev := '06_';
+
     contactWithRussian = 0; // 0 - dont contact, 1 - contact
     firstTower = 0; // var block event after build control tower 0 - no build, 1 - build, 2 - remote veh first
+
+    blockSpawn = 0; // 0 - new people can spawn, 1 - stop spawn new people because is cutscene in background
 
     KurtStatus = 0; // 0 - no spawn, killed, 1 - escape with friendly attitude, 2 - escape with enemy attitude
     readyToEscape = 0; // 0 - can't escape, 1  - can escape from map
@@ -95,6 +105,7 @@ begin
     PrepareVehicles;
     PrepareHeroes;
     PrepareOthers;
+    PreparePlayerApemans;
 
 end;
 
@@ -103,9 +114,9 @@ var i;
 begin
     enable;
     fogoff(true);
-    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
-    for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 1, 9999);
+    //for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    //for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 1, 9999);
     for i in FilterAllUnits([[f_side, 1], [f_btype, b_depot]]) do SetResourceType(GetBase(i), 2, 9999);
-    If IsSelected(rudepo) then your_side = 3;
-    If IsSelected(JMM) then your_side = 1;
+    //If IsSelected(rudepo) then your_side = 3;
+    //If IsSelected(JMM) then your_side = 1;
 end;

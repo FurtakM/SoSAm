@@ -1,0 +1,118 @@
+// Start mission
+Every 1 do 
+begin
+    CenterNowOnUnits(JMM);
+
+    DialogueOn;
+    Say(Gary, 'D2-Gary-1');
+    Say(JMM, 'D2-JMM-1');
+    Say(Gary, 'D2-Gary-2');
+    DialogueOff;
+
+    ChangeMissionObjectives('M1');
+end;
+
+// Meet Cathy and others
+Every 0$1 trigger GetDistUnits(JMM, Simms) < 12 do
+begin
+    InGameOn;
+    ComExitVehicle(JMM);
+    CenterNowOnUnits(JMM);
+    wait(0$1);
+    ComMoveUnit([Simms, Joan, Denis, Khatam], JMM);
+    ComTurnUnit(JMM, Simms);
+    wait(0$2);
+    ComTurnUnit([Simms, Joan, Denis, Khatam], JMM);
+    CenterNowOnUnits([JMM, Simms]);
+    Say(Simms, 'D2a-Sim-1');
+    Say(JMM, 'D2a-JMM-1');
+    ComTurnUnit(JMM, Joan);
+    Say(Joan, 'D2b-Joan-1');
+    Say(JMM, 'D2b-JMM-1');
+    Say(Joan, 'D2b-Joan-2');
+    ComTurnUnit(JMM, Denis);
+    Say(Denis, 'D2c-Den-1');
+    ComTurnUnit(JMM, Khatam);
+    Say(JMM, 'D2c-JMM-1');
+    Say(Khatam, 'D2c-Khat-1');
+    InGameOff;
+    SetSide(FilterAllUnits([f_side, 4]), 1);
+    ChangeMissionObjectives('M1a');
+    joinEpsilon = 1;
+end;
+
+// Build Siberite lab + power
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full], [f_and, [f_btype, b_lab_siberium], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 do 
+begin
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-1', 'D3-Sci1-1');
+    Say(Gary, 'D3-Gary-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-2', 'D3-Sci1-2');
+    Say(JMM, 'D3-JMM-2');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-3', 'D3-Sci1-3');
+    Say(JMM, 'D3-JMM-3');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-4', 'D3-Sci1-4');
+
+    SetTech(12, 1, state_enabled);
+    SetTech(32, 1, state_enabled);
+    SetRestrict(12, 1, true);
+
+    ChangeMissionObjectives('M2');
+
+    wait(3$0);
+    if IsOK(Simms) then
+    begin
+        DialogueOn;
+        Say(Simms, 'D3a-Sim-1');
+        Say(Denis, 'D3a-Sci1-1');
+        Say(Simms, 'D3a-Sim-2');
+        Say(Denis, 'D3a-Sci1-2');
+        Say(Simms, 'D3a-Sim-3');
+        Say(Denis, 'D3a-Sci1-3');
+        Say(Simms, 'D3a-Sim-4');
+        Say(Denis, 'D3a-Sci1-4');
+        Say(Simms, 'D3a-Sim-5');
+        Say(Denis, 'D3a-Sci1-5');
+        Say(Simms, 'D3a-Sim-6');
+        DialogueOff;
+    end;
+
+    wait(2$0);
+    DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-1', 'D5-Ar1-1');
+    // Say(Dietrich, D5-Diet-1);
+    DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-2', 'D5-Ar1-2');
+    // Say(Dietrich, D5-Diet-2);
+
+end;
+
+// Respawn Russian convoy
+Every 2$1 trigger joinEpsilon = 1 do 
+begin
+    SayRadio(AmScout, 'D4-FSol1-1');
+    ChangeMissionObjectives('M3');
+    PrepareRussians;
+    BuildRussianBase(1);
+end;
+
+// Dialog about Arabians and trait
+Every 0$30 trigger GetTech(54, 1) = state_researched do
+begin
+    DialogueOn;
+    Say(JMM, ' D6-JMM-1');
+    Say(Denis, 'D6-Sci1-1');
+    Say(JMM, ' D6-JMM-2');
+    Say(Denis, 'D6-Sci1-2');
+    Say(JMM, ' D6-JMM-3');
+    Say(Denis, 'D6-Sci1-3');
+    Say(JMM, ' D6-JMM-4');
+    DialogueOff;
+
+    wait([2$0, 2$30, 3$0, 3$30, 4$0, 4$30][Rand(1, 6)]);
+
+    //ArabianTrait;
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 1], [f_sex, 1]] diff [JMM]), 'D8-Sol1-1', 'D8-Sol1-1');
+    Say(DeltaDoctor, 'D8-Sci1-1');
+    Say(JMM, 'D8-JMM-1');
+    wait(0$30);
+    Say(Gary, 'D8a-Gary-1');
+
+end;

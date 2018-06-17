@@ -28,19 +28,19 @@ end;
 Export Function PrepareSolBun(skill, b);
 var un, dir;
 begin
-uc_side := GetSide(b);
-uc_nation := GetNation(b);
+	uc_side := GetSide(b);
+	uc_nation := GetNation(b);
 
-PrepareHuman(false, 1, skill);
+	PrepareHuman(false, 1, skill);
 
-dir := GetDir(b) - 3;
+	dir := GetDir(b) - 3;
 
-if dir < 0 then
-   dir := 6 + dir;
+	if dir < 0 then
+	dir := 6 + dir;
 
-un := CreateHuman;
-SetDir(un, dir);
-PlaceHumanInUnit(un, b);
+	un := CreateHuman;
+	SetDir(un, dir);
+	PlaceHumanInUnit(un, b);
 End;
 
 Export function RespawnInside(side, nation, build, skill, class, count);
@@ -311,42 +311,43 @@ var i, j, lastIndex, weaponTabTemp, temp, target1, target2;
 begin
 
      IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
-     begin
+    	for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
 
-       for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
 
-    end;
+	repeat
+		wait(0$1);;
+	until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount;
 
     IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount then
     begin
  
+		repeat begin
+		wait(0$1);
 
-    repeat begin
-    wait(0$1);
+		if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) > 0 then
+		begin
 
-      if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) > 0 then
-      begin
+			for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+			begin
 
-        for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
-        begin
+			target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+			target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
 
-          target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-          target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+					If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+					begin
+						ComAttackUnit(i, target1);
+					end
+					else
+					begin
+						ComAttackUnit(i, target2);
+					end;
+			end;
 
-                 If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                 begin
-                    ComAttackUnit(i, target1);
-                  end
-                 else
-                  begin
-                    ComAttackUnit(i, target2);
-                  end;
-        end;
+		end;
 
-      end;
+		end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) = 0 or FilterAllUnits([[f_side, targetSide]]) = 0;
 
-    end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
-   end;
+	end;
 END;
 
 

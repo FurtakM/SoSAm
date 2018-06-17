@@ -79,7 +79,7 @@ Export function HealUnitInBase(side, healArea, baseArea, build);
 var sci_list,  i, j, damageUnits;
 begin
 
-        sci_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
+        sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 250]]);
 
         damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 650]]]);
 
@@ -186,8 +186,14 @@ begin
           wait(0$1);
           AddComAgressiveMove(i, 120, 56);
           AddComAgressiveMove(i, 111, 37);
-          AddComCrawl(i);
-          AddComAgressiveMove(i, 109, 30);
+          if GetSide(arm2) = 3 and IsOk(arm2) then
+          begin
+               AddComEnterUnit(i, arm2);
+          end else
+          begin
+             AddComCrawl(i);
+             AddComAgressiveMove(i, 109, 30);
+          end;
        end;
 end;
     
@@ -241,6 +247,7 @@ begin
          RuSoldMinLevel = 2;
          RuSoldMaxLevel = 3;
      end;
+
 
 end;
 

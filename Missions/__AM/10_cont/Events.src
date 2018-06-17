@@ -1,0 +1,48 @@
+On BuildingStarted(building, unit) Do
+begin
+    if GetSide(building) = 4 then SetBName(building, 'epsilon');
+end;
+
+On BuildingComplete(building) Do
+begin
+
+    if GetSide(building) = 3 then
+    begin
+        if GetBType(building) = b_depot then
+        begin
+            SetResourceType(GetBase(building), 1, 5000);
+            SetResourceType(GetBase(building), 2, 5000);
+            SetResourceType(GetBase(building), 3, 5000);
+            ruDepot = building;
+        end;
+
+        if GetBType(building) = 0 or GetBType(building) = 2 or GetBType(building) = 4 then ComUpgrade(building);
+        
+        if GetBType(building) = b_lab then
+        begin
+
+            if FilterAllUnits([[f_side, 3], [f_btype, b_lab_weapon]]) = 0 then
+            begin   
+                AddComUpgradeLab(building, b_lab_weapon);
+                AddComUpgradeLab(building, b_lab_computer);
+                ruLab1 = building;
+            end else
+            begin
+                AddComUpgradeLab(building, b_lab_siberium);
+                AddComUpgradeLab(building, b_lab_spacetime);
+                ruLab2 = building;
+            end;
+
+            ResAllTechs(3, building, 3);
+
+        end;
+
+        if GetBType(building) = b_bunker then AddComPlaceWeapon(building, [43, 44, 45, 46][Rand(1, 4)]);
+        if GetBType(building) = b_turret then AddComPlaceWeapon(building, [43, 44, 45, 46][Rand(1, 4)]);
+
+        if GetBType(building) = b_ext_computer then russianAI = 1;
+          
+    end;
+     
+
+end;

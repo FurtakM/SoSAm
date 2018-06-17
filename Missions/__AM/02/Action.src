@@ -355,7 +355,7 @@ end;
 
 // Contact with enemy bunker
 
-Every 0$1 do
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]]) = 0 do
 var i;
 begin
 
@@ -496,6 +496,8 @@ begin
     ComTurnUnit([JMM, temp[1]], Mikhail);
     ComTurnUnit(Mikhail, temp[1]);
 
+    Wait(0$02);
+
     Say(Mikhail, 'D4-Mikh-1');
     if GetSex(temp[1]) = 1 then Say(temp[1], 'D4-Sol1-1');
     if GetSex(temp[1]) = 2 then Say(temp[1], 'D4-FSol1-1');
@@ -551,15 +553,7 @@ begin
             repeat
                 wait(0$1);
                 CenterNowOnUnits(Mikhail);
-
-                IF GetDistUnits(Mikhail, dep1) < GetDistUnits(Mikhail, dep2) then
-                begin
-                     ComEnterUnit(Mikhail, dep1);
-                end else
-                begin
-                     ComEnterUnit(Mikhail, dep2);
-                end;
-
+                ComEnterUnit([Mikhail, temp[1]], dep1);
             until IsInUnit(Mikhail);
 
             mikhailDepot = IsInUnit(Mikhail);
@@ -615,7 +609,12 @@ begin
             begin
                 Disable;
                 ComMoveXY([cargo1, cargo2], 7, 9);
-                Say(driver1, 'D5-Rus2-1a');
+
+                If cargoSee = 0 then
+                begin
+                   cargoSee = 1;
+                   Say(driver1, 'D5-Rus2-1a');
+                end;
 
                 cargoEscape = 1;
             end;
@@ -661,7 +660,10 @@ begin
 end;
 
 // Macmillan's alert about attack depots
-Every 0$1 trigger GetLives(dep1) < 1000 OR GetLives(dep2) < 1000 do Say(JMM, ' D8-JMM-1');
+Every 0$1 trigger GetLives(dep1) < 1000 OR GetLives(dep2) < 1000 do
+begin
+     Say(JMM, 'D8-JMM-1');
+end;
 
 // Mihail
 

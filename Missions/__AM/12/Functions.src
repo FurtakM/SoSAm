@@ -1,0 +1,53 @@
+Export function RespawnInside(side, nation, build, skill, class, count);
+var i,l, un, tmp;
+begin
+
+   for i = 1 to count do
+   begin
+
+      uc_side = side;
+      uc_nation = nation;
+
+      hc_gallery = '';
+      hc_name = '';
+      PrepareHuman(false, class, skill);
+
+      un = CreateHuman;
+      PlaceHumanInUnit(un,build);
+
+   end;
+
+END;
+
+Export function ResAllTechs(side, lab, nation);
+var i, tech, cout;
+begin
+
+  For i = 1 to 72 do
+    If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true then AddComResearch(lab, i);
+
+end;
+
+Export function RepairBuilding(side, building, area);
+var buildings_list, i,engineerOkInside, engineerOkOutside, j;
+begin
+
+        engineerOkInside = UnitsInside(building);
+        engineerOkOutside = FilterUnitsInArea(area, [[f_side, side], [f_class, 2], [f_lives, 1000]]);
+        buildings_list = FilterUnitsInArea(area, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+        if buildings_list > 0 and engineerOkInside > 0 then
+            for i in engineerOkInside do ComExitBuilding(i);
+
+        if engineerOkOutside > 0 then
+        begin
+
+            for i in engineerOkOutside do
+                for j in buildings_list do
+                    ComRepairBuilding(i, j[1]);
+
+        end;
+
+        if buildings_list = 0 then
+            for i in engineerOkOutside do ComEnterUnit(i, building);
+END;

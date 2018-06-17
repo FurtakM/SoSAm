@@ -70,13 +70,13 @@ begin
 
         RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human]]));
 
-        SaveCharacters(JMM, 'JMM');
-        If IsOK(Bobby) then SaveCharacters(Bobby, 'Bobby');
-        If IsOK(Cyrus) then SaveCharacters(Cyrus, 'Cyrus');
-        If IsOK(Lisa) then SaveCharacters(Lisa, 'Lisa');
-        If IsOK(Brown) then SaveCharacters(Brown, 'Brown');
-        If IsOK(Donaldson) then SaveCharacters(Donaldson, 'Donaldson');
-        If IsOK(Frank) then SaveCharacters(Frank, 'Frank');
+        SaveCharacters(JMM, mission_prefix&'JMM');
+        If IsOK(Bobby) then SaveCharacters(Bobby, mission_prefix&'Bobby');
+        If IsOK(Cyrus) then SaveCharacters(Cyrus, mission_prefix&'Cyrus');
+        If IsOK(Lisa) then SaveCharacters(Lisa, mission_prefix&'Lisa');
+        If IsOK(Brown) then SaveCharacters(Brown, mission_prefix&'Brown');
+        If IsOK(Donaldson) then SaveCharacters(Donaldson, mission_prefix&'Donaldson');
+        If IsOK(Frank) then SaveCharacters(Frank, mission_prefix&'Frank');
 
         SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human]]) diff [JMM, Bobby, Cyrus, Lisa, Brown, Donaldson, Frank],'04_other_survivors');
         SaveBase(GammBaseArea);
@@ -103,6 +103,6 @@ begin
                         gammaBase = gammaBase ^ [ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i)] ];
     end;
 
-	SaveVariable(gammaBase,'GammaBase');
+        SaveVariable(gammaBase,'GammaBase');
 
 end;
