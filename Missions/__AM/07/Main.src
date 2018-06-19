@@ -4,20 +4,24 @@
 Starting
 begin
 ResetFog;
+FogOff(1);
 Randomize;
 Init;
 DebugMode;
 PrepareAmerican;
 
-//Action;
+Action;
 End;
 
 Export debug; // for test only!
 
 Export donaldson_commander, brown_commander, save_group;
+Export mission_prefix, mission_prefix_prev;
 Function Init;
 begin
 debug := false;
+mission_prefix := '07_';
+mission_prefix_prev := ['06_', '05_', '04_'];
 donaldson_commander := false;
 brown_commander := false;
 save_group := [];
@@ -28,6 +32,5 @@ begin
 if not debug then
    exit;
 
-FogOff(1);
-display_strings := mission_number;
+
 End;
