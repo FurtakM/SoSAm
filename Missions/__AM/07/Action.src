@@ -68,52 +68,61 @@ end;
 
 all := FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, commander];
 
-save_group := CharacterSelection('1', 8, 8,
+save_group := CharacterSelection('1', 10, 10,
                                 [sel_change_class, JMM,
-                                 sel_not_hired,sel_changeable, sel_change_class]^all^
+                                 sel_not_hired, sel_changeable, sel_change_class]^all^
                                 [sel_dont_change_class, sel_not_changeable, [commander, Harisson]],
-                                [[class_soldier, 3], [class_mechanic, 2], [class_scientistic, 1]]);
-
-InGameOff;
-exit;
+                                [[class_soldier, 3], [class_mechanic, 3, 6], [class_scientistic, 1]]);
 
 SaveCharacters(all diff [save_group, JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, Houten, Harisson], '07_othersGamma');
 SaveCharacters(save_group diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, Houten, Harisson, 0], '07_others');
 
-if Lisa in save_group then
+if Lisa then
    begin
    SaveCharacters(Lisa, mission_prefix&'Lisa');
-   SaveVariable(true, 'LisaIn07');
+  
+   if Lisa in save_group then
+      SaveVariable(true, 'LisaIn07');
    end;
 
-if Bobby in save_group then
+if Bobby then
    begin
    SaveCharacters(Bobby, mission_prefix&'Bobby');
-   SaveVariable(true, 'BobbyIn07');
+  
+   if Bobby in save_group then
+      SaveVariable(true, 'BobbyIn07');
    end;
 
-if Cyrus in save_group then
+if Cyrus then
    begin
    SaveCharacters(Cyrus, mission_prefix&'Cyrus');
-   SaveVariable(true, 'CyrusIn07');
+  
+   if Cyrus in save_group then
+      SaveVariable(true, 'CyrusIn07');
    end;
 
-if Brown in save_group then
+if Brown then
    begin
    SaveCharacters(Brown, mission_prefix&'Brown');
-   SaveVariable(true, 'BrownIn07');
+  
+   if Brown in save_group then
+      SaveVariable(true, 'BrownIn07');
    end;
 
-if Donaldson in save_group then
+if Donaldson then
    begin
    SaveCharacters(Donaldson, mission_prefix&'Donaldson');
-   SaveVariable(true, 'DonaldsonIn07');
+  
+   if Donaldson in save_group then
+      SaveVariable(true, 'DonaldsonIn07');
    end;
 
-if Gladstone in save_group then
+if Gladstone then
    begin
-   SaveCharacters(Gladstone , mission_prefix&'Gladstone');
-   SaveVariable(true, 'GladstoneIn07');
+   SaveCharacters(Gladstone, mission_prefix&'Gladstone');
+  
+   if Gladstone in save_group then
+      SaveVariable(true, 'GladstoneIn07');
    end;
 
 ChangeMap(1, '%_cont');
