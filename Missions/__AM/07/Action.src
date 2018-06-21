@@ -1,6 +1,6 @@
 // Action module
 Export Function Action;
-var points, i, sol, team, all, commander, filter;
+var points, i, sol, team, filter;
 begin
 InGameOn;
 
@@ -8,7 +8,7 @@ CenterNowOnXY(33, 11);
            
 points := [ [29,21], [41,28], [52,26], [49,16] ];
 
-sol := (FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Brown, Cyrus, Bobby, Gladstone, Houten])[1];
+sol := (FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Brown, Cyrus, Bobby, Gladstone, Houten, Khatam])[1];
 
 
 if sol then
@@ -60,6 +60,13 @@ Say(JMM, 'D1-JMM-5');
 Say(Harisson, 'D1-Har-6');
 Say(JMM, 'D1-JMM-6');
 
+EndMission;
+End;
+
+
+Export Function EndMission;
+var commander, i, all;
+begin
 case gamma_commander of
      1: commander := Donaldson;
      2: commander := Brown;
@@ -77,10 +84,12 @@ save_group := CharacterSelection('1', 10, 10,
 SaveCharacters(all diff [save_group, JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, Houten, Harisson], '07_othersGamma');
 SaveCharacters(save_group diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, Houten, Harisson, 0], '07_others');
 
+SaveCharacters(JMM, mission_prefix&'JMM');
+
 if Lisa then
    begin
    SaveCharacters(Lisa, mission_prefix&'Lisa');
-  
+
    if Lisa in save_group then
       SaveVariable(true, 'LisaIn07');
    end;
@@ -88,7 +97,7 @@ if Lisa then
 if Bobby then
    begin
    SaveCharacters(Bobby, mission_prefix&'Bobby');
-  
+
    if Bobby in save_group then
       SaveVariable(true, 'BobbyIn07');
    end;
@@ -96,7 +105,7 @@ if Bobby then
 if Cyrus then
    begin
    SaveCharacters(Cyrus, mission_prefix&'Cyrus');
-  
+
    if Cyrus in save_group then
       SaveVariable(true, 'CyrusIn07');
    end;
@@ -104,7 +113,7 @@ if Cyrus then
 if Brown then
    begin
    SaveCharacters(Brown, mission_prefix&'Brown');
-  
+
    if Brown in save_group then
       SaveVariable(true, 'BrownIn07');
    end;
@@ -112,7 +121,7 @@ if Brown then
 if Donaldson then
    begin
    SaveCharacters(Donaldson, mission_prefix&'Donaldson');
-  
+
    if Donaldson in save_group then
       SaveVariable(true, 'DonaldsonIn07');
    end;
@@ -120,9 +129,17 @@ if Donaldson then
 if Gladstone then
    begin
    SaveCharacters(Gladstone, mission_prefix&'Gladstone');
-  
+
    if Gladstone in save_group then
       SaveVariable(true, 'GladstoneIn07');
+   end;
+
+if Khatam then
+   begin
+   SaveCharacters(Khatam, mission_prefix&'Khatam');
+
+   if Khatam in save_group then
+      SaveVariable(true, 'KhatamIn07');
    end;
 
 ChangeMap(1, '%_cont');

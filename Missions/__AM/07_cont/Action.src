@@ -1,0 +1,106 @@
+Export Function Action;
+begin
+CenterNowOnXY(28, 3);
+
+PlaceSeeing(41, 76, 1, 10);
+RemoveSeeing(41, 76, 1);
+
+InGameOn;
+SayRadio(Harisson, 'D2-Har-1');
+InGameOff;
+
+ChangeMissionObjectives('M1');
+End;
+
+
+Every 0$1 trigger buildings_counter > 1 do
+var un;
+begin
+un := GetRandom(sex_male)[1];
+Say(un, 'D2a-Sol1-1');
+
+if not un then
+   begin
+   un := GetRandom(sex_female)[1];
+   Say(un, 'D2a-FSol1-1');
+   end;
+
+if Khatam then
+   Say(Khatam, 'D3b-Khat-3');
+End;
+
+// Frank spotted
+Every 0$1 trigger Frank and GetDistUnits(JMM, Frank) < 5 and not InBattle(1) do
+var i, ape;
+begin
+InGameOn;
+
+ape := FilterAllUnits([[f_side, 0], [f_class, class_apeman]]);
+ape := NearestUnitToUnit(ape, Frank);
+
+for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_dist, Frank, 20]]) do
+    ComTurnUnit(i, Frank);
+
+SetSide(Frank, 1);
+
+ComMoveUnit(JMM, Frank);
+AddComTurnUnit(JMM, Frank);
+
+CenterOnUnits(Frank);
+
+Say(Frank, 'D3a-Frank-1');
+
+ComMoveXY(ape, 42, 78);
+AddComTurnUnit(ape, Frank);
+
+if Lisa then
+   Say(Lisa, 'D3a-Lisa-1');
+
+Say(JMM, 'D3a-JMM-1');
+
+if Cyrus then
+   Say(Cyrus, 'D3a-Cyrus-1');
+
+Say(GetRandom(sex_male)[1], 'D3a-Sol1-1');
+Say(GetRandom(sex_female)[1], 'D3a-FSol1-1');
+
+if Gladstone then
+   Say(Gladstone, 'D3a-Glad-1');
+
+ComMoveXY(ape, 60, 113);
+
+Say(Frank, 'D3a-Frank-2');
+
+ComTurnUnit(Frank, JMM);
+
+Say(JMM, 'D3a-JMM-2');
+
+RevealFogArea(1, spotArea);
+
+CenterOnXY(85, 134);
+
+Say(Frank, 'D3a-Frank-3');
+
+Wait(0$01);
+
+CenterOnXY(166, 136);
+Say(JMM, 'D3a-JMM-3');
+
+Wait(0$01);
+
+CenterNowOnUnits(Frank);
+
+Say(Frank, 'D3a-Frank-4');
+
+if Lisa then
+   Say(Lisa, 'D3a-Lisa-4');
+
+Say(JMM, 'D3a-JMM-4');
+Say(Frank, 'D3a-Frank-5');
+Say(JMM, 'D3a-JMM-5');
+Say(Frank, 'D3a-Frank-6');
+Say(JMM, 'D3a-JMM-6');
+Say(Frank, 'D3a-Frank-7');
+
+InGameOff;
+End;
