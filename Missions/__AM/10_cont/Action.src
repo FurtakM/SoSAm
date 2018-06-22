@@ -10,6 +10,10 @@ begin
     DialogueOff;
 
     ChangeMissionObjectives('M1');
+
+    AddCargo(cargo1, 1, 100);
+    AddCargo(cargo2, 1, 50);
+    AddCargo(cargo2, 3, 50);
 end;
 
 // Meet Cathy and others
@@ -86,11 +90,35 @@ end;
 
 // Respawn Russian convoy
 Every 2$1 trigger joinEpsilon = 1 do 
+var rnd;
 begin
     SayRadio(AmScout, 'D4-FSol1-1');
     ChangeMissionObjectives('M3');
     PrepareRussians;
-    BuildRussianBase(1);
+
+    rnd = Rand(1, 100);
+
+    if difficulty = 1 then
+    begin
+        if rnd > 0 AND rnd < 51 then BuildRussianBase(2);
+        if rnd > 50 AND rnd < 81 then BuildRussianBase(1);  
+        if rnd > 80 AND rnd < 101 then BuildRussianBase(3);    
+    end;
+
+    if difficulty = 2 then
+    begin
+        if rnd > 0 AND rnd < 61 then BuildRussianBase(2);
+        if rnd > 60 AND rnd < 81 then BuildRussianBase(1);  
+        if rnd > 80 AND rnd < 101 then BuildRussianBase(3);    
+    end;
+
+    if difficulty = 3 then
+    begin
+        if rnd > 0 AND rnd < 71 then BuildRussianBase(3);
+        if rnd > 70 AND rnd < 81 then BuildRussianBase(2);  
+        if rnd > 80 AND rnd < 101 then BuildRussianBase(1);    
+    end;
+
 end;
 
 // Dialog about Arabians and trait
