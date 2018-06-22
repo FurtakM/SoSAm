@@ -1,1 +1,71 @@
-//
+Export Function PrepareRussians;
+var i, j, r, skill, filter, tmp, dep_list, lab_list, fac_list, breastworks_list, bunker_list, turret_list, weapons_list, personel_counter;
+begin
+dep_list := FilterAllUnits([[f_side, 3], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+lab_list := FilterAllUnits([[f_side, 3], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
+fac_list := FilterAllUnits([[f_side, 3], [f_btype, b_factory]]);
+breastworks_list := FilterAllUnits([[f_side, 3], [f_btype, b_breastwork]]);
+bunker_list := FilterAllUnits([[f_side, 3], [f_btype, b_bunker]]);
+turret_list := FilterAllUnits([[f_side, 3], [f_btype, b_turret]]);
+
+weapons_list := [[ru_heavy_machine_gun, 5], [ru_gatling_gun, 50], [ru_gun, 30], [ru_heavy_gun, 15]];
+personel_counter := [0, 4, 4, 3];
+skill := [4, 5, 6][Difficulty];
+
+SetBName(ru_dep_main, 'am_tukh');
+
+uc_side := 3;
+uc_nation := 3;
+
+InitHc;
+
+// soldiers in towers [50%, 70%, 85%]
+tmp := bunker_list * [50, 70, 85][Difficulty] div 100;
+personel_counter := Replace(personel_counter, 1, tmp);
+
+// sort
+tmp := [];
+
+for i in bunker_list do
+    if i mod 10 + 1 < tmp then
+       tmp := Insert(tmp, i mod rand(3,5) + 1, i)
+      else
+       tmp := Insert(tmp, tmp + 1, i);
+
+bunker_list := tmp;
+
+// place weapon on turrets
+for i in bunker_list^turret_list do
+    begin
+    tmp := rand(0, 100);
+    r := 0;
+
+    for j in weapons_list do
+        begin
+        r := r + j[2];
+
+        if r >= tmp then
+           begin
+           PlaceWeaponTurret(i, j[1]);
+           break;
+           end;
+        end;
+    end;
+
+// place personel in base
+while (personel_counter[1]) do
+    begin
+    i := rand(1, bunker_list);
+
+    PrepareHuman(false, 1, skill);
+    PlaceHumanInUnit(CreateHuman, bunker_list[i]);
+
+    bunker_list := Delete(bunker_list, i);
+    personel_counter := Replace(personel_counter, 1, personel_counter[1] - 1);
+    end;
+
+for i = 1 to personel_counter[2] do
+    begin
+
+    end;
+End;

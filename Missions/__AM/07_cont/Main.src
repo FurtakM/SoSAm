@@ -5,8 +5,12 @@
 Starting
 begin
 ResetFog;
+RandomizeAll;
 
 Init;
+DebugMode;
+
+PrepareRussians;
 PrepareAmericans;
 
 Action;
@@ -18,8 +22,16 @@ Export mission_prev_prefix, mission_prefix;
 Export buildings_counter;
 Function Init;
 begin
-debug := false;
+debug := 1;
 mission_prefix := '07c_';
 mission_prev_prefix := '07_';
 buildings_counter := 0;
+End;
+
+Function DebugMode;
+begin
+if not debug then
+   exit;
+
+FogOff(1);
 End;
