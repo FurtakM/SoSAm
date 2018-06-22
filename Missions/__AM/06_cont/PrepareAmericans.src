@@ -200,33 +200,41 @@ begin
 end;
 
 Export function PrepareJoan;
-var tmp, rnd;
+var i, j, tmp, rnd;
 begin
-    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]);
-    rnd = Rand(1, tmp);
+    j = 0;
 
     repeat
-        wait(0$3);
-    until NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, tmp[rnd], 30]]) AND NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, JMM, 30]]);
+        wait(0$1);
+        for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) do
+        begin
+            if NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, i, 25]]) AND GetDistUnits(i, JMM) < 15 then
+            begin
+                tmp = i;
+                j = 1;
+            end;
+        end;
+
+    until j = 1;
     
     blockSpawn = 1;
     uc_side = 4;
 
     Joan = PrepareUnit('Joan', false);
-    PlaceUnitXYR(Joan, GetX(tmp[rnd]), GetY(tmp[rnd]), 5, true);
+    PlaceUnitXYR(Joan, GetX(tmp), GetY(tmp), 5, true);
     SetLives(Joan, 250);
 
     InGameOn;
     CenterNowOnUnits(Joan);
     wait(0$2);
-    ComExitVehicle(tmp[rnd]);
-    ComExitBuilding(tmp[rnd]);
+    ComExitVehicle(tmp);
+    ComExitBuilding(tmp);
     wait(0$1);
-    ComMoveUnit(tmp[rnd], Joan);
+    ComMoveUnit(tmp, Joan);
     wait(0$2);
     DialogueOn;
 
-    if tmp[rnd] = JMM then
+    if tmp = JMM then
     begin
         Say(JMM, 'D5b-JMM-1');
         DialogueOff;
@@ -241,25 +249,25 @@ begin
         Say(Joan, 'D5b-Joan-3');
     end else
     begin
-        Say(tmp[rnd], 'D5a-Sol1-1');
+        Say(tmp, 'D5a-Sol1-1');
         DialogueOff;
         SetLives(Joan, 500);
-        ComTurnUnit(Joan, tmp[rnd]);
-        ComTurnUnit(tmp[rnd], Joan);
+        ComTurnUnit(Joan, tmp);
+        ComTurnUnit(tmp, Joan);
         wait(0$1);
         Say(Joan, 'D5a-Joan-1');
-        Say(tmp[rnd], 'D5a-Sol1-2');
+        Say(tmp, 'D5a-Sol1-2');
         Say(Joan, 'D5a-Joan-2');
-        Say(tmp[rnd], 'D5a-Sol1-3');
+        Say(tmp, 'D5a-Sol1-3');
         Say(Joan, 'D5a-Joan-3');
-        Say(tmp[rnd], 'D5a-Sol1-4');
+        Say(tmp, 'D5a-Sol1-4');
 
         ComExitVehicle(JMM);
         ComExitBuilding(JMM);
         wait(0$1);
         repeat
             wait(0$1);
-            ComMoveUnit([Joan, tmp[rnd]], JMM);
+            ComMoveUnit([Joan, tmp], JMM);
         until GetDistUnits(Joan, JMM) < 5;
 
         ComTurnUnit(Joan, JMM);

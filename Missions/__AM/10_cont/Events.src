@@ -4,6 +4,7 @@ begin
 end;
 
 On BuildingComplete(building) Do
+var i;
 begin
 
     if GetSide(building) = 3 then
@@ -21,7 +22,7 @@ begin
         if GetBType(building) = b_lab then
         begin
 
-            if FilterAllUnits([[f_side, 3], [f_btype, b_lab_weapon]]) = 0 then
+            if FilterAllUnits([[f_side, 3], [f_btype, b_lab_full]]) = 0 then
             begin   
                 AddComUpgradeLab(building, b_lab_weapon);
                 AddComUpgradeLab(building, b_lab_computer);
@@ -43,6 +44,28 @@ begin
         if GetBType(building) = b_ext_computer then russianAI = 1;
           
     end;
-     
+
+    if GetSide(building) = 2 then
+    begin
+    
+        if GetBType(building) = b_depot then
+        begin
+            SetResourceType(GetBase(building), 1, 500);
+            SetResourceType(GetBase(building), 3, 30);
+            arDepot = building;
+        end;
+
+        if  GetBType(building) = 2 or GetBType(building) = 4 then ComUpgrade(building);
+
+        if GetBType(building) = b_lab then
+        begin
+            AddComUpgradeLab(building, b_lab_weapon);
+            AddComUpgradeLab(building, b_lab_siberium);
+            ResAllTechs(3, building, 3);
+            arLab = building;
+
+        end;
+
+    end;     
 
 end;
