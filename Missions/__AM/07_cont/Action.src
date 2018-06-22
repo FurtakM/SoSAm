@@ -61,8 +61,11 @@ Say(JMM, 'D3a-JMM-1');
 if Cyrus then
    Say(Cyrus, 'D3a-Cyrus-1');
 
-Say(GetRandom(sex_male)[1], 'D3a-Sol1-1');
-Say(GetRandom(sex_female)[1], 'D3a-FSol1-1');
+if GetRandom(sex_male) then
+   Say(GetRandom(sex_male)[1], 'D3a-Sol1-1');
+
+if GetRandom(sex_female) then
+   Say(GetRandom(sex_female)[1], 'D3a-FSol1-1');
 
 if Gladstone then
    Say(Gladstone, 'D3a-Glad-1');
@@ -101,6 +104,42 @@ Say(JMM, 'D3a-JMM-5');
 Say(Frank, 'D3a-Frank-6');
 Say(JMM, 'D3a-JMM-6');
 Say(Frank, 'D3a-Frank-7');
+
+InGameOff;
+End;
+
+// Yamoko spotted
+Every 0$1 trigger Kikuchi and GetDistUnits(JMM, Kikuchi) < 5 and not InBattle(1) do
+begin
+InGameOn;
+
+ComTurnUnit(JMM, Kikuchi);
+ComTurnUnit(Kikuchi, JMM);
+
+CenterOnUnits(Kikuchi);
+
+Say(Kikuchi, 'D3b-Yam-1');
+Say(JMM, 'D3b-JMM-1');
+
+RevealFogArea(1, spotArea);
+
+CenterOnXY(85, 134);
+
+Say(Kikuchi, 'D3b-Yam-2');
+
+Wait(0$01);
+
+Say(JMM, 'D3b-JMM-2');
+
+CenterOnXY(166, 136);
+
+Say(Kikuchi, 'D3b-Yam-3');
+
+CenterNowOnUnits(JMM);
+
+Say(JMM, 'D3b-JMM-3a');
+
+SetSide(Kikuchi, 1);
 
 InGameOff;
 End;
