@@ -242,11 +242,13 @@ begin
         ComTurnUnit(Joan, JMM);
         ComTurnUnit(JMM, Joan);
         wait(0$1);
+        DialogueOn;
         Say(Joan, 'D5b-Joan-1');
         Say(JMM, 'D5b-JMM-2');
         Say(Joan, 'D5b-Joan-2');
         Say(JMM, 'D5b-JMM-3');
         Say(Joan, 'D5b-Joan-3');
+        DialogueOff;
     end else
     begin
         Say(tmp, 'D5a-Sol1-1');
@@ -255,12 +257,14 @@ begin
         ComTurnUnit(Joan, tmp);
         ComTurnUnit(tmp, Joan);
         wait(0$1);
+        DialogueOn;
         Say(Joan, 'D5a-Joan-1');
         Say(tmp, 'D5a-Sol1-2');
         Say(Joan, 'D5a-Joan-2');
         Say(tmp, 'D5a-Sol1-3');
         Say(Joan, 'D5a-Joan-3');
         Say(tmp, 'D5a-Sol1-4');
+        DialogueOff;
 
         ComExitVehicle(JMM);
         ComExitBuilding(JMM);
@@ -272,13 +276,17 @@ begin
 
         ComTurnUnit(Joan, JMM);
         ComTurnUnit(JMM, Joan);
+        wait(0$1);
+        DialogueOn;
         Say(Joan, 'D5a-Joan-4');
         Say(JMM, 'D5a-JMM-4');
         Say(Joan, 'D5a-Joan-5');
         Say(JMM, 'D5a-JMM-5');
         Say(Joan, 'D5a-Joan-6');
+        DialogueOff;
     end;
 
+    DialogueOn;
     Say(JMM, 'D6-JMM-1');
     Say(Joan, 'D6-Joan-1');
     Say(JMM, 'D6-JMM-2');
@@ -302,7 +310,7 @@ var un;
 begin
 
     repeat
-        wait(0$3);
+        wait(0$7);
     until blockSpawn = 0;
 
     uc_side = 1;

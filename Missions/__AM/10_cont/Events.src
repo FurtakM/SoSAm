@@ -38,8 +38,8 @@ begin
 
         end;
 
-        if GetBType(building) = b_bunker then AddComPlaceWeapon(building, [43, 44, 45, 46][Rand(1, 4)]);
-        if GetBType(building) = b_turret then AddComPlaceWeapon(building, [43, 44, 45, 46][Rand(1, 4)]);
+        if GetBType(building) = b_bunker then AddComPlaceWeapon(building, [43, 44, 45, 45, 46, 46][Rand(1, 4)]);
+        if GetBType(building) = b_turret then AddComPlaceWeapon(building, [43, 44, 45, 45, 46, 46][Rand(1, 4)]);
 
         if GetBType(building) = b_ext_computer then russianAI = 1;
           
@@ -50,9 +50,11 @@ begin
     
         if GetBType(building) = b_depot then
         begin
+            arDepot = building;
+            ComMoveXY([cargo1, cargo2], 71, 19);
+            wait(0$20);
             SetResourceType(GetBase(building), 1, 500);
             SetResourceType(GetBase(building), 3, 30);
-            arDepot = building;
         end;
 
         if  GetBType(building) = 2 or GetBType(building) = 4 then ComUpgrade(building);
@@ -63,9 +65,20 @@ begin
             AddComUpgradeLab(building, b_lab_siberium);
             ResAllTechs(3, building, 3);
             arLab = building;
-
         end;
 
     end;     
+
+end;
+
+On UpgradeComplete(building) Do
+var i;
+begin
+
+    if GetSide(building) = 3 then
+    begin
+        if GetBType(building) = b_workshop then
+            for i in FilterAllUnits([[f_side, 3], [f_class, 3]]) do ComEnterUnit(i, building);
+    end;
 
 end;

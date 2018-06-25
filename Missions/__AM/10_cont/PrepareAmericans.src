@@ -17,7 +17,7 @@ begin
 end;
 
 Export function PrepareVehicles;
-var i, veh;
+var i, veh, cargoAmount, rnd, rest;
 begin
     uc_side = 1;
     uc_nation = 1;
@@ -34,7 +34,11 @@ begin
         PlaceUnitArea(veh, PlayerSpawn, false);
         playerVehs = playerVehs ^ veh;
 
-        if vc_weapon = 12 then AddCargo(veh, [1, 3][Rand(1, 2)], Rand(1, 10) * 10);
+        if vc_weapon = 12 then
+        begin
+            AddCargo(veh, 1, 50);
+            AddCargo(veh, 3, 50);
+        end; 
             
     end;
 

@@ -17,15 +17,18 @@ begin
 end;
 
 // Meet Cathy and others
-Every 0$1 trigger GetDistUnits(JMM, Simms) < 12 do
+Every 0$1 trigger GetDistUnits(JMM, Simms) < 15 do
 begin
     InGameOn;
     ComExitVehicle(JMM);
     CenterNowOnUnits(JMM);
     wait(0$1);
-    ComMoveUnit([Simms, Joan, Denis, Khatam], JMM);
+    repeat
+        wait(0$1);
+        ComMoveUnit([Simms, Joan, Denis, Khatam], JMM);
+    until GetDistUnits(JMM, Simms) < 5;
+
     ComTurnUnit(JMM, Simms);
-    wait(0$2);
     ComTurnUnit([Simms, Joan, Denis, Khatam], JMM);
     CenterNowOnUnits([JMM, Simms]);
     Say(Simms, 'D2a-Sim-1');
@@ -82,9 +85,9 @@ begin
 
     wait(2$0);
     DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-1', 'D5-Ar1-1');
-    // Say(Dietrich, D5-Diet-1);
+    Say(Dietrich, 'D5-Diet-1');
     DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-2', 'D5-Ar1-2');
-    // Say(Dietrich, D5-Diet-2);
+    Say(Dietrich, 'D5-Diet-2');
 
 end;
 
