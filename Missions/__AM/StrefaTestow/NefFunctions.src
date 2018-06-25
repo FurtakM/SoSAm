@@ -64,59 +64,6 @@ end;
 
 // AI Functions:
 
-// Vehicle - Attack/Repair/Attack (need edit in code - orders)
-// Function to repair you damage vehicles in battlefield.
-// Example: RepairVehicle(3, AreaRep, 20, 52);
-
-Export function RepairVehicle(side, repairArea, repX, repY);
-var i,j, vehicleOK_list, damageVehicle_list, vehicleNeedRepair_list, vehicleDontNeedRepair_list, mechanicInside_list, mechanicOutside_list;
-begin
-    vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 660], [f_not, [f_empty]]]);
-    damageVehicle_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 660]]]);
-
-    vehicleNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 1000]]]);
-    vehicleDontNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_empty]]);
-
-    mechanicInside_list = [];
-    mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
-
-    if damageVehicle_list > 0 then
-    begin
-        for i in damageVehicle_list do 
-        begin
-            ComMoveXY(i, repX, repY);
-            mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
-
-        end;
-    end;
-
-    if vehicleNeedRepair_list > 0 then
-    begin
-        for i in mechanicInside_list do 
-        begin
-            for j in vehicleNeedRepair_list do 
-            begin
-                AddComExitVehicle(i);
-                wait(0$1);
-                AddComRepairVehicle(i, j);
-            end;
-        end;
-    end;
-
-    if vehicleDontNeedRepair_list > 0 then
-    begin
-        ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
-    end;
-
-    if vehicleOK_list > 0 then
-    begin
-        for i in vehicleOK_list do ComAgressiveMove(i, 50, 50);
-    end;
-
-    for i in not FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]) do ComMoveXY(i, repX, repY);
-
-end;
-
 // Spawn vehicle and attack
 // Function to respawn vehicles with many options and send to fight.
 // Example: RespawnAttackVehicle(SpawnEnemyArea, 2, 10, 6, 2, 3, 1, [], [ar_gun, ar_rocket_launcher, ar_flamethrower], [], 1);
@@ -312,36 +259,124 @@ begin
 
 END;
 
+every 0$1 do 
+begin
+    //display_strings = ['w polu: ', CPU1Tanks, 'uszkodzone: ', CPU1DamageTanks, 'wylosowane: 4'];
+    enable;
+end;
 
-Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, targetSide, weaponTab, engine, control, chassis);
-var i, j, temp, target1, target2;
+Export CPU1Tanks, CPU1DamageTanks;
+Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, weaponTab, engine, control, chassis);
+var i;
 begin
 
     if FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
         for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
+    
+END;
 
-    repeat
-        wait(0$1);
-    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount;
+Export function EnemyVehicleAttack(side, targetSide);
+var i, tmp, target1, target2;
+begin
 
-    repeat begin
-        wait(0$1);
-
-        for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+    for i := 1 to CPU1Tanks do
+    begin
+        if i = 4 then
         begin
 
-            target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-            target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+            repeat
+                wait(0$1);
 
-                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                for i in CPU1Tanks do
                 begin
-                    ComAttackUnit(i, target1);
-                end else begin
-                    ComAttackUnit(i, target2);
+                    if GetLives(i) < 659 then
+                    begin
+                        tmp = i;
+                        
+                        for i := 1 to CPU1Tanks do
+                        begin
+                            if tmp = CPU1Tanks[i] then
+                            begin
+                                CPU1Tanks = Delete(CPU1Tanks, i);
+                                CPU1DamageTanks = CPU1DamageTanks ^ tmp;
+                            end;
+                        end;
+
+                    end;
+
+                    wait(0$1);
+
+                    target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                    If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                    begin
+                        ComAttackUnit(i, target1);
+                    end else begin
+                        ComAttackUnit(i, target2);
+                    end;
                 end;
+
+            until CPU1Tanks = 0;
+
         end;
-    end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
-    
+    end;
+end;
+
+// Vehicle - Attack/Repair/Attack (need edit in code - orders)
+// Function to repair you damage vehicles in battlefield.
+// Example: RepairVehicle(3, AreaRep, 20, 52);
+
+Export function RepairVehicle(side, repairArea, repX, repY);
+var i,j, vehicleOK_list, damageVehicle_list, vehicleNeedRepair_list, vehicleDontNeedRepair_list, mechanicInside_list, mechanicOutside_list;
+begin
+    vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 660], [f_not, [f_empty]]]);
+    damageVehicle_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 660]]]);
+
+    vehicleNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 1000]]]);
+    vehicleDontNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_empty]]);
+
+    mechanicInside_list = [];
+    mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
+
+    display_strings = ['w polu: ', CPU1Tanks, 'uszkodzone: ', CPU1DamageTanks, 'wylosowane: 4', 'ok',vehicleOK_list];
+
+    if damageVehicle_list > 0 then
+        for i in damageVehicle_list do ComMoveXY(i, repX, repY);
+
+    if vehicleNeedRepair_list > 0 then
+    begin
+        for i in vehicleNeedRepair_list  do
+        begin
+            mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
+            for j in mechanicInside_list do
+            begin
+                ComExitVehicle(j);
+                wait(0$1);
+                ComRepairVehicle(j, i);
+            end;
+        end;
+    end;
+
+    if vehicleDontNeedRepair_list > 0 then
+    begin
+        ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
+    end;
+
+    if vehicleOK_list > 0 and CPU1DamageTanks > 0 then
+    begin
+        for i := 1 to vehicleOK_list do
+        begin
+            if i = 4 then
+            begin
+                CPU1Tanks = CPU1Tanks ^ vehicleOK_list;
+                CPU1DamageTanks = Delete(CPU1DamageTanks, 1);
+            end;
+        end;
+    end; 
+   
+    for i in not FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]) do ComMoveXY(i, repX, repY);
+
 END;
 
 Export function RebuildBuildings(side, destroyedBuildings);
@@ -369,7 +404,6 @@ begin
         begin
             for j in enemyBuildings do
             begin
-                display_strings = [GetDistUnits(i, j)];
                 if GetDistUnits(i, j) < 20 then
                 begin
                     ComAttackUnit(i, j);
