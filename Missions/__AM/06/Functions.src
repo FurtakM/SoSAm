@@ -11,11 +11,12 @@ result := unit;
 End;
 
 Export function SelectAndSaveCharacters;
-var i, yourPeople, selectedPeople, test;
+var i, yourPeople, selectedPeople, test, rnd;
 begin
+    rnd = [5, rand(4,5), 4][Difficulty];
     yourPeople = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, DeltaDoctor, Denis];
 
-    selectedPeople = CharacterSelection('text', [5, rand(4,5), 4][Difficulty], [5, rand(4,5), 4][Difficulty],
+    selectedPeople = CharacterSelection('text', rnd, rnd,
                                 [sel_change_class, JMM,
                                  sel_dont_change_class,
                                  sel_not_hired,sel_changeable, sel_change_class]^yourPeople^

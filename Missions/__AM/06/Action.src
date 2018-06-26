@@ -1,10 +1,7 @@
 // Start mission
 Every 1 do
-var i, j, lab, tmp;
+var i, j, tmp;
 begin
-
-    lab = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
-
     InGameOn;
     CenterNowOnUnits(lab[1]);
 
@@ -14,9 +11,25 @@ begin
      SetRestrict(b_ext_radar, 1, true);
     end;
 
-    ComEnterUnit([JMM, DeltaDoctor, Denis], lab[1]);
+
+    CenterNowOnUnits(JMM);
+    ComTurnUnit(JMM, DeltaDoctor);
+
+    repeat
+    wait(0$1);
+    ComMoveUnit(DeltaDoctor, JMM);
+    until GetDistUnits(JMM, DeltaDoctor) < 5;
+
+    ComTurnUnit(DeltaDoctor, JMM);
     Say(JMM, 'D1-JMM-1');
     Say(DeltaDoctor, 'D1-Sci-1');
+    ComEnterUnit([JMM, DeltaDoctor, Denis], lab[1]);
+end;
+
+Every 0$2 trigger IsInUnit(JMM) = lab[1] and IsInUnit(DeltaDoctor) = lab[1] do
+var i, j, tmp;
+begin
+    CenterNowOnUnits(lab[1]);
     Say(JMM, 'D1-JMM-2');
     Say(DeltaDoctor, 'D1-Sci-2');
     Say(JMM, 'D1-JMM-3');
