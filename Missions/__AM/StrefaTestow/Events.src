@@ -1,4 +1,5 @@
 ON UnitDestroyed(un) do
+var i;
 begin
     if GetSide(un) = 3 and GetType(un) = unit_building then
     begin
@@ -35,6 +36,18 @@ begin
             destroyedBuildings = destroyedBuildings ^  GetDir(un);
         end;
             
+    end;
+    
+    if GetSide(un) = 3 and GetType(un) = unit_vehicle then
+    begin
+        for i in CPU1DamageTanks do
+        begin
+            if i = un then
+            begin
+                AddComConstruct(rufab, GetChassis(un), GetEngine(un), GetControl(un), GetWeapon(un));
+                CPU1DamageTanks = Delete(CPU1DamageTanks, i[i]);
+            end;
+        end;
     end;
 
 end;

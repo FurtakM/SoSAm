@@ -200,12 +200,25 @@ begin
 END;
 
 Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, weaponTab, engine, control, chassis);
-var i;
+var i, weapon;
 begin
 
     if FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
-        for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
-    
+    begin
+        for i = 1 to vehCount do
+        begin
+            weapon = weaponTab[i];
+
+            if weapon = 44 then
+            begin
+                AddComConstruct(fabric, 22, engine, control, weapon);
+            end
+            else
+            begin
+                AddComConstruct(fabric, chassis, engine, control, weapon);
+            end;
+        end; 
+    end;
 END;
 
 Export function EnemyVehicleAttack(side, targetSide);
@@ -214,7 +227,7 @@ begin
 
     for i := 1 to russianTanks do
     begin
-        if i = [5, 6, 5][Difficulty] then
+        if i = [5, 6, 6][Difficulty] then
         begin
 
             repeat
@@ -239,8 +252,15 @@ begin
 
                     wait(0$1);
 
-                    target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+                    if FilterUnitsInArea(SouthTerritory,[f_side, 1]) > 2 then
+                    begin
+                        target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                        target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+                    end else
+                    begin
+                        target1 := NearestUnitToUnit(FilterUnitsExceptArea(SouthTerritory, [f_side, targetSide]), i);
+                        target2 := NearestUnitToUnit(FilterUnitsExceptArea(SouthTerritory, [[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+                    end;
 
                     If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
                     begin
@@ -259,7 +279,7 @@ end;
 Export function RepairVehicle(side, repairArea, repX, repY);
 var i,j, vehicleOK_list, damageVehicle_list, vehicleNeedRepair_list, vehicleDontNeedRepair_list, mechanicInside_list, mechanicOutside_list;
 begin
-    vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 660], [f_not, [f_empty]]]);
+    vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 660], [f_not, [f_empty], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]]]]);
     damageVehicle_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 660]]]);
 
     vehicleNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 1000]]]);
@@ -280,24 +300,28 @@ begin
             begin
                 ComExitVehicle(j);
                 wait(0$1);
-                ComRepairVehicle(j, i);
+                AddComRepairVehicle(j, i);
             end;
         end;
     end;
 
-    if vehicleDontNeedRepair_list > 0 then
-    begin
-        ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
-    end;
+    if vehicleDontNeedRepair_list > 0 then ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
 
     if vehicleOK_list > 0 and russianDamageTanks > 0 then
     begin
         for i := 1 to vehicleOK_list do
         begin
-            if i = [5, 6, 5][Difficulty] then
+            if i = [5, 6, 6][Difficulty] then
             begin
                 for i in vehicleOk_list do russianTanks = russianTanks ^ i;
+                for i in vehicleOK_list do SetFuel(i, 100);
                 russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                if Difficulty = 2 or Difficulty = 3 then russianDamageTanks = Delete(russianDamageTanks, 1);
+                break;
             end;
         end;
     end; 

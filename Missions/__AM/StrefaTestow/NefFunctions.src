@@ -353,7 +353,7 @@ begin
             begin
                 ComExitVehicle(j);
                 wait(0$1);
-                ComRepairVehicle(j, i);
+                AddComRepairVehicle(j, i);
             end;
         end;
     end;
@@ -369,8 +369,12 @@ begin
         begin
             if i = 4 then
             begin
-                CPU1Tanks = CPU1Tanks ^ vehicleOK_list;
+                for i in vehicleOK_list do CPU1Tanks = CPU1Tanks ^ i;
                 CPU1DamageTanks = Delete(CPU1DamageTanks, 1);
+                CPU1DamageTanks = Delete(CPU1DamageTanks, 1);
+                CPU1DamageTanks = Delete(CPU1DamageTanks, 1);
+                CPU1DamageTanks = Delete(CPU1DamageTanks, 1);
+                break;
             end;
         end;
     end; 
