@@ -26,7 +26,7 @@ if LoadVariable('BrownInDelta', debug) then
    tmp := tmp ^ Brown;
    end;
 // Donaldson
-if LoadVariable('DonaldsonInDelta', 0) then
+if LoadVariable('DonaldsonInDelta', debug) then
    begin
    Donaldson := PrepareUnit('Donaldson', (not debug));
    tmp := tmp ^ Donaldson;
@@ -93,7 +93,6 @@ SetDir(veh, 1);
 PlaceUnitXY(veh, points[3][1], points[3][2], false);
 PlaceHumanInUnit(JMM, veh);
 
-if others > 1 then
-   for i in tmp diff others[1] do
-       PlaceUnitArea(i, startArea, false);
+for i in tmp diff others[1] do
+    PlaceUnitArea(i, startArea, false);
 End;
