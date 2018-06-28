@@ -1,6 +1,9 @@
+Export ru_rebuild_list;
 Export Function PrepareRussians;
 var i, j, r, un, skill, filter, tmp, dep_list, lab_list, fac_list, breastworks_list, bunker_list, turret_list, weapons_list, personel_counter;
 begin
+ru_rebuild_list := [];
+
 uc_side := 3;
 uc_nation := 3;
 
@@ -12,6 +15,16 @@ if Difficulty > 1 then
 
    bc_type := b_turret;
    CreateAndPlaceBuildingXYD(129, 96, 3);
+
+   if Difficulty > 2 then
+      begin
+      RemoveUnit(HexInfo(83, 141));
+      RemoveUnit(HexInfo(78, 133));
+
+      CreateAndPlaceBuildingXYD(83, 141, 2);
+      CreateAndPlaceBuildingXYD(78, 133, 2);
+      CreateAndPlaceBuildingXYD(145,112, 3);
+      end;
    end;
 
 dep_list := FilterAllUnits([[f_side, 3], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
@@ -26,6 +39,9 @@ personel_counter := [0, 4, 4, 3];
 skill := [4, 5, 6][Difficulty];
 
 SetBName(ru_dep_main, 'am_tukh');
+
+for i in FilterAllUnits([f_type, unit_building]) do
+    SetBLevel(i, [4, 5, 6][Difficulty]);
 
 for i in dep_list do
     begin
@@ -125,8 +141,28 @@ for i = 1 to r do
 End;
 
 // Ru script
+// Done: 
+// - Wycofywanie zolnierzy z uszkodzonych bunkrow/wiez
+// 
+// Todo:
+// - Elastyczna obrona pojazdami 
+// - Posilki z Trockiego
+// - Naprawa budynkow w bazie
+// - Odbudowywanie niektorych bunkrow w bazie (zeby wkurzyc Livida)
+// - W razie ataku glownego magazynu wszyscy zolnierze przychodza go bronic! (if GetLives(ru_dep_main) < 800)
+//
+//
 // Dragon zapcha³ kibel i zrzuci³ na kolege
-Every 0$1 do
+Every 0$2 trigger FilterUnitsInArea(baseArea, [f_type, unit_building]) do
+var i, filter, engs;
 begin
+enable;
+
+filter := FilterUnitsInArea(baseArea, [[f_not, [f_ok]], [f_type, unit_building]]);
+engs := FilterAllUnits([[f_side, 3], [f_class, 2], [f_ok]]);
+
+if not filter or not engs then
+   exit;
+
 
 End;

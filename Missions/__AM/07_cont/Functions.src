@@ -58,3 +58,55 @@ for i in units do
        break;
        end;
 End;
+
+Export Function GoToAnotherTower(un, b, x, y);
+var i, filter, t, side;
+begin
+if not un or not IsOk(un) then
+   exit;
+
+side := GetSide(un);
+
+filter := FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_ok], [f_empty]]) diff b;
+
+if not filter then
+   begin
+   filter := FilterAllUnits([[f_side, side], [f_btype, b_barracks]]);
+
+   if not filter then
+      begin
+      ComMoveXY(un, x, y); 
+      exit;
+      end;
+
+   repeat
+     t := NearestUnitToUnit(filter, un);
+
+     if UnitsInside(t) = 6 then
+        filter := filter diff t;
+   until UnitsInside(t) < 6 or not filter;
+
+   if not filter then
+      ComMoveXY(un, x, y) // ?
+     else
+      ComEnterUnit(un, t);
+   end
+  else
+   begin
+
+   repeat
+    t := NearestUnitToUnit(filter, un);
+
+    if (GetTag(t) = 7) then
+        filter := filter diff t;
+    until GetTag(t) <> 7 or not filter;
+
+    if GetTag(t) <> 7 then
+       begin
+       SetTag(t, 7);
+       ComEnterUnit(un, t);
+       end
+      else
+       ComMoveXY(un, x, y);
+    end;
+End;
