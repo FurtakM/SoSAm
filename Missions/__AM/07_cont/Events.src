@@ -8,10 +8,19 @@ if un = JMM then
 if GetType(un) = unit_building then
    buildings_counter := buildings_counter + 1;
 
+if un in FilterUnitsInArea(baseArea, [f_or, [f_btype, b_turret], [f_btype, b_bunker]]) then
+   ru_rebuild_list := ru_rebuild_list ^ [GetBType(un), GetX(un), GetY(un), GetDir(un)];
 End;
 
 
 On LeaveBuilding(b, un) do
 begin
+if b in FilterAllUnits([[f_side, 3], [f_or, [f_btype, b_breastwork], [f_btype, b_bunker]]]) then
+   GoToAnotherTower(un, b, 143, 143);  // koordy wpisane na sztywno!
+End;
 
+On EnterBuilding(b, un) do
+begin
+if b in FilterAllUnits([[f_side, 3], [f_btype, b_bunker]]) then
+   SetTag(b, 0);
 End;
