@@ -143,3 +143,140 @@ SetSide(Kikuchi, 1);
 
 InGameOff;
 End;
+
+Every 0$1 trigger FilterUnitsInArea(massDamageArea, [[f_side, 1], [f_not, [f_lives, 1000]]]) do
+var un, x, i;
+begin
+un := FilterUnitsInArea(massDamageArea, [[f_side, 1], [f_not, [f_lives, 1000]]])[1];
+
+DialogueOn;
+
+CenterNowOnUnits(un);
+
+if Lisa then
+   begin
+   Say(Lisa, 'D5-Lisa-1');
+   Say(JMM, 'D5-JMM-1a');
+   end
+  else
+   Say(JMM, 'D5-JMM-1');
+
+DialogueOff;
+
+while (true) do
+begin
+
+  wait(0$01);
+
+  x := FilterUnitsExceptArea(northElectro, [[f_btype, b_oil_power], [f_see, 1]]);
+
+  if x then
+     break;
+end;
+
+CenterOnUnits(x[1]);
+
+if Frank and GetSide(Frank) = 1 then
+   Say(Frank, 'D5a-Frank-1')
+  else
+   if Kikuchi and GetSide(Kikuchi) = 1 then
+      Say(Kikuchi, 'D5a-Yam-1')
+     else
+      Say(GetRandom(sex_male)[1], 'D5a-Sol1-1');
+
+Say(JMM, 'D5a-JMM-1');
+
+if Cyrus then
+   Say(Cyrus, 'D5a-Cyrus-1');
+
+x := false;
+
+while (true) do
+begin
+
+ wait(0$01);
+
+ for i in FilterAllUnits([f_or, [f_btype, b_depot], [f_btype, b_warehouse]]) diff ru_dep_west do
+     if BaseNeedEnergy(i) then
+        x := true;
+
+ if x then
+    break;
+
+end;
+
+Say(JMM, 'D5b-JMM-1');
+End;
+
+// Harisson first call
+Every 0$1 trigger time_to_end[1] < tick do
+begin
+if not IsDead(ru_dep_main) then
+   begin    
+   SayRadio(Harisson, 'D3b-Har-3');
+   ChangeMissionObjectives('M2a');
+   end
+  else
+   begin
+   SayRadio(Harisson, 'D3b-Har-3a');
+   ChangeMissionObjectives('M2');
+   end;
+
+can_end := true;
+SetAreaMapShow(endArea, 1);
+
+Wait(0$02);
+
+if Lisa then
+   Say(Lisa, 'D3b-Lisa');
+
+if Bobby then
+   Say(Bobby, 'D3b-Bobby-3');
+
+if Cyrus then
+   Say(Cyrus, 'D3b-Cyrus-3');
+
+if Frank and GetSide(Frank) = 1 then
+   Say(Frank, 'D3b-Frank-3');
+
+if Kikuchi and GetSide(Kikuchi) = 1 then
+   Say(Kikuchi, 'D3b-Yam-4');
+End;
+
+// Harisson second call
+Every 0$1 trigger time_to_end[2] < tick do
+begin
+SayRadio(Harisson, 'D4-Har-1');
+ChangeMissionObjectives('M3');
+End;
+
+// Time out
+Every 0$01 trigger time_to_end[3] < tick do
+begin
+if not IsDead(ru_dep_main) then
+   YouLost('TimeOut1')
+  else
+   YouLost('TimeOut2');
+End;
+
+// End Mission      // TODO
+Every 0$1 trigger IsInArea(JMM, endArea) and can_end do
+var wait_on;
+begin
+wait_on := false;
+
+if FilterUnitsInArea(endArea, [[f_side, 1], [f_or, [f_type, unit_human], [f_driving]]]) < FilterAllUnits([[f_side, 1], [f_or, [f_type, unit_human], [f_driving]]]) then
+   Case Query('Q1') of
+   1: wait_on := true;
+   2: wait_on := false;
+   end;
+
+repeat
+ wait(0$01);
+ display_strings := [FilterUnitsInArea(endArea, [[f_side, 1], [f_type, unit_human]]) ^ FilterUnitsInArea(endArea, [[f_side, 1], [f_type, unit_human], [f_not, [f_outside]]]), FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_outside]]])];
+until (not wait_on) or (FilterUnitsInArea(endArea, [[f_side, 1], [f_type, unit_human], [f_driving]]) = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_driving]]));
+
+// -- end --
+display_strings := 'END';
+End;
+

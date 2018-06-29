@@ -110,3 +110,20 @@ if not filter then
        ComMoveXY(un, x, y);
     end;
 End;
+
+// Return true if base don't have enough energy
+// param: base
+Export Function BaseNeedEnergy(base);
+var i, tmp;
+begin
+if not base then
+   exit;
+
+// [need, need_max, prod, max_prod]
+tmp := GetEnergy(GetBase(base));
+
+if tmp[1] > tmp[4] then
+   result := true
+  else
+   result := false;
+End;
