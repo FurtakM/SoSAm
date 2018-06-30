@@ -127,3 +127,39 @@ if tmp[1] > tmp[4] then
   else
    result := false;
 End;
+
+Export Function FilterPeople(side);
+begin
+result := FilterAllUnits([[f_side, side], [f_type, unit_human]]);
+End;
+
+Export Function FilterDrivers(side);
+begin
+result := FilterAllUnits([[f_side, side], [f_not, [f_outside]]]);
+End;
+
+Export Function FilterPeopleArea(side, area);
+begin
+result := FilterUnitsInArea(area, [[f_side, 1], [f_type, unit_human]]);
+End;
+
+Export Function FilterDriversArea(side, area);
+var i, tmp;
+begin
+tmp := FilterUnitsInArea(area, [[f_side, 1], [f_type, unit_vehicle], [f_not, [f_empty]]]);
+
+result := [];
+
+if not tmp then
+   exit;
+
+for i in tmp do
+    result := result ^ IsDrivenBy(i);
+
+result := result diff 0;
+End;
+
+Export Function FilterBuildings(side);
+begin
+result := FilterAllUnits([[f_side, side], [f_type, unit_building]]);
+End;

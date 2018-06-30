@@ -153,16 +153,99 @@ End;
 //
 //
 // Dragon zapcha³ kibel i zrzuci³ na kolege
-Every 0$2 trigger FilterUnitsInArea(baseArea, [f_type, unit_building]) do
-var i, filter, engs;
+Every 0$2 trigger FilterAllUnits([[f_side, 3], [f_class, 2], [f_ok]]) do
+var i, filter, tmp, engs, enemy;
 begin
 enable;
 
-filter := FilterUnitsInArea(baseArea, [[f_not, [f_ok]], [f_type, unit_building]]);
-engs := FilterAllUnits([[f_side, 3], [f_class, 2], [f_ok]]);
+filter := FilterUnitsInArea(baseArea, [[f_not, [f_lives, 1000]], [f_type, unit_building]]);
+engs := FilterAllUnits([[f_side, 3], [f_class, 2], [f_lives, 650]]);
 
-if not filter or not engs then
+if not filter and not ru_rebuild_list then
+   begin
+   if not IsInUnit(engs[1]) then
+      ComEnterUnit(engs, ru_dep_main);
    exit;
+   end;
+
+if debug then
+   display_strings := [engs, filter];
+
+if UnitFilter(engs, [f_not, [f_lives, 650]]) then
+   begin
+   tmp := UnitFilter(engs, [f_not, [f_lives, 650]]);
+
+   for i in tmp do
+       if not IsInArea(i, mainBaseArea) then
+          begin
+          ComMoveXY(i, 129, 125);
+          AddComWait(i, 0$30);
+          end;
+   end;
+
+if filter then
+   begin
+   for i in engs do
+       if IsInUnit(i) then
+          ComExitBuilding(i);
+
+   wait(3);
+
+   if filter >= 2 and engs >= 2 then
+      begin
+      for i = 1 to engs / 2 do
+          if not HasTask(engs[i]) then
+             ComRepairBuilding(engs[i], filter[1]);
+      for i = engs / 2 + 1 to engs do
+          if not HasTask(engs[i]) then
+             ComRepairBuilding(engs[i], filter[filter]);
+      end
+     else
+      for i in engs do
+          if not HasTask(i) then
+             ComRepairBuilding(i, filter[1]);
+   end;
+
+enemy := FilterAllUnits([f_enemy, 3]);
+
+if ru_rebuild_list and not filter then
+   begin
+   ComExitBuilding(engs);
+
+   if GetDistUnitXY(NearestUnitToXY(enemy, ru_rebuild_list[2], ru_rebuild_list[3]),  ru_rebuild_list[2], ru_rebuild_list[3]) > 10 then
+      ComBuild(engs, ru_rebuild_list[1], ru_rebuild_list[2], ru_rebuild_list[3], ru_rebuild_list[4]);
+   end;
 
 
+End;
+
+// Def main depot
+Every 0$1 trigger GetLives(ru_dep_main) < 650 do
+var tmp;
+begin
+tmp := FilterAllUnits([[f_side, 3], [f_class, 1]]);
+
+ComExitBuilding(tmp);
+wait(3);
+ComAgressiveMove(tmp, GetX(ru_dep_main), GetY(ru_dep_main));
+End;
+
+// Heal
+Every 0$01 trigger FilterAllUnits([[f_side, 3], [f_class, 4]]) do
+var i, tmp, doc;
+begin
+enable;
+
+tmp := FilterUnitsInArea(mainBaseArea, [[f_type, unit_human], [f_not, [f_lives, 1000]]]);
+doc := FilterAllUnits([[f_side, 3], [f_class, 4]]);
+
+if not tmp and not IsInUnit(doc[1]) then
+   ComEnterUnit(doc, FilterAllUnits([[f_side, 3], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]])[1]);
+
+if IsInUnit(doc[1]) then
+   ComExitBuilding(doc);
+
+wait(3);
+
+ComHeal(doc, tmp[1]);
 End;
