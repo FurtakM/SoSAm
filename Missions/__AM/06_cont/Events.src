@@ -64,6 +64,11 @@ begin
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
         end;
+
+        if GetClass(unit) = 3 then
+        begin
+            
+        end;
             
     end;
 end;
@@ -92,7 +97,7 @@ begin
         PlaceHumanInUnit(CreateHuman, building);   
     end;
 
-    if GetSide(building) = 3 and [GetWeapon(vehicle) = 42 OR GetWeapon(vehicle) = 43 OR GetWeapon(vehicle) = 44] then
+    if building = rufab and GetSide(building) = 3 and [GetWeapon(vehicle) = 42 OR GetWeapon(vehicle) = 43 OR GetWeapon(vehicle) = 44] then
        russianTanks = russianTanks ^ vehicle;
 
 end; 
@@ -101,4 +106,24 @@ On ApemanTamed(apeman, human) Do
 begin
 
     if GetSide(apeman) = 3 then tamedApemans = tamedApemans + 1;
+end;
+
+On UnitGoesToRed(unit) Do
+var i, tmpMeh;
+begin
+    if GetSide(unit) = 3 and GetType(unit) = unit_vehicle and [GetWeapon(unit) = 42 OR GetWeapon(unit) = 43 OR GetWeapon(unit) = 44] then
+    begin
+        tmpMeh = UnitsInside(unit);
+        ComExitVehicle(tmpMeh);
+        wait(0$1);
+        ComEnterUnit(tmpMeh, rufab);
+        for i in russianDamageTanks do
+        begin
+            if i = unit then
+            begin
+                AddComConstruct(rufab, GetChassis(unit), GetEngine(unit), GetControl(unit), GetWeapon(unit));
+                russianDamageTanks = Delete(russianDamageTanks, i[i]);
+            end;
+        end;
+    end;
 end;
