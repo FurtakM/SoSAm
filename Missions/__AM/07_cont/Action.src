@@ -248,6 +248,7 @@ Every 0$1 trigger time_to_end[2] < tick do
 begin
 SayRadio(Harisson, 'D4-Har-1');
 ChangeMissionObjectives('M3');
+must_end := true;
 End;
 
 // Time out
@@ -261,7 +262,7 @@ End;
 
 // End Mission     
 Every 0$1 trigger IsInArea(JMM, endArea) and can_end do
-var wait_on, tmp;
+var wait_on, i, tmp;
 begin
 wait_on := false;
 
@@ -349,6 +350,15 @@ if Kikuchi in tmp then
    SaveCharacters(Kikuchi, mission_prefix&'Kikuchi');
 
 SaveCharacters(tmp diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi], mission_prefix&'others');
+
+SaveVariable(tick, '07_time');
+
+tmp := [];
+
+for i in FilterAllUnits([[[f_side, 1], [f_nation, 1], [f_type, unit_vehicle]]]) do
+    tmp := tmp ^ [GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)];
+
+SaveVariable(tmp, '07_vehicles');
 
 YouWin;
 End;
