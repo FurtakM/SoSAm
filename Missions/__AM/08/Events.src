@@ -1,4 +1,5 @@
 On BuildingComplete(building) Do
+var tmp, un;
 begin
 
     if GetSide(building) = 3 then
@@ -9,6 +10,7 @@ begin
             SetResourceType(GetBase(building), 2, 5000);
             SetBName(building, 'konev');
             ruDepot = building;
+            BuildRussianBase;
         end;
 
         if GetBType(building) = 0 or GetBType(building) = 2 or GetBType(building) = 4 then ComUpgrade(building);
@@ -21,12 +23,24 @@ begin
             ruLab = building;
         end;
 
-        if GetBType(building) = b_bunker then AddComPlaceWeapon(building, [43, 44, 46][Rand(1,3)]);
+        if GetBType(building) = b_bunker then
+        begin    
+            uc_side = 3;
+            uc_nation = 3;
+
+            hc_gallery = '';
+            hc_name = '';
+            PrepareHuman(false, 1, rand(RuSolMinLevel, RuSolMaxLevel));
+
+            un = CreateHuman;
+            PlaceHumanInUnit(un, building);
+
+            AddComPlaceWeapon(building, [43, 44, 46][Rand(1,3)]);
+        end; 
         if GetBType(building) = b_turret then AddComPlaceWeapon(building, [43, 44, 46][Rand(1,3)]);
 
         if GetBType(building) = b_ext_computer then russianAI = 1;
             
-    
     end;
      
 
@@ -47,6 +61,11 @@ begin
 
        if GetBType(building) = b_lab_full then
             for i in FilterAllUnits([[f_side, 3], [f_class, 4]]) do ComEnterUnit(i, building);
+
+        if GetBType(building) = b_warehouse then
+        begin
+            ComEnterUnit(Borodin, building);
+        end;
 
     end;
 
