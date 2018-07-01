@@ -163,3 +163,84 @@ Export Function FilterBuildings(side);
 begin
 result := FilterAllUnits([[f_side, side], [f_type, unit_building]]);
 End;
+
+// animals
+Export Function PrepareNature;
+var i, animal, nat_area;
+begin
+
+     uc_side = 0;
+     uc_nation = 0;
+
+     nat_area := wildArea;
+
+     InitHc;
+
+     // birds
+     for i = 1 to 4 do
+     begin
+     hc_class = 18;
+     hc_gallery = '';
+     hc_face_number = 1;
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+     // tigers
+     for i = 1 to 6 do
+     begin
+     hc_class = class_tiger;
+     hc_gallery = '';
+     hc_agressivity = Rand(0, 50);
+     hc_face_number = 3;
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+     // horses
+     for i = 1 to 2 do
+     begin
+     hc_class = 21;
+     hc_gallery = '';
+     hc_agressivity = 0;
+     hc_face_number = 5;
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+
+     // enhidna
+     for i = 1 to 6 do
+     begin
+     hc_class = 13;
+     hc_gallery = '';
+     hc_face_number = 4;
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+     // fish
+     for i = 1 to 2 do
+     begin
+     hc_class = 20;
+     hc_gallery = '';
+     hc_face_number = 2;
+
+     animal := CreateHuman;
+     PlaceUnitXYR(animal, 101, 37, 3, false);
+     end;
+
+     // mastodonts
+     for i = 1 to 1 do
+     begin
+     vc_chassis := 31;
+     vc_control := control_rider;
+     animal := CreateVehicle;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+End;
