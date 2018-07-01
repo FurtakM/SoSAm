@@ -15,16 +15,20 @@ begin
     if gammaCommander = 2 then Say(Brown, 'D1-Brown-1');
     if gammaCommander = 3 then Say(Houten, 'D1-VanH-1');
     SayRadio(Harisson, 'D1-Har-1');
+    CenterOnXY(53, 40);
     if gammaCommander = 1 then Say(Donaldson, 'D1-Don-2');
     if gammaCommander = 2 then Say(Brown, 'D1-Brown-2');
     if gammaCommander = 3 then Say(Houten, 'D1-VanH-2');
     SayRadio(Harisson, 'D1-Har-2');
 
-    CenterOnXY(53, 40);
-
     repeat
         wait(0$1);
         for i in FilterAllUnits([[f_side, 6]]) do ComAgressiveMove(i, 54, 20);
+        for i in FilterAllUnits([[f_side, 1], [f_class, 1], [f_not, [f_inside]]]) do 
+        begin
+            AddComAgressiveMove(i, 70, 41);
+            AddComAgressiveMove(i, 46, 39);
+        end;
     until FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_lives, 250]]) = 0;
 
     InGameOff;
@@ -229,7 +233,7 @@ end;
 Every 0$1 trigger IsInArea(SikorskyTank, PrepareToBattle) do 
 begin
     Say(Sikorski, 'D7-Sik-1');
-    if GetDistUnits(JMM, SikorskyTank) < 20 then
+    if IsInArea(JMM, RussianBaseTerritory) or IsInUnit(JMM) then
     begin
         Say(Sikorski, 'D7a-Sik-1');
         SikorskyStatus = 1;

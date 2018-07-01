@@ -57,7 +57,7 @@ begin
         if i[1] in [b_lab_half, b_lab_full] then
         begin
             bc_kind1 := i[7];
-            bc_kind2 := i[8];
+            bc_kind2 := 15;
         end;
       
         if bc_type = b_depot then 
@@ -220,6 +220,7 @@ begin
     other = CreateCharacterSet('07c_others');
     for i in other do 
     begin
+        veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
         if veh > 0 then begin PlaceHumanInUnit(i, veh[1]);
         end else begin PlaceUnitArea(i, GammaSupport, false); end;
     end; 
