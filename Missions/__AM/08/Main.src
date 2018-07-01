@@ -16,6 +16,7 @@ Export RuSolMinLevel, RuSolMaxLevel;
 Export russianAI;
 Export ruDepot, ruLab, ruFab;
 Export ruDestroyBuilds;
+Export defenders_list;
 
 Export firstAttack, secondAttack;
 Export timerStatus;
@@ -54,13 +55,14 @@ begin
     russianAI = 0; // 0 - off, 1 - on
     ruDestroyBuilds = []; // russian destroyed buildings
     escapeAvalaible = 0;
+    defenders_list = [];
 
     varEvent1 = 0; // Block event
     timerStatus = 0; // 0 - off, 1 - on
 
-    supply = [17, 15, 13][Difficulty];
+    supply = [18, 17, 15][Difficulty];
 
-    debugMode = 1; // 0 - player, 1 - developer
+    debugMode = 0; // 0 - player, 1 - developer
 
     PrepareDifficulty;
 
@@ -71,6 +73,7 @@ begin
     PrepareRussianCommander;
     PrepareRussians;
     AddComBuild(FilterAllUnits([[f_side, 3], [f_class, 2]]), b_depot, 90, 86, 3);
+    BaseDefendersSpawn(3, RussianBaseTerritory, 3, rand(RuSolMinLevel, RuSolMaxLevel), 6, 4);
 
     PrepareCutsceneAttack;
 end;

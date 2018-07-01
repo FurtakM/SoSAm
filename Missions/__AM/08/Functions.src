@@ -68,14 +68,14 @@ Export function PrepareDifficulty;
 begin
     if Difficulty = 1 then
     begin
-        RuSolMinLevel = 5;
-        RuSolMaxLevel = 6;
+        RuSolMinLevel = 2;
+        RuSolMaxLevel = 4;
     end;
 
     if Difficulty = 2 then
     begin
-        RuSolMinLevel = 6;
-        RuSolMaxLevel = 6;
+        RuSolMinLevel = 3;
+        RuSolMaxLevel = 5;
         SetTech(51, 3, state_enabled);
         SetTech(57, 3, state_enabled);
         SetTech(57, 6, state_researched);
@@ -84,8 +84,8 @@ begin
 
     if Difficulty = 3 then
     begin
-        RuSolMinLevel = 6;
-        RuSolMaxLevel = 7;
+        RuSolMinLevel = 3;
+        RuSolMaxLevel = 6;
         SetTech(57, 3, state_enabled);
         SetTech(51, 3, state_enabled);
         SetTech(52, 3, state_enabled);
@@ -157,7 +157,7 @@ begin
 
     if barrackList > 0 then
     begin
-        if turretList = 0 then
+        if turretList = 0 and FilterUnitsInArea(RussianBaseTerritory, [[f_side, 1], [f_type, unit_human]]) = 0 then
         begin
             for i in soldiers_list do ComEnterUnit(i, barrackList[rand(1, barrackList)]);
         end else
@@ -169,6 +169,86 @@ begin
 
     end;
 
+end;
+
+Export function BaseDefendersSpawn(side, areaSpawn, nation, skill, infantryCount, vehCount);
+var i,j, un, target, veh;
+begin
+
+        for i = 1 to infantryCount do
+        begin
+
+                uc_side = side;
+                uc_nation = nation;
+
+                hc_class = 1;
+                hc_name = '';
+                hc_gallery = '';
+                PrepareHuman(false, 1, rand(RuSolMinLevel, RuSolMaxLevel));
+
+                un = CreateHuman;
+                PlaceUnitArea(un, areaSpawn, false);
+                defenders_list = defenders_list ^ un;
+        end;
+
+        for i = 1 to vehCount do
+        begin
+                uc_side = side;
+                uc_nation = nation;
+
+                vc_Chassis = 22;
+                vc_engine = 1;
+                vc_control = 1;
+                vc_weapon = [43, 44][Rand(1, 2)];
+
+                veh = CreateVehicle;
+                PlaceUnitArea(veh,  areaSpawn, false);
+                defenders_list = defenders_list ^ veh;
+
+                hc_class = 3;
+                hc_name = '';
+                hc_gallery = '';
+                PrepareHuman(false, 3, rand(RuSolMinLevel, RuSolMaxLevel));
+
+                un = CreateHuman;
+                PlaceHumanInUnit(un, veh);
+                defenders_list = defenders_list ^ un;
+
+        end;
+end;
+
+Export function DefenseBase(targetSide, defenseArea);
+var i, target;
+begin
+	If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) = 0 and defenders_list > 0 then
+	begin
+
+		for i in defenders_list do
+		begin
+				AddComMoveXY(i, 65, 68);
+				SetFuel(i, 100);
+		end;
+
+	end;
+
+	If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) > 0 and defenders_list > 0 then
+	begin
+		for i in defenders_list do
+		begin
+				target := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+				ComAttackUnit(i, target);
+		end;
+
+		if russianAI = 0 then
+		begin
+				for i in FilterAllUnits([[f_side, 3], [f_class, 1]]) diff Borodin  do
+				begin
+						target := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+						ComAttackUnit(i, target);
+				end;
+		end;
+
+	end;
 end;
 
 Export function RepairBuilding(side, building);
@@ -183,24 +263,24 @@ begin
 
                 for i in engineerOk_list do
                 begin
-                     for j in buildings_list do
-                     begin
+                                for j in buildings_list do
+                                begin
 
-                        AddComExitBuilding(i);
-                        wait(0$1);
-                        AddComRepairBuilding(i, j);
+                                AddComExitBuilding(i);
+                                wait(0$1);
+                                AddComRepairBuilding(i, j);
 
-                    end;
+                        end;
                 end;
         end;
 
         if buildings_list = 0 then
         begin
 
-           for i in engineerOK_list do
-           begin
-             ComEnterUnit(i, building);
-          end;
+                for i in engineerOK_list do
+                begin
+                        ComEnterUnit(i, building);
+                end;
 
         end;
 END;
