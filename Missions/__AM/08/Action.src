@@ -63,6 +63,7 @@ begin
     PrepareMacmillanSquad;
     CenterNowOnUnits(JMM);
     Say(JMM, 'D3-JMM-1');
+    JMMArrive = 1;
 
     If IsOK(Donaldson) and gammaCommander = 1 then
     begin
@@ -150,7 +151,6 @@ begin
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM], 'DCb-Sol1-1', 'DCb-Sol1-1');
     Say(JMM, 'DCb-JMM-2');
 
-    JMMArrive = 1;
     secondAttack = 1;
 
 end;
@@ -158,7 +158,7 @@ end;
 // Dialog with Powell about Harrison
 Every 0$01 trigger JMMArrive = 1  do 
 begin
-    wait(13$0);
+    wait(5$0);
     DialogueOn;
     SayRadio(Powell, 'D4-Pow-1');
     Say(JMM, 'D4-JMM-1');
@@ -171,7 +171,7 @@ end;
 // Dialog about support
 Every 0$01 trigger JMMArrive = 1 do
 begin
-    wait(20$0);
+    wait(15$0);
     DialogueOn;
     SayRadio(Powell, 'D4a-Pow-1');
     DialogueOff;
@@ -180,15 +180,15 @@ end;
 // Sikorsky spawn
 Every 0$01 trigger JMMArrive = 1 do
 begin
-    wait(30$0);
+    wait(25$0);
     PrepareSikorsky;
+    SikorskyArrive = 1;
     PrepareSikorskyArmy;
 end;
 
 // Sikorsky arrive
 Every 0$1 trigger IsInArea(SikorskyTank, GammaSpawn) do 
 begin
-    SikorskyArrive = 1;
     CenterNowOnUnits(SikorskyTank);
     DialogueOn;
     Say(Sikorski, 'D5-Sik-1');
