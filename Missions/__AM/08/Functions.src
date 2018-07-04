@@ -220,35 +220,35 @@ end;
 Export function DefenseBase(targetSide, defenseArea);
 var i, target;
 begin
-	If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) = 0 and defenders_list > 0 then
-	begin
+        If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) = 0 and defenders_list > 0 then
+        begin
 
-		for i in defenders_list do
-		begin
-				AddComMoveXY(i, 65, 68);
-				SetFuel(i, 100);
-		end;
+                for i in defenders_list do
+                begin
+                                ComMoveXY(i, 65, 68);
+                                SetFuel(i, 100);
+                end;
 
-	end;
+        end;
 
-	If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) > 0 and defenders_list > 0 then
-	begin
-		for i in defenders_list do
-		begin
-				target := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-				ComAttackUnit(i, target);
-		end;
+        If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) > 0 and defenders_list > 0 then
+        begin
+                for i in defenders_list do
+                begin
+                                target := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                                ComAttackUnit(i, target);
+                end;
 
-		if russianAI = 0 then
-		begin
-				for i in FilterAllUnits([[f_side, 3], [f_class, 1]]) diff Borodin  do
-				begin
-						target := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-						ComAttackUnit(i, target);
-				end;
-		end;
+                if russianAI = 0 then
+                begin
+                                for i in FilterAllUnits([[f_side, 3], [f_class, 1]]) diff Borodin  do
+                                begin
+                                                target := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                                                ComAttackUnit(i, target);
+                                end;
+                end;
 
-	end;
+        end;
 end;
 
 Export function RepairBuilding(side, building);
