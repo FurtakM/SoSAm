@@ -21,6 +21,11 @@ begin
     if gammaCommander = 3 then Say(Houten, 'D1-VanH-2');
     SayRadio(Harisson, 'D1-Har-2');
 
+
+    if FilterAllUnits([[f_side, 1], [f_control, control_remote], [f_linked]]) then
+       for i in FilterAllUnits([[f_side, 1], [f_control, control_remote], [f_linked]]) do
+           ComAgressiveMove(i, 70, 41);
+
     repeat
         wait(0$1);
         for i in FilterAllUnits([[f_side, 6]]) do ComAgressiveMove(i, 54, 20);
@@ -29,7 +34,11 @@ begin
             AddComAgressiveMove(i, 70, 41);
             AddComAgressiveMove(i, 46, 39);
         end;
-    until FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_lives, 250]]) = 0;
+
+        for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 500]]]) do
+            ComMoveXY(i, GetX(amDepot), GetY(amDepot));
+
+    until FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_lives, 250]]) < 6;
 
     InGameOff;
 
@@ -59,7 +68,7 @@ end;
 // Spawn John
 Every 0$1 do
 begin
-    wait(LoadVariable('07_time', 0) / 2);
+    wait(LoadVariable('07_time', 0) div 3);
     PrepareMacmillanSquad;
     CenterNowOnUnits(JMM);
     Say(JMM, 'D3-JMM-1');
@@ -180,7 +189,7 @@ end;
 // Sikorsky spawn
 Every 0$01 trigger JMMArrive = 1 do
 begin
-    wait(18$0);
+    wait([10$00, 12$00, 15$00][Difficulty]);
     PrepareSikorsky;
     SikorskyArrive = 1;
     PrepareSikorskyArmy;
