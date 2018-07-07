@@ -1,5 +1,5 @@
 Export function PrepareHeroes;
-var i;
+var i, fac, lab, arm, j, placed, ct, bun;
 begin
     uc_side = 1;
     uc_nation = 1;
@@ -25,7 +25,86 @@ begin
     Powell = PrepareUnit('Powell', false);
 
     others_gamma = CreateCharacterSet('07_othersGamma');
-    for i in others_gamma do PlaceUnitArea(i, GammaSpawn, false);
+
+    arm := FilterAllUnits([[f_side, 1], [f_btype, b_barracks]]);
+    lab := FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
+    fac := FilterAllUnits([[f_side, 1], [f_btype, b_factory]]);
+    ct  := FilterAllUnits([[f_side, 1], [f_btype, b_control_tower]]);
+    bun := FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_breastwork], [f_btype, b_bunker]]]);
+
+    for i in others_gamma do
+        begin
+        placed := false;
+
+        if GetClass(i) = 1 then
+           begin
+           if UnitFilter(bun, [f_empty]) then
+              begin
+              PlaceHumanInUnit(i, UnitFilter(bun, [f_empty])[1]);
+              placed := true;
+              end;
+
+           if arm and not placed then
+              begin
+
+              for j in arm do
+                  if UnitsInside(j) < 6 then
+                     begin
+                     PlaceHumanInUnit(i, j);
+                     placed := true;
+                     break;
+                     end;
+              end;
+           end;
+
+        if GetClass(i) = 3 then
+           if fac then
+              begin
+
+              if ct then
+                 begin
+                 PlaceHumanInUnit(i, ct[1]);
+                 placed := true;
+                 end;
+
+              if placed then
+                 continue;
+
+              for j in fac do
+                  if UnitsInside(j) < 6 then
+                     begin
+                     PlaceHumanInUnit(i, j);
+                     placed := true;
+                     break;
+                     end;
+              end;
+
+        if GetClass(i) = 4 then
+           if lab then
+              begin
+
+              for j in lab do
+                  if UnitsInside(j) < 6 then
+                     begin
+                     PlaceHumanInUnit(i, j);
+                     placed := true;
+                     break;
+                     end;
+              end;
+
+        if not placed then
+           begin
+           PlaceUnitArea(i, GammaSpawn, false);
+           ComHold(i);
+           end;
+
+        end;
+
+    if ct and UnitsInside(ct[1]) then
+       begin
+       for i in FilterAllUnits([[f_side, 1], [f_control, control_remote]]) do
+           ComLinkTo(i, UnitsInside(ct[1])[rand(1, UnitsInside(ct[1]))]);
+       end;
 
 end;
 
@@ -127,7 +206,8 @@ begin
     end; 
 
     other = CreateCharacterSet('OtherStayInDelta');
-    for j = 3 to 3 + 3 - i do PlaceUnitArea(other[j], GammaSupport, false);
+        
+    for j = i to other do PlaceUnitArea(other[j], GammaSupport, false);
 
     other = CreateCharacterSet('06_other_apemans');
     if other >= 5 then
