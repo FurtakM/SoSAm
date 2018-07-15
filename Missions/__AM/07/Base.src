@@ -30,7 +30,8 @@ if gamma_commander = 1 then // Donaldson is commander
       {if LoadVariable('DonaldsonInDelta', 0) then
          Donaldson := PrepareUnit('Donaldson', (not debug), '05_')
         else}
-         Donaldson := PrepareUnit('Donaldson', (not debug), '04_');
+        if not LoadVariable('DonaldsonStayInDelta', 0) then
+           Donaldson := PrepareUnit('Donaldson', (not debug), '04_');
    end;
 
 if Donaldson then
@@ -49,7 +50,8 @@ if gamma_commander = 2 then // Brown is commander
       {if LoadVariable('BrownInDelta', 0) then
          Brown := PrepareUnit('Brown', (not debug), '05_')
         else}
-         Brown := PrepareUnit('Brown', (not debug), '04_');
+        if not LoadVariable('BrownStayInDelta', 0) then
+           Brown := PrepareUnit('Brown', (not debug), '04_');
    end;
 
 if Brown then
@@ -92,7 +94,8 @@ if LoadVariable('LisaIn06', 0) then
    {if LoadVariable('LisaInDelta', 0) then
       Lisa := PrepareUnit('Lisa', (not debug), '05_')
      else}
-      Lisa := PrepareUnit('Lisa', (not debug), '04_');
+     if not LoadVariable('LisaStayInDelta', 0) then
+        Lisa := PrepareUnit('Lisa', (not debug), '04_');
 
 if Lisa then
    team := team ^ Lisa;
@@ -105,7 +108,13 @@ if Lisa then
       {if LoadVariable('CyrusInDelta', 0) then
          Cyrus := PrepareUnit('Cyrus', (not debug), '05_')
         else}
-         Cyrus := PrepareUnit('Cyrus', (not debug), '03_');
+        if not LoadVariable('CyrusStayInDelta', 0) then
+           begin
+           Cyrus := PrepareUnit('Cyrus', (not debug), '04_');
+
+           if not Cyrus then
+              Cyrus := PrepareUnit('Cyrus', (not debug), '03_');
+           end;
 
    if Cyrus then
       team := team ^ Cyrus;
@@ -119,7 +128,13 @@ if Lisa then
          {if LoadVariable('BobbyInDelta', 0) then
             Bobby := PrepareUnit('Bobby', (not debug), '05_')
            else}
-            Bobby := PrepareUnit('Bobby', (not debug), '03_');
+           if not LoadVariable('BobbyStayInDelta', 0) then
+              begin
+              Bobby := PrepareUnit('Bobby', (not debug), '04_');
+
+              if not Bobby then
+                 Bobby := PrepareUnit('Bobby', (not debug), '03_');
+              end;
 
          if Bobby then
             team := team ^ Bobby;

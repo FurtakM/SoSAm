@@ -194,32 +194,65 @@ begin
 
     Denis = PrepareUnit('06c_Denis', true);
     PlaceUnitArea(Denis, GammaSupport, false);
-    if IsOk(Denis) then i = i + 1;
+
     Joan = PrepareUnit('06c_Joan', true);
     PlaceUnitArea(Joan, GammaSupport, false);
-    if IsOk(Joan) then i = i + 1;
+
     if LoadVariable('GladstoneIn07', 0) = 0 then
     begin
         Gladstone = PrepareUnit('06c_Gladstone', true);
+
+        if not Gladstone and LoadVariable('GladstoneStayInDelta', 0) then
+           Gladstone = PrepareUnit('05_Gladstone', true);
+
         PlaceUnitArea(Gladstone, GammaSupport, false);
-        i = i + 1;
-    end; 
+    end;
+
+    if LoadVariable('LisaStayInDelta', 0) then
+       begin
+       Lisa = PrepareUnit('05_Lisa', true);
+       PlaceUnitArea(Lisa, GammaSupport, false);
+       end;
+
+    if LoadVariable('BobbyStayInDelta', 0) then
+       begin
+       Bobby = PrepareUnit('05_Bobby', true);
+       PlaceUnitArea(Bobby, GammaSupport, false);
+       end;
+
+    if LoadVariable('CyrusStayInDelta', 0) then
+       begin
+       Cyrus = PrepareUnit('05_Cyrus', true);
+       PlaceUnitArea(Cyrus, GammaSupport, false);
+       end;
+
+    if LoadVariable('BrownStayInDelta', 0) then
+       begin
+       Brown = PrepareUnit('05_Brown', true);
+       PlaceUnitArea(Brown, GammaSupport, false);
+       end;
+
+    if LoadVariable('DonaldsonStayInDelta', 0) then
+       begin
+       Donaldson = PrepareUnit('05_Donaldson', true);
+       PlaceUnitArea(Donaldson, GammaSupport, false);
+       end;
 
     other = CreateCharacterSet('OtherStayInDelta');
-        
-    for j = i to other do PlaceUnitArea(other[j], GammaSupport, false);
+
+    if other then
+       for j = 1 to other do
+           PlaceUnitArea(other[j], GammaSupport, false);
 
     other = CreateCharacterSet('06_other_apemans');
+
     if other >= 5 then
-    begin
-        for i := 1 to 5 do
-        begin
-            PlaceUnitArea(other[i], GammaSupport, false);
-        end;
-    end else
-    begin
-        for i in other do PlaceUnitArea(i, GammaSupport, false);
-    end;
+       j := 5
+      else
+       j := other;
+
+       for i = 1 to j do
+           PlaceUnitArea(other[i], GammaSupport, false);
 
     ComMoveXY(FilterUnitsInArea(GammaSupport,[[f_side, 1],[f_type, unit_human]]), 53, 19);
 
