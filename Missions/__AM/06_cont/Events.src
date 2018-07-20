@@ -11,6 +11,8 @@ begin
         DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3]]) diff [JMM], 'D3b-Mech1-1', 'D3b-Mech1-1');
     end;
 
+    if GetBType(building) = 0 and GetSide(building) = 1 then SetBName(building, 'theta');
+
     if GetSide(building) = 3 then
     begin
         ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1);
@@ -113,17 +115,19 @@ var i, tmpMeh;
 begin
     if GetSide(unit) = 3 and GetType(unit) = unit_vehicle and [GetWeapon(unit) = 42 OR GetWeapon(unit) = 43 OR GetWeapon(unit) = 44] then
     begin
-        tmpMeh = UnitsInside(unit);
-        ComExitVehicle(tmpMeh);
-        wait(0$1);
-        ComEnterUnit(tmpMeh, rufab);
-        for i in russianDamageTanks do
+    AddComConstruct(rufab, GetChassis(unit), GetEngine(unit), GetControl(unit), GetWeapon(unit));
+       { for i in russianDamageTanks do
         begin
             if i = unit then
             begin
                 AddComConstruct(rufab, GetChassis(unit), GetEngine(unit), GetControl(unit), GetWeapon(unit));
                 russianDamageTanks = Delete(russianDamageTanks, i[i]);
             end;
-        end;
+        end;  }
+
+        tmpMeh = UnitsInside(unit);
+        ComExitVehicle(tmpMeh);
+        wait(0$01);
+        ComEnterUnit(tmpMeh, rufab);
     end;
 end;

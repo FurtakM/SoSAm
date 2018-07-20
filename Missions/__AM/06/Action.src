@@ -75,9 +75,9 @@ Every 0$1 trigger FilterUnitsExceptArea(ExitArea, [[f_side, 1], [f_type, unit_hu
 var i;
 begin
 
-    if FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle]]) > 0 then
+    if FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) > 0 then
     begin
-        for i in FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle]]) do 
+        for i in FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) do
         begin
             if GetWeapon(i) = us_cargo_bay then
             begin
