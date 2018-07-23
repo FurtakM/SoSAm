@@ -82,20 +82,20 @@ Export function PrepareDifficulty;
 begin
     if Difficulty = 1 then
     begin
-        RuSolMinLevel = 2;
-        RuSolMaxLevel = 5;
+        RuSolMinLevel = 3;
+        RuSolMaxLevel = 6;
     end;
 
     if Difficulty = 2 then
     begin
-        RuSolMinLevel = 3;
-        RuSolMaxLevel = 5;
+        RuSolMinLevel = 5;
+        RuSolMaxLevel = 6;
     end;
 
     if Difficulty = 3 then
     begin
-        RuSolMinLevel = 4;
-        RuSolMaxLevel = 5;
+        RuSolMinLevel = 5;
+        RuSolMaxLevel = 7;
     end;
 end;
 
@@ -169,7 +169,7 @@ begin
 
   sci_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
 
-  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
 
     if damageUnits > 0 and sci_list > 0 then
     begin
@@ -209,9 +209,9 @@ begin
         begin
             weapon = weaponTab[i];
 
-            if weapon = 44 then
+            if weapon = 46 then
             begin
-                AddComConstruct(fabric, 22, engine, control, weapon);
+                AddComConstruct(fabric, 24, engine, control, weapon);
             end
             else
             begin
