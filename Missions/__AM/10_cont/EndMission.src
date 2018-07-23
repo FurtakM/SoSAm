@@ -1,0 +1,48 @@
+Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_researched and GetTech(21, 1) = state_researched and GetTech(22, 1) = state_researched and [GetTech(tech_LasSight, 1) = state_enabled or GetTech(tech_AI, 1) = state_enabled] do 
+begin
+    case query('QEndMission') of
+        1: begin   
+        end;
+        2:begin
+            FinishMission;
+        end;
+    end;
+end;
+
+Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_researched and GetTech(21, 1) = state_researched and GetTech(22, 1) = state_researched and GetTech(tech_LasSight, 1) = state_researched and GetTech(tech_AI, 1) = state_researched do 
+    FinishMission;
+
+Export function FinishMission;
+begin
+    if GetTech(tech_LasSight, 1) = state_researched then
+    begin
+        AddMedal('sights', 1);
+    end
+    else
+    begin
+        AddMedal('sights', -1);
+    end;
+
+    if GetTech(tech_AI, 1) = state_researched then
+    begin
+        AddMedal('computers', 1);
+    end
+    else
+    begin
+        AddMedal('computers', -1);
+    end;
+
+    if arabianEscape = 0 then
+    begin
+        AddMedal('renegades', 2);
+    end
+    else
+    begin
+        AddMedal('renegades', -1);
+    end;
+
+    GiveMedals('Main');
+    RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]));
+
+    YouWin;
+end;

@@ -1,6 +1,20 @@
+{
+    Map scripts : Nefarem
+    Status: 80%
+
+    TODO:
+    - Russian build tanks.
+    - Russian attacks.
+    - Dialog about special ru bazook ammo.
+    - Save characters.
+    - Balance game difficulty.
+}
 
 Export JMM, Gary, Cyrus, Bobby, Lisa; // Heroes with JMM
 Export Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, AmScout; // Heroes from ALpha
+Export Cornell; // Other Am heroes
+Export Powell; // Am commander
+Export Tsaritsyn; // Ru commander
 Export Dietrich; // Ar commander
 Export playerVehs;
 Export joinEpsilon;
@@ -11,6 +25,11 @@ Export ruBaseReady, russianAI;
 Export activateRUAI;
 
 Export arDepot, arLab, arArm;
+Export arabianAttackersAI;
+Export arabianEscape;
+
+Export eventVar1;
+Export debugMode;
 
 Starting
 begin
@@ -23,6 +42,13 @@ begin
     ruBaseReady = 0;
     russianAI = 0;
     activateRUAI = 0;
+
+    arabianEscape = 0; // 0 - killed, 1 - escaped
+    arabianAttackersAI = 0; // 0 - off, 1 - on
+
+    eventVar1 = 0;
+
+    debugMode = 1; // 0 - players, 1 - developers
 
     PrepareDifficulty;
     PrepareVehicles;
@@ -37,4 +63,16 @@ begin
     TameApemans;
 
     SaveForQuickRestart;
+
+end;
+
+Every 0$1 trigger debugMode = 1 do
+var i;
+begin
+    enable;
+    fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
 end;
