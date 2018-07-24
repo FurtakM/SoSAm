@@ -1,3 +1,110 @@
+Export Function PrepareUnit(ident, exist_mode);
+var unit;
+begin
+
+if exist_mode then
+   unit := CreateCharacter(ident)
+  else
+   unit := NewCharacter(ident);
+
+result := unit;
+End;
+
+Export function DialogRandom(characters, dialogMID, dialogFID);
+var i, rnd;
+begin
+    rnd = rand(1, characters);  
+
+    for i = 1 to characters do
+    begin
+
+       if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
+       if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
+
+    end;
+  
+end;
+
+Export function ShowQuery1;
+begin
+    case query('Q1') of
+        1: result = 1;
+        2: result = 2;
+        3: result = 3;
+    end;
+end;
+
+Export function ShowQuery2;
+begin
+    case query('Q1a') of
+        1: result = 1;
+        2: result = 2;
+        3: result = 3;
+    end;
+end;
+
+Export function ShowQuery3;
+begin
+    case query('Q2') of
+        1: result = 1;
+        2: result = 2;
+        3: result = 3;
+        4: result = 4;
+    end;
+end;
+
+Export function ShowQuery4;
+begin
+    case query('Q2K') of
+        1: result = 1;
+        2: result = 2;
+        3: result = 3;
+        4: result = 4;
+    end;
+end;
+
+Export function ShowQuery5;
+begin
+    case query('Q2a') of
+        1: result = 1;
+        2: result = 2;
+        3: result = 3;
+        4: result = 4;
+    end;
+end;
+Export function ShowQuery6;
+begin
+    case query('Q2aK') of
+        1: result = 1;
+        2: result = 2;
+        3: result = 3;
+        4: result = 4;
+    end;
+end;
+Export function ShowQuery7;
+begin
+    case query('Q2b') of
+        1: result = 1;
+        2: result = 2;
+        3: result = 3;
+    end;
+end;
+Export function ShowQuery8;
+begin
+    case query('Q2c') of
+        1: result = 1;
+        2: result = 2;
+    end;
+end;
+Export function ShowQuery9;
+begin
+    case query('Q2cK') of
+        1: result = 1;
+        2: result = 2;
+    end;
+end;
+
+
 Export function RespawnInside(side, nation, build, skill, class, count);
 var i,l, un, tmp;
 begin
