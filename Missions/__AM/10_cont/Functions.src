@@ -26,43 +26,52 @@ end;
 
 end;
 
+Export function EnchancedSaveCharacters(charactersList, ident);
+var i;
+begin
+    for i in charactersList do
+    begin
+         if IsOk(i) then SaveCharacters(i, ident);
+    end;
+end;
+
 Export function PrepareDifficulty;
 begin
-if difficulty = 1 then
-begin
-    RuSolMinLevel = 9;
-    RuSolMaxLevel = 10;
-    SetTech(tech_Weap1, 6, state_researched);
-    SetTech(tech_Weap1, 5, state_researched);
-end;
+    if difficulty = 1 then
+    begin
+        RuSolMinLevel = 4;
+        RuSolMaxLevel = 7;
+        SetTech(tech_Weap1, 6, state_researched);
+        SetTech(tech_Weap1, 5, state_researched);
+    end;
 
-if difficulty = 2 then
-begin
-    RuSolMinLevel = 9;
-    RuSolMaxLevel = 10;
-    SetTech(tech_Weap1, 6, state_researched);
-    SetTech(tech_Comp1, 6, state_researched);
-    SetTech(tech_ST1, 6, state_researched);
-    SetTech(tech_Weap1, 5, state_researched);
-    SetTech(tech_StimDrugs, 2, state_researched);
-    SetTech(tech_StimDrugs, 5, state_researched);
-end;
+    if difficulty = 2 then
+    begin
+        RuSolMinLevel = 5;
+        RuSolMaxLevel = 7;
+        SetTech(tech_Weap1, 6, state_researched);
+        SetTech(tech_Comp1, 6, state_researched);
+        SetTech(tech_ST1, 6, state_researched);
+        SetTech(tech_Weap1, 5, state_researched);
+        SetTech(tech_StimDrugs, 2, state_researched);
+        SetTech(tech_StimDrugs, 5, state_researched);
+    end;
 
-if difficulty = 3 then
-begin
-    RuSolMinLevel = 9;
-    RuSolMaxLevel = 10;
-    SetTech(tech_Weap1, 6, state_researched);
-    SetTech(tech_Comp1, 6, state_researched);
-    SetTech(tech_Weap2, 6, state_researched);
-    SetTech(tech_Comp2, 6, state_researched);
-    SetTech(tech_ST1, 6, state_researched);
-    SetTech(tech_ST2, 6, state_researched);
-    SetTech(tech_Weap1, 5, state_researched);
-    SetTech(tech_Weap2, 5, state_researched);
-    SetTech(tech_Bio1, 2, state_researched);
-    SetTech(tech_Bio1, 5, state_researched);
-end;
+    if difficulty = 3 then
+    begin
+        RuSolMinLevel = 6;
+        RuSolMaxLevel = 8;
+        SetTech(tech_Weap1, 6, state_researched);
+        SetTech(tech_Comp1, 6, state_researched);
+        SetTech(tech_Weap2, 6, state_researched);
+        SetTech(tech_Comp2, 6, state_researched);
+        SetTech(tech_ST1, 6, state_researched);
+        SetTech(tech_ST2, 6, state_researched);
+        SetTech(tech_Weap1, 5, state_researched);
+        SetTech(tech_Weap2, 5, state_researched);
+        SetTech(tech_Bio1, 2, state_researched);
+        SetTech(tech_Bio1, 5, state_researched);
+    end;
 end;
 
 // AI functions
@@ -72,6 +81,8 @@ var i, engineers, buildingsTab;
 begin
 
 // 1 - west , 2 - middle, 3 - east 
+
+   ruPossition = position;
 
     if position = 1 then
     begin
@@ -206,10 +217,6 @@ begin
     engineers = FilterAllUnits([[f_side, 2], [f_class, 2]]);
     AddComBuild(engineers, b_depot, 71, 15, 3);
 
-   // repeat
-  //      wait(0$1);
-  //  until GetResourceType(GetBase(arDepot), 1) > 0;
-
     buildingsTab = [
     [b_lab, 77, 18, 3],
     [b_armoury, 77, 26, 0],
@@ -266,7 +273,7 @@ var i,j, soldiers_list, turretList, temp, barrackList;
 begin
 
 
-soldiers_list = FilterAllUnits([[f_side, side], [f_class, 1], [f_outside], [f_lives, 700]]);
+soldiers_list = FilterAllUnits([[f_side, side], [f_outside], [f_lives, 700], [f_or, [f_class, 1], [f_class, 9]]]);
 turretList = FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
 barrackList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
 
@@ -288,28 +295,35 @@ end;
 
 end;
 
-Export function RepairBuilding(side, building, area);
-var buildings_list, i,engineerOkInside, engineerOkOutside, j;
+Export function RepairBuilding(side, building);
+var buildings_list, i,engineerOk_list, j;
 begin
 
-    engineerOkInside = UnitsInside(building);
-    engineerOkOutside = FilterUnitsInArea(area, [[f_side, side], [f_class, 2], [f_lives, 1000]]);
-    buildings_list = FilterUnitsInArea(area, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+    engineerOk_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 2], [f_class, 16]], [f_lives, 1000]]);
+    buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-    if buildings_list > 0 and engineerOkInside > 0 then
-        for i in engineerOkInside do ComExitBuilding(i);
-
-    if engineerOkOutside > 0 then
+    if buildings_list > 0 and engineerOk_list > 0 then
     begin
 
-        for i in engineerOkOutside do
+        for i in engineerOk_list do
+        begin
             for j in buildings_list do
-                ComRepairBuilding(i, j[1]);
+            begin
 
+                AddComExitBuilding(i);
+                wait(0$1);
+                AddComRepairBuilding(i, j);
+
+            end;
+        end;
     end;
 
     if buildings_list = 0 then
-        for i in engineerOkOutside do ComEnterUnit(i, building);
+    begin
+
+        for i in engineerOK_list do ComEnterUnit(i, building);
+
+    end;
 END;
 
 Export function RebuildBuildings(side, destroyedBuildings);
@@ -376,7 +390,7 @@ begin
         uc_nation = nation;
 
         vc_engine = vehengine;
-        vc_control = vehcontrol;
+        vc_control = vehControl[Rand(1,vehControl)];
         vc_weapon = AMWeapon[Rand(1, AMWeapon)];
 
         for j = 1 to AMWeapon do
@@ -404,7 +418,7 @@ begin
         veh = CreateVehicle;
         PlaceUnitArea(veh, area, false);
 
-        IF vehControl = 1 then
+        IF vc_control = 1 then
         begin
 
             hc_gallery = '';
@@ -428,7 +442,7 @@ begin
         uc_nation = nation;
 
         vc_engine = vehengine;
-        vc_control = vehcontrol;
+        vc_control = vehControl[Rand(1,vehControl)];
         vc_weapon = ARWeapons[Rand(1, ARWeapons)];
 
         for j = 1 to ARWeapons do
@@ -451,7 +465,7 @@ begin
         veh = CreateVehicle;
         PlaceUnitArea(veh, area, false);
 
-        IF vehcontrol = 1 then
+        IF vc_control = 1 then
         begin
 
             hc_gallery = '';
@@ -476,7 +490,7 @@ begin
         uc_nation = nation;
 
         vc_engine = vehengine;
-        vc_control = vehcontrol;
+        vc_control = vehControl[Rand(1,vehControl)];
         vc_weapon = RUWeapons[Rand(1, RUWeapons)];
 
 
@@ -501,7 +515,7 @@ begin
         veh = CreateVehicle;
         PlaceUnitArea(veh, area, false);
 
-        IF vehcontrol = 1 then
+        IF vc_control = 1 then
         begin
 
             hc_gallery = '';
@@ -707,3 +721,51 @@ for i in FilterAllUnits([[f_side, 2], [f_class, 12]]) do SetClass(i, [16, 15][Ra
 for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComEnterUnit(i, arLab);
 
 end;
+
+Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, targetSide, weaponTab, engine, control, chassis);
+var i, j, randWeapon, lastIndex, weaponTabTemp, temp, target1, target2;
+begin
+
+     IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
+        for i = 1 to vehCount do
+        begin
+            randWeapon = weaponTab[Rand(1, weaponTab)];
+            if randWeapon = 46 then AddComConstruct(fabric, 24, engine, control[Rand(1, control)], randWeapon)
+            else AddComConstruct(fabric, chassis, engine, control[Rand(1, control)], randWeapon);
+        end;
+
+        repeat
+                wait(0$1);;
+        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount;
+
+    IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount then
+    begin
+
+        repeat begin
+        wait(0$1);
+
+        if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) > 0 then
+        begin
+
+                for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
+                begin
+
+                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
+                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+
+                        If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
+                        begin
+                                ComAttackUnit(i, target1);
+                        end
+                        else
+                        begin
+                                ComAttackUnit(i, target2);
+                        end;
+                end;
+
+        end;
+
+        end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) = 0 or FilterAllUnits([[f_side, targetSide]]) = 0;
+
+    end;
+END;

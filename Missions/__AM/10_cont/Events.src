@@ -44,6 +44,14 @@ begin
 
             ResAllTechs(3, building, 3);
 
+        if ruDestroyedBuildings > 0 then
+        begin
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1);
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1);
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1);
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1); 
+        end;
+
         end;
 
         if GetBType(building) = b_bunker then AddComPlaceWeapon(building, [44, 45, 46][Rand(1, 3)]);
@@ -103,7 +111,11 @@ begin
     if GetSide(building) = 3 then
     begin
         if GetBType(building) = b_factory then
+        begin
             for i in FilterAllUnits([[f_side, 3], [f_class, 3]]) do ComEnterUnit(i, building);
+            ruFab = building;
+        end;
+
 
         if FilterAllUnits([[f_side, 3], [f_type, unit_building], [f_btype, b_lab_full]]) = 2 then
         begin
@@ -147,5 +159,77 @@ begin
     begin
         SayRadio(Powell, 'D6b-Pow-1');
         YouLost('Powell');
+    end;
+end;
+
+On UnitDestroyed(unit) do 
+begin
+
+    if GetSide(unit) = 3 and GetType(unit) = unit_building then
+    begin
+        
+        if GetBType(unit) = 31 or  GetBType(unit) = 32 or  GetBType(unit) = 36 or  GetBType(unit) = 0 or  GetBType(unit) = 24 or  GetBType(unit) = 17 or  GetBType(unit) = 25 or  GetBType(unit) = 19 or  GetBType(unit) = 20 or  GetBType(unit) = 18 or  GetBType(unit) = 21 or  GetBType(unit) = 23 or  GetBType(unit) = 16  or  GetBType(unit) = 6 or  GetBType(unit) = 29 or  GetBType(unit) = 26 or  GetBType(unit) = 30 or  GetBType(unit) = 28 or  GetBType(unit) = 27 or  GetBType(unit) = 33 or  GetBType(unit) = 2 or GetBType(unit) = 4 then
+        begin
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetBType(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 1  then
+        begin
+            ruDestroyedBuildings = ruDestroyedBuildings ^  0;
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 3  then
+        begin
+            ruDestroyedBuildings = ruDestroyedBuildings ^  2;
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 5  then
+        begin
+            ruDestroyedBuildings = ruDestroyedBuildings ^  4;
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+            ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+        end;
+            
+    end;
+end;
+
+On Command(comandid) do
+var i, j, tmp;
+begin
+    for i in FilterAllUnits([[f_side, 3],[f_class, 9]]) do
+    begin       
+        if GetTaskList(i) > 0 and eventVar2 = 0 and [comandid = 37 or comandid = 38] then
+        begin
+            for j = 1 to GetTaskList(i) do
+            begin       
+                tmp = GetTaskList(i)[j][4];
+                eventVar2 = 1;
+                wait(0$5);
+                DialogueOn;
+                if IsOK(Cyrus) then
+                begin
+                    Say(Cyrus, 'D9a-Cyrus-1');
+                end
+                else
+                begin
+                    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9a-Sol1-1', 'D9a-Sol1-1');
+                end;
+                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9b-Sol1-1', 'D9b-Sol1-1');
+                Say(JMM, 'D9a-JMM-1');
+                Say(JMM, 'D9c-JMM-1');
+                If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
+                DialogueOff;
+            end;
+        end;
     end;
 end;
