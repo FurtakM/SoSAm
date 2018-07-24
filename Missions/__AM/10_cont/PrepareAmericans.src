@@ -49,7 +49,6 @@ begin
                 rest = 100 - rest - rnd;
                 rnd = Rand(1, rest/10) * 10;
                 AddCargo(veh, [1, 3][Rand(1,2)], rnd);
-               // display_strings = ['pozostale sloty: ', rest, 'wylosowane: ' , rnd];
             until rest = 0;
             AddCargo(veh, [1, 3][Rand(1,2)], rnd);
         end; 
@@ -108,7 +107,8 @@ begin
     uc_side = 4;
     uc_nation = 1;
 
-    Cornell = CreateCharacter('03_Cornel');
+    //Cornell = CreateCharacter('03_Cornel');
+    Cornell = PrepareUnit('Cornell', false);
     PlaceUnitArea(Cornell, CornellSpawn, false);
     If IsInUnit(JMM) then ComMoveXY(Cornell, GetX(IsInUnit(JMM)), GetY(IsInUnit(JMM)))
     else ComMoveXY(Cornell, GetX(JMM), GetY(JMM));
