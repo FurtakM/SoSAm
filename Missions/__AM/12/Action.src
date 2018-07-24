@@ -1,1 +1,194 @@
-//
+// Start
+Every 1 do
+var i;
+begin
+    CenterNowOnUnits(JMM);
+    Say(JMM, 'D1-JMM-1');
+    Say(Donaldson, 'D1-Don-1');
+    Say(JMM, 'D1-JMM-2');
+    Say(Donaldson, 'D1-Don-2');
+
+    for i in FilterAllUnits([f_side, 1]) do
+    begin
+        ComMoveXY(i, 129, 89);
+        AddComMoveXY(i, 114, 83);
+        AddComMoveXY(i, 99, 82);
+    end;
+end;
+
+// Near river
+Every 0$1 trigger SeeXY(1, 93, 75) do
+var i;
+begin
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D1-Sol1-2', '');
+    Say(JMM, 'D1-JMM-3');
+    ChangeMissionObjectives('M1');
+
+    for i in FilterAllUnits([f_side, 1]) do
+        ComMoveXY(i, 87, 68);
+
+end;
+
+// Bazooker attack ambush
+Every 0$1 do 
+var i, bazook_list, your_units, dec;
+begin
+    bazook_list = FilterUnitsInArea(RussianBazookersSpawn, [[f_side, 3], [f_class, 9]]);
+    your_units = FilterAllUnits([[f_side, 1]]);
+    enable;
+
+    for i in your_units do
+    begin
+        if See(3, i) then
+        begin
+            Disable;
+            ComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            Say(JMM, 'D1a-JMM-1');
+            Say(Donaldson, 'D1a-Don-1');
+            ComMoveXY(i, 87, 68);
+            Say(JMM, 'D1a-JMM-2');
+            wait(0$10);
+            Say(Donaldson, 'D1b-Don-1');
+            Say(JMM, 'D1b-JMM-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D1b-Sol1-1', '');
+            Say(Donaldson, 'D1b-Don-2');
+            Say(JMM, 'D1b-JMM-2');
+
+            dec = ShowQuery1;
+
+            if dec = 1 then
+            begin
+                Say(JMM, 'D2-JMM-1');
+                SayRadio(Powell, 'D2-Pow-1');
+                Say(JMM, 'D2a-JMM-1');
+                SayRadio(Powell, 'D2a-Pow-1');
+                Say(JMM, 'D2a-JMM-2');
+                SayRadio(Powell, 'D2a-Pow-2');
+                Say(JMM, 'D2a-JMM-3');
+                SayRadio(Powell, 'D2a-Pow-3');
+                secondPass = 2;
+            end;
+
+            if dec = 2 then
+            begin
+                Say(JMM, 'D2-JMM-1');
+                SayRadio(Powell, 'D2-Pow-1');
+                Say(JMM, 'D2b-JMM-1');
+                SayRadio(Powell, 'D2b-Pow-1');
+                Say(JMM, 'D2c-JMM-1');
+                SayRadio(Powell, 'D2c-Pow-1');
+                Say(JMM, 'D2c-JMM-2');
+                secondPass = 2;
+            end;
+
+            if dec = 3 then secondPass = 1;
+
+            InGameOff;
+
+                
+        end;
+    end;
+
+end;
+
+// Powell's support
+Every 1$0 trigger secondPass = 2 do
+begin
+    PowellSupport1;
+    Say(JMM, 'DC1-JMM-1');
+    SayRadio(Powell, 'DC1-Pow-1');
+    wait(3$0);
+    PowellSupport2;
+    Say(JMM, 'DC2-JMM-1');
+    SayRadio(Powell, 'DC2-Pow-1');
+    wait(6$0);
+    PowellSupport3;
+    SayRadio(Powell, 'DC3-Pow-1');
+    Say(JMM, 'DC3-JMM-1');
+end;
+
+// Kurt
+Every 4$30 trigger secondPass = 2 do 
+var dec1, dec2;
+begin
+    PrepareKurt;
+
+    Say(Kurt, 'D3-Kurt-1');
+    Say(JMM, 'D3-JMM-1');
+    Say(Kurt, 'D3-Kurt-2');
+    Say(JMM, 'D3-JMM-2');
+    Say(Kurt, 'D3-Kurt-4');
+    Say(JMM, 'D3-JMM-4');
+    Say(Kurt, 'D3-Kurt-5');
+    Say(Kurt, 'D3-Kurt-5a');
+    Say(Kurt, 'D3-Kurt-5b');
+    
+    dec1 = ShowQuery4;
+
+    if dec1 = 1 then
+    begin
+        Say(JMM, 'D3Ka-JMM-1');
+        Say(Kurt, 'D3Ka-Kurt-1');
+    end;
+
+    if dec1 = 2 then
+    begin
+        Say(JMM, 'D3Kb-JMM-1');
+        Say(Kurt, 'D3Kb-Kurt-1');
+    end;
+
+    if dec1 = 3 then
+    begin
+        Say(JMM, 'D3Kc1-JMM-1');
+        Say(Kurt, 'D3Kc1-Kurt-1');
+        Say(JMM, 'D3Kc1-JMM-2');
+        Say(Kurt, 'D3Kc1-Kurt-2');
+
+        dec2 = ShowQuery7;
+        if dec2 = 1 then
+        begin
+            Say(JMM, 'D4a-JMM-1');
+            Say(Kurt, 'D4b-Kurt-1');
+        end; 
+
+        if dec2 = 2 then
+        begin
+            Say(JMM, 'D4b-JMM-1');
+            Say(Kurt, 'D4b-Kurt-1');
+        end;
+
+        if dec2 = 3 then
+        begin
+            Say(JMM, 'D4c-JMM-1');
+            Say(Kurt, 'D4c-Kurt-1');
+            Say(JMM, 'D4c-JMM-2');
+            Say(Kurt, 'D4c-Kurt-2');
+        end;
+
+    end;
+
+    if dec1 = 4 then
+    begin
+        Say(Kurt, 'D3Kd-JMM-1');
+        dec2 = ShowQuery8;
+
+        if dec2 = 1 then
+        begin
+            Say(JMM, 'D3Ke-JMM-1');
+            Say(Kurt, 'D3Ke-Kurt-1');
+        end;   
+
+        if dec2 = 2 then
+        begin
+            Say(JMM, 'D5Ka-JMM-1');
+            Say(Kurt, 'D3Ke-Kurt-1');
+        end;
+    end;
+
+    RemoveUnit(Kurt);
+end;
