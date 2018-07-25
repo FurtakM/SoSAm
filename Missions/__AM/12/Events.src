@@ -2,7 +2,29 @@ On UnitDestroyed(unit) Do
 var i;
 begin
 
-    for i := 1 to RuScientists do 
-        if RuScientists[i] = unit then RuScientists = Delete(RuScientists, i);
+    if GetSide(unit) = 3 and GetType(unit) = unit_human then
+    begin
+        for i in RuScientists do 
+            if i = unit then
+            begin
+                RuScientists = RuScientists diff [unit];
+                sciCounter = sciCounter + 1;
+            end; 
+    end;
+end;
 
+On EnterBuilding(building, human) Do
+begin
+    if building = ruteleprt and GetSide(human) = 1 and eventVar1 = 0 then
+    begin
+        eventVar1 = 1;
+        teleportExplored = 1;
+        wait(0$2);
+        DialogueOn;
+        DialogRandom(FilterAllUnits([[f_side, 1] diff [JMM]]), 'DT3a-Sol1-1', 'DT3a-FSol1-1');
+        Say(JMM, 'DT3a-JMM-1');
+        CenterNowOnUnits(human);
+        Say(JMM, 'DT3a-JMM-1a1');
+        DialogueOff;
+    end;
 end;
