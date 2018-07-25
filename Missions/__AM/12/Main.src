@@ -2,7 +2,18 @@
     Map scripts: Nefarem
 
     Hej ha to znowu Nefek robi misie regularnie, czeka on az Serpencik skonczy swoja misie zeby moc swoja ukonczyc.
-    ....xD
+    Był sobie raz modderek, Nefeczek sie nazywal.
+    Czemborowe troche w szoku, spisek tutaj omawiaja.
+    ....xD  
+
+    Global Variables:
+    12_MainDepositFake_1 = 0  - Player didin't talked about localisation Siberite main deposit.
+    12_MainDepositFake_1 = 1 - Player  talked about fake localisation  Siberite main deposit.
+
+    TODO:
+    - Arabian spawn for player.
+    - Russian attacks.
+    - Save characters. (Ktorego i tak nie zrobie bo nie mam 11 misi lol ;D, a kaj 9 misia?)
 
 }
 Export JMM, Donaldson, Lisa, Cyrus, Denis, Frank, Cornell, Campell; // Heroes with JMM
@@ -15,17 +26,40 @@ Export Kurt, otherKurt; // Ar heroes
 
 Export secondPass;
 
-Export RuScientists;
+Export vehicleTeleported;
+Export warWithLegion;
+Export fakeInfo;
+Export askSiberite;
+Export teleportExplored;
+
+Export RuScientists, sciCounter;
+
+Export eventVar1;
+
+Export debugMode;
 
 Starting
 begin
     Resetfog;
     RandomizeAll;
 
+    SetBName(rueastdepot, 'ryutin');
+
     RuScientists = [];
+    sciCounter = 0; // How many scientists from head lab player killed. 
 
     secondPass = 0; // 0 - off,  2 - durring query you select option 1 or 2, 1 - option 3
 
+    teleportExplored = 0; // 0 - no  explored, 1 - explored
+
+    askSiberite = 0; // 0 - legion didin't ask about Siberite, 1 - asked
+    warWithLegion = 0; // 0 - neutral, 1 - enemy
+    fakeInfo = 0;
+
+    eventVar1 = 0; // block event
+
+    debugMode = 1; // 0 - players, 1 - developers
+    
     PrepareAmericanHeroes;
 
     PrepareRussianCommander;
@@ -33,4 +67,10 @@ begin
     PrepareEastBase;
     PrepareOtherRussians;
 
+end;
+
+Every 0$1 trigger debugMode = 1 do 
+begin
+    enable;
+    display_strings = [RuScientists];
 end;

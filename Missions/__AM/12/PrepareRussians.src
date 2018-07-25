@@ -4,6 +4,7 @@ begin
     Davidov = PrepareUnit('Davidov', false);
     PlaceHumanInUnit(Davidov, ruheadlab);
     RuScientists = RuScientists ^ Davidov;
+    SetClass(RuScientists, 4);
 end;
 
 Export function PrepareEastBase;
@@ -44,7 +45,7 @@ begin
 end;
 
 Export function PrepareOtherRussians;
-var i, un;
+var i, un, veh;
 begin
     uc_side = 3;
     uc_nation = 3;
@@ -68,5 +69,26 @@ begin
         un = CreateHuman;
         PlaceUnitArea(un, RussianBazookersSpawn, false);
     end;
+
+    for i := 1 to [3, 4, 5][Difficulty] do
+    begin
+        vc_engine = 3;
+        vc_control = 1;
+        vc_weapon = [42, 43, 44, 45, 46][Rand(1, 5)];
+        if vc_weapon = ru_heavy_gun then vc_chassis = ru_heavy_tracked
+        else vc_chassis = [ru_medium_tracked, ru_medium_wheeled][Rand(1,2)];
+        
+        veh = CreateVehicle;
+        PlaceUnitArea(veh, RussianTanksWestHill, false);
+
+        hc_gallery = '';
+        hc_name = '';
+        PrepareHuman(false, 4, 10);
+
+        un = CreateHuman;
+        PlaceHumanInUnit(un, veh);
+    end;
+
+
 end;
 

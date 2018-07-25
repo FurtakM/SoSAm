@@ -1,0 +1,52 @@
+Every 0$1 trigger RuScientists = [] do 
+begin
+
+    if sciCounter = 0 then
+    begin
+        Say(JMM, 'D7a-JMM-1');
+        SayRadio(Powell, 'D7a-Pow-1');
+    end;
+
+    if sciCounter > 0 and sciCounter < 6 then
+    begin
+        Say(JMM, 'D7b-JMM-1');
+        SayRadio(Powell, 'D7b-Pow-1');
+    end;
+
+    if sciCounter = 6 then
+    begin
+        Say(JMM, 'D7c-JMM-1');
+        SayRadio(Powell, 'D7c-Pow-1');
+        Say(JMM, 'D7d-JMM-1');
+        SayRadio(Powell, 'D7d-Pow-1');
+        Say(JMM, 'D7d-JMM-2');
+        if askSiberite = 1 then
+        begin
+            Say(JMM, 'D7d-JMM-2a');
+        end else
+        begin
+            SayRadio(Powell, 'D7d-Pow-2');
+        end;
+        SayRadio(Powell, 'D7d-Pow-2a');   
+    end; 
+
+    FinishMission;
+end;
+
+
+Export function FinishMission;
+begin
+    if teleportExplored = 1 then AddMedal('Teleport', 1)
+    else AddMedal('Teleport', -1);
+
+    if sciCounter > 0 and sciCounter < 6 then AddMedal('Materials', 1)
+    else AddMedal('Materials', -1);
+
+    if sciCounter = 6 then AddMedal('Scientists', 1)
+    else AddMedal('Scientists', -1);
+
+    GiveMedals('MAIN');
+
+    RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]));
+    YouWin;
+end;
