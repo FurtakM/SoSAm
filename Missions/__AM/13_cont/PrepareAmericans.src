@@ -1,0 +1,57 @@
+Export function PrepareHeroes;
+begin
+    uc_side = 1;
+    JMM = PrepareUnit('JMM', false);
+    Gary = PrepareUnit('Gary', false);
+    Frank = PrepareUnit('Frank', false);
+    Cornell = PrepareUnit('Cornell', false);
+    Lisa = PrepareUnit('Lisa', false);
+    Cyrus = PrepareUnit('Cyrus', false);
+    Woodruff = PrepareUnit('Woodruff', false);
+    Stevens = PrepareUnit('Stevens', false);
+
+    Powell = PrepareUnit('Powell', false);
+
+    PlaceHumanInUnit(JMM, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[1]);
+    PlaceHumanInUnit(Gary, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[2]);
+    PlaceHumanInUnit(Frank, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[3]);
+    PlaceHumanInUnit(Cornell, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[4]);
+    PlaceHumanInUnit(Lisa, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[5]);
+    PlaceHumanInUnit(Cyrus, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[6]);
+    PlaceHumanInUnit(Woodruff, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[7]);
+    PlaceHumanInUnit(Stevens, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[8]);
+end;
+
+Export function SpawnVehicle;
+var i, veh;
+begin
+
+    uc_side = 1;
+    uc_nation = 1;
+
+    for i = 1 to [3, 2, 1][Difficulty] do 
+    begin
+        vc_engine = 3;
+        vc_control = 1;
+        vc_weapon = 12;
+        vc_chassis = 3;
+
+        veh = CreateVehicle;
+        PlaceUnitArea(veh, PlayerSpawn, false);
+        SetDir(veh, 1);
+        AddCargo(veh, 1, 100);
+    end;
+
+    for i = 1 to 8 - [3, 2, 1][Difficulty] do 
+    begin
+        vc_engine = 3;
+        vc_control = 1;
+        vc_weapon = [9, 5, 4][Rand(1, 3)];
+        vc_chassis = 3;
+
+        veh = CreateVehicle;
+        PlaceUnitArea(veh, PlayerSpawn, false);
+        SetDir(veh, 1);
+    end;
+
+end;

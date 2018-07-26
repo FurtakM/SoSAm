@@ -1,0 +1,76 @@
+// Start
+Every 1 do 
+begin
+    CenterNowOnUnits(FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[1]);
+    Say(JMM, 'D2-JMM-1');
+    Say(Stevens, 'D2-Huck-1');
+    Say(JMM, 'D2-JMM-2');
+    ChangeMissionObjectives('M1');
+end;
+
+// Dialog about Gorky
+Every 10$0 do 
+begin
+    SayRadio(Powell, 'D3-Pow-1');
+    Say(JMM, 'D3-JMM-1');
+    SayRadio(Powell, 'D3-Pow-2');
+    Say(JMM, 'D3-JMM-2');
+    SayRadio(Powell, 'D3-Pow-3');
+    Say(JMM, 'D3-JMM-3');
+    SayRadio(Powell, 'D3-Pow-4');
+    Say(JMM, 'D3-JMM-4');
+    wait(0$30);
+    PrepareBurlak;
+    BurlakArmy;
+end;
+
+// See Gorky's tank
+Every 0$1 trigger See(1, Masha) do
+begin
+    DialogueOn;
+    CenterNowOnUnits(Masha);
+    Say(JMM, 'D5-Sol1-1');
+    Say(JMM, 'D5-JMM-1');
+    DialogueOff;
+end;
+
+// Remove Alliance from map
+Every 0$1 do 
+var i;
+begin
+    enable;
+    for i in FilterAllUnits([f_side, 7]) do 
+        If IsInArea(i, AllianceEscape) then
+        begin
+            If i = Burlak then
+            begin
+                RemoveUnit(i);
+                DialogueOn;
+                Say(JMM, 'D5a-JMM-1');
+                Say(JMM, 'D5a-Sol1-1');
+                DialogueOff;
+            end;
+            RemoveUnit(i);
+        end; 
+end;
+
+// Gorky killed
+Every 0$10 trigger IsPlaced(Burlak) and IsDying(Burlak) do
+begin
+    Say(JMM, 'D5b-JMM-1');
+    Say(JMM, 'D5b-Sol1-1');
+end;
+
+// Stevens died
+Every 0$1 trigger IsDead(Stevens) do
+begin
+    Say(JMM, 'D6-JMM-1');
+    Say(JMM, 'D6-Sol1-1');
+    Say(JMM, 'D6-JMM-2');
+end;
+
+// Siberite Fission researched
+Every 0$1 trigger GetTech(25, 1) = state_researched do
+begin
+    Say(Stevens, 'D6-Huck-2');
+end;
