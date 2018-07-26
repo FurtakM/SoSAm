@@ -40,6 +40,14 @@ begin
         if GetBType(building) = b_turret then AddComPlaceWeapon(building, [43, 44, 46][Rand(1,3)]);
 
         if GetBType(building) = b_ext_computer then russianAI = 1;
+
+        if ruDestroyedBuildings > 0 then
+        begin
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1);
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1);
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1);
+            ruDestroyedBuildings := Delete( ruDestroyedBuildings, 1); 
+        end;
             
     end;
      
@@ -81,4 +89,52 @@ begin
         DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM], 'DC-Sol1-1', 'DC-FSol1-1');
     end;
 
+end;
+
+On UnitDestroyed(unit) do
+var i;
+begin
+    if GetSide(unit) = 3 then
+    begin 
+        if GetType(unit) = unit_building then
+        begin
+            if GetBType(unit) = 31 or  GetBType(unit) = 32 or  GetBType(unit) = 36 or  GetBType(unit) = 0 or  GetBType(unit) = 24 or  GetBType(unit) = 17 or  GetBType(unit) = 25 or  GetBType(unit) = 19 or  GetBType(unit) = 20 or  GetBType(unit) = 18 or  GetBType(unit) = 21 or  GetBType(unit) = 23 or  GetBType(unit) = 16  or  GetBType(unit) = 6 or  GetBType(unit) = 29 or  GetBType(unit) = 26 or  GetBType(unit) = 30 or  GetBType(unit) = 28 or  GetBType(unit) = 27 or  GetBType(unit) = 33 or  GetBType(unit) = 2 or GetBType(unit) = 4 then
+            begin
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetBType(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+            end;
+
+            if GetBType(unit) = 1  then
+            begin
+                ruDestroyedBuildings = ruDestroyedBuildings ^  0;
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+            end;
+
+            if GetBType(unit) = 3  then
+            begin
+                ruDestroyedBuildings = ruDestroyedBuildings ^  2;
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+            end;
+
+            if GetBType(unit) = 5  then
+            begin
+                ruDestroyedBuildings = ruDestroyedBuildings ^  4;
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
+                ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+            end;
+        end;
+
+        if GetType(unit) = unit_human then
+        begin
+            for i in defenders_list do
+                if i = unit then defenders_list = defenders_list diff [unit];
+        end;
+    end;
 end;
