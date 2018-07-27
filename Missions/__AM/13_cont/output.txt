@@ -1,1333 +1,5908 @@
-// export JMM , Gary , Frank , Cornell , Lisa , Cyrus , Woodruff , Stevens ; export Powell ; export Burlak , Masha ; export Gnyevko , Titov , Xavier , Belkov , Lipshchin ; export eventVar1 , eventVar2 ; starting begin Resetfog ;
+// export JMM , Gary , Frank , Cornell , Lisa , Cyrus , Woodruff , Stevens ; export Powell ; export Burlak , Masha ; export Gnyevko , Titov , Xavier , Belkov , Lipshchin ; export AmSciSib ; export spawnBurlak , burlakStatus ; export radationResearched ; export radarOnSpot ; export sibDestroyedCounter ; export arControlTower , arDriver ; export eventVar1 , eventVar2 , eventVar3 , eventVar4 , eventVar5 ; export debugMode ; starting begin Resetfog ;
    0: CALL_OW 335
 // RandomizeAll ;
    4: CALL_OW 11
-// SpawnVehicle ;
-   8: CALL 529 0 0
-// PrepareHeroes ;
-  12: CALL 33 0 0
-// eventVar1 = 0 ;
-  16: LD_ADDR_EXP 17
+// spawnBurlak = 0 ;
+   8: LD_ADDR_EXP 18
+  12: PUSH
+  13: LD_INT 0
+  15: ST_TO_ADDR
+// burlakStatus = 0 ;
+  16: LD_ADDR_EXP 19
   20: PUSH
   21: LD_INT 0
   23: ST_TO_ADDR
-// eventVar2 = 0 ;
-  24: LD_ADDR_EXP 18
+// radarOnSpot = 0 ;
+  24: LD_ADDR_EXP 21
   28: PUSH
   29: LD_INT 0
   31: ST_TO_ADDR
-// end ; end_of_file
-  32: END
-// export function PrepareHeroes ; begin
-  33: LD_INT 0
-  35: PPUSH
-// uc_side = 1 ;
-  36: LD_ADDR_OWVAR 20
-  40: PUSH
-  41: LD_INT 1
-  43: ST_TO_ADDR
-// JMM = PrepareUnit ( JMM , false ) ;
-  44: LD_ADDR_EXP 1
-  48: PUSH
-  49: LD_STRING JMM
-  51: PPUSH
-  52: LD_INT 0
-  54: PPUSH
-  55: CALL 2098 0 2
-  59: ST_TO_ADDR
-// Gary = PrepareUnit ( Gary , false ) ;
-  60: LD_ADDR_EXP 2
-  64: PUSH
-  65: LD_STRING Gary
-  67: PPUSH
-  68: LD_INT 0
-  70: PPUSH
-  71: CALL 2098 0 2
-  75: ST_TO_ADDR
-// Frank = PrepareUnit ( Frank , false ) ;
-  76: LD_ADDR_EXP 3
-  80: PUSH
-  81: LD_STRING Frank
-  83: PPUSH
-  84: LD_INT 0
-  86: PPUSH
-  87: CALL 2098 0 2
-  91: ST_TO_ADDR
-// Cornell = PrepareUnit ( Cornell , false ) ;
-  92: LD_ADDR_EXP 4
-  96: PUSH
-  97: LD_STRING Cornell
-  99: PPUSH
- 100: LD_INT 0
- 102: PPUSH
- 103: CALL 2098 0 2
- 107: ST_TO_ADDR
-// Lisa = PrepareUnit ( Lisa , false ) ;
- 108: LD_ADDR_EXP 5
- 112: PUSH
- 113: LD_STRING Lisa
- 115: PPUSH
- 116: LD_INT 0
- 118: PPUSH
- 119: CALL 2098 0 2
- 123: ST_TO_ADDR
-// Cyrus = PrepareUnit ( Cyrus , false ) ;
- 124: LD_ADDR_EXP 6
- 128: PUSH
- 129: LD_STRING Cyrus
- 131: PPUSH
- 132: LD_INT 0
- 134: PPUSH
- 135: CALL 2098 0 2
- 139: ST_TO_ADDR
-// Woodruff = PrepareUnit ( Woodruff , false ) ;
- 140: LD_ADDR_EXP 7
- 144: PUSH
- 145: LD_STRING Woodruff
- 147: PPUSH
- 148: LD_INT 0
- 150: PPUSH
- 151: CALL 2098 0 2
- 155: ST_TO_ADDR
-// Stevens = PrepareUnit ( Stevens , false ) ;
- 156: LD_ADDR_EXP 8
- 160: PUSH
- 161: LD_STRING Stevens
- 163: PPUSH
- 164: LD_INT 0
- 166: PPUSH
- 167: CALL 2098 0 2
- 171: ST_TO_ADDR
-// Powell = PrepareUnit ( Powell , false ) ;
- 172: LD_ADDR_EXP 9
- 176: PUSH
- 177: LD_STRING Powell
- 179: PPUSH
- 180: LD_INT 0
- 182: PPUSH
- 183: CALL 2098 0 2
- 187: ST_TO_ADDR
-// PlaceHumanInUnit ( JMM , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 1 ] ) ;
- 188: LD_EXP 1
- 192: PPUSH
- 193: LD_INT 22
- 195: PUSH
- 196: LD_INT 1
- 198: PUSH
- 199: EMPTY
- 200: LIST
- 201: LIST
- 202: PUSH
- 203: LD_INT 21
- 205: PUSH
- 206: LD_INT 2
- 208: PUSH
- 209: EMPTY
- 210: LIST
- 211: LIST
- 212: PUSH
- 213: EMPTY
- 214: LIST
- 215: LIST
- 216: PPUSH
- 217: CALL_OW 69
- 221: PUSH
- 222: LD_INT 1
- 224: ARRAY
- 225: PPUSH
- 226: CALL_OW 52
-// PlaceHumanInUnit ( Gary , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 2 ] ) ;
- 230: LD_EXP 2
- 234: PPUSH
- 235: LD_INT 22
- 237: PUSH
- 238: LD_INT 1
- 240: PUSH
- 241: EMPTY
- 242: LIST
- 243: LIST
- 244: PUSH
- 245: LD_INT 21
- 247: PUSH
- 248: LD_INT 2
- 250: PUSH
- 251: EMPTY
- 252: LIST
- 253: LIST
- 254: PUSH
- 255: EMPTY
- 256: LIST
- 257: LIST
- 258: PPUSH
- 259: CALL_OW 69
- 263: PUSH
- 264: LD_INT 2
- 266: ARRAY
- 267: PPUSH
- 268: CALL_OW 52
-// PlaceHumanInUnit ( Frank , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 3 ] ) ;
- 272: LD_EXP 3
- 276: PPUSH
- 277: LD_INT 22
- 279: PUSH
- 280: LD_INT 1
- 282: PUSH
- 283: EMPTY
- 284: LIST
- 285: LIST
- 286: PUSH
- 287: LD_INT 21
- 289: PUSH
- 290: LD_INT 2
- 292: PUSH
- 293: EMPTY
- 294: LIST
- 295: LIST
- 296: PUSH
- 297: EMPTY
- 298: LIST
- 299: LIST
- 300: PPUSH
- 301: CALL_OW 69
- 305: PUSH
- 306: LD_INT 3
- 308: ARRAY
- 309: PPUSH
- 310: CALL_OW 52
-// PlaceHumanInUnit ( Cornell , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 4 ] ) ;
- 314: LD_EXP 4
- 318: PPUSH
- 319: LD_INT 22
- 321: PUSH
- 322: LD_INT 1
- 324: PUSH
- 325: EMPTY
- 326: LIST
- 327: LIST
- 328: PUSH
- 329: LD_INT 21
- 331: PUSH
- 332: LD_INT 2
- 334: PUSH
- 335: EMPTY
- 336: LIST
- 337: LIST
- 338: PUSH
- 339: EMPTY
- 340: LIST
- 341: LIST
- 342: PPUSH
- 343: CALL_OW 69
- 347: PUSH
- 348: LD_INT 4
- 350: ARRAY
- 351: PPUSH
- 352: CALL_OW 52
-// PlaceHumanInUnit ( Lisa , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 5 ] ) ;
- 356: LD_EXP 5
- 360: PPUSH
- 361: LD_INT 22
- 363: PUSH
- 364: LD_INT 1
- 366: PUSH
- 367: EMPTY
- 368: LIST
- 369: LIST
- 370: PUSH
- 371: LD_INT 21
- 373: PUSH
- 374: LD_INT 2
- 376: PUSH
- 377: EMPTY
- 378: LIST
- 379: LIST
- 380: PUSH
- 381: EMPTY
- 382: LIST
- 383: LIST
- 384: PPUSH
- 385: CALL_OW 69
- 389: PUSH
- 390: LD_INT 5
- 392: ARRAY
- 393: PPUSH
- 394: CALL_OW 52
-// PlaceHumanInUnit ( Cyrus , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 6 ] ) ;
- 398: LD_EXP 6
- 402: PPUSH
- 403: LD_INT 22
- 405: PUSH
- 406: LD_INT 1
- 408: PUSH
- 409: EMPTY
- 410: LIST
- 411: LIST
- 412: PUSH
- 413: LD_INT 21
- 415: PUSH
- 416: LD_INT 2
- 418: PUSH
- 419: EMPTY
- 420: LIST
- 421: LIST
- 422: PUSH
- 423: EMPTY
- 424: LIST
- 425: LIST
- 426: PPUSH
- 427: CALL_OW 69
- 431: PUSH
- 432: LD_INT 6
- 434: ARRAY
- 435: PPUSH
- 436: CALL_OW 52
-// PlaceHumanInUnit ( Woodruff , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 7 ] ) ;
- 440: LD_EXP 7
- 444: PPUSH
- 445: LD_INT 22
- 447: PUSH
- 448: LD_INT 1
- 450: PUSH
- 451: EMPTY
- 452: LIST
- 453: LIST
- 454: PUSH
- 455: LD_INT 21
- 457: PUSH
- 458: LD_INT 2
- 460: PUSH
- 461: EMPTY
- 462: LIST
- 463: LIST
- 464: PUSH
- 465: EMPTY
- 466: LIST
- 467: LIST
- 468: PPUSH
- 469: CALL_OW 69
- 473: PUSH
- 474: LD_INT 7
- 476: ARRAY
- 477: PPUSH
- 478: CALL_OW 52
-// PlaceHumanInUnit ( Stevens , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 8 ] ) ;
- 482: LD_EXP 8
- 486: PPUSH
- 487: LD_INT 22
- 489: PUSH
- 490: LD_INT 1
- 492: PUSH
- 493: EMPTY
- 494: LIST
- 495: LIST
- 496: PUSH
- 497: LD_INT 21
- 499: PUSH
- 500: LD_INT 2
- 502: PUSH
- 503: EMPTY
- 504: LIST
- 505: LIST
- 506: PUSH
- 507: EMPTY
- 508: LIST
- 509: LIST
- 510: PPUSH
- 511: CALL_OW 69
- 515: PUSH
- 516: LD_INT 8
- 518: ARRAY
- 519: PPUSH
- 520: CALL_OW 52
+// radationResearched = 0 ;
+  32: LD_ADDR_EXP 20
+  36: PUSH
+  37: LD_INT 0
+  39: ST_TO_ADDR
+// sibDestroyedCounter = 0 ;
+  40: LD_ADDR_EXP 22
+  44: PUSH
+  45: LD_INT 0
+  47: ST_TO_ADDR
+// eventVar1 = 0 ;
+  48: LD_ADDR_EXP 25
+  52: PUSH
+  53: LD_INT 0
+  55: ST_TO_ADDR
+// eventVar2 = 0 ;
+  56: LD_ADDR_EXP 26
+  60: PUSH
+  61: LD_INT 0
+  63: ST_TO_ADDR
+// eventVar3 = 0 ;
+  64: LD_ADDR_EXP 27
+  68: PUSH
+  69: LD_INT 0
+  71: ST_TO_ADDR
+// eventVar4 = 0 ;
+  72: LD_ADDR_EXP 28
+  76: PUSH
+  77: LD_INT 0
+  79: ST_TO_ADDR
+// eventVar5 = 0 ;
+  80: LD_ADDR_EXP 29
+  84: PUSH
+  85: LD_INT 0
+  87: ST_TO_ADDR
+// debugMode = 1 ;
+  88: LD_ADDR_EXP 30
+  92: PUSH
+  93: LD_INT 1
+  95: ST_TO_ADDR
+// SpawnVehicle ;
+  96: CALL 930 0 0
+// PrepareHeroes ;
+ 100: CALL 422 0 0
 // end ;
- 524: LD_VAR 0 1
- 528: RET
-// export function SpawnVehicle ; var i , veh ; begin
- 529: LD_INT 0
- 531: PPUSH
- 532: PPUSH
- 533: PPUSH
-// uc_side = 1 ;
- 534: LD_ADDR_OWVAR 20
- 538: PUSH
- 539: LD_INT 1
- 541: ST_TO_ADDR
-// uc_nation = 1 ;
- 542: LD_ADDR_OWVAR 21
- 546: PUSH
- 547: LD_INT 1
- 549: ST_TO_ADDR
-// for i = 1 to [ 3 , 2 , 1 ] [ Difficulty ] do
- 550: LD_ADDR_VAR 0 2
- 554: PUSH
- 555: DOUBLE
- 556: LD_INT 1
- 558: DEC
- 559: ST_TO_ADDR
- 560: LD_INT 3
- 562: PUSH
- 563: LD_INT 2
- 565: PUSH
- 566: LD_INT 1
- 568: PUSH
- 569: EMPTY
- 570: LIST
- 571: LIST
- 572: LIST
- 573: PUSH
- 574: LD_OWVAR 67
- 578: ARRAY
- 579: PUSH
- 580: FOR_TO
- 581: IFFALSE 669
-// begin vc_engine = 3 ;
- 583: LD_ADDR_OWVAR 39
- 587: PUSH
- 588: LD_INT 3
- 590: ST_TO_ADDR
-// vc_control = 1 ;
- 591: LD_ADDR_OWVAR 38
- 595: PUSH
- 596: LD_INT 1
- 598: ST_TO_ADDR
-// vc_weapon = 12 ;
- 599: LD_ADDR_OWVAR 40
- 603: PUSH
- 604: LD_INT 12
- 606: ST_TO_ADDR
-// vc_chassis = 3 ;
- 607: LD_ADDR_OWVAR 37
- 611: PUSH
- 612: LD_INT 3
- 614: ST_TO_ADDR
-// veh = CreateVehicle ;
- 615: LD_ADDR_VAR 0 3
- 619: PUSH
- 620: CALL_OW 45
- 624: ST_TO_ADDR
-// PlaceUnitArea ( veh , PlayerSpawn , false ) ;
- 625: LD_VAR 0 3
- 629: PPUSH
- 630: LD_INT 2
- 632: PPUSH
- 633: LD_INT 0
- 635: PPUSH
- 636: CALL_OW 49
-// SetDir ( veh , 1 ) ;
- 640: LD_VAR 0 3
- 644: PPUSH
- 645: LD_INT 1
- 647: PPUSH
- 648: CALL_OW 233
-// AddCargo ( veh , 1 , 100 ) ;
- 652: LD_VAR 0 3
- 656: PPUSH
- 657: LD_INT 1
- 659: PPUSH
- 660: LD_INT 100
- 662: PPUSH
- 663: CALL_OW 291
-// end ;
- 667: GO 580
- 669: POP
- 670: POP
-// for i = 1 to 8 - [ 3 , 2 , 1 ] [ Difficulty ] do
- 671: LD_ADDR_VAR 0 2
- 675: PUSH
- 676: DOUBLE
- 677: LD_INT 1
- 679: DEC
- 680: ST_TO_ADDR
- 681: LD_INT 8
- 683: PUSH
- 684: LD_INT 3
- 686: PUSH
- 687: LD_INT 2
- 689: PUSH
- 690: LD_INT 1
- 692: PUSH
- 693: EMPTY
- 694: LIST
- 695: LIST
- 696: LIST
- 697: PUSH
- 698: LD_OWVAR 67
- 702: ARRAY
- 703: MINUS
- 704: PUSH
- 705: FOR_TO
- 706: IFFALSE 802
-// begin vc_engine = 3 ;
- 708: LD_ADDR_OWVAR 39
- 712: PUSH
- 713: LD_INT 3
- 715: ST_TO_ADDR
-// vc_control = 1 ;
- 716: LD_ADDR_OWVAR 38
- 720: PUSH
- 721: LD_INT 1
- 723: ST_TO_ADDR
-// vc_weapon = [ 9 , 5 , 4 ] [ Rand ( 1 , 3 ) ] ;
- 724: LD_ADDR_OWVAR 40
- 728: PUSH
- 729: LD_INT 9
- 731: PUSH
- 732: LD_INT 5
- 734: PUSH
- 735: LD_INT 4
- 737: PUSH
- 738: EMPTY
- 739: LIST
- 740: LIST
- 741: LIST
- 742: PUSH
- 743: LD_INT 1
- 745: PPUSH
- 746: LD_INT 3
- 748: PPUSH
- 749: CALL_OW 12
- 753: ARRAY
- 754: ST_TO_ADDR
-// vc_chassis = 3 ;
- 755: LD_ADDR_OWVAR 37
- 759: PUSH
- 760: LD_INT 3
- 762: ST_TO_ADDR
-// veh = CreateVehicle ;
- 763: LD_ADDR_VAR 0 3
- 767: PUSH
- 768: CALL_OW 45
- 772: ST_TO_ADDR
-// PlaceUnitArea ( veh , PlayerSpawn , false ) ;
- 773: LD_VAR 0 3
- 777: PPUSH
- 778: LD_INT 2
- 780: PPUSH
- 781: LD_INT 0
- 783: PPUSH
- 784: CALL_OW 49
-// SetDir ( veh , 1 ) ;
- 788: LD_VAR 0 3
- 792: PPUSH
- 793: LD_INT 1
- 795: PPUSH
- 796: CALL_OW 233
-// end ;
- 800: GO 705
- 802: POP
- 803: POP
-// end ; end_of_file
- 804: LD_VAR 0 1
- 808: RET
-// export function PrepareBurlak ; begin
- 809: LD_INT 0
- 811: PPUSH
-// uc_side = 7 ;
- 812: LD_ADDR_OWVAR 20
- 816: PUSH
- 817: LD_INT 7
- 819: ST_TO_ADDR
-// uc_nation = 3 ;
- 820: LD_ADDR_OWVAR 21
- 824: PUSH
- 825: LD_INT 3
- 827: ST_TO_ADDR
-// vc_engine = 3 ;
- 828: LD_ADDR_OWVAR 39
- 832: PUSH
- 833: LD_INT 3
- 835: ST_TO_ADDR
-// vc_control = 1 ;
- 836: LD_ADDR_OWVAR 38
- 840: PUSH
- 841: LD_INT 1
- 843: ST_TO_ADDR
-// vc_weapon = 46 ;
- 844: LD_ADDR_OWVAR 40
- 848: PUSH
- 849: LD_INT 46
- 851: ST_TO_ADDR
-// vc_chassis = 24 ;
- 852: LD_ADDR_OWVAR 37
- 856: PUSH
- 857: LD_INT 24
- 859: ST_TO_ADDR
-// Masha = CreateVehicle ;
- 860: LD_ADDR_EXP 11
- 864: PUSH
- 865: CALL_OW 45
- 869: ST_TO_ADDR
-// PlaceUnitArea ( Masha , GorkySpawn , false ) ;
- 870: LD_EXP 11
- 874: PPUSH
- 875: LD_INT 3
- 877: PPUSH
- 878: LD_INT 0
- 880: PPUSH
- 881: CALL_OW 49
-// SetMark ( Masha , 1 ) ;
- 885: LD_EXP 11
- 889: PPUSH
- 890: LD_INT 1
- 892: PPUSH
- 893: CALL_OW 242
-// Burlak = PrepareUnit ( Burlak , false ) ;
- 897: LD_ADDR_EXP 10
- 901: PUSH
- 902: LD_STRING Burlak
- 904: PPUSH
- 905: LD_INT 0
- 907: PPUSH
- 908: CALL 2098 0 2
- 912: ST_TO_ADDR
-// PlaceHumanInUnit ( Burlak , Masha ) ;
- 913: LD_EXP 10
- 917: PPUSH
- 918: LD_EXP 11
- 922: PPUSH
- 923: CALL_OW 52
-// ComAgressiveMove ( Masha , 107 , 118 ) ;
- 927: LD_EXP 11
- 931: PPUSH
- 932: LD_INT 107
- 934: PPUSH
- 935: LD_INT 118
- 937: PPUSH
- 938: CALL_OW 114
-// end ;
- 942: LD_VAR 0 1
- 946: RET
-// export function BurlakArmy ; var i , veh ; begin
- 947: LD_INT 0
- 949: PPUSH
- 950: PPUSH
- 951: PPUSH
-// uc_side = 7 ;
- 952: LD_ADDR_OWVAR 20
- 956: PUSH
- 957: LD_INT 7
- 959: ST_TO_ADDR
-// uc_nation = 3 ;
- 960: LD_ADDR_OWVAR 21
- 964: PUSH
- 965: LD_INT 3
- 967: ST_TO_ADDR
-// Gnyevko = PrepareUnit ( Gnyevko , false ) ;
- 968: LD_ADDR_EXP 12
- 972: PUSH
- 973: LD_STRING Gnyevko
- 975: PPUSH
- 976: LD_INT 0
- 978: PPUSH
- 979: CALL 2098 0 2
- 983: ST_TO_ADDR
-// Titov = PrepareUnit ( Titov , false ) ;
- 984: LD_ADDR_EXP 13
- 988: PUSH
- 989: LD_STRING Titov
- 991: PPUSH
- 992: LD_INT 0
- 994: PPUSH
- 995: CALL 2098 0 2
- 999: ST_TO_ADDR
-// Xavier = PrepareUnit ( Xavier , false ) ;
-1000: LD_ADDR_EXP 14
-1004: PUSH
-1005: LD_STRING Xavier
-1007: PPUSH
-1008: LD_INT 0
-1010: PPUSH
-1011: CALL 2098 0 2
-1015: ST_TO_ADDR
-// Belkov = PrepareUnit ( Belkov , false ) ;
-1016: LD_ADDR_EXP 15
-1020: PUSH
-1021: LD_STRING Belkov
-1023: PPUSH
-1024: LD_INT 0
-1026: PPUSH
-1027: CALL 2098 0 2
-1031: ST_TO_ADDR
-// Lipshchin = PrepareUnit ( Lipshchin , false ) ;
-1032: LD_ADDR_EXP 16
-1036: PUSH
-1037: LD_STRING Lipshchin
-1039: PPUSH
-1040: LD_INT 0
-1042: PPUSH
-1043: CALL 2098 0 2
-1047: ST_TO_ADDR
-// for i = 1 to 5 do
-1048: LD_ADDR_VAR 0 2
-1052: PUSH
-1053: DOUBLE
-1054: LD_INT 1
-1056: DEC
-1057: ST_TO_ADDR
-1058: LD_INT 5
-1060: PUSH
-1061: FOR_TO
-1062: IFFALSE 1150
-// begin vc_engine = 3 ;
-1064: LD_ADDR_OWVAR 39
-1068: PUSH
-1069: LD_INT 3
-1071: ST_TO_ADDR
-// vc_control = 1 ;
-1072: LD_ADDR_OWVAR 38
-1076: PUSH
-1077: LD_INT 1
-1079: ST_TO_ADDR
-// vc_weapon = [ 43 , 44 , 45 , 49 ] [ Rand ( 1 , 4 ) ] ;
-1080: LD_ADDR_OWVAR 40
-1084: PUSH
-1085: LD_INT 43
-1087: PUSH
-1088: LD_INT 44
-1090: PUSH
-1091: LD_INT 45
-1093: PUSH
-1094: LD_INT 49
-1096: PUSH
-1097: EMPTY
-1098: LIST
-1099: LIST
-1100: LIST
-1101: LIST
-1102: PUSH
-1103: LD_INT 1
-1105: PPUSH
-1106: LD_INT 4
-1108: PPUSH
-1109: CALL_OW 12
-1113: ARRAY
-1114: ST_TO_ADDR
-// vc_chassis = 22 ;
-1115: LD_ADDR_OWVAR 37
-1119: PUSH
-1120: LD_INT 22
-1122: ST_TO_ADDR
-// veh = CreateVehicle ;
-1123: LD_ADDR_VAR 0 3
-1127: PUSH
-1128: CALL_OW 45
-1132: ST_TO_ADDR
-// PlaceUnitArea ( veh , GorkySpawn , false ) ;
-1133: LD_VAR 0 3
-1137: PPUSH
-1138: LD_INT 3
-1140: PPUSH
-1141: LD_INT 0
-1143: PPUSH
-1144: CALL_OW 49
-// end ;
-1148: GO 1061
-1150: POP
-1151: POP
-// PlaceHumanInUnit ( Gnyevko , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 1 ] ) ;
-1152: LD_EXP 12
-1156: PPUSH
-1157: LD_INT 22
-1159: PUSH
-1160: LD_INT 7
-1162: PUSH
-1163: EMPTY
-1164: LIST
-1165: LIST
-1166: PUSH
-1167: LD_INT 21
-1169: PUSH
-1170: LD_INT 2
-1172: PUSH
-1173: EMPTY
-1174: LIST
-1175: LIST
-1176: PUSH
-1177: LD_INT 58
-1179: PUSH
-1180: EMPTY
-1181: LIST
-1182: PUSH
-1183: EMPTY
-1184: LIST
-1185: LIST
-1186: LIST
-1187: PPUSH
-1188: CALL_OW 69
-1192: PUSH
-1193: LD_INT 1
-1195: ARRAY
-1196: PPUSH
-1197: CALL_OW 52
-// PlaceHumanInUnit ( Titov , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 2 ] ) ;
-1201: LD_EXP 13
-1205: PPUSH
-1206: LD_INT 22
-1208: PUSH
-1209: LD_INT 7
-1211: PUSH
-1212: EMPTY
-1213: LIST
-1214: LIST
-1215: PUSH
-1216: LD_INT 21
-1218: PUSH
-1219: LD_INT 2
-1221: PUSH
-1222: EMPTY
-1223: LIST
-1224: LIST
-1225: PUSH
-1226: LD_INT 58
-1228: PUSH
-1229: EMPTY
-1230: LIST
-1231: PUSH
-1232: EMPTY
-1233: LIST
-1234: LIST
-1235: LIST
-1236: PPUSH
-1237: CALL_OW 69
-1241: PUSH
-1242: LD_INT 2
-1244: ARRAY
-1245: PPUSH
-1246: CALL_OW 52
-// PlaceHumanInUnit ( Xavier , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 3 ] ) ;
-1250: LD_EXP 14
-1254: PPUSH
-1255: LD_INT 22
-1257: PUSH
-1258: LD_INT 7
-1260: PUSH
-1261: EMPTY
-1262: LIST
-1263: LIST
-1264: PUSH
-1265: LD_INT 21
-1267: PUSH
-1268: LD_INT 2
-1270: PUSH
-1271: EMPTY
-1272: LIST
-1273: LIST
-1274: PUSH
-1275: LD_INT 58
-1277: PUSH
-1278: EMPTY
-1279: LIST
-1280: PUSH
-1281: EMPTY
-1282: LIST
-1283: LIST
-1284: LIST
-1285: PPUSH
-1286: CALL_OW 69
-1290: PUSH
-1291: LD_INT 3
-1293: ARRAY
-1294: PPUSH
-1295: CALL_OW 52
-// PlaceHumanInUnit ( Belkov , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 4 ] ) ;
-1299: LD_EXP 15
-1303: PPUSH
-1304: LD_INT 22
-1306: PUSH
-1307: LD_INT 7
-1309: PUSH
-1310: EMPTY
-1311: LIST
-1312: LIST
-1313: PUSH
-1314: LD_INT 21
-1316: PUSH
-1317: LD_INT 2
-1319: PUSH
-1320: EMPTY
-1321: LIST
-1322: LIST
-1323: PUSH
-1324: LD_INT 58
-1326: PUSH
-1327: EMPTY
-1328: LIST
-1329: PUSH
-1330: EMPTY
-1331: LIST
-1332: LIST
-1333: LIST
-1334: PPUSH
-1335: CALL_OW 69
-1339: PUSH
-1340: LD_INT 4
-1342: ARRAY
-1343: PPUSH
-1344: CALL_OW 52
-// PlaceHumanInUnit ( Lipshchin , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 5 ] ) ;
-1348: LD_EXP 16
-1352: PPUSH
-1353: LD_INT 22
-1355: PUSH
-1356: LD_INT 7
-1358: PUSH
-1359: EMPTY
-1360: LIST
-1361: LIST
-1362: PUSH
-1363: LD_INT 21
-1365: PUSH
-1366: LD_INT 2
-1368: PUSH
-1369: EMPTY
-1370: LIST
-1371: LIST
-1372: PUSH
-1373: LD_INT 58
-1375: PUSH
-1376: EMPTY
-1377: LIST
-1378: PUSH
-1379: EMPTY
-1380: LIST
-1381: LIST
-1382: LIST
-1383: PPUSH
-1384: CALL_OW 69
-1388: PUSH
-1389: LD_INT 5
-1391: ARRAY
-1392: PPUSH
-1393: CALL_OW 52
-// SetClass ( Gnyevko , 3 ) ;
-1397: LD_EXP 12
-1401: PPUSH
-1402: LD_INT 3
-1404: PPUSH
-1405: CALL_OW 336
-// SetClass ( [ Titov , Lipshchin ] , 9 ) ;
-1409: LD_EXP 13
-1413: PUSH
-1414: LD_EXP 16
-1418: PUSH
-1419: EMPTY
-1420: LIST
-1421: LIST
-1422: PPUSH
-1423: LD_INT 9
-1425: PPUSH
-1426: CALL_OW 336
-// ComAgressiveMove ( FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] ] ) , 107 , 118 ) ;
-1430: LD_INT 22
-1432: PUSH
-1433: LD_INT 7
-1435: PUSH
-1436: EMPTY
-1437: LIST
-1438: LIST
-1439: PUSH
-1440: LD_INT 21
-1442: PUSH
-1443: LD_INT 2
-1445: PUSH
-1446: EMPTY
-1447: LIST
-1448: LIST
-1449: PUSH
-1450: EMPTY
-1451: LIST
-1452: LIST
-1453: PPUSH
-1454: CALL_OW 69
-1458: PPUSH
-1459: LD_INT 107
-1461: PPUSH
-1462: LD_INT 118
-1464: PPUSH
-1465: CALL_OW 114
-// end ; end_of_file end_of_file
-1469: LD_VAR 0 1
-1473: RET
-// every 1 do
-1474: GO 1476
-1476: DISABLE
-// begin CenterNowOnUnits ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 1 ] ) ;
-1477: LD_INT 22
-1479: PUSH
-1480: LD_INT 1
-1482: PUSH
-1483: EMPTY
-1484: LIST
-1485: LIST
-1486: PUSH
-1487: LD_INT 21
-1489: PUSH
-1490: LD_INT 2
-1492: PUSH
-1493: EMPTY
-1494: LIST
-1495: LIST
-1496: PUSH
-1497: EMPTY
-1498: LIST
-1499: LIST
-1500: PPUSH
-1501: CALL_OW 69
-1505: PUSH
-1506: LD_INT 1
-1508: ARRAY
-1509: PPUSH
-1510: CALL_OW 87
-// Say ( JMM , D2-JMM-1 ) ;
-1514: LD_EXP 1
-1518: PPUSH
-1519: LD_STRING D2-JMM-1
-1521: PPUSH
-1522: CALL_OW 88
-// Say ( Stevens , D2-Huck-1 ) ;
-1526: LD_EXP 8
-1530: PPUSH
-1531: LD_STRING D2-Huck-1
-1533: PPUSH
-1534: CALL_OW 88
-// Say ( JMM , D2-JMM-2 ) ;
-1538: LD_EXP 1
-1542: PPUSH
-1543: LD_STRING D2-JMM-2
-1545: PPUSH
-1546: CALL_OW 88
-// ChangeMissionObjectives ( M1 ) ;
-1550: LD_STRING M1
-1552: PPUSH
-1553: CALL_OW 337
-// end ;
-1557: END
-// every 10 10$0 do
-1558: GO 1560
-1560: DISABLE
-// begin SayRadio ( Powell , D3-Pow-1 ) ;
-1561: LD_EXP 9
-1565: PPUSH
-1566: LD_STRING D3-Pow-1
-1568: PPUSH
-1569: CALL_OW 94
-// Say ( JMM , D3-JMM-1 ) ;
-1573: LD_EXP 1
-1577: PPUSH
-1578: LD_STRING D3-JMM-1
-1580: PPUSH
-1581: CALL_OW 88
-// SayRadio ( Powell , D3-Pow-2 ) ;
-1585: LD_EXP 9
-1589: PPUSH
-1590: LD_STRING D3-Pow-2
-1592: PPUSH
-1593: CALL_OW 94
-// Say ( JMM , D3-JMM-2 ) ;
-1597: LD_EXP 1
-1601: PPUSH
-1602: LD_STRING D3-JMM-2
-1604: PPUSH
-1605: CALL_OW 88
-// SayRadio ( Powell , D3-Pow-3 ) ;
-1609: LD_EXP 9
-1613: PPUSH
-1614: LD_STRING D3-Pow-3
-1616: PPUSH
-1617: CALL_OW 94
-// Say ( JMM , D3-JMM-3 ) ;
-1621: LD_EXP 1
-1625: PPUSH
-1626: LD_STRING D3-JMM-3
-1628: PPUSH
-1629: CALL_OW 88
-// SayRadio ( Powell , D3-Pow-4 ) ;
-1633: LD_EXP 9
-1637: PPUSH
-1638: LD_STRING D3-Pow-4
-1640: PPUSH
-1641: CALL_OW 94
-// Say ( JMM , D3-JMM-4 ) ;
-1645: LD_EXP 1
-1649: PPUSH
-1650: LD_STRING D3-JMM-4
-1652: PPUSH
-1653: CALL_OW 88
-// wait ( 0 0$30 ) ;
-1657: LD_INT 1050
-1659: PPUSH
-1660: CALL_OW 67
-// PrepareBurlak ;
-1664: CALL 809 0 0
-// BurlakArmy ;
-1668: CALL 947 0 0
-// end ;
-1672: END
-// every 0 0$1 trigger See ( 1 , Masha ) do
-1673: LD_INT 1
-1675: PPUSH
-1676: LD_EXP 11
-1680: PPUSH
-1681: CALL_OW 292
-1685: IFFALSE 1731
-1687: GO 1689
-1689: DISABLE
-// begin DialogueOn ;
-1690: CALL_OW 6
-// CenterNowOnUnits ( Masha ) ;
-1694: LD_EXP 11
-1698: PPUSH
-1699: CALL_OW 87
-// Say ( JMM , D5-Sol1-1 ) ;
-1703: LD_EXP 1
-1707: PPUSH
-1708: LD_STRING D5-Sol1-1
-1710: PPUSH
-1711: CALL_OW 88
-// Say ( JMM , D5-JMM-1 ) ;
-1715: LD_EXP 1
-1719: PPUSH
-1720: LD_STRING D5-JMM-1
-1722: PPUSH
-1723: CALL_OW 88
-// DialogueOff ;
-1727: CALL_OW 7
-// end ;
-1731: END
-// every 0 0$1 do var i ;
-1732: GO 1734
-1734: DISABLE
-1735: LD_INT 0
-1737: PPUSH
+ 104: END
+// every 0 0$1 trigger debugMode = 1 do var i ;
+ 105: LD_EXP 30
+ 109: PUSH
+ 110: LD_INT 1
+ 112: EQUAL
+ 113: IFFALSE 419
+ 115: GO 117
+ 117: DISABLE
+ 118: LD_INT 0
+ 120: PPUSH
 // begin enable ;
-1738: ENABLE
-// for i in FilterAllUnits ( [ f_side , 7 ] ) do
-1739: LD_ADDR_VAR 0 1
-1743: PUSH
-1744: LD_INT 22
-1746: PUSH
-1747: LD_INT 7
-1749: PUSH
-1750: EMPTY
-1751: LIST
-1752: LIST
-1753: PPUSH
-1754: CALL_OW 69
-1758: PUSH
-1759: FOR_IN
-1760: IFFALSE 1840
-// if IsInArea ( i , AllianceEscape ) then
-1762: LD_VAR 0 1
-1766: PPUSH
-1767: LD_INT 4
-1769: PPUSH
-1770: CALL_OW 308
-1774: IFFALSE 1838
-// begin if i = Burlak then
-1776: LD_VAR 0 1
-1780: PUSH
-1781: LD_EXP 10
-1785: EQUAL
-1786: IFFALSE 1829
-// begin RemoveUnit ( i ) ;
-1788: LD_VAR 0 1
-1792: PPUSH
-1793: CALL_OW 64
-// DialogueOn ;
-1797: CALL_OW 6
-// Say ( JMM , D5a-JMM-1 ) ;
-1801: LD_EXP 1
-1805: PPUSH
-1806: LD_STRING D5a-JMM-1
-1808: PPUSH
-1809: CALL_OW 88
-// Say ( JMM , D5a-Sol1-1 ) ;
-1813: LD_EXP 1
-1817: PPUSH
-1818: LD_STRING D5a-Sol1-1
-1820: PPUSH
-1821: CALL_OW 88
-// DialogueOff ;
-1825: CALL_OW 7
-// end ; RemoveUnit ( i ) ;
-1829: LD_VAR 0 1
-1833: PPUSH
-1834: CALL_OW 64
-// end ;
-1838: GO 1759
-1840: POP
-1841: POP
-// end ;
-1842: PPOPN 1
-1844: END
-// every 0 0$10 trigger IsPlaced ( Burlak ) and IsDying ( Burlak ) do
-1845: LD_EXP 10
-1849: PPUSH
-1850: CALL_OW 305
-1854: PUSH
-1855: LD_EXP 10
-1859: PPUSH
-1860: CALL_OW 303
-1864: AND
-1865: IFFALSE 1894
-1867: GO 1869
-1869: DISABLE
-// begin Say ( JMM , D5b-JMM-1 ) ;
-1870: LD_EXP 1
-1874: PPUSH
-1875: LD_STRING D5b-JMM-1
-1877: PPUSH
-1878: CALL_OW 88
-// Say ( JMM , D5b-Sol1-1 ) ;
-1882: LD_EXP 1
-1886: PPUSH
-1887: LD_STRING D5b-Sol1-1
-1889: PPUSH
-1890: CALL_OW 88
-// end ;
-1894: END
-// every 0 0$1 trigger IsDead ( Stevens ) do
-1895: LD_EXP 8
-1899: PPUSH
-1900: CALL_OW 301
-1904: IFFALSE 1945
-1906: GO 1908
-1908: DISABLE
-// begin Say ( JMM , D6-JMM-1 ) ;
-1909: LD_EXP 1
-1913: PPUSH
-1914: LD_STRING D6-JMM-1
-1916: PPUSH
-1917: CALL_OW 88
-// Say ( JMM , D6-Sol1-1 ) ;
-1921: LD_EXP 1
-1925: PPUSH
-1926: LD_STRING D6-Sol1-1
-1928: PPUSH
-1929: CALL_OW 88
-// Say ( JMM , D6-JMM-2 ) ;
-1933: LD_EXP 1
-1937: PPUSH
-1938: LD_STRING D6-JMM-2
-1940: PPUSH
-1941: CALL_OW 88
-// end ;
-1945: END
-// every 0 0$1 trigger GetTech ( 25 , 1 ) = state_researched do
-1946: LD_INT 25
-1948: PPUSH
-1949: LD_INT 1
-1951: PPUSH
-1952: CALL_OW 321
-1956: PUSH
-1957: LD_INT 2
-1959: EQUAL
-1960: IFFALSE 1977
-1962: GO 1964
-1964: DISABLE
-// begin Say ( Stevens , D6-Huck-2 ) ;
-1965: LD_EXP 8
-1969: PPUSH
-1970: LD_STRING D6-Huck-2
-1972: PPUSH
-1973: CALL_OW 88
+ 121: ENABLE
+// fogoff ( true ) ;
+ 122: LD_INT 1
+ 124: PPUSH
+ 125: CALL_OW 344
+// for i in FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_human ] ] ) do
+ 129: LD_ADDR_VAR 0 1
+ 133: PUSH
+ 134: LD_INT 22
+ 136: PUSH
+ 137: LD_INT 1
+ 139: PUSH
+ 140: EMPTY
+ 141: LIST
+ 142: LIST
+ 143: PUSH
+ 144: LD_INT 21
+ 146: PUSH
+ 147: LD_INT 1
+ 149: PUSH
+ 150: EMPTY
+ 151: LIST
+ 152: LIST
+ 153: PUSH
+ 154: EMPTY
+ 155: LIST
+ 156: LIST
+ 157: PPUSH
+ 158: CALL_OW 69
+ 162: PUSH
+ 163: FOR_IN
+ 164: IFFALSE 180
+// SetLives ( i , 1000 ) ;
+ 166: LD_VAR 0 1
+ 170: PPUSH
+ 171: LD_INT 1000
+ 173: PPUSH
+ 174: CALL_OW 234
+ 178: GO 163
+ 180: POP
+ 181: POP
+// for i in FilterAllUnits ( [ [ f_side , 1 ] , [ f_or , [ f_btype , 0 ] , [ f_btype , 1 ] ] ] ) do
+ 182: LD_ADDR_VAR 0 1
+ 186: PUSH
+ 187: LD_INT 22
+ 189: PUSH
+ 190: LD_INT 1
+ 192: PUSH
+ 193: EMPTY
+ 194: LIST
+ 195: LIST
+ 196: PUSH
+ 197: LD_INT 2
+ 199: PUSH
+ 200: LD_INT 30
+ 202: PUSH
+ 203: LD_INT 0
+ 205: PUSH
+ 206: EMPTY
+ 207: LIST
+ 208: LIST
+ 209: PUSH
+ 210: LD_INT 30
+ 212: PUSH
+ 213: LD_INT 1
+ 215: PUSH
+ 216: EMPTY
+ 217: LIST
+ 218: LIST
+ 219: PUSH
+ 220: EMPTY
+ 221: LIST
+ 222: LIST
+ 223: LIST
+ 224: PUSH
+ 225: EMPTY
+ 226: LIST
+ 227: LIST
+ 228: PPUSH
+ 229: CALL_OW 69
+ 233: PUSH
+ 234: FOR_IN
+ 235: IFFALSE 259
+// SetResourceType ( GetBase ( i ) , 1 , 9999 ) ;
+ 237: LD_VAR 0 1
+ 241: PPUSH
+ 242: CALL_OW 274
+ 246: PPUSH
+ 247: LD_INT 1
+ 249: PPUSH
+ 250: LD_INT 9999
+ 252: PPUSH
+ 253: CALL_OW 277
+ 257: GO 234
+ 259: POP
+ 260: POP
+// for i in FilterAllUnits ( [ [ f_side , 1 ] , [ f_or , [ f_btype , 0 ] , [ f_btype , 1 ] ] ] ) do
+ 261: LD_ADDR_VAR 0 1
+ 265: PUSH
+ 266: LD_INT 22
+ 268: PUSH
+ 269: LD_INT 1
+ 271: PUSH
+ 272: EMPTY
+ 273: LIST
+ 274: LIST
+ 275: PUSH
+ 276: LD_INT 2
+ 278: PUSH
+ 279: LD_INT 30
+ 281: PUSH
+ 282: LD_INT 0
+ 284: PUSH
+ 285: EMPTY
+ 286: LIST
+ 287: LIST
+ 288: PUSH
+ 289: LD_INT 30
+ 291: PUSH
+ 292: LD_INT 1
+ 294: PUSH
+ 295: EMPTY
+ 296: LIST
+ 297: LIST
+ 298: PUSH
+ 299: EMPTY
+ 300: LIST
+ 301: LIST
+ 302: LIST
+ 303: PUSH
+ 304: EMPTY
+ 305: LIST
+ 306: LIST
+ 307: PPUSH
+ 308: CALL_OW 69
+ 312: PUSH
+ 313: FOR_IN
+ 314: IFFALSE 338
+// SetResourceType ( GetBase ( i ) , 2 , 9999 ) ;
+ 316: LD_VAR 0 1
+ 320: PPUSH
+ 321: CALL_OW 274
+ 325: PPUSH
+ 326: LD_INT 2
+ 328: PPUSH
+ 329: LD_INT 9999
+ 331: PPUSH
+ 332: CALL_OW 277
+ 336: GO 313
+ 338: POP
+ 339: POP
+// for i in FilterAllUnits ( [ [ f_side , 1 ] , [ f_or , [ f_btype , 0 ] , [ f_btype , 1 ] ] ] ) do
+ 340: LD_ADDR_VAR 0 1
+ 344: PUSH
+ 345: LD_INT 22
+ 347: PUSH
+ 348: LD_INT 1
+ 350: PUSH
+ 351: EMPTY
+ 352: LIST
+ 353: LIST
+ 354: PUSH
+ 355: LD_INT 2
+ 357: PUSH
+ 358: LD_INT 30
+ 360: PUSH
+ 361: LD_INT 0
+ 363: PUSH
+ 364: EMPTY
+ 365: LIST
+ 366: LIST
+ 367: PUSH
+ 368: LD_INT 30
+ 370: PUSH
+ 371: LD_INT 1
+ 373: PUSH
+ 374: EMPTY
+ 375: LIST
+ 376: LIST
+ 377: PUSH
+ 378: EMPTY
+ 379: LIST
+ 380: LIST
+ 381: LIST
+ 382: PUSH
+ 383: EMPTY
+ 384: LIST
+ 385: LIST
+ 386: PPUSH
+ 387: CALL_OW 69
+ 391: PUSH
+ 392: FOR_IN
+ 393: IFFALSE 417
+// SetResourceType ( GetBase ( i ) , 3 , 9999 ) ;
+ 395: LD_VAR 0 1
+ 399: PPUSH
+ 400: CALL_OW 274
+ 404: PPUSH
+ 405: LD_INT 3
+ 407: PPUSH
+ 408: LD_INT 9999
+ 410: PPUSH
+ 411: CALL_OW 277
+ 415: GO 392
+ 417: POP
+ 418: POP
 // end ; end_of_file
-1977: END
-// on VehicleConstructionStarted ( building , chasis , engine , control , weapon ) do begin if GetWeapon ( weapon ) = 8 and eventVar1 = 0 then
-1978: LD_VAR 0 5
-1982: PPUSH
-1983: CALL_OW 264
-1987: PUSH
-1988: LD_INT 8
-1990: EQUAL
-1991: PUSH
-1992: LD_EXP 17
-1996: PUSH
-1997: LD_INT 0
-1999: EQUAL
-2000: AND
-2001: IFFALSE 2035
-// begin eventVar1 = 1 ;
-2003: LD_ADDR_EXP 17
-2007: PUSH
-2008: LD_INT 1
-2010: ST_TO_ADDR
-// Say ( JMM , D6a-JMM-1 ) ;
-2011: LD_EXP 1
-2015: PPUSH
-2016: LD_STRING D6a-JMM-1
-2018: PPUSH
-2019: CALL_OW 88
-// SayRadio ( Powell , D6a-Pow-1 ) ;
-2023: LD_EXP 9
-2027: PPUSH
-2028: LD_STRING D6a-Pow-1
-2030: PPUSH
-2031: CALL_OW 94
-// end ; end ;
-2035: PPOPN 5
-2037: END
-// on VehicleConstructed ( vehicle , building ) do begin if GetWeapon ( vehicle ) = 8 and eventVar2 = 0 then
-2038: LD_VAR 0 1
+ 419: PPOPN 1
+ 421: END
+// export function PrepareHeroes ; begin
+ 422: LD_INT 0
+ 424: PPUSH
+// uc_side = 1 ;
+ 425: LD_ADDR_OWVAR 20
+ 429: PUSH
+ 430: LD_INT 1
+ 432: ST_TO_ADDR
+// JMM = PrepareUnit ( JMM , false ) ;
+ 433: LD_ADDR_EXP 1
+ 437: PUSH
+ 438: LD_STRING JMM
+ 440: PPUSH
+ 441: LD_INT 0
+ 443: PPUSH
+ 444: CALL 4338 0 2
+ 448: ST_TO_ADDR
+// Gary = PrepareUnit ( Gary , false ) ;
+ 449: LD_ADDR_EXP 2
+ 453: PUSH
+ 454: LD_STRING Gary
+ 456: PPUSH
+ 457: LD_INT 0
+ 459: PPUSH
+ 460: CALL 4338 0 2
+ 464: ST_TO_ADDR
+// Frank = PrepareUnit ( Frank , false ) ;
+ 465: LD_ADDR_EXP 3
+ 469: PUSH
+ 470: LD_STRING Frank
+ 472: PPUSH
+ 473: LD_INT 0
+ 475: PPUSH
+ 476: CALL 4338 0 2
+ 480: ST_TO_ADDR
+// Cornell = PrepareUnit ( Cornell , false ) ;
+ 481: LD_ADDR_EXP 4
+ 485: PUSH
+ 486: LD_STRING Cornell
+ 488: PPUSH
+ 489: LD_INT 0
+ 491: PPUSH
+ 492: CALL 4338 0 2
+ 496: ST_TO_ADDR
+// Lisa = PrepareUnit ( Lisa , false ) ;
+ 497: LD_ADDR_EXP 5
+ 501: PUSH
+ 502: LD_STRING Lisa
+ 504: PPUSH
+ 505: LD_INT 0
+ 507: PPUSH
+ 508: CALL 4338 0 2
+ 512: ST_TO_ADDR
+// Cyrus = PrepareUnit ( Cyrus , false ) ;
+ 513: LD_ADDR_EXP 6
+ 517: PUSH
+ 518: LD_STRING Cyrus
+ 520: PPUSH
+ 521: LD_INT 0
+ 523: PPUSH
+ 524: CALL 4338 0 2
+ 528: ST_TO_ADDR
+// Woodruff = PrepareUnit ( Woodruff , false ) ;
+ 529: LD_ADDR_EXP 7
+ 533: PUSH
+ 534: LD_STRING Woodruff
+ 536: PPUSH
+ 537: LD_INT 0
+ 539: PPUSH
+ 540: CALL 4338 0 2
+ 544: ST_TO_ADDR
+// Stevens = PrepareUnit ( Stevens , false ) ;
+ 545: LD_ADDR_EXP 8
+ 549: PUSH
+ 550: LD_STRING Stevens
+ 552: PPUSH
+ 553: LD_INT 0
+ 555: PPUSH
+ 556: CALL 4338 0 2
+ 560: ST_TO_ADDR
+// Powell = PrepareUnit ( Powell , false ) ;
+ 561: LD_ADDR_EXP 9
+ 565: PUSH
+ 566: LD_STRING Powell
+ 568: PPUSH
+ 569: LD_INT 0
+ 571: PPUSH
+ 572: CALL 4338 0 2
+ 576: ST_TO_ADDR
+// PlaceHumanInUnit ( JMM , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 1 ] ) ;
+ 577: LD_EXP 1
+ 581: PPUSH
+ 582: LD_INT 22
+ 584: PUSH
+ 585: LD_INT 1
+ 587: PUSH
+ 588: EMPTY
+ 589: LIST
+ 590: LIST
+ 591: PUSH
+ 592: LD_INT 21
+ 594: PUSH
+ 595: LD_INT 2
+ 597: PUSH
+ 598: EMPTY
+ 599: LIST
+ 600: LIST
+ 601: PUSH
+ 602: EMPTY
+ 603: LIST
+ 604: LIST
+ 605: PPUSH
+ 606: CALL_OW 69
+ 610: PUSH
+ 611: LD_INT 1
+ 613: ARRAY
+ 614: PPUSH
+ 615: CALL_OW 52
+// PlaceHumanInUnit ( Gary , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 2 ] ) ;
+ 619: LD_EXP 2
+ 623: PPUSH
+ 624: LD_INT 22
+ 626: PUSH
+ 627: LD_INT 1
+ 629: PUSH
+ 630: EMPTY
+ 631: LIST
+ 632: LIST
+ 633: PUSH
+ 634: LD_INT 21
+ 636: PUSH
+ 637: LD_INT 2
+ 639: PUSH
+ 640: EMPTY
+ 641: LIST
+ 642: LIST
+ 643: PUSH
+ 644: EMPTY
+ 645: LIST
+ 646: LIST
+ 647: PPUSH
+ 648: CALL_OW 69
+ 652: PUSH
+ 653: LD_INT 2
+ 655: ARRAY
+ 656: PPUSH
+ 657: CALL_OW 52
+// PlaceHumanInUnit ( Frank , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 3 ] ) ;
+ 661: LD_EXP 3
+ 665: PPUSH
+ 666: LD_INT 22
+ 668: PUSH
+ 669: LD_INT 1
+ 671: PUSH
+ 672: EMPTY
+ 673: LIST
+ 674: LIST
+ 675: PUSH
+ 676: LD_INT 21
+ 678: PUSH
+ 679: LD_INT 2
+ 681: PUSH
+ 682: EMPTY
+ 683: LIST
+ 684: LIST
+ 685: PUSH
+ 686: EMPTY
+ 687: LIST
+ 688: LIST
+ 689: PPUSH
+ 690: CALL_OW 69
+ 694: PUSH
+ 695: LD_INT 3
+ 697: ARRAY
+ 698: PPUSH
+ 699: CALL_OW 52
+// PlaceHumanInUnit ( Cornell , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 4 ] ) ;
+ 703: LD_EXP 4
+ 707: PPUSH
+ 708: LD_INT 22
+ 710: PUSH
+ 711: LD_INT 1
+ 713: PUSH
+ 714: EMPTY
+ 715: LIST
+ 716: LIST
+ 717: PUSH
+ 718: LD_INT 21
+ 720: PUSH
+ 721: LD_INT 2
+ 723: PUSH
+ 724: EMPTY
+ 725: LIST
+ 726: LIST
+ 727: PUSH
+ 728: EMPTY
+ 729: LIST
+ 730: LIST
+ 731: PPUSH
+ 732: CALL_OW 69
+ 736: PUSH
+ 737: LD_INT 4
+ 739: ARRAY
+ 740: PPUSH
+ 741: CALL_OW 52
+// PlaceHumanInUnit ( Lisa , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 5 ] ) ;
+ 745: LD_EXP 5
+ 749: PPUSH
+ 750: LD_INT 22
+ 752: PUSH
+ 753: LD_INT 1
+ 755: PUSH
+ 756: EMPTY
+ 757: LIST
+ 758: LIST
+ 759: PUSH
+ 760: LD_INT 21
+ 762: PUSH
+ 763: LD_INT 2
+ 765: PUSH
+ 766: EMPTY
+ 767: LIST
+ 768: LIST
+ 769: PUSH
+ 770: EMPTY
+ 771: LIST
+ 772: LIST
+ 773: PPUSH
+ 774: CALL_OW 69
+ 778: PUSH
+ 779: LD_INT 5
+ 781: ARRAY
+ 782: PPUSH
+ 783: CALL_OW 52
+// PlaceHumanInUnit ( Cyrus , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 6 ] ) ;
+ 787: LD_EXP 6
+ 791: PPUSH
+ 792: LD_INT 22
+ 794: PUSH
+ 795: LD_INT 1
+ 797: PUSH
+ 798: EMPTY
+ 799: LIST
+ 800: LIST
+ 801: PUSH
+ 802: LD_INT 21
+ 804: PUSH
+ 805: LD_INT 2
+ 807: PUSH
+ 808: EMPTY
+ 809: LIST
+ 810: LIST
+ 811: PUSH
+ 812: EMPTY
+ 813: LIST
+ 814: LIST
+ 815: PPUSH
+ 816: CALL_OW 69
+ 820: PUSH
+ 821: LD_INT 6
+ 823: ARRAY
+ 824: PPUSH
+ 825: CALL_OW 52
+// PlaceHumanInUnit ( Woodruff , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 7 ] ) ;
+ 829: LD_EXP 7
+ 833: PPUSH
+ 834: LD_INT 22
+ 836: PUSH
+ 837: LD_INT 1
+ 839: PUSH
+ 840: EMPTY
+ 841: LIST
+ 842: LIST
+ 843: PUSH
+ 844: LD_INT 21
+ 846: PUSH
+ 847: LD_INT 2
+ 849: PUSH
+ 850: EMPTY
+ 851: LIST
+ 852: LIST
+ 853: PUSH
+ 854: EMPTY
+ 855: LIST
+ 856: LIST
+ 857: PPUSH
+ 858: CALL_OW 69
+ 862: PUSH
+ 863: LD_INT 7
+ 865: ARRAY
+ 866: PPUSH
+ 867: CALL_OW 52
+// PlaceHumanInUnit ( Stevens , FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 8 ] ) ;
+ 871: LD_EXP 8
+ 875: PPUSH
+ 876: LD_INT 22
+ 878: PUSH
+ 879: LD_INT 1
+ 881: PUSH
+ 882: EMPTY
+ 883: LIST
+ 884: LIST
+ 885: PUSH
+ 886: LD_INT 21
+ 888: PUSH
+ 889: LD_INT 2
+ 891: PUSH
+ 892: EMPTY
+ 893: LIST
+ 894: LIST
+ 895: PUSH
+ 896: EMPTY
+ 897: LIST
+ 898: LIST
+ 899: PPUSH
+ 900: CALL_OW 69
+ 904: PUSH
+ 905: LD_INT 8
+ 907: ARRAY
+ 908: PPUSH
+ 909: CALL_OW 52
+// SetClass ( Lisa , 2 ) ;
+ 913: LD_EXP 5
+ 917: PPUSH
+ 918: LD_INT 2
+ 920: PPUSH
+ 921: CALL_OW 336
+// end ;
+ 925: LD_VAR 0 1
+ 929: RET
+// export function SpawnVehicle ; var i , veh ; begin
+ 930: LD_INT 0
+ 932: PPUSH
+ 933: PPUSH
+ 934: PPUSH
+// uc_side = 1 ;
+ 935: LD_ADDR_OWVAR 20
+ 939: PUSH
+ 940: LD_INT 1
+ 942: ST_TO_ADDR
+// uc_nation = 1 ;
+ 943: LD_ADDR_OWVAR 21
+ 947: PUSH
+ 948: LD_INT 1
+ 950: ST_TO_ADDR
+// for i = 1 to [ 3 , 2 , 1 ] [ Difficulty ] do
+ 951: LD_ADDR_VAR 0 2
+ 955: PUSH
+ 956: DOUBLE
+ 957: LD_INT 1
+ 959: DEC
+ 960: ST_TO_ADDR
+ 961: LD_INT 3
+ 963: PUSH
+ 964: LD_INT 2
+ 966: PUSH
+ 967: LD_INT 1
+ 969: PUSH
+ 970: EMPTY
+ 971: LIST
+ 972: LIST
+ 973: LIST
+ 974: PUSH
+ 975: LD_OWVAR 67
+ 979: ARRAY
+ 980: PUSH
+ 981: FOR_TO
+ 982: IFFALSE 1070
+// begin vc_engine = 3 ;
+ 984: LD_ADDR_OWVAR 39
+ 988: PUSH
+ 989: LD_INT 3
+ 991: ST_TO_ADDR
+// vc_control = 1 ;
+ 992: LD_ADDR_OWVAR 38
+ 996: PUSH
+ 997: LD_INT 1
+ 999: ST_TO_ADDR
+// vc_weapon = 12 ;
+1000: LD_ADDR_OWVAR 40
+1004: PUSH
+1005: LD_INT 12
+1007: ST_TO_ADDR
+// vc_chassis = 3 ;
+1008: LD_ADDR_OWVAR 37
+1012: PUSH
+1013: LD_INT 3
+1015: ST_TO_ADDR
+// veh = CreateVehicle ;
+1016: LD_ADDR_VAR 0 3
+1020: PUSH
+1021: CALL_OW 45
+1025: ST_TO_ADDR
+// PlaceUnitArea ( veh , PlayerSpawn , false ) ;
+1026: LD_VAR 0 3
+1030: PPUSH
+1031: LD_INT 2
+1033: PPUSH
+1034: LD_INT 0
+1036: PPUSH
+1037: CALL_OW 49
+// SetDir ( veh , 2 ) ;
+1041: LD_VAR 0 3
+1045: PPUSH
+1046: LD_INT 2
+1048: PPUSH
+1049: CALL_OW 233
+// AddCargo ( veh , 1 , 100 ) ;
+1053: LD_VAR 0 3
+1057: PPUSH
+1058: LD_INT 1
+1060: PPUSH
+1061: LD_INT 100
+1063: PPUSH
+1064: CALL_OW 291
+// end ;
+1068: GO 981
+1070: POP
+1071: POP
+// for i = 1 to 8 - [ 3 , 2 , 1 ] [ Difficulty ] do
+1072: LD_ADDR_VAR 0 2
+1076: PUSH
+1077: DOUBLE
+1078: LD_INT 1
+1080: DEC
+1081: ST_TO_ADDR
+1082: LD_INT 8
+1084: PUSH
+1085: LD_INT 3
+1087: PUSH
+1088: LD_INT 2
+1090: PUSH
+1091: LD_INT 1
+1093: PUSH
+1094: EMPTY
+1095: LIST
+1096: LIST
+1097: LIST
+1098: PUSH
+1099: LD_OWVAR 67
+1103: ARRAY
+1104: MINUS
+1105: PUSH
+1106: FOR_TO
+1107: IFFALSE 1203
+// begin vc_engine = 3 ;
+1109: LD_ADDR_OWVAR 39
+1113: PUSH
+1114: LD_INT 3
+1116: ST_TO_ADDR
+// vc_control = 1 ;
+1117: LD_ADDR_OWVAR 38
+1121: PUSH
+1122: LD_INT 1
+1124: ST_TO_ADDR
+// vc_weapon = [ 9 , 5 , 4 ] [ Rand ( 1 , 3 ) ] ;
+1125: LD_ADDR_OWVAR 40
+1129: PUSH
+1130: LD_INT 9
+1132: PUSH
+1133: LD_INT 5
+1135: PUSH
+1136: LD_INT 4
+1138: PUSH
+1139: EMPTY
+1140: LIST
+1141: LIST
+1142: LIST
+1143: PUSH
+1144: LD_INT 1
+1146: PPUSH
+1147: LD_INT 3
+1149: PPUSH
+1150: CALL_OW 12
+1154: ARRAY
+1155: ST_TO_ADDR
+// vc_chassis = 3 ;
+1156: LD_ADDR_OWVAR 37
+1160: PUSH
+1161: LD_INT 3
+1163: ST_TO_ADDR
+// veh = CreateVehicle ;
+1164: LD_ADDR_VAR 0 3
+1168: PUSH
+1169: CALL_OW 45
+1173: ST_TO_ADDR
+// PlaceUnitArea ( veh , PlayerSpawn , false ) ;
+1174: LD_VAR 0 3
+1178: PPUSH
+1179: LD_INT 2
+1181: PPUSH
+1182: LD_INT 0
+1184: PPUSH
+1185: CALL_OW 49
+// SetDir ( veh , 1 ) ;
+1189: LD_VAR 0 3
+1193: PPUSH
+1194: LD_INT 1
+1196: PPUSH
+1197: CALL_OW 233
+// end ;
+1201: GO 1106
+1203: POP
+1204: POP
+// end ; end_of_file
+1205: LD_VAR 0 1
+1209: RET
+// export function PrepareBurlak ; begin
+1210: LD_INT 0
+1212: PPUSH
+// uc_side = 7 ;
+1213: LD_ADDR_OWVAR 20
+1217: PUSH
+1218: LD_INT 7
+1220: ST_TO_ADDR
+// uc_nation = 3 ;
+1221: LD_ADDR_OWVAR 21
+1225: PUSH
+1226: LD_INT 3
+1228: ST_TO_ADDR
+// vc_engine = 3 ;
+1229: LD_ADDR_OWVAR 39
+1233: PUSH
+1234: LD_INT 3
+1236: ST_TO_ADDR
+// vc_control = 1 ;
+1237: LD_ADDR_OWVAR 38
+1241: PUSH
+1242: LD_INT 1
+1244: ST_TO_ADDR
+// vc_weapon = 46 ;
+1245: LD_ADDR_OWVAR 40
+1249: PUSH
+1250: LD_INT 46
+1252: ST_TO_ADDR
+// vc_chassis = 24 ;
+1253: LD_ADDR_OWVAR 37
+1257: PUSH
+1258: LD_INT 24
+1260: ST_TO_ADDR
+// Masha = CreateVehicle ;
+1261: LD_ADDR_EXP 11
+1265: PUSH
+1266: CALL_OW 45
+1270: ST_TO_ADDR
+// PlaceUnitArea ( Masha , GorkySpawn , false ) ;
+1271: LD_EXP 11
+1275: PPUSH
+1276: LD_INT 3
+1278: PPUSH
+1279: LD_INT 0
+1281: PPUSH
+1282: CALL_OW 49
+// SetMark ( Masha , 1 ) ;
+1286: LD_EXP 11
+1290: PPUSH
+1291: LD_INT 1
+1293: PPUSH
+1294: CALL_OW 242
+// Burlak = PrepareUnit ( Burlak , false ) ;
+1298: LD_ADDR_EXP 10
+1302: PUSH
+1303: LD_STRING Burlak
+1305: PPUSH
+1306: LD_INT 0
+1308: PPUSH
+1309: CALL 4338 0 2
+1313: ST_TO_ADDR
+// PlaceHumanInUnit ( Burlak , Masha ) ;
+1314: LD_EXP 10
+1318: PPUSH
+1319: LD_EXP 11
+1323: PPUSH
+1324: CALL_OW 52
+// ComAgressiveMove ( Masha , 107 , 118 ) ;
+1328: LD_EXP 11
+1332: PPUSH
+1333: LD_INT 107
+1335: PPUSH
+1336: LD_INT 118
+1338: PPUSH
+1339: CALL_OW 114
+// spawnBurlak = 1 ;
+1343: LD_ADDR_EXP 18
+1347: PUSH
+1348: LD_INT 1
+1350: ST_TO_ADDR
+// end ;
+1351: LD_VAR 0 1
+1355: RET
+// export function BurlakArmy ; var i , veh ; begin
+1356: LD_INT 0
+1358: PPUSH
+1359: PPUSH
+1360: PPUSH
+// uc_side = 7 ;
+1361: LD_ADDR_OWVAR 20
+1365: PUSH
+1366: LD_INT 7
+1368: ST_TO_ADDR
+// uc_nation = 3 ;
+1369: LD_ADDR_OWVAR 21
+1373: PUSH
+1374: LD_INT 3
+1376: ST_TO_ADDR
+// Gnyevko = PrepareUnit ( Gnyevko , false ) ;
+1377: LD_ADDR_EXP 12
+1381: PUSH
+1382: LD_STRING Gnyevko
+1384: PPUSH
+1385: LD_INT 0
+1387: PPUSH
+1388: CALL 4338 0 2
+1392: ST_TO_ADDR
+// Titov = PrepareUnit ( Titov , false ) ;
+1393: LD_ADDR_EXP 13
+1397: PUSH
+1398: LD_STRING Titov
+1400: PPUSH
+1401: LD_INT 0
+1403: PPUSH
+1404: CALL 4338 0 2
+1408: ST_TO_ADDR
+// Xavier = PrepareUnit ( Xavier2 , false ) ;
+1409: LD_ADDR_EXP 14
+1413: PUSH
+1414: LD_STRING Xavier2
+1416: PPUSH
+1417: LD_INT 0
+1419: PPUSH
+1420: CALL 4338 0 2
+1424: ST_TO_ADDR
+// Belkov = PrepareUnit ( Belkov , false ) ;
+1425: LD_ADDR_EXP 15
+1429: PUSH
+1430: LD_STRING Belkov
+1432: PPUSH
+1433: LD_INT 0
+1435: PPUSH
+1436: CALL 4338 0 2
+1440: ST_TO_ADDR
+// Lipshchin = PrepareUnit ( Lipshchin , false ) ;
+1441: LD_ADDR_EXP 16
+1445: PUSH
+1446: LD_STRING Lipshchin
+1448: PPUSH
+1449: LD_INT 0
+1451: PPUSH
+1452: CALL 4338 0 2
+1456: ST_TO_ADDR
+// for i = 1 to 5 do
+1457: LD_ADDR_VAR 0 2
+1461: PUSH
+1462: DOUBLE
+1463: LD_INT 1
+1465: DEC
+1466: ST_TO_ADDR
+1467: LD_INT 5
+1469: PUSH
+1470: FOR_TO
+1471: IFFALSE 1559
+// begin vc_engine = 3 ;
+1473: LD_ADDR_OWVAR 39
+1477: PUSH
+1478: LD_INT 3
+1480: ST_TO_ADDR
+// vc_control = 1 ;
+1481: LD_ADDR_OWVAR 38
+1485: PUSH
+1486: LD_INT 1
+1488: ST_TO_ADDR
+// vc_weapon = [ 43 , 44 , 45 , 49 ] [ Rand ( 1 , 4 ) ] ;
+1489: LD_ADDR_OWVAR 40
+1493: PUSH
+1494: LD_INT 43
+1496: PUSH
+1497: LD_INT 44
+1499: PUSH
+1500: LD_INT 45
+1502: PUSH
+1503: LD_INT 49
+1505: PUSH
+1506: EMPTY
+1507: LIST
+1508: LIST
+1509: LIST
+1510: LIST
+1511: PUSH
+1512: LD_INT 1
+1514: PPUSH
+1515: LD_INT 4
+1517: PPUSH
+1518: CALL_OW 12
+1522: ARRAY
+1523: ST_TO_ADDR
+// vc_chassis = 22 ;
+1524: LD_ADDR_OWVAR 37
+1528: PUSH
+1529: LD_INT 22
+1531: ST_TO_ADDR
+// veh = CreateVehicle ;
+1532: LD_ADDR_VAR 0 3
+1536: PUSH
+1537: CALL_OW 45
+1541: ST_TO_ADDR
+// PlaceUnitArea ( veh , GorkySpawn , false ) ;
+1542: LD_VAR 0 3
+1546: PPUSH
+1547: LD_INT 3
+1549: PPUSH
+1550: LD_INT 0
+1552: PPUSH
+1553: CALL_OW 49
+// end ;
+1557: GO 1470
+1559: POP
+1560: POP
+// PlaceHumanInUnit ( Gnyevko , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 1 ] ) ;
+1561: LD_EXP 12
+1565: PPUSH
+1566: LD_INT 22
+1568: PUSH
+1569: LD_INT 7
+1571: PUSH
+1572: EMPTY
+1573: LIST
+1574: LIST
+1575: PUSH
+1576: LD_INT 21
+1578: PUSH
+1579: LD_INT 2
+1581: PUSH
+1582: EMPTY
+1583: LIST
+1584: LIST
+1585: PUSH
+1586: LD_INT 58
+1588: PUSH
+1589: EMPTY
+1590: LIST
+1591: PUSH
+1592: EMPTY
+1593: LIST
+1594: LIST
+1595: LIST
+1596: PPUSH
+1597: CALL_OW 69
+1601: PUSH
+1602: LD_INT 1
+1604: ARRAY
+1605: PPUSH
+1606: CALL_OW 52
+// PlaceHumanInUnit ( Titov , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 1 ] ) ;
+1610: LD_EXP 13
+1614: PPUSH
+1615: LD_INT 22
+1617: PUSH
+1618: LD_INT 7
+1620: PUSH
+1621: EMPTY
+1622: LIST
+1623: LIST
+1624: PUSH
+1625: LD_INT 21
+1627: PUSH
+1628: LD_INT 2
+1630: PUSH
+1631: EMPTY
+1632: LIST
+1633: LIST
+1634: PUSH
+1635: LD_INT 58
+1637: PUSH
+1638: EMPTY
+1639: LIST
+1640: PUSH
+1641: EMPTY
+1642: LIST
+1643: LIST
+1644: LIST
+1645: PPUSH
+1646: CALL_OW 69
+1650: PUSH
+1651: LD_INT 1
+1653: ARRAY
+1654: PPUSH
+1655: CALL_OW 52
+// PlaceHumanInUnit ( Xavier , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 1 ] ) ;
+1659: LD_EXP 14
+1663: PPUSH
+1664: LD_INT 22
+1666: PUSH
+1667: LD_INT 7
+1669: PUSH
+1670: EMPTY
+1671: LIST
+1672: LIST
+1673: PUSH
+1674: LD_INT 21
+1676: PUSH
+1677: LD_INT 2
+1679: PUSH
+1680: EMPTY
+1681: LIST
+1682: LIST
+1683: PUSH
+1684: LD_INT 58
+1686: PUSH
+1687: EMPTY
+1688: LIST
+1689: PUSH
+1690: EMPTY
+1691: LIST
+1692: LIST
+1693: LIST
+1694: PPUSH
+1695: CALL_OW 69
+1699: PUSH
+1700: LD_INT 1
+1702: ARRAY
+1703: PPUSH
+1704: CALL_OW 52
+// PlaceHumanInUnit ( Belkov , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 1 ] ) ;
+1708: LD_EXP 15
+1712: PPUSH
+1713: LD_INT 22
+1715: PUSH
+1716: LD_INT 7
+1718: PUSH
+1719: EMPTY
+1720: LIST
+1721: LIST
+1722: PUSH
+1723: LD_INT 21
+1725: PUSH
+1726: LD_INT 2
+1728: PUSH
+1729: EMPTY
+1730: LIST
+1731: LIST
+1732: PUSH
+1733: LD_INT 58
+1735: PUSH
+1736: EMPTY
+1737: LIST
+1738: PUSH
+1739: EMPTY
+1740: LIST
+1741: LIST
+1742: LIST
+1743: PPUSH
+1744: CALL_OW 69
+1748: PUSH
+1749: LD_INT 1
+1751: ARRAY
+1752: PPUSH
+1753: CALL_OW 52
+// PlaceHumanInUnit ( Lipshchin , FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) [ 1 ] ) ;
+1757: LD_EXP 16
+1761: PPUSH
+1762: LD_INT 22
+1764: PUSH
+1765: LD_INT 7
+1767: PUSH
+1768: EMPTY
+1769: LIST
+1770: LIST
+1771: PUSH
+1772: LD_INT 21
+1774: PUSH
+1775: LD_INT 2
+1777: PUSH
+1778: EMPTY
+1779: LIST
+1780: LIST
+1781: PUSH
+1782: LD_INT 58
+1784: PUSH
+1785: EMPTY
+1786: LIST
+1787: PUSH
+1788: EMPTY
+1789: LIST
+1790: LIST
+1791: LIST
+1792: PPUSH
+1793: CALL_OW 69
+1797: PUSH
+1798: LD_INT 1
+1800: ARRAY
+1801: PPUSH
+1802: CALL_OW 52
+// SetClass ( Gnyevko , 3 ) ;
+1806: LD_EXP 12
+1810: PPUSH
+1811: LD_INT 3
+1813: PPUSH
+1814: CALL_OW 336
+// SetClass ( [ Titov , Lipshchin ] , 9 ) ;
+1818: LD_EXP 13
+1822: PUSH
+1823: LD_EXP 16
+1827: PUSH
+1828: EMPTY
+1829: LIST
+1830: LIST
+1831: PPUSH
+1832: LD_INT 9
+1834: PPUSH
+1835: CALL_OW 336
+// ComAgressiveMove ( FilterAllUnits ( [ [ f_side , 7 ] , [ f_type , unit_vehicle ] ] ) , 107 , 118 ) ;
+1839: LD_INT 22
+1841: PUSH
+1842: LD_INT 7
+1844: PUSH
+1845: EMPTY
+1846: LIST
+1847: LIST
+1848: PUSH
+1849: LD_INT 21
+1851: PUSH
+1852: LD_INT 2
+1854: PUSH
+1855: EMPTY
+1856: LIST
+1857: LIST
+1858: PUSH
+1859: EMPTY
+1860: LIST
+1861: LIST
+1862: PPUSH
+1863: CALL_OW 69
+1867: PPUSH
+1868: LD_INT 107
+1870: PPUSH
+1871: LD_INT 118
+1873: PPUSH
+1874: CALL_OW 114
+// end ; end_of_file
+1878: LD_VAR 0 1
+1882: RET
+// every 0 0$5 trigger FilterAllUnits ( [ [ f_side , 8 ] , [ f_control , 2 ] ] ) > 0 and FilterAllUnits ( [ [ f_side , 8 ] , [ f_weapon , 31 ] ] ) = 0 do var i ;
+1883: LD_INT 22
+1885: PUSH
+1886: LD_INT 8
+1888: PUSH
+1889: EMPTY
+1890: LIST
+1891: LIST
+1892: PUSH
+1893: LD_INT 33
+1895: PUSH
+1896: LD_INT 2
+1898: PUSH
+1899: EMPTY
+1900: LIST
+1901: LIST
+1902: PUSH
+1903: EMPTY
+1904: LIST
+1905: LIST
+1906: PPUSH
+1907: CALL_OW 69
+1911: PUSH
+1912: LD_INT 0
+1914: GREATER
+1915: PUSH
+1916: LD_INT 22
+1918: PUSH
+1919: LD_INT 8
+1921: PUSH
+1922: EMPTY
+1923: LIST
+1924: LIST
+1925: PUSH
+1926: LD_INT 34
+1928: PUSH
+1929: LD_INT 31
+1931: PUSH
+1932: EMPTY
+1933: LIST
+1934: LIST
+1935: PUSH
+1936: EMPTY
+1937: LIST
+1938: LIST
+1939: PPUSH
+1940: CALL_OW 69
+1944: PUSH
+1945: LD_INT 0
+1947: EQUAL
+1948: AND
+1949: IFFALSE 2172
+1951: GO 1953
+1953: DISABLE
+1954: LD_INT 0
+1956: PPUSH
+// begin enable ;
+1957: ENABLE
+// uc_side = 8 ;
+1958: LD_ADDR_OWVAR 20
+1962: PUSH
+1963: LD_INT 8
+1965: ST_TO_ADDR
+// uc_nation = 2 ;
+1966: LD_ADDR_OWVAR 21
+1970: PUSH
+1971: LD_INT 2
+1973: ST_TO_ADDR
+// vc_engine = 3 ;
+1974: LD_ADDR_OWVAR 39
+1978: PUSH
+1979: LD_INT 3
+1981: ST_TO_ADDR
+// vc_control = 1 ;
+1982: LD_ADDR_OWVAR 38
+1986: PUSH
+1987: LD_INT 1
+1989: ST_TO_ADDR
+// vc_weapon = 31 ;
+1990: LD_ADDR_OWVAR 40
+1994: PUSH
+1995: LD_INT 31
+1997: ST_TO_ADDR
+// vc_chassis = 14 ;
+1998: LD_ADDR_OWVAR 37
+2002: PUSH
+2003: LD_INT 14
+2005: ST_TO_ADDR
+// arControlTower = CreateVehicle ;
+2006: LD_ADDR_EXP 23
+2010: PUSH
+2011: CALL_OW 45
+2015: ST_TO_ADDR
+// PlaceUnitArea ( arControlTower , [ ArabianSpawn1 , ArabianSpawn2 ] [ Rand ( 1 , 2 ) ] , false ) ;
+2016: LD_EXP 23
+2020: PPUSH
+2021: LD_INT 8
+2023: PUSH
+2024: LD_INT 9
+2026: PUSH
+2027: EMPTY
+2028: LIST
+2029: LIST
+2030: PUSH
+2031: LD_INT 1
+2033: PPUSH
+2034: LD_INT 2
+2036: PPUSH
+2037: CALL_OW 12
+2041: ARRAY
 2042: PPUSH
-2043: CALL_OW 264
-2047: PUSH
-2048: LD_INT 8
-2050: EQUAL
-2051: PUSH
-2052: LD_EXP 18
-2056: PUSH
-2057: LD_INT 0
-2059: EQUAL
-2060: AND
-2061: IFFALSE 2095
+2043: LD_INT 0
+2045: PPUSH
+2046: CALL_OW 49
+// hc_name =  ;
+2050: LD_ADDR_OWVAR 26
+2054: PUSH
+2055: LD_STRING 
+2057: ST_TO_ADDR
+// hc_gallery =  ;
+2058: LD_ADDR_OWVAR 33
+2062: PUSH
+2063: LD_STRING 
+2065: ST_TO_ADDR
+// PrepareHuman ( false , 3 , 10 ) ;
+2066: LD_INT 0
+2068: PPUSH
+2069: LD_INT 3
+2071: PPUSH
+2072: LD_INT 10
+2074: PPUSH
+2075: CALL_OW 380
+// arDriver = CreateHuman ;
+2079: LD_ADDR_EXP 24
+2083: PUSH
+2084: CALL_OW 44
+2088: ST_TO_ADDR
+// PlaceHumanInUnit ( arDriver , arControlTower ) ;
+2089: LD_EXP 24
+2093: PPUSH
+2094: LD_EXP 23
+2098: PPUSH
+2099: CALL_OW 52
+// for i in FilterAllUnits ( [ [ f_side , 8 ] , [ f_control , 2 ] , [ f_not , [ f_linked ] ] ] ) do
+2103: LD_ADDR_VAR 0 1
+2107: PUSH
+2108: LD_INT 22
+2110: PUSH
+2111: LD_INT 8
+2113: PUSH
+2114: EMPTY
+2115: LIST
+2116: LIST
+2117: PUSH
+2118: LD_INT 33
+2120: PUSH
+2121: LD_INT 2
+2123: PUSH
+2124: EMPTY
+2125: LIST
+2126: LIST
+2127: PUSH
+2128: LD_INT 3
+2130: PUSH
+2131: LD_INT 61
+2133: PUSH
+2134: EMPTY
+2135: LIST
+2136: PUSH
+2137: EMPTY
+2138: LIST
+2139: LIST
+2140: PUSH
+2141: EMPTY
+2142: LIST
+2143: LIST
+2144: LIST
+2145: PPUSH
+2146: CALL_OW 69
+2150: PUSH
+2151: FOR_IN
+2152: IFFALSE 2170
+// ComLinkTo ( i , arDriver ) ;
+2154: LD_VAR 0 1
+2158: PPUSH
+2159: LD_EXP 24
+2163: PPUSH
+2164: CALL_OW 135
+2168: GO 2151
+2170: POP
+2171: POP
+// end ;
+2172: PPOPN 1
+2174: END
+// every 0 0$1 trigger FilterAllUnits ( [ [ f_side , 8 ] , [ f_type , unit_vehicle ] , [ f_not , [ f_weapon , 31 ] ] ] ) = 0 do
+2175: LD_INT 22
+2177: PUSH
+2178: LD_INT 8
+2180: PUSH
+2181: EMPTY
+2182: LIST
+2183: LIST
+2184: PUSH
+2185: LD_INT 21
+2187: PUSH
+2188: LD_INT 2
+2190: PUSH
+2191: EMPTY
+2192: LIST
+2193: LIST
+2194: PUSH
+2195: LD_INT 3
+2197: PUSH
+2198: LD_INT 34
+2200: PUSH
+2201: LD_INT 31
+2203: PUSH
+2204: EMPTY
+2205: LIST
+2206: LIST
+2207: PUSH
+2208: EMPTY
+2209: LIST
+2210: LIST
+2211: PUSH
+2212: EMPTY
+2213: LIST
+2214: LIST
+2215: LIST
+2216: PPUSH
+2217: CALL_OW 69
+2221: PUSH
+2222: LD_INT 0
+2224: EQUAL
+2225: IFFALSE 2249
+2227: GO 2229
+2229: DISABLE
+// begin enable ;
+2230: ENABLE
+// RemoveUnit ( arControlTower ) ;
+2231: LD_EXP 23
+2235: PPUSH
+2236: CALL_OW 64
+// RemoveUnit ( arDriver ) ;
+2240: LD_EXP 24
+2244: PPUSH
+2245: CALL_OW 64
+// end ; end_of_file
+2249: END
+// every 1 do
+2250: GO 2252
+2252: DISABLE
+// begin InGameOn ;
+2253: CALL_OW 8
+// CenterNowOnUnits ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 1 ] ) ;
+2257: LD_INT 22
+2259: PUSH
+2260: LD_INT 1
+2262: PUSH
+2263: EMPTY
+2264: LIST
+2265: LIST
+2266: PUSH
+2267: LD_INT 21
+2269: PUSH
+2270: LD_INT 2
+2272: PUSH
+2273: EMPTY
+2274: LIST
+2275: LIST
+2276: PUSH
+2277: EMPTY
+2278: LIST
+2279: LIST
+2280: PPUSH
+2281: CALL_OW 69
+2285: PUSH
+2286: LD_INT 1
+2288: ARRAY
+2289: PPUSH
+2290: CALL_OW 87
+// ComMoveXY ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) , 69 , 94 ) ;
+2294: LD_INT 22
+2296: PUSH
+2297: LD_INT 1
+2299: PUSH
+2300: EMPTY
+2301: LIST
+2302: LIST
+2303: PUSH
+2304: LD_INT 21
+2306: PUSH
+2307: LD_INT 2
+2309: PUSH
+2310: EMPTY
+2311: LIST
+2312: LIST
+2313: PUSH
+2314: EMPTY
+2315: LIST
+2316: LIST
+2317: PPUSH
+2318: CALL_OW 69
+2322: PPUSH
+2323: LD_INT 69
+2325: PPUSH
+2326: LD_INT 94
+2328: PPUSH
+2329: CALL_OW 111
+// Say ( JMM , D2-JMM-1 ) ;
+2333: LD_EXP 1
+2337: PPUSH
+2338: LD_STRING D2-JMM-1
+2340: PPUSH
+2341: CALL_OW 88
+// CenterNowOnUnits ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 1 ] ) ;
+2345: LD_INT 22
+2347: PUSH
+2348: LD_INT 1
+2350: PUSH
+2351: EMPTY
+2352: LIST
+2353: LIST
+2354: PUSH
+2355: LD_INT 21
+2357: PUSH
+2358: LD_INT 2
+2360: PUSH
+2361: EMPTY
+2362: LIST
+2363: LIST
+2364: PUSH
+2365: EMPTY
+2366: LIST
+2367: LIST
+2368: PPUSH
+2369: CALL_OW 69
+2373: PUSH
+2374: LD_INT 1
+2376: ARRAY
+2377: PPUSH
+2378: CALL_OW 87
+// Say ( Stevens , D2-Huck-1 ) ;
+2382: LD_EXP 8
+2386: PPUSH
+2387: LD_STRING D2-Huck-1
+2389: PPUSH
+2390: CALL_OW 88
+// CenterNowOnUnits ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 1 ] ) ;
+2394: LD_INT 22
+2396: PUSH
+2397: LD_INT 1
+2399: PUSH
+2400: EMPTY
+2401: LIST
+2402: LIST
+2403: PUSH
+2404: LD_INT 21
+2406: PUSH
+2407: LD_INT 2
+2409: PUSH
+2410: EMPTY
+2411: LIST
+2412: LIST
+2413: PUSH
+2414: EMPTY
+2415: LIST
+2416: LIST
+2417: PPUSH
+2418: CALL_OW 69
+2422: PUSH
+2423: LD_INT 1
+2425: ARRAY
+2426: PPUSH
+2427: CALL_OW 87
+// Say ( JMM , D2-JMM-2 ) ;
+2431: LD_EXP 1
+2435: PPUSH
+2436: LD_STRING D2-JMM-2
+2438: PPUSH
+2439: CALL_OW 88
+// CenterNowOnUnits ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_vehicle ] ] ) [ 1 ] ) ;
+2443: LD_INT 22
+2445: PUSH
+2446: LD_INT 1
+2448: PUSH
+2449: EMPTY
+2450: LIST
+2451: LIST
+2452: PUSH
+2453: LD_INT 21
+2455: PUSH
+2456: LD_INT 2
+2458: PUSH
+2459: EMPTY
+2460: LIST
+2461: LIST
+2462: PUSH
+2463: EMPTY
+2464: LIST
+2465: LIST
+2466: PPUSH
+2467: CALL_OW 69
+2471: PUSH
+2472: LD_INT 1
+2474: ARRAY
+2475: PPUSH
+2476: CALL_OW 87
+// InGameOff ;
+2480: CALL_OW 9
+// ChangeMissionObjectives ( M1 ) ;
+2484: LD_STRING M1
+2486: PPUSH
+2487: CALL_OW 337
+// SaveForQuickRestart ;
+2491: CALL_OW 22
+// end ;
+2495: END
+// every 10 10$0 do
+2496: GO 2498
+2498: DISABLE
+// begin DialogueOn ;
+2499: CALL_OW 6
+// SayRadio ( Powell , D3-Pow-1 ) ;
+2503: LD_EXP 9
+2507: PPUSH
+2508: LD_STRING D3-Pow-1
+2510: PPUSH
+2511: CALL_OW 94
+// Say ( JMM , D3-JMM-1 ) ;
+2515: LD_EXP 1
+2519: PPUSH
+2520: LD_STRING D3-JMM-1
+2522: PPUSH
+2523: CALL_OW 88
+// SayRadio ( Powell , D3-Pow-2 ) ;
+2527: LD_EXP 9
+2531: PPUSH
+2532: LD_STRING D3-Pow-2
+2534: PPUSH
+2535: CALL_OW 94
+// Say ( JMM , D3-JMM-2 ) ;
+2539: LD_EXP 1
+2543: PPUSH
+2544: LD_STRING D3-JMM-2
+2546: PPUSH
+2547: CALL_OW 88
+// SayRadio ( Powell , D3-Pow-3 ) ;
+2551: LD_EXP 9
+2555: PPUSH
+2556: LD_STRING D3-Pow-3
+2558: PPUSH
+2559: CALL_OW 94
+// Say ( JMM , D3-JMM-3 ) ;
+2563: LD_EXP 1
+2567: PPUSH
+2568: LD_STRING D3-JMM-3
+2570: PPUSH
+2571: CALL_OW 88
+// SayRadio ( Powell , D3-Pow-4 ) ;
+2575: LD_EXP 9
+2579: PPUSH
+2580: LD_STRING D3-Pow-4
+2582: PPUSH
+2583: CALL_OW 94
+// Say ( JMM , D3-JMM-4 ) ;
+2587: LD_EXP 1
+2591: PPUSH
+2592: LD_STRING D3-JMM-4
+2594: PPUSH
+2595: CALL_OW 88
+// DialogueOff ;
+2599: CALL_OW 7
+// ChangeMissionObjectives ( M2 ) ;
+2603: LD_STRING M2
+2605: PPUSH
+2606: CALL_OW 337
+// wait ( 0 0$30 ) ;
+2610: LD_INT 1050
+2612: PPUSH
+2613: CALL_OW 67
+// PrepareBurlak ;
+2617: CALL 1210 0 0
+// BurlakArmy ;
+2621: CALL 1356 0 0
+// end ;
+2625: END
+// every 0 0$1 trigger See ( 1 , Masha ) do
+2626: LD_INT 1
+2628: PPUSH
+2629: LD_EXP 11
+2633: PPUSH
+2634: CALL_OW 292
+2638: IFFALSE 2812
+2640: GO 2642
+2642: DISABLE
+// begin DialogueOn ;
+2643: CALL_OW 6
+// CenterNowOnUnits ( Masha ) ;
+2647: LD_EXP 11
+2651: PPUSH
+2652: CALL_OW 87
+// DialogRandom ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_sex , 1 ] , [ f_or , [ f_class , 1 ] , [ f_class , 2 ] , [ f_class , 3 ] , [ f_class , 4 ] , [ f_class , 5 ] ] ] ) diff [ JMM , Stevens ] , D5-Sol1-1 , D5-FSol1-1 ) ;
+2656: LD_INT 22
+2658: PUSH
+2659: LD_INT 1
+2661: PUSH
+2662: EMPTY
+2663: LIST
+2664: LIST
+2665: PUSH
+2666: LD_INT 26
+2668: PUSH
+2669: LD_INT 1
+2671: PUSH
+2672: EMPTY
+2673: LIST
+2674: LIST
+2675: PUSH
+2676: LD_INT 2
+2678: PUSH
+2679: LD_INT 25
+2681: PUSH
+2682: LD_INT 1
+2684: PUSH
+2685: EMPTY
+2686: LIST
+2687: LIST
+2688: PUSH
+2689: LD_INT 25
+2691: PUSH
+2692: LD_INT 2
+2694: PUSH
+2695: EMPTY
+2696: LIST
+2697: LIST
+2698: PUSH
+2699: LD_INT 25
+2701: PUSH
+2702: LD_INT 3
+2704: PUSH
+2705: EMPTY
+2706: LIST
+2707: LIST
+2708: PUSH
+2709: LD_INT 25
+2711: PUSH
+2712: LD_INT 4
+2714: PUSH
+2715: EMPTY
+2716: LIST
+2717: LIST
+2718: PUSH
+2719: LD_INT 25
+2721: PUSH
+2722: LD_INT 5
+2724: PUSH
+2725: EMPTY
+2726: LIST
+2727: LIST
+2728: PUSH
+2729: EMPTY
+2730: LIST
+2731: LIST
+2732: LIST
+2733: LIST
+2734: LIST
+2735: LIST
+2736: PUSH
+2737: EMPTY
+2738: LIST
+2739: LIST
+2740: LIST
+2741: PPUSH
+2742: CALL_OW 69
+2746: PUSH
+2747: LD_EXP 1
+2751: PUSH
+2752: LD_EXP 8
+2756: PUSH
+2757: EMPTY
+2758: LIST
+2759: LIST
+2760: DIFF
+2761: PPUSH
+2762: LD_STRING D5-Sol1-1
+2764: PPUSH
+2765: LD_STRING D5-FSol1-1
+2767: PPUSH
+2768: CALL 4395 0 3
+// Say ( JMM , D5-JMM-1 ) ;
+2772: LD_EXP 1
+2776: PPUSH
+2777: LD_STRING D5-JMM-1
+2779: PPUSH
+2780: CALL_OW 88
+// Say ( Burlak , DAmer-Bur-1 ) ;
+2784: LD_EXP 10
+2788: PPUSH
+2789: LD_STRING DAmer-Bur-1
+2791: PPUSH
+2792: CALL_OW 88
+// Say ( JMM , DAmer-JMM-1 ) ;
+2796: LD_EXP 1
+2800: PPUSH
+2801: LD_STRING DAmer-JMM-1
+2803: PPUSH
+2804: CALL_OW 88
+// DialogueOff ;
+2808: CALL_OW 7
+// end ;
+2812: END
+// every 0 0$1 do var i ;
+2813: GO 2815
+2815: DISABLE
+2816: LD_INT 0
+2818: PPUSH
+// begin enable ;
+2819: ENABLE
+// for i in FilterAllUnits ( [ f_side , 7 ] ) do
+2820: LD_ADDR_VAR 0 1
+2824: PUSH
+2825: LD_INT 22
+2827: PUSH
+2828: LD_INT 7
+2830: PUSH
+2831: EMPTY
+2832: LIST
+2833: LIST
+2834: PPUSH
+2835: CALL_OW 69
+2839: PUSH
+2840: FOR_IN
+2841: IFFALSE 2948
+// if IsInArea ( i , AllianceEscape ) then
+2843: LD_VAR 0 1
+2847: PPUSH
+2848: LD_INT 4
+2850: PPUSH
+2851: CALL_OW 308
+2855: IFFALSE 2946
+// begin if i = Burlak or i = Masha then
+2857: LD_VAR 0 1
+2861: PUSH
+2862: LD_EXP 10
+2866: EQUAL
+2867: PUSH
+2868: LD_VAR 0 1
+2872: PUSH
+2873: LD_EXP 11
+2877: EQUAL
+2878: OR
+2879: IFFALSE 2937
+// begin RemoveUnit ( i ) ;
+2881: LD_VAR 0 1
+2885: PPUSH
+2886: CALL_OW 64
+// DialogueOn ;
+2890: CALL_OW 6
+// Say ( JMM , D5a-JMM-1 ) ;
+2894: LD_EXP 1
+2898: PPUSH
+2899: LD_STRING D5a-JMM-1
+2901: PPUSH
+2902: CALL_OW 88
+// Say ( JMM , D5a-Sol1-1 ) ;
+2906: LD_EXP 1
+2910: PPUSH
+2911: LD_STRING D5a-Sol1-1
+2913: PPUSH
+2914: CALL_OW 88
+// DialogueOff ;
+2918: CALL_OW 7
+// ChangeMissionObjectives ( M2b ) ;
+2922: LD_STRING M2b
+2924: PPUSH
+2925: CALL_OW 337
+// spawnBurlak = 0 ;
+2929: LD_ADDR_EXP 18
+2933: PUSH
+2934: LD_INT 0
+2936: ST_TO_ADDR
+// end ; RemoveUnit ( i ) ;
+2937: LD_VAR 0 1
+2941: PPUSH
+2942: CALL_OW 64
+// end ;
+2946: GO 2840
+2948: POP
+2949: POP
+// end ;
+2950: PPOPN 1
+2952: END
+// every 0 0$1 trigger GetLives ( Masha ) < 500 and GetSide ( Masha ) = 7 do
+2953: LD_EXP 11
+2957: PPUSH
+2958: CALL_OW 256
+2962: PUSH
+2963: LD_INT 500
+2965: LESS
+2966: PUSH
+2967: LD_EXP 11
+2971: PPUSH
+2972: CALL_OW 255
+2976: PUSH
+2977: LD_INT 7
+2979: EQUAL
+2980: AND
+2981: IFFALSE 3001
+2983: GO 2985
+2985: DISABLE
+// ComMoveXY ( Masha , 107 , 118 ) ;
+2986: LD_EXP 11
+2990: PPUSH
+2991: LD_INT 107
+2993: PPUSH
+2994: LD_INT 118
+2996: PPUSH
+2997: CALL_OW 111
+3001: END
+// every 0 0$10 trigger IsDead ( Burlak ) and spawnBurlak = 1 do
+3002: LD_EXP 10
+3006: PPUSH
+3007: CALL_OW 301
+3011: PUSH
+3012: LD_EXP 18
+3016: PUSH
+3017: LD_INT 1
+3019: EQUAL
+3020: AND
+3021: IFFALSE 3136
+3023: GO 3025
+3025: DISABLE
+// begin Say ( JMM , D5b-JMM-1 ) ;
+3026: LD_EXP 1
+3030: PPUSH
+3031: LD_STRING D5b-JMM-1
+3033: PPUSH
+3034: CALL_OW 88
+// DialogRandom ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_sex , 1 ] , [ f_not , [ f_class , 12 ] , [ f_class , 16 ] ] ] ) diff [ JMM , Stevens ] , D5b-Sol1-1 ,  ) ;
+3038: LD_INT 22
+3040: PUSH
+3041: LD_INT 1
+3043: PUSH
+3044: EMPTY
+3045: LIST
+3046: LIST
+3047: PUSH
+3048: LD_INT 26
+3050: PUSH
+3051: LD_INT 1
+3053: PUSH
+3054: EMPTY
+3055: LIST
+3056: LIST
+3057: PUSH
+3058: LD_INT 3
+3060: PUSH
+3061: LD_INT 25
+3063: PUSH
+3064: LD_INT 12
+3066: PUSH
+3067: EMPTY
+3068: LIST
+3069: LIST
+3070: PUSH
+3071: LD_INT 25
+3073: PUSH
+3074: LD_INT 16
+3076: PUSH
+3077: EMPTY
+3078: LIST
+3079: LIST
+3080: PUSH
+3081: EMPTY
+3082: LIST
+3083: LIST
+3084: LIST
+3085: PUSH
+3086: EMPTY
+3087: LIST
+3088: LIST
+3089: LIST
+3090: PPUSH
+3091: CALL_OW 69
+3095: PUSH
+3096: LD_EXP 1
+3100: PUSH
+3101: LD_EXP 8
+3105: PUSH
+3106: EMPTY
+3107: LIST
+3108: LIST
+3109: DIFF
+3110: PPUSH
+3111: LD_STRING D5b-Sol1-1
+3113: PPUSH
+3114: LD_STRING 
+3116: PPUSH
+3117: CALL 4395 0 3
+// ChangeMissionObjectives ( M2a ) ;
+3121: LD_STRING M2a
+3123: PPUSH
+3124: CALL_OW 337
+// burlakStatus = 1 ;
+3128: LD_ADDR_EXP 19
+3132: PUSH
+3133: LD_INT 1
+3135: ST_TO_ADDR
+// end ;
+3136: END
+// every 0 0$1 trigger IsDead ( Stevens ) do
+3137: LD_EXP 8
+3141: PPUSH
+3142: CALL_OW 301
+3146: IFFALSE 3265
+3148: GO 3150
+3150: DISABLE
+// begin Say ( JMM , D6-JMM-1 ) ;
+3151: LD_EXP 1
+3155: PPUSH
+3156: LD_STRING D6-JMM-1
+3158: PPUSH
+3159: CALL_OW 88
+// DialogRandom ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_sex , 1 ] , [ f_not , [ f_class , 12 ] , [ f_class , 16 ] ] ] ) diff [ JMM , Stevens ] , D6-Sol1-1 ,  ) ;
+3163: LD_INT 22
+3165: PUSH
+3166: LD_INT 1
+3168: PUSH
+3169: EMPTY
+3170: LIST
+3171: LIST
+3172: PUSH
+3173: LD_INT 26
+3175: PUSH
+3176: LD_INT 1
+3178: PUSH
+3179: EMPTY
+3180: LIST
+3181: LIST
+3182: PUSH
+3183: LD_INT 3
+3185: PUSH
+3186: LD_INT 25
+3188: PUSH
+3189: LD_INT 12
+3191: PUSH
+3192: EMPTY
+3193: LIST
+3194: LIST
+3195: PUSH
+3196: LD_INT 25
+3198: PUSH
+3199: LD_INT 16
+3201: PUSH
+3202: EMPTY
+3203: LIST
+3204: LIST
+3205: PUSH
+3206: EMPTY
+3207: LIST
+3208: LIST
+3209: LIST
+3210: PUSH
+3211: EMPTY
+3212: LIST
+3213: LIST
+3214: LIST
+3215: PPUSH
+3216: CALL_OW 69
+3220: PUSH
+3221: LD_EXP 1
+3225: PUSH
+3226: LD_EXP 8
+3230: PUSH
+3231: EMPTY
+3232: LIST
+3233: LIST
+3234: DIFF
+3235: PPUSH
+3236: LD_STRING D6-Sol1-1
+3238: PPUSH
+3239: LD_STRING 
+3241: PPUSH
+3242: CALL 4395 0 3
+// Say ( JMM , D6-JMM-2 ) ;
+3246: LD_EXP 1
+3250: PPUSH
+3251: LD_STRING D6-JMM-2
+3253: PPUSH
+3254: CALL_OW 88
+// ChangeMissionObjectives ( M1a ) ;
+3258: LD_STRING M1a
+3260: PPUSH
+3261: CALL_OW 337
+// end ;
+3265: END
+// every 0 0$1 trigger GetTech ( 25 , 1 ) = state_researched do
+3266: LD_INT 25
+3268: PPUSH
+3269: LD_INT 1
+3271: PPUSH
+3272: CALL_OW 321
+3276: PUSH
+3277: LD_INT 2
+3279: EQUAL
+3280: IFFALSE 3297
+3282: GO 3284
+3284: DISABLE
+// begin Say ( Stevens , D6-Huck-2 ) ;
+3285: LD_EXP 8
+3289: PPUSH
+3290: LD_STRING D6-Huck-2
+3292: PPUSH
+3293: CALL_OW 88
+// end ;
+3297: END
+// every 0 0$1 trigger FilterAllUnits ( [ [ f_side , 1 ] , [ f_or , [ f_weapon , 8 ] , [ f_bweapon , 8 ] ] ] ) > 0 do var depot , barrack ;
+3298: LD_INT 22
+3300: PUSH
+3301: LD_INT 1
+3303: PUSH
+3304: EMPTY
+3305: LIST
+3306: LIST
+3307: PUSH
+3308: LD_INT 2
+3310: PUSH
+3311: LD_INT 34
+3313: PUSH
+3314: LD_INT 8
+3316: PUSH
+3317: EMPTY
+3318: LIST
+3319: LIST
+3320: PUSH
+3321: LD_INT 35
+3323: PUSH
+3324: LD_INT 8
+3326: PUSH
+3327: EMPTY
+3328: LIST
+3329: LIST
+3330: PUSH
+3331: EMPTY
+3332: LIST
+3333: LIST
+3334: LIST
+3335: PUSH
+3336: EMPTY
+3337: LIST
+3338: LIST
+3339: PPUSH
+3340: CALL_OW 69
+3344: PUSH
+3345: LD_INT 0
+3347: GREATER
+3348: IFFALSE 3532
+3350: GO 3352
+3352: DISABLE
+3353: LD_INT 0
+3355: PPUSH
+3356: PPUSH
+// begin enable ;
+3357: ENABLE
+// depot = FilterUnitsInArea ( TestArea , [ [ f_side , 1 ] , [ f_type , unit_building ] , [ f_btype , 1 ] , [ f_not , [ f_constructed ] ] ] ) ;
+3358: LD_ADDR_VAR 0 1
+3362: PUSH
+3363: LD_INT 5
+3365: PPUSH
+3366: LD_INT 22
+3368: PUSH
+3369: LD_INT 1
+3371: PUSH
+3372: EMPTY
+3373: LIST
+3374: LIST
+3375: PUSH
+3376: LD_INT 21
+3378: PUSH
+3379: LD_INT 3
+3381: PUSH
+3382: EMPTY
+3383: LIST
+3384: LIST
+3385: PUSH
+3386: LD_INT 30
+3388: PUSH
+3389: LD_INT 1
+3391: PUSH
+3392: EMPTY
+3393: LIST
+3394: LIST
+3395: PUSH
+3396: LD_INT 3
+3398: PUSH
+3399: LD_INT 57
+3401: PUSH
+3402: EMPTY
+3403: LIST
+3404: PUSH
+3405: EMPTY
+3406: LIST
+3407: LIST
+3408: PUSH
+3409: EMPTY
+3410: LIST
+3411: LIST
+3412: LIST
+3413: LIST
+3414: PPUSH
+3415: CALL_OW 70
+3419: ST_TO_ADDR
+// barrack = FilterUnitsInArea ( TestArea , [ [ f_side , 1 ] , [ f_type , unit_building ] , [ f_btype , 5 ] , [ f_not , [ f_constructed ] ] ] ) ;
+3420: LD_ADDR_VAR 0 2
+3424: PUSH
+3425: LD_INT 5
+3427: PPUSH
+3428: LD_INT 22
+3430: PUSH
+3431: LD_INT 1
+3433: PUSH
+3434: EMPTY
+3435: LIST
+3436: LIST
+3437: PUSH
+3438: LD_INT 21
+3440: PUSH
+3441: LD_INT 3
+3443: PUSH
+3444: EMPTY
+3445: LIST
+3446: LIST
+3447: PUSH
+3448: LD_INT 30
+3450: PUSH
+3451: LD_INT 5
+3453: PUSH
+3454: EMPTY
+3455: LIST
+3456: LIST
+3457: PUSH
+3458: LD_INT 3
+3460: PUSH
+3461: LD_INT 57
+3463: PUSH
+3464: EMPTY
+3465: LIST
+3466: PUSH
+3467: EMPTY
+3468: LIST
+3469: LIST
+3470: PUSH
+3471: EMPTY
+3472: LIST
+3473: LIST
+3474: LIST
+3475: LIST
+3476: PPUSH
+3477: CALL_OW 70
+3481: ST_TO_ADDR
+// if depot > 0 and barrack > 0 then
+3482: LD_VAR 0 1
+3486: PUSH
+3487: LD_INT 0
+3489: GREATER
+3490: PUSH
+3491: LD_VAR 0 2
+3495: PUSH
+3496: LD_INT 0
+3498: GREATER
+3499: AND
+3500: IFFALSE 3532
+// begin disable ;
+3502: DISABLE
+// Say ( JMM , D7-JMM-1 ) ;
+3503: LD_EXP 1
+3507: PPUSH
+3508: LD_STRING D7-JMM-1
+3510: PPUSH
+3511: CALL_OW 88
+// ChangeMissionObjectives ( M4 ) ;
+3515: LD_STRING M4
+3517: PPUSH
+3518: CALL_OW 337
+// SetAreaMapShow ( TestArea , 0 ) ;
+3522: LD_INT 5
+3524: PPUSH
+3525: LD_INT 0
+3527: PPUSH
+3528: CALL_OW 424
+// end ; end ;
+3532: PPOPN 2
+3534: END
+// every 0 0$1 trigger FilterUnitsInArea ( SibRadiationArea , [ [ f_side , 1 ] , [ f_class , 4 ] ] ) > 0 and eventVar3 = 1 and radationResearched = 0 do
+3535: LD_INT 6
+3537: PPUSH
+3538: LD_INT 22
+3540: PUSH
+3541: LD_INT 1
+3543: PUSH
+3544: EMPTY
+3545: LIST
+3546: LIST
+3547: PUSH
+3548: LD_INT 25
+3550: PUSH
+3551: LD_INT 4
+3553: PUSH
+3554: EMPTY
+3555: LIST
+3556: LIST
+3557: PUSH
+3558: EMPTY
+3559: LIST
+3560: LIST
+3561: PPUSH
+3562: CALL_OW 70
+3566: PUSH
+3567: LD_INT 0
+3569: GREATER
+3570: PUSH
+3571: LD_EXP 27
+3575: PUSH
+3576: LD_INT 1
+3578: EQUAL
+3579: AND
+3580: PUSH
+3581: LD_EXP 20
+3585: PUSH
+3586: LD_INT 0
+3588: EQUAL
+3589: AND
+3590: IFFALSE 3655
+3592: GO 3594
+3594: DISABLE
+// begin enable ;
+3595: ENABLE
+// AmSciSib = FilterUnitsInArea ( SibRadiationArea , [ [ f_side , 1 ] , [ f_class , 4 ] ] ) [ 1 ] ;
+3596: LD_ADDR_EXP 17
+3600: PUSH
+3601: LD_INT 6
+3603: PPUSH
+3604: LD_INT 22
+3606: PUSH
+3607: LD_INT 1
+3609: PUSH
+3610: EMPTY
+3611: LIST
+3612: LIST
+3613: PUSH
+3614: LD_INT 25
+3616: PUSH
+3617: LD_INT 4
+3619: PUSH
+3620: EMPTY
+3621: LIST
+3622: LIST
+3623: PUSH
+3624: EMPTY
+3625: LIST
+3626: LIST
+3627: PPUSH
+3628: CALL_OW 70
+3632: PUSH
+3633: LD_INT 1
+3635: ARRAY
+3636: ST_TO_ADDR
+// SetAreaMapShow ( SibRadiationArea , 0 ) ;
+3637: LD_INT 6
+3639: PPUSH
+3640: LD_INT 0
+3642: PPUSH
+3643: CALL_OW 424
+// radationResearched = 1 ;
+3647: LD_ADDR_EXP 20
+3651: PUSH
+3652: LD_INT 1
+3654: ST_TO_ADDR
+// end ;
+3655: END
+// every 0 0$1 trigger IsDead ( AmSciSib ) and radationResearched = 1 do
+3656: LD_EXP 17
+3660: PPUSH
+3661: CALL_OW 301
+3665: PUSH
+3666: LD_EXP 20
+3670: PUSH
+3671: LD_INT 1
+3673: EQUAL
+3674: AND
+3675: IFFALSE 3711
+3677: GO 3679
+3679: DISABLE
+// begin enable ;
+3680: ENABLE
+// radationResearched = 0 ;
+3681: LD_ADDR_EXP 20
+3685: PUSH
+3686: LD_INT 0
+3688: ST_TO_ADDR
+// SetAreaMapShow ( SibRadiationArea , 1 ) ;
+3689: LD_INT 6
+3691: PPUSH
+3692: LD_INT 1
+3694: PPUSH
+3695: CALL_OW 424
+// Say ( JMM , D9a-JMM-1 ) ;
+3699: LD_EXP 1
+3703: PPUSH
+3704: LD_STRING D9a-JMM-1
+3706: PPUSH
+3707: CALL_OW 88
+// end ; end_of_file
+3711: END
+// on VehicleConstructionStarted ( building , chasis , engine , control , weapon ) do begin if weapon = 8 and eventVar1 = 0 then
+3712: LD_VAR 0 5
+3716: PUSH
+3717: LD_INT 8
+3719: EQUAL
+3720: PUSH
+3721: LD_EXP 25
+3725: PUSH
+3726: LD_INT 0
+3728: EQUAL
+3729: AND
+3730: IFFALSE 3764
+// begin eventVar1 = 1 ;
+3732: LD_ADDR_EXP 25
+3736: PUSH
+3737: LD_INT 1
+3739: ST_TO_ADDR
+// Say ( JMM , D6a-JMM-1 ) ;
+3740: LD_EXP 1
+3744: PPUSH
+3745: LD_STRING D6a-JMM-1
+3747: PPUSH
+3748: CALL_OW 88
+// SayRadio ( Powell , D6a-Pow-1 ) ;
+3752: LD_EXP 9
+3756: PPUSH
+3757: LD_STRING D6a-Pow-1
+3759: PPUSH
+3760: CALL_OW 94
+// end ; end ;
+3764: PPOPN 5
+3766: END
+// on VehicleConstructed ( vehicle , building ) do begin if GetWeapon ( vehicle ) = 8 and eventVar2 = 0 then
+3767: LD_VAR 0 1
+3771: PPUSH
+3772: CALL_OW 264
+3776: PUSH
+3777: LD_INT 8
+3779: EQUAL
+3780: PUSH
+3781: LD_EXP 26
+3785: PUSH
+3786: LD_INT 0
+3788: EQUAL
+3789: AND
+3790: IFFALSE 3851
 // begin eventVar2 = 1 ;
-2063: LD_ADDR_EXP 18
-2067: PUSH
-2068: LD_INT 1
-2070: ST_TO_ADDR
+3792: LD_ADDR_EXP 26
+3796: PUSH
+3797: LD_INT 1
+3799: ST_TO_ADDR
 // Say ( JMM , D6b-JMM-1 ) ;
-2071: LD_EXP 1
-2075: PPUSH
-2076: LD_STRING D6b-JMM-1
-2078: PPUSH
-2079: CALL_OW 88
+3800: LD_EXP 1
+3804: PPUSH
+3805: LD_STRING D6b-JMM-1
+3807: PPUSH
+3808: CALL_OW 88
 // SayRadio ( Powell , D6b-Pow-1 ) ;
-2083: LD_EXP 9
-2087: PPUSH
-2088: LD_STRING D6b-Pow-1
-2090: PPUSH
-2091: CALL_OW 94
-// end ; end ; end_of_file
-2095: PPOPN 2
-2097: END
+3812: LD_EXP 9
+3816: PPUSH
+3817: LD_STRING D6b-Pow-1
+3819: PPUSH
+3820: CALL_OW 94
+// SetAreaMapShow ( TestArea , 1 ) ;
+3824: LD_INT 5
+3826: PPUSH
+3827: LD_INT 1
+3829: PPUSH
+3830: CALL_OW 424
+// SetAreaMapShow ( RadarArea , 1 ) ;
+3834: LD_INT 7
+3836: PPUSH
+3837: LD_INT 1
+3839: PPUSH
+3840: CALL_OW 424
+// ChangeMissionObjectives ( M3 ) ;
+3844: LD_STRING M3
+3846: PPUSH
+3847: CALL_OW 337
+// end ; end ;
+3851: PPOPN 2
+3853: END
+// on SiberiteRocketExploded ( nn , x , y ) do begin if InArea ( x , y , TestArea ) and eventVar3 = 0 then
+3854: LD_VAR 0 2
+3858: PPUSH
+3859: LD_VAR 0 3
+3863: PPUSH
+3864: LD_INT 5
+3866: PPUSH
+3867: CALL_OW 309
+3871: PUSH
+3872: LD_EXP 27
+3876: PUSH
+3877: LD_INT 0
+3879: EQUAL
+3880: AND
+3881: IFFALSE 4068
+// begin eventVar3 = 1 ;
+3883: LD_ADDR_EXP 27
+3887: PUSH
+3888: LD_INT 1
+3890: ST_TO_ADDR
+// if FilterUnitsInArea ( RadarArea , [ [ f_side , 1 ] , [ f_type , unit_vehicle ] , [ f_weapon , 11 ] ] ) > 0 then
+3891: LD_INT 7
+3893: PPUSH
+3894: LD_INT 22
+3896: PUSH
+3897: LD_INT 1
+3899: PUSH
+3900: EMPTY
+3901: LIST
+3902: LIST
+3903: PUSH
+3904: LD_INT 21
+3906: PUSH
+3907: LD_INT 2
+3909: PUSH
+3910: EMPTY
+3911: LIST
+3912: LIST
+3913: PUSH
+3914: LD_INT 34
+3916: PUSH
+3917: LD_INT 11
+3919: PUSH
+3920: EMPTY
+3921: LIST
+3922: LIST
+3923: PUSH
+3924: EMPTY
+3925: LIST
+3926: LIST
+3927: LIST
+3928: PPUSH
+3929: CALL_OW 70
+3933: PUSH
+3934: LD_INT 0
+3936: GREATER
+3937: IFFALSE 3947
+// radarOnSpot = 1 ;
+3939: LD_ADDR_EXP 21
+3943: PUSH
+3944: LD_INT 1
+3946: ST_TO_ADDR
+// Say ( Stevens , D8-Huck-1 ) ;
+3947: LD_EXP 8
+3951: PPUSH
+3952: LD_STRING D8-Huck-1
+3954: PPUSH
+3955: CALL_OW 88
+// Say ( JMM , D8-JMM-1 ) ;
+3959: LD_EXP 1
+3963: PPUSH
+3964: LD_STRING D8-JMM-1
+3966: PPUSH
+3967: CALL_OW 88
+// Say ( Stevens , D8-Huck-2 ) ;
+3971: LD_EXP 8
+3975: PPUSH
+3976: LD_STRING D8-Huck-2
+3978: PPUSH
+3979: CALL_OW 88
+// Say ( JMM , D8-JMM-2 ) ;
+3983: LD_EXP 1
+3987: PPUSH
+3988: LD_STRING D8-JMM-2
+3990: PPUSH
+3991: CALL_OW 88
+// Say ( Stevens , D8-Huck-3 ) ;
+3995: LD_EXP 8
+3999: PPUSH
+4000: LD_STRING D8-Huck-3
+4002: PPUSH
+4003: CALL_OW 88
+// Say ( JMM , D8-JMM-3 ) ;
+4007: LD_EXP 1
+4011: PPUSH
+4012: LD_STRING D8-JMM-3
+4014: PPUSH
+4015: CALL_OW 88
+// Say ( Stevens , D8-Huck-4 ) ;
+4019: LD_EXP 8
+4023: PPUSH
+4024: LD_STRING D8-Huck-4
+4026: PPUSH
+4027: CALL_OW 88
+// SetAreaMapShow ( TestArea , 0 ) ;
+4031: LD_INT 5
+4033: PPUSH
+4034: LD_INT 0
+4036: PPUSH
+4037: CALL_OW 424
+// SetAreaMapShow ( RadarArea , 0 ) ;
+4041: LD_INT 7
+4043: PPUSH
+4044: LD_INT 0
+4046: PPUSH
+4047: CALL_OW 424
+// SetAreaMapShow ( SibRadiationArea , 1 ) ;
+4051: LD_INT 6
+4053: PPUSH
+4054: LD_INT 1
+4056: PPUSH
+4057: CALL_OW 424
+// ChangeMissionObjectives ( M5 ) ;
+4061: LD_STRING M5
+4063: PPUSH
+4064: CALL_OW 337
+// end ; end ;
+4068: PPOPN 3
+4070: END
+// on EnterBuilding ( building , human ) do begin if IsOk ( AmSciSib ) and human = AmSciSib and eventVar4 = 0 and GetLabKind ( building , 1 ) = b_lab_siberium or GetLabKind ( building , 2 ) = b_lab_siberium then
+4071: LD_EXP 17
+4075: PPUSH
+4076: CALL_OW 302
+4080: PUSH
+4081: LD_VAR 0 2
+4085: PUSH
+4086: LD_EXP 17
+4090: EQUAL
+4091: AND
+4092: PUSH
+4093: LD_EXP 28
+4097: PUSH
+4098: LD_INT 0
+4100: EQUAL
+4101: AND
+4102: PUSH
+4103: LD_VAR 0 1
+4107: PPUSH
+4108: LD_INT 1
+4110: PPUSH
+4111: CALL_OW 268
+4115: PUSH
+4116: LD_INT 11
+4118: EQUAL
+4119: AND
+4120: PUSH
+4121: LD_VAR 0 1
+4125: PPUSH
+4126: LD_INT 2
+4128: PPUSH
+4129: CALL_OW 268
+4133: PUSH
+4134: LD_INT 11
+4136: EQUAL
+4137: OR
+4138: IFFALSE 4148
+// eventVar4 = 1 ;
+4140: LD_ADDR_EXP 28
+4144: PUSH
+4145: LD_INT 1
+4147: ST_TO_ADDR
+// end ;
+4148: PPOPN 2
+4150: END
+// on SibDepositContaminated ( unit , x , y ) do begin if GetNation ( unit ) = 2 then
+4151: LD_VAR 0 1
+4155: PPUSH
+4156: CALL_OW 248
+4160: PUSH
+4161: LD_INT 2
+4163: EQUAL
+4164: IFFALSE 4290
+// begin sibDestroyedCounter = sibDestroyedCounter + 1 ;
+4166: LD_ADDR_EXP 22
+4170: PUSH
+4171: LD_EXP 22
+4175: PUSH
+4176: LD_INT 1
+4178: PLUS
+4179: ST_TO_ADDR
+// if eventVar5 = 0 then
+4180: LD_EXP 29
+4184: PUSH
+4185: LD_INT 0
+4187: EQUAL
+4188: IFFALSE 4290
+// begin eventVar5 = 1 ;
+4190: LD_ADDR_EXP 29
+4194: PUSH
+4195: LD_INT 1
+4197: ST_TO_ADDR
+// DialogueOn ;
+4198: CALL_OW 6
+// Say ( Stevens , D4-Sci1-1 ) ;
+4202: LD_EXP 8
+4206: PPUSH
+4207: LD_STRING D4-Sci1-1
+4209: PPUSH
+4210: CALL_OW 88
+// Say ( JMM , D4-JMM-1 ) ;
+4214: LD_EXP 1
+4218: PPUSH
+4219: LD_STRING D4-JMM-1
+4221: PPUSH
+4222: CALL_OW 88
+// Say ( Stevens , D4-Sci1-2 ) ;
+4226: LD_EXP 8
+4230: PPUSH
+4231: LD_STRING D4-Sci1-2
+4233: PPUSH
+4234: CALL_OW 88
+// Say ( JMM , D4-JMM-2 ) ;
+4238: LD_EXP 1
+4242: PPUSH
+4243: LD_STRING D4-JMM-2
+4245: PPUSH
+4246: CALL_OW 88
+// Say ( Stevens , D4-Sci1-3 ) ;
+4250: LD_EXP 8
+4254: PPUSH
+4255: LD_STRING D4-Sci1-3
+4257: PPUSH
+4258: CALL_OW 88
+// Say ( JMM , D4-JMM-3 ) ;
+4262: LD_EXP 1
+4266: PPUSH
+4267: LD_STRING D4-JMM-3
+4269: PPUSH
+4270: CALL_OW 88
+// Say ( JMM , D4-JMM-3a ) ;
+4274: LD_EXP 1
+4278: PPUSH
+4279: LD_STRING D4-JMM-3a
+4281: PPUSH
+4282: CALL_OW 88
+// DialogueOff ;
+4286: CALL_OW 7
+// end ; end ; end ;
+4290: PPOPN 3
+4292: END
+// on BuildingStarted ( building , unit ) do begin if GetSide ( building ) = 1 and GetBType ( building ) = 0 then
+4293: LD_VAR 0 1
+4297: PPUSH
+4298: CALL_OW 255
+4302: PUSH
+4303: LD_INT 1
+4305: EQUAL
+4306: PUSH
+4307: LD_VAR 0 1
+4311: PPUSH
+4312: CALL_OW 266
+4316: PUSH
+4317: LD_INT 0
+4319: EQUAL
+4320: AND
+4321: IFFALSE 4335
+// SetBName ( building , omega ) ;
+4323: LD_VAR 0 1
+4327: PPUSH
+4328: LD_STRING omega
+4330: PPUSH
+4331: CALL_OW 500
+// end ; end_of_file
+4335: PPOPN 2
+4337: END
 // export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
-2098: LD_INT 0
-2100: PPUSH
-2101: PPUSH
+4338: LD_INT 0
+4340: PPUSH
+4341: PPUSH
 // if exist_mode then
-2102: LD_VAR 0 2
-2106: IFFALSE 2125
+4342: LD_VAR 0 2
+4346: IFFALSE 4365
 // unit := CreateCharacter ( ident ) else
-2108: LD_ADDR_VAR 0 4
-2112: PUSH
-2113: LD_VAR 0 1
-2117: PPUSH
-2118: CALL_OW 34
-2122: ST_TO_ADDR
-2123: GO 2140
+4348: LD_ADDR_VAR 0 4
+4352: PUSH
+4353: LD_VAR 0 1
+4357: PPUSH
+4358: CALL_OW 34
+4362: ST_TO_ADDR
+4363: GO 4380
 // unit := NewCharacter ( ident ) ;
-2125: LD_ADDR_VAR 0 4
-2129: PUSH
-2130: LD_VAR 0 1
-2134: PPUSH
-2135: CALL_OW 25
-2139: ST_TO_ADDR
+4365: LD_ADDR_VAR 0 4
+4369: PUSH
+4370: LD_VAR 0 1
+4374: PPUSH
+4375: CALL_OW 25
+4379: ST_TO_ADDR
 // result := unit ;
-2140: LD_ADDR_VAR 0 3
-2144: PUSH
-2145: LD_VAR 0 4
-2149: ST_TO_ADDR
-// end ; end_of_file end_of_file end_of_file end_of_file end_of_file
-2150: LD_VAR 0 3
-2154: RET
+4380: LD_ADDR_VAR 0 3
+4384: PUSH
+4385: LD_VAR 0 4
+4389: ST_TO_ADDR
+// end ;
+4390: LD_VAR 0 3
+4394: RET
+// export function DialogRandom ( characters , dialogMID , dialogFID ) ; var i , rnd ; begin
+4395: LD_INT 0
+4397: PPUSH
+4398: PPUSH
+4399: PPUSH
+// rnd = rand ( 1 , characters ) ;
+4400: LD_ADDR_VAR 0 6
+4404: PUSH
+4405: LD_INT 1
+4407: PPUSH
+4408: LD_VAR 0 1
+4412: PPUSH
+4413: CALL_OW 12
+4417: ST_TO_ADDR
+// for i = 1 to characters do
+4418: LD_ADDR_VAR 0 5
+4422: PUSH
+4423: DOUBLE
+4424: LD_INT 1
+4426: DEC
+4427: ST_TO_ADDR
+4428: LD_VAR 0 1
+4432: PUSH
+4433: FOR_TO
+4434: IFFALSE 4544
+// begin if i = rnd and GetSex ( characters [ i ] ) = 1 then
+4436: LD_VAR 0 5
+4440: PUSH
+4441: LD_VAR 0 6
+4445: EQUAL
+4446: PUSH
+4447: LD_VAR 0 1
+4451: PUSH
+4452: LD_VAR 0 5
+4456: ARRAY
+4457: PPUSH
+4458: CALL_OW 258
+4462: PUSH
+4463: LD_INT 1
+4465: EQUAL
+4466: AND
+4467: IFFALSE 4489
+// Say ( characters [ i ] , dialogMID ) ;
+4469: LD_VAR 0 1
+4473: PUSH
+4474: LD_VAR 0 5
+4478: ARRAY
+4479: PPUSH
+4480: LD_VAR 0 2
+4484: PPUSH
+4485: CALL_OW 88
+// if i = rnd and GetSex ( characters [ i ] ) = 2 then
+4489: LD_VAR 0 5
+4493: PUSH
+4494: LD_VAR 0 6
+4498: EQUAL
+4499: PUSH
+4500: LD_VAR 0 1
+4504: PUSH
+4505: LD_VAR 0 5
+4509: ARRAY
+4510: PPUSH
+4511: CALL_OW 258
+4515: PUSH
+4516: LD_INT 2
+4518: EQUAL
+4519: AND
+4520: IFFALSE 4542
+// Say ( characters [ i ] , dialogFID ) ;
+4522: LD_VAR 0 1
+4526: PUSH
+4527: LD_VAR 0 5
+4531: ARRAY
+4532: PPUSH
+4533: LD_VAR 0 3
+4537: PPUSH
+4538: CALL_OW 88
+// end ;
+4542: GO 4433
+4544: POP
+4545: POP
+// end ;
+4546: LD_VAR 0 4
+4550: RET
+// export function IntBazooka ( side , targetSide ) ; var ta , c , i , list , filter ; begin
+4551: LD_INT 0
+4553: PPUSH
+4554: PPUSH
+4555: PPUSH
+4556: PPUSH
+4557: PPUSH
+4558: PPUSH
+// list := FilterAllUnits ( [ [ f_side , side ] , [ f_class , class_bazooker ] ] ) ;
+4559: LD_ADDR_VAR 0 7
+4563: PUSH
+4564: LD_INT 22
+4566: PUSH
+4567: LD_VAR 0 1
+4571: PUSH
+4572: EMPTY
+4573: LIST
+4574: LIST
+4575: PUSH
+4576: LD_INT 25
+4578: PUSH
+4579: LD_INT 9
+4581: PUSH
+4582: EMPTY
+4583: LIST
+4584: LIST
+4585: PUSH
+4586: EMPTY
+4587: LIST
+4588: LIST
+4589: PPUSH
+4590: CALL_OW 69
+4594: ST_TO_ADDR
+// filter := FilterAllUnits ( [ [ f_side , targetSide ] , [ f_not , [ f_type , unit_building ] ] ] ) ;
+4595: LD_ADDR_VAR 0 8
+4599: PUSH
+4600: LD_INT 22
+4602: PUSH
+4603: LD_VAR 0 2
+4607: PUSH
+4608: EMPTY
+4609: LIST
+4610: LIST
+4611: PUSH
+4612: LD_INT 3
+4614: PUSH
+4615: LD_INT 21
+4617: PUSH
+4618: LD_INT 3
+4620: PUSH
+4621: EMPTY
+4622: LIST
+4623: LIST
+4624: PUSH
+4625: EMPTY
+4626: LIST
+4627: LIST
+4628: PUSH
+4629: EMPTY
+4630: LIST
+4631: LIST
+4632: PPUSH
+4633: CALL_OW 69
+4637: ST_TO_ADDR
+// c := Rand ( 1 , 3 ) ;
+4638: LD_ADDR_VAR 0 5
+4642: PUSH
+4643: LD_INT 1
+4645: PPUSH
+4646: LD_INT 3
+4648: PPUSH
+4649: CALL_OW 12
+4653: ST_TO_ADDR
+// for i = 1 to list do
+4654: LD_ADDR_VAR 0 6
+4658: PUSH
+4659: DOUBLE
+4660: LD_INT 1
+4662: DEC
+4663: ST_TO_ADDR
+4664: LD_VAR 0 7
+4668: PUSH
+4669: FOR_TO
+4670: IFFALSE 4852
+// for ta in filter do
+4672: LD_ADDR_VAR 0 4
+4676: PUSH
+4677: LD_VAR 0 8
+4681: PUSH
+4682: FOR_IN
+4683: IFFALSE 4848
+// begin if GetDistUnits ( list [ i ] , ta ) <= 13 then
+4685: LD_VAR 0 7
+4689: PUSH
+4690: LD_VAR 0 6
+4694: ARRAY
+4695: PPUSH
+4696: LD_VAR 0 4
+4700: PPUSH
+4701: CALL_OW 296
+4705: PUSH
+4706: LD_INT 13
+4708: LESSEQUAL
+4709: IFFALSE 4846
+// begin case c of 1 :
+4711: LD_VAR 0 5
+4715: PUSH
+4716: LD_INT 1
+4718: DOUBLE
+4719: EQUAL
+4720: IFTRUE 4724
+4722: GO 4762
+4724: POP
+// ComTimeShift ( list [ i ] , GetX ( ta ) , GetY ( ta ) ) ; 2 :
+4725: LD_VAR 0 7
+4729: PUSH
+4730: LD_VAR 0 6
+4734: ARRAY
+4735: PPUSH
+4736: LD_VAR 0 4
+4740: PPUSH
+4741: CALL_OW 250
+4745: PPUSH
+4746: LD_VAR 0 4
+4750: PPUSH
+4751: CALL_OW 251
+4755: PPUSH
+4756: CALL_OW 154
+4760: GO 4846
+4762: LD_INT 2
+4764: DOUBLE
+4765: EQUAL
+4766: IFTRUE 4770
+4768: GO 4834
+4770: POP
+// ComSpaceShift ( list [ i ] , GetX ( ta ) + Rand ( - 1 , 1 ) , GetY ( ta ) + Rand ( - 1 , 1 ) ) ; 3 :
+4771: LD_VAR 0 7
+4775: PUSH
+4776: LD_VAR 0 6
+4780: ARRAY
+4781: PPUSH
+4782: LD_VAR 0 4
+4786: PPUSH
+4787: CALL_OW 250
+4791: PUSH
+4792: LD_INT 1
+4794: NEG
+4795: PPUSH
+4796: LD_INT 1
+4798: PPUSH
+4799: CALL_OW 12
+4803: PLUS
+4804: PPUSH
+4805: LD_VAR 0 4
+4809: PPUSH
+4810: CALL_OW 251
+4814: PUSH
+4815: LD_INT 1
+4817: NEG
+4818: PPUSH
+4819: LD_INT 1
+4821: PPUSH
+4822: CALL_OW 12
+4826: PLUS
+4827: PPUSH
+4828: CALL_OW 153
+4832: GO 4846
+4834: LD_INT 3
+4836: DOUBLE
+4837: EQUAL
+4838: IFTRUE 4842
+4840: GO 4845
+4842: POP
+// ; end ;
+4843: GO 4846
+4845: POP
+// end ; end ;
+4846: GO 4682
+4848: POP
+4849: POP
+4850: GO 4669
+4852: POP
+4853: POP
+// end ;
+4854: LD_VAR 0 3
+4858: RET
+// export function RepairVehicle ( side , repairArea , repX , repY , targetSide ) ; var i , j , vehicleOK_list , damageVehicle_list , vehicleNeedRepair_list , vehicleDontNeedRepair_list , mechanicInside_list , mechanicOutside_list , target1 , target2 ; begin
+4859: LD_INT 0
+4861: PPUSH
+4862: PPUSH
+4863: PPUSH
+4864: PPUSH
+4865: PPUSH
+4866: PPUSH
+4867: PPUSH
+4868: PPUSH
+4869: PPUSH
+4870: PPUSH
+4871: PPUSH
+// vehicleOK_list = FilterAllUnits ( [ [ f_side , side ] , [ f_type , unit_vehicle ] , [ f_control , 1 ] , [ f_lives , 660 ] , [ f_not , [ f_empty ] ] , [ f_not , [ f_weapon , 53 ] ] ] ) ;
+4872: LD_ADDR_VAR 0 9
+4876: PUSH
+4877: LD_INT 22
+4879: PUSH
+4880: LD_VAR 0 1
+4884: PUSH
+4885: EMPTY
+4886: LIST
+4887: LIST
+4888: PUSH
+4889: LD_INT 21
+4891: PUSH
+4892: LD_INT 2
+4894: PUSH
+4895: EMPTY
+4896: LIST
+4897: LIST
+4898: PUSH
+4899: LD_INT 33
+4901: PUSH
+4902: LD_INT 1
+4904: PUSH
+4905: EMPTY
+4906: LIST
+4907: LIST
+4908: PUSH
+4909: LD_INT 24
+4911: PUSH
+4912: LD_INT 660
+4914: PUSH
+4915: EMPTY
+4916: LIST
+4917: LIST
+4918: PUSH
+4919: LD_INT 3
+4921: PUSH
+4922: LD_INT 58
+4924: PUSH
+4925: EMPTY
+4926: LIST
+4927: PUSH
+4928: EMPTY
+4929: LIST
+4930: LIST
+4931: PUSH
+4932: LD_INT 3
+4934: PUSH
+4935: LD_INT 34
+4937: PUSH
+4938: LD_INT 53
+4940: PUSH
+4941: EMPTY
+4942: LIST
+4943: LIST
+4944: PUSH
+4945: EMPTY
+4946: LIST
+4947: LIST
+4948: PUSH
+4949: EMPTY
+4950: LIST
+4951: LIST
+4952: LIST
+4953: LIST
+4954: LIST
+4955: LIST
+4956: PPUSH
+4957: CALL_OW 69
+4961: ST_TO_ADDR
+// damageVehicle_list = FilterAllUnits ( [ [ f_side , side ] , [ f_type , unit_vehicle ] , [ f_control , 1 ] , [ f_not , [ f_lives , 660 ] ] ] ) ;
+4962: LD_ADDR_VAR 0 10
+4966: PUSH
+4967: LD_INT 22
+4969: PUSH
+4970: LD_VAR 0 1
+4974: PUSH
+4975: EMPTY
+4976: LIST
+4977: LIST
+4978: PUSH
+4979: LD_INT 21
+4981: PUSH
+4982: LD_INT 2
+4984: PUSH
+4985: EMPTY
+4986: LIST
+4987: LIST
+4988: PUSH
+4989: LD_INT 33
+4991: PUSH
+4992: LD_INT 1
+4994: PUSH
+4995: EMPTY
+4996: LIST
+4997: LIST
+4998: PUSH
+4999: LD_INT 3
+5001: PUSH
+5002: LD_INT 24
+5004: PUSH
+5005: LD_INT 660
+5007: PUSH
+5008: EMPTY
+5009: LIST
+5010: LIST
+5011: PUSH
+5012: EMPTY
+5013: LIST
+5014: LIST
+5015: PUSH
+5016: EMPTY
+5017: LIST
+5018: LIST
+5019: LIST
+5020: LIST
+5021: PPUSH
+5022: CALL_OW 69
+5026: ST_TO_ADDR
+// vehicleNeedRepair_list = FilterUnitsInArea ( repairArea , [ [ f_side , side ] , [ f_type , unit_vehicle ] , [ f_control , 1 ] , [ f_not , [ f_lives , 1000 ] ] ] ) ;
+5027: LD_ADDR_VAR 0 11
+5031: PUSH
+5032: LD_VAR 0 2
+5036: PPUSH
+5037: LD_INT 22
+5039: PUSH
+5040: LD_VAR 0 1
+5044: PUSH
+5045: EMPTY
+5046: LIST
+5047: LIST
+5048: PUSH
+5049: LD_INT 21
+5051: PUSH
+5052: LD_INT 2
+5054: PUSH
+5055: EMPTY
+5056: LIST
+5057: LIST
+5058: PUSH
+5059: LD_INT 33
+5061: PUSH
+5062: LD_INT 1
+5064: PUSH
+5065: EMPTY
+5066: LIST
+5067: LIST
+5068: PUSH
+5069: LD_INT 3
+5071: PUSH
+5072: LD_INT 24
+5074: PUSH
+5075: LD_INT 1000
+5077: PUSH
+5078: EMPTY
+5079: LIST
+5080: LIST
+5081: PUSH
+5082: EMPTY
+5083: LIST
+5084: LIST
+5085: PUSH
+5086: EMPTY
+5087: LIST
+5088: LIST
+5089: LIST
+5090: LIST
+5091: PPUSH
+5092: CALL_OW 70
+5096: ST_TO_ADDR
+// vehicleDontNeedRepair_list = FilterUnitsInArea ( repairArea , [ [ f_side , side ] , [ f_type , unit_vehicle ] , [ f_control , 1 ] , [ f_lives , 1000 ] , [ f_empty ] , [ f_not , [ f_weapon , 53 ] ] ] ) ;
+5097: LD_ADDR_VAR 0 12
+5101: PUSH
+5102: LD_VAR 0 2
+5106: PPUSH
+5107: LD_INT 22
+5109: PUSH
+5110: LD_VAR 0 1
+5114: PUSH
+5115: EMPTY
+5116: LIST
+5117: LIST
+5118: PUSH
+5119: LD_INT 21
+5121: PUSH
+5122: LD_INT 2
+5124: PUSH
+5125: EMPTY
+5126: LIST
+5127: LIST
+5128: PUSH
+5129: LD_INT 33
+5131: PUSH
+5132: LD_INT 1
+5134: PUSH
+5135: EMPTY
+5136: LIST
+5137: LIST
+5138: PUSH
+5139: LD_INT 24
+5141: PUSH
+5142: LD_INT 1000
+5144: PUSH
+5145: EMPTY
+5146: LIST
+5147: LIST
+5148: PUSH
+5149: LD_INT 58
+5151: PUSH
+5152: EMPTY
+5153: LIST
+5154: PUSH
+5155: LD_INT 3
+5157: PUSH
+5158: LD_INT 34
+5160: PUSH
+5161: LD_INT 53
+5163: PUSH
+5164: EMPTY
+5165: LIST
+5166: LIST
+5167: PUSH
+5168: EMPTY
+5169: LIST
+5170: LIST
+5171: PUSH
+5172: EMPTY
+5173: LIST
+5174: LIST
+5175: LIST
+5176: LIST
+5177: LIST
+5178: LIST
+5179: PPUSH
+5180: CALL_OW 70
+5184: ST_TO_ADDR
+// mechanicInside_list = [ ] ;
+5185: LD_ADDR_VAR 0 13
+5189: PUSH
+5190: EMPTY
+5191: ST_TO_ADDR
+// mechanicOutside_list = FilterUnitsInArea ( repairArea , [ [ f_side , side ] , [ f_class , 3 ] ] ) ;
+5192: LD_ADDR_VAR 0 14
+5196: PUSH
+5197: LD_VAR 0 2
+5201: PPUSH
+5202: LD_INT 22
+5204: PUSH
+5205: LD_VAR 0 1
+5209: PUSH
+5210: EMPTY
+5211: LIST
+5212: LIST
+5213: PUSH
+5214: LD_INT 25
+5216: PUSH
+5217: LD_INT 3
+5219: PUSH
+5220: EMPTY
+5221: LIST
+5222: LIST
+5223: PUSH
+5224: EMPTY
+5225: LIST
+5226: LIST
+5227: PPUSH
+5228: CALL_OW 70
+5232: ST_TO_ADDR
+// if damageVehicle_list > 0 then
+5233: LD_VAR 0 10
+5237: PUSH
+5238: LD_INT 0
+5240: GREATER
+5241: IFFALSE 5279
+// begin for i in damageVehicle_list do
+5243: LD_ADDR_VAR 0 7
+5247: PUSH
+5248: LD_VAR 0 10
+5252: PUSH
+5253: FOR_IN
+5254: IFFALSE 5277
+// begin ComMoveXY ( i , repX , repY ) ;
+5256: LD_VAR 0 7
+5260: PPUSH
+5261: LD_VAR 0 3
+5265: PPUSH
+5266: LD_VAR 0 4
+5270: PPUSH
+5271: CALL_OW 111
+// end ;
+5275: GO 5253
+5277: POP
+5278: POP
+// end ; if vehicleNeedRepair_list > 0 then
+5279: LD_VAR 0 11
+5283: PUSH
+5284: LD_INT 0
+5286: GREATER
+5287: IFFALSE 5374
+// begin for i in vehicleNeedRepair_list do
+5289: LD_ADDR_VAR 0 7
+5293: PUSH
+5294: LD_VAR 0 11
+5298: PUSH
+5299: FOR_IN
+5300: IFFALSE 5372
+// begin mechanicInside_list = mechanicInside_list ^ UnitsInside ( i ) ;
+5302: LD_ADDR_VAR 0 13
+5306: PUSH
+5307: LD_VAR 0 13
+5311: PUSH
+5312: LD_VAR 0 7
+5316: PPUSH
+5317: CALL_OW 313
+5321: ADD
+5322: ST_TO_ADDR
+// for j in mechanicInside_list do
+5323: LD_ADDR_VAR 0 8
+5327: PUSH
+5328: LD_VAR 0 13
+5332: PUSH
+5333: FOR_IN
+5334: IFFALSE 5368
+// begin ComExitVehicle ( i ) ;
+5336: LD_VAR 0 7
+5340: PPUSH
+5341: CALL_OW 121
+// wait ( 0 0$1 ) ;
+5345: LD_INT 35
+5347: PPUSH
+5348: CALL_OW 67
+// ComRepairVehicle ( i , j ) ;
+5352: LD_VAR 0 7
+5356: PPUSH
+5357: LD_VAR 0 8
+5361: PPUSH
+5362: CALL_OW 129
+// end ;
+5366: GO 5333
+5368: POP
+5369: POP
+// end ;
+5370: GO 5299
+5372: POP
+5373: POP
+// end ; if vehicleDontNeedRepair_list > 0 then
+5374: LD_VAR 0 12
+5378: PUSH
+5379: LD_INT 0
+5381: GREATER
+5382: IFFALSE 5422
+// begin ComEnterUnit ( mechanicOutside_list [ 1 ] , vehicleDontNeedRepair_list [ 1 ] ) ;
+5384: LD_VAR 0 14
+5388: PUSH
+5389: LD_INT 1
+5391: ARRAY
+5392: PPUSH
+5393: LD_VAR 0 12
+5397: PUSH
+5398: LD_INT 1
+5400: ARRAY
+5401: PPUSH
+5402: CALL_OW 120
+// SetFuel ( vehicleDontNeedRepair_list [ 1 ] , 100 ) ;
+5406: LD_VAR 0 12
+5410: PUSH
+5411: LD_INT 1
+5413: ARRAY
+5414: PPUSH
+5415: LD_INT 100
+5417: PPUSH
+5418: CALL_OW 240
+// end ; if vehicleOK_list > 0 then
+5422: LD_VAR 0 9
+5426: PUSH
+5427: LD_INT 0
+5429: GREATER
+5430: IFFALSE 5621
+// begin for i in vehicleOK_list do
+5432: LD_ADDR_VAR 0 7
+5436: PUSH
+5437: LD_VAR 0 9
+5441: PUSH
+5442: FOR_IN
+5443: IFFALSE 5619
+// begin target1 := NearestUnitToUnit ( FilterAllUnits ( [ f_side , targetSide ] ) , i ) ;
+5445: LD_ADDR_VAR 0 15
+5449: PUSH
+5450: LD_INT 22
+5452: PUSH
+5453: LD_VAR 0 5
+5457: PUSH
+5458: EMPTY
+5459: LIST
+5460: LIST
+5461: PPUSH
+5462: CALL_OW 69
+5466: PPUSH
+5467: LD_VAR 0 7
+5471: PPUSH
+5472: CALL_OW 74
+5476: ST_TO_ADDR
+// target2 := NearestUnitToUnit ( FilterAllUnits ( [ [ [ f_side , targetSide ] , [ f_or , [ f_occupied ] , [ f_type , unit_human ] , [ f_type , unit_vehicle ] ] ] ] ) , i ) ;
+5477: LD_ADDR_VAR 0 16
+5481: PUSH
+5482: LD_INT 22
+5484: PUSH
+5485: LD_VAR 0 5
+5489: PUSH
+5490: EMPTY
+5491: LIST
+5492: LIST
+5493: PUSH
+5494: LD_INT 2
+5496: PUSH
+5497: LD_INT 59
+5499: PUSH
+5500: EMPTY
+5501: LIST
+5502: PUSH
+5503: LD_INT 21
+5505: PUSH
+5506: LD_INT 1
+5508: PUSH
+5509: EMPTY
+5510: LIST
+5511: LIST
+5512: PUSH
+5513: LD_INT 21
+5515: PUSH
+5516: LD_INT 2
+5518: PUSH
+5519: EMPTY
+5520: LIST
+5521: LIST
+5522: PUSH
+5523: EMPTY
+5524: LIST
+5525: LIST
+5526: LIST
+5527: LIST
+5528: PUSH
+5529: EMPTY
+5530: LIST
+5531: LIST
+5532: PUSH
+5533: EMPTY
+5534: LIST
+5535: PPUSH
+5536: CALL_OW 69
+5540: PPUSH
+5541: LD_VAR 0 7
+5545: PPUSH
+5546: CALL_OW 74
+5550: ST_TO_ADDR
+// if GetDistUnits ( i , target1 ) + 8 < GetDistUnits ( i , target2 ) then
+5551: LD_VAR 0 7
+5555: PPUSH
+5556: LD_VAR 0 15
+5560: PPUSH
+5561: CALL_OW 296
+5565: PUSH
+5566: LD_INT 8
+5568: PLUS
+5569: PUSH
+5570: LD_VAR 0 7
+5574: PPUSH
+5575: LD_VAR 0 16
+5579: PPUSH
+5580: CALL_OW 296
+5584: LESS
+5585: IFFALSE 5603
+// begin ComAttackUnit ( i , target1 ) ;
+5587: LD_VAR 0 7
+5591: PPUSH
+5592: LD_VAR 0 15
+5596: PPUSH
+5597: CALL_OW 115
+// end else
+5601: GO 5617
+// begin ComAttackUnit ( i , target2 ) ;
+5603: LD_VAR 0 7
+5607: PPUSH
+5608: LD_VAR 0 16
+5612: PPUSH
+5613: CALL_OW 115
+// end ; end ;
+5617: GO 5442
+5619: POP
+5620: POP
+// end ; for i in not FilterUnitsInArea ( repairArea , [ [ f_side , side ] , [ f_class , 3 ] ] ) do
+5621: LD_ADDR_VAR 0 7
+5625: PUSH
+5626: LD_VAR 0 2
+5630: PPUSH
+5631: LD_INT 22
+5633: PUSH
+5634: LD_VAR 0 1
+5638: PUSH
+5639: EMPTY
+5640: LIST
+5641: LIST
+5642: PUSH
+5643: LD_INT 25
+5645: PUSH
+5646: LD_INT 3
+5648: PUSH
+5649: EMPTY
+5650: LIST
+5651: LIST
+5652: PUSH
+5653: EMPTY
+5654: LIST
+5655: LIST
+5656: PPUSH
+5657: CALL_OW 70
+5661: NOT
+5662: PUSH
+5663: FOR_IN
+5664: IFFALSE 5687
+// ComMoveXY ( i , repX , repY ) ;
+5666: LD_VAR 0 7
+5670: PPUSH
+5671: LD_VAR 0 3
+5675: PPUSH
+5676: LD_VAR 0 4
+5680: PPUSH
+5681: CALL_OW 111
+5685: GO 5663
+5687: POP
+5688: POP
+// end ;
+5689: LD_VAR 0 6
+5693: RET
+// export function RespawnAttackInfantry ( side , nation , soldierCount , sniperCount , bazookCount , mortalCount , medicCount , skil , spawnArea , healArea , targetSide ) ; var i , j , un , damageUnit_list , medic_list , soldiersOK_list , enemyUnits , und , target1 , target2 ; begin
+5694: LD_INT 0
+5696: PPUSH
+5697: PPUSH
+5698: PPUSH
+5699: PPUSH
+5700: PPUSH
+5701: PPUSH
+5702: PPUSH
+5703: PPUSH
+5704: PPUSH
+5705: PPUSH
+5706: PPUSH
+// wait ( [ 1 1$0 , 1 1$30 , 2 2$0 , 2 2$30 , 3 3$0 , 3 3$30 , 4 4$0 , 4 4$30 ] [ Rand ( 1 , 8 ) ] ) ;
+5707: LD_INT 2100
+5709: PUSH
+5710: LD_INT 3150
+5712: PUSH
+5713: LD_INT 4200
+5715: PUSH
+5716: LD_INT 5250
+5718: PUSH
+5719: LD_INT 6300
+5721: PUSH
+5722: LD_INT 7350
+5724: PUSH
+5725: LD_INT 8400
+5727: PUSH
+5728: LD_INT 9450
+5730: PUSH
+5731: EMPTY
+5732: LIST
+5733: LIST
+5734: LIST
+5735: LIST
+5736: LIST
+5737: LIST
+5738: LIST
+5739: LIST
+5740: PUSH
+5741: LD_INT 1
+5743: PPUSH
+5744: LD_INT 8
+5746: PPUSH
+5747: CALL_OW 12
+5751: ARRAY
+5752: PPUSH
+5753: CALL_OW 67
+// for i = 1 to medicCount do
+5757: LD_ADDR_VAR 0 13
+5761: PUSH
+5762: DOUBLE
+5763: LD_INT 1
+5765: DEC
+5766: ST_TO_ADDR
+5767: LD_VAR 0 7
+5771: PUSH
+5772: FOR_TO
+5773: IFFALSE 5855
+// begin uc_side = side ;
+5775: LD_ADDR_OWVAR 20
+5779: PUSH
+5780: LD_VAR 0 1
+5784: ST_TO_ADDR
+// uc_nation = nation ;
+5785: LD_ADDR_OWVAR 21
+5789: PUSH
+5790: LD_VAR 0 2
+5794: ST_TO_ADDR
+// hc_name =  ;
+5795: LD_ADDR_OWVAR 26
+5799: PUSH
+5800: LD_STRING 
+5802: ST_TO_ADDR
+// hc_gallery =  ;
+5803: LD_ADDR_OWVAR 33
+5807: PUSH
+5808: LD_STRING 
+5810: ST_TO_ADDR
+// PrepareHuman ( false , 4 , skil ) ;
+5811: LD_INT 0
+5813: PPUSH
+5814: LD_INT 4
+5816: PPUSH
+5817: LD_VAR 0 8
+5821: PPUSH
+5822: CALL_OW 380
+// un = CreateHuman ;
+5826: LD_ADDR_VAR 0 15
+5830: PUSH
+5831: CALL_OW 44
+5835: ST_TO_ADDR
+// PlaceUnitArea ( un , spawnArea , false ) ;
+5836: LD_VAR 0 15
+5840: PPUSH
+5841: LD_VAR 0 9
+5845: PPUSH
+5846: LD_INT 0
+5848: PPUSH
+5849: CALL_OW 49
+// end ;
+5853: GO 5772
+5855: POP
+5856: POP
+// for i = 1 to soldierCount do
+5857: LD_ADDR_VAR 0 13
+5861: PUSH
+5862: DOUBLE
+5863: LD_INT 1
+5865: DEC
+5866: ST_TO_ADDR
+5867: LD_VAR 0 3
+5871: PUSH
+5872: FOR_TO
+5873: IFFALSE 5955
+// begin uc_side = side ;
+5875: LD_ADDR_OWVAR 20
+5879: PUSH
+5880: LD_VAR 0 1
+5884: ST_TO_ADDR
+// uc_nation = nation ;
+5885: LD_ADDR_OWVAR 21
+5889: PUSH
+5890: LD_VAR 0 2
+5894: ST_TO_ADDR
+// hc_name =  ;
+5895: LD_ADDR_OWVAR 26
+5899: PUSH
+5900: LD_STRING 
+5902: ST_TO_ADDR
+// hc_gallery =  ;
+5903: LD_ADDR_OWVAR 33
+5907: PUSH
+5908: LD_STRING 
+5910: ST_TO_ADDR
+// PrepareHuman ( false , 1 , skil ) ;
+5911: LD_INT 0
+5913: PPUSH
+5914: LD_INT 1
+5916: PPUSH
+5917: LD_VAR 0 8
+5921: PPUSH
+5922: CALL_OW 380
+// un = CreateHuman ;
+5926: LD_ADDR_VAR 0 15
+5930: PUSH
+5931: CALL_OW 44
+5935: ST_TO_ADDR
+// PlaceUnitArea ( un , spawnArea , false ) ;
+5936: LD_VAR 0 15
+5940: PPUSH
+5941: LD_VAR 0 9
+5945: PPUSH
+5946: LD_INT 0
+5948: PPUSH
+5949: CALL_OW 49
+// end ;
+5953: GO 5872
+5955: POP
+5956: POP
+// for i = 1 to sniperCount do
+5957: LD_ADDR_VAR 0 13
+5961: PUSH
+5962: DOUBLE
+5963: LD_INT 1
+5965: DEC
+5966: ST_TO_ADDR
+5967: LD_VAR 0 4
+5971: PUSH
+5972: FOR_TO
+5973: IFFALSE 6055
+// begin uc_side = side ;
+5975: LD_ADDR_OWVAR 20
+5979: PUSH
+5980: LD_VAR 0 1
+5984: ST_TO_ADDR
+// uc_nation = nation ;
+5985: LD_ADDR_OWVAR 21
+5989: PUSH
+5990: LD_VAR 0 2
+5994: ST_TO_ADDR
+// hc_name =  ;
+5995: LD_ADDR_OWVAR 26
+5999: PUSH
+6000: LD_STRING 
+6002: ST_TO_ADDR
+// hc_gallery =  ;
+6003: LD_ADDR_OWVAR 33
+6007: PUSH
+6008: LD_STRING 
+6010: ST_TO_ADDR
+// PrepareHuman ( false , 5 , skil ) ;
+6011: LD_INT 0
+6013: PPUSH
+6014: LD_INT 5
+6016: PPUSH
+6017: LD_VAR 0 8
+6021: PPUSH
+6022: CALL_OW 380
+// un = CreateHuman ;
+6026: LD_ADDR_VAR 0 15
+6030: PUSH
+6031: CALL_OW 44
+6035: ST_TO_ADDR
+// PlaceUnitArea ( un , spawnArea , false ) ;
+6036: LD_VAR 0 15
+6040: PPUSH
+6041: LD_VAR 0 9
+6045: PPUSH
+6046: LD_INT 0
+6048: PPUSH
+6049: CALL_OW 49
+// end ;
+6053: GO 5972
+6055: POP
+6056: POP
+// for i = 1 to bazookCount do
+6057: LD_ADDR_VAR 0 13
+6061: PUSH
+6062: DOUBLE
+6063: LD_INT 1
+6065: DEC
+6066: ST_TO_ADDR
+6067: LD_VAR 0 5
+6071: PUSH
+6072: FOR_TO
+6073: IFFALSE 6155
+// begin uc_side = side ;
+6075: LD_ADDR_OWVAR 20
+6079: PUSH
+6080: LD_VAR 0 1
+6084: ST_TO_ADDR
+// uc_nation = nation ;
+6085: LD_ADDR_OWVAR 21
+6089: PUSH
+6090: LD_VAR 0 2
+6094: ST_TO_ADDR
+// hc_name =  ;
+6095: LD_ADDR_OWVAR 26
+6099: PUSH
+6100: LD_STRING 
+6102: ST_TO_ADDR
+// hc_gallery =  ;
+6103: LD_ADDR_OWVAR 33
+6107: PUSH
+6108: LD_STRING 
+6110: ST_TO_ADDR
+// PrepareHuman ( false , 9 , skil ) ;
+6111: LD_INT 0
+6113: PPUSH
+6114: LD_INT 9
+6116: PPUSH
+6117: LD_VAR 0 8
+6121: PPUSH
+6122: CALL_OW 380
+// un = CreateHuman ;
+6126: LD_ADDR_VAR 0 15
+6130: PUSH
+6131: CALL_OW 44
+6135: ST_TO_ADDR
+// PlaceUnitArea ( un , spawnArea , false ) ;
+6136: LD_VAR 0 15
+6140: PPUSH
+6141: LD_VAR 0 9
+6145: PPUSH
+6146: LD_INT 0
+6148: PPUSH
+6149: CALL_OW 49
+// end ;
+6153: GO 6072
+6155: POP
+6156: POP
+// for i = 1 to mortalCount do
+6157: LD_ADDR_VAR 0 13
+6161: PUSH
+6162: DOUBLE
+6163: LD_INT 1
+6165: DEC
+6166: ST_TO_ADDR
+6167: LD_VAR 0 6
+6171: PUSH
+6172: FOR_TO
+6173: IFFALSE 6255
+// begin uc_side = side ;
+6175: LD_ADDR_OWVAR 20
+6179: PUSH
+6180: LD_VAR 0 1
+6184: ST_TO_ADDR
+// uc_nation = nation ;
+6185: LD_ADDR_OWVAR 21
+6189: PUSH
+6190: LD_VAR 0 2
+6194: ST_TO_ADDR
+// hc_name =  ;
+6195: LD_ADDR_OWVAR 26
+6199: PUSH
+6200: LD_STRING 
+6202: ST_TO_ADDR
+// hc_gallery =  ;
+6203: LD_ADDR_OWVAR 33
+6207: PUSH
+6208: LD_STRING 
+6210: ST_TO_ADDR
+// PrepareHuman ( false , 8 , skil ) ;
+6211: LD_INT 0
+6213: PPUSH
+6214: LD_INT 8
+6216: PPUSH
+6217: LD_VAR 0 8
+6221: PPUSH
+6222: CALL_OW 380
+// un = CreateHuman ;
+6226: LD_ADDR_VAR 0 15
+6230: PUSH
+6231: CALL_OW 44
+6235: ST_TO_ADDR
+// PlaceUnitArea ( un , spawnArea , false ) ;
+6236: LD_VAR 0 15
+6240: PPUSH
+6241: LD_VAR 0 9
+6245: PPUSH
+6246: LD_INT 0
+6248: PPUSH
+6249: CALL_OW 49
+// end ;
+6253: GO 6172
+6255: POP
+6256: POP
+// medic_list = FilterAllUnits ( [ [ f_side , side ] , [ f_class , 4 ] ] ) ;
+6257: LD_ADDR_VAR 0 17
+6261: PUSH
+6262: LD_INT 22
+6264: PUSH
+6265: LD_VAR 0 1
+6269: PUSH
+6270: EMPTY
+6271: LIST
+6272: LIST
+6273: PUSH
+6274: LD_INT 25
+6276: PUSH
+6277: LD_INT 4
+6279: PUSH
+6280: EMPTY
+6281: LIST
+6282: LIST
+6283: PUSH
+6284: EMPTY
+6285: LIST
+6286: LIST
+6287: PPUSH
+6288: CALL_OW 69
+6292: ST_TO_ADDR
+// for i in medic_list do
+6293: LD_ADDR_VAR 0 13
+6297: PUSH
+6298: LD_VAR 0 17
+6302: PUSH
+6303: FOR_IN
+6304: IFFALSE 6322
+// ComMoveToArea ( i , healArea ) ;
+6306: LD_VAR 0 13
+6310: PPUSH
+6311: LD_VAR 0 10
+6315: PPUSH
+6316: CALL_OW 113
+6320: GO 6303
+6322: POP
+6323: POP
+// repeat wait ( 0 0$1 ) ;
+6324: LD_INT 35
+6326: PPUSH
+6327: CALL_OW 67
+// damageUnit_list = FilterAllUnits ( [ [ f_side , side ] , [ f_and , [ f_not , [ f_lives , 550 ] ] , [ f_lives , 250 ] ] ] ) ;
+6331: LD_ADDR_VAR 0 16
+6335: PUSH
+6336: LD_INT 22
+6338: PUSH
+6339: LD_VAR 0 1
+6343: PUSH
+6344: EMPTY
+6345: LIST
+6346: LIST
+6347: PUSH
+6348: LD_INT 1
+6350: PUSH
+6351: LD_INT 3
+6353: PUSH
+6354: LD_INT 24
+6356: PUSH
+6357: LD_INT 550
+6359: PUSH
+6360: EMPTY
+6361: LIST
+6362: LIST
+6363: PUSH
+6364: EMPTY
+6365: LIST
+6366: LIST
+6367: PUSH
+6368: LD_INT 24
+6370: PUSH
+6371: LD_INT 250
+6373: PUSH
+6374: EMPTY
+6375: LIST
+6376: LIST
+6377: PUSH
+6378: EMPTY
+6379: LIST
+6380: LIST
+6381: LIST
+6382: PUSH
+6383: EMPTY
+6384: LIST
+6385: LIST
+6386: PPUSH
+6387: CALL_OW 69
+6391: ST_TO_ADDR
+// soldiersOK_list = FilterAllUnits ( [ [ f_side , side ] , [ f_or , [ f_class , 1 ] , [ f_class , 5 ] , [ f_class , 8 ] , [ f_class , 9 ] ] , [ f_lives , 1000 ] ] ) ;
+6392: LD_ADDR_VAR 0 18
+6396: PUSH
+6397: LD_INT 22
+6399: PUSH
+6400: LD_VAR 0 1
+6404: PUSH
+6405: EMPTY
+6406: LIST
+6407: LIST
+6408: PUSH
+6409: LD_INT 2
+6411: PUSH
+6412: LD_INT 25
+6414: PUSH
+6415: LD_INT 1
+6417: PUSH
+6418: EMPTY
+6419: LIST
+6420: LIST
+6421: PUSH
+6422: LD_INT 25
+6424: PUSH
+6425: LD_INT 5
+6427: PUSH
+6428: EMPTY
+6429: LIST
+6430: LIST
+6431: PUSH
+6432: LD_INT 25
+6434: PUSH
+6435: LD_INT 8
+6437: PUSH
+6438: EMPTY
+6439: LIST
+6440: LIST
+6441: PUSH
+6442: LD_INT 25
+6444: PUSH
+6445: LD_INT 9
+6447: PUSH
+6448: EMPTY
+6449: LIST
+6450: LIST
+6451: PUSH
+6452: EMPTY
+6453: LIST
+6454: LIST
+6455: LIST
+6456: LIST
+6457: LIST
+6458: PUSH
+6459: LD_INT 24
+6461: PUSH
+6462: LD_INT 1000
+6464: PUSH
+6465: EMPTY
+6466: LIST
+6467: LIST
+6468: PUSH
+6469: EMPTY
+6470: LIST
+6471: LIST
+6472: LIST
+6473: PPUSH
+6474: CALL_OW 69
+6478: ST_TO_ADDR
+// if medicCount > 0 then
+6479: LD_VAR 0 7
+6483: PUSH
+6484: LD_INT 0
+6486: GREATER
+6487: IFFALSE 6561
+// begin if damageUnit_list > 0 then
+6489: LD_VAR 0 16
+6493: PUSH
+6494: LD_INT 0
+6496: GREATER
+6497: IFFALSE 6561
+// begin for i in damageUnit_list do
+6499: LD_ADDR_VAR 0 13
+6503: PUSH
+6504: LD_VAR 0 16
+6508: PUSH
+6509: FOR_IN
+6510: IFFALSE 6559
+// begin ComMoveToArea ( i , healArea ) ;
+6512: LD_VAR 0 13
+6516: PPUSH
+6517: LD_VAR 0 10
+6521: PPUSH
+6522: CALL_OW 113
+// for j in medic_list do
+6526: LD_ADDR_VAR 0 14
+6530: PUSH
+6531: LD_VAR 0 17
+6535: PUSH
+6536: FOR_IN
+6537: IFFALSE 6555
+// AddComHeal ( j , i ) ;
+6539: LD_VAR 0 14
+6543: PPUSH
+6544: LD_VAR 0 13
+6548: PPUSH
+6549: CALL_OW 188
+6553: GO 6536
+6555: POP
+6556: POP
+// end ;
+6557: GO 6509
+6559: POP
+6560: POP
+// end ; end ; for i in soldiersOK_list do
+6561: LD_ADDR_VAR 0 13
+6565: PUSH
+6566: LD_VAR 0 18
+6570: PUSH
+6571: FOR_IN
+6572: IFFALSE 6748
+// begin target1 := NearestUnitToUnit ( FilterAllUnits ( [ f_side , targetSide ] ) , i ) ;
+6574: LD_ADDR_VAR 0 21
+6578: PUSH
+6579: LD_INT 22
+6581: PUSH
+6582: LD_VAR 0 11
+6586: PUSH
+6587: EMPTY
+6588: LIST
+6589: LIST
+6590: PPUSH
+6591: CALL_OW 69
+6595: PPUSH
+6596: LD_VAR 0 13
+6600: PPUSH
+6601: CALL_OW 74
+6605: ST_TO_ADDR
+// target2 := NearestUnitToUnit ( FilterAllUnits ( [ [ [ f_side , targetSide ] , [ f_or , [ f_occupied ] , [ f_type , unit_human ] , [ f_type , unit_vehicle ] ] ] ] ) , i ) ;
+6606: LD_ADDR_VAR 0 22
+6610: PUSH
+6611: LD_INT 22
+6613: PUSH
+6614: LD_VAR 0 11
+6618: PUSH
+6619: EMPTY
+6620: LIST
+6621: LIST
+6622: PUSH
+6623: LD_INT 2
+6625: PUSH
+6626: LD_INT 59
+6628: PUSH
+6629: EMPTY
+6630: LIST
+6631: PUSH
+6632: LD_INT 21
+6634: PUSH
+6635: LD_INT 1
+6637: PUSH
+6638: EMPTY
+6639: LIST
+6640: LIST
+6641: PUSH
+6642: LD_INT 21
+6644: PUSH
+6645: LD_INT 2
+6647: PUSH
+6648: EMPTY
+6649: LIST
+6650: LIST
+6651: PUSH
+6652: EMPTY
+6653: LIST
+6654: LIST
+6655: LIST
+6656: LIST
+6657: PUSH
+6658: EMPTY
+6659: LIST
+6660: LIST
+6661: PUSH
+6662: EMPTY
+6663: LIST
+6664: PPUSH
+6665: CALL_OW 69
+6669: PPUSH
+6670: LD_VAR 0 13
+6674: PPUSH
+6675: CALL_OW 74
+6679: ST_TO_ADDR
+// if GetDistUnits ( i , target1 ) + 8 < GetDistUnits ( i , target2 ) then
+6680: LD_VAR 0 13
+6684: PPUSH
+6685: LD_VAR 0 21
+6689: PPUSH
+6690: CALL_OW 296
+6694: PUSH
+6695: LD_INT 8
+6697: PLUS
+6698: PUSH
+6699: LD_VAR 0 13
+6703: PPUSH
+6704: LD_VAR 0 22
+6708: PPUSH
+6709: CALL_OW 296
+6713: LESS
+6714: IFFALSE 6732
+// begin ComAttackUnit ( i , target1 ) ;
+6716: LD_VAR 0 13
+6720: PPUSH
+6721: LD_VAR 0 21
+6725: PPUSH
+6726: CALL_OW 115
+// end else
+6730: GO 6746
+// begin ComAttackUnit ( i , target2 ) ;
+6732: LD_VAR 0 13
+6736: PPUSH
+6737: LD_VAR 0 22
+6741: PPUSH
+6742: CALL_OW 115
+// end ; end ;
+6746: GO 6571
+6748: POP
+6749: POP
+// for i in soldiersOK_list do
+6750: LD_ADDR_VAR 0 13
+6754: PUSH
+6755: LD_VAR 0 18
+6759: PUSH
+6760: FOR_IN
+6761: IFFALSE 6937
+// begin target1 := NearestUnitToUnit ( FilterAllUnits ( [ f_side , targetSide ] ) , i ) ;
+6763: LD_ADDR_VAR 0 21
+6767: PUSH
+6768: LD_INT 22
+6770: PUSH
+6771: LD_VAR 0 11
+6775: PUSH
+6776: EMPTY
+6777: LIST
+6778: LIST
+6779: PPUSH
+6780: CALL_OW 69
+6784: PPUSH
+6785: LD_VAR 0 13
+6789: PPUSH
+6790: CALL_OW 74
+6794: ST_TO_ADDR
+// target2 := NearestUnitToUnit ( FilterAllUnits ( [ [ [ f_side , targetSide ] , [ f_or , [ f_occupied ] , [ f_type , unit_human ] , [ f_type , unit_vehicle ] ] ] ] ) , i ) ;
+6795: LD_ADDR_VAR 0 22
+6799: PUSH
+6800: LD_INT 22
+6802: PUSH
+6803: LD_VAR 0 11
+6807: PUSH
+6808: EMPTY
+6809: LIST
+6810: LIST
+6811: PUSH
+6812: LD_INT 2
+6814: PUSH
+6815: LD_INT 59
+6817: PUSH
+6818: EMPTY
+6819: LIST
+6820: PUSH
+6821: LD_INT 21
+6823: PUSH
+6824: LD_INT 1
+6826: PUSH
+6827: EMPTY
+6828: LIST
+6829: LIST
+6830: PUSH
+6831: LD_INT 21
+6833: PUSH
+6834: LD_INT 2
+6836: PUSH
+6837: EMPTY
+6838: LIST
+6839: LIST
+6840: PUSH
+6841: EMPTY
+6842: LIST
+6843: LIST
+6844: LIST
+6845: LIST
+6846: PUSH
+6847: EMPTY
+6848: LIST
+6849: LIST
+6850: PUSH
+6851: EMPTY
+6852: LIST
+6853: PPUSH
+6854: CALL_OW 69
+6858: PPUSH
+6859: LD_VAR 0 13
+6863: PPUSH
+6864: CALL_OW 74
+6868: ST_TO_ADDR
+// if GetDistUnits ( i , target1 ) + 8 < GetDistUnits ( i , target2 ) then
+6869: LD_VAR 0 13
+6873: PPUSH
+6874: LD_VAR 0 21
+6878: PPUSH
+6879: CALL_OW 296
+6883: PUSH
+6884: LD_INT 8
+6886: PLUS
+6887: PUSH
+6888: LD_VAR 0 13
+6892: PPUSH
+6893: LD_VAR 0 22
+6897: PPUSH
+6898: CALL_OW 296
+6902: LESS
+6903: IFFALSE 6921
+// begin ComAttackUnit ( i , target1 ) ;
+6905: LD_VAR 0 13
+6909: PPUSH
+6910: LD_VAR 0 21
+6914: PPUSH
+6915: CALL_OW 115
+// end else
+6919: GO 6935
+// begin ComAttackUnit ( i , target2 ) ;
+6921: LD_VAR 0 13
+6925: PPUSH
+6926: LD_VAR 0 22
+6930: PPUSH
+6931: CALL_OW 115
+// end ; end ;
+6935: GO 6760
+6937: POP
+6938: POP
+// until soldiersOK_list = [ ] ;
+6939: LD_VAR 0 18
+6943: PUSH
+6944: EMPTY
+6945: EQUAL
+6946: IFFALSE 6324
+// end ;
+6948: LD_VAR 0 12
+6952: RET
+// export function RespawnAttackVehicle ( area , side , vehCount , mehskill , nation , vehEngine , vehControl , RUWeapons , ARWeapons , AMWeapon , targetSide ) ; var i , j , un , veh , ruChassisTab , arChassisTab , amChassisTab , vehicleOK_list , target1 , target2 ; begin
+6953: LD_INT 0
+6955: PPUSH
+6956: PPUSH
+6957: PPUSH
+6958: PPUSH
+6959: PPUSH
+6960: PPUSH
+6961: PPUSH
+6962: PPUSH
+6963: PPUSH
+6964: PPUSH
+6965: PPUSH
+// wait ( [ 1 1$0 , 1 1$30 , 2 2$0 , 2 2$30 , 3 3$0 , 3 3$30 , 4 4$0 , 4 4$30 ] [ Rand ( 1 , 8 ) ] ) ;
+6966: LD_INT 2100
+6968: PUSH
+6969: LD_INT 3150
+6971: PUSH
+6972: LD_INT 4200
+6974: PUSH
+6975: LD_INT 5250
+6977: PUSH
+6978: LD_INT 6300
+6980: PUSH
+6981: LD_INT 7350
+6983: PUSH
+6984: LD_INT 8400
+6986: PUSH
+6987: LD_INT 9450
+6989: PUSH
+6990: EMPTY
+6991: LIST
+6992: LIST
+6993: LIST
+6994: LIST
+6995: LIST
+6996: LIST
+6997: LIST
+6998: LIST
+6999: PUSH
+7000: LD_INT 1
+7002: PPUSH
+7003: LD_INT 8
+7005: PPUSH
+7006: CALL_OW 12
+7010: ARRAY
+7011: PPUSH
+7012: CALL_OW 67
+// amChassisTab = [ ] ;
+7016: LD_ADDR_VAR 0 19
+7020: PUSH
+7021: EMPTY
+7022: ST_TO_ADDR
+// arChassisTab = [ ] ;
+7023: LD_ADDR_VAR 0 18
+7027: PUSH
+7028: EMPTY
+7029: ST_TO_ADDR
+// ruChassisTab = [ ] ;
+7030: LD_ADDR_VAR 0 17
+7034: PUSH
+7035: EMPTY
+7036: ST_TO_ADDR
+// repeat wait ( 0 0$01 ) ;
+7037: LD_INT 35
+7039: PPUSH
+7040: CALL_OW 67
+// if nation = 1 then
+7044: LD_VAR 0 5
+7048: PUSH
+7049: LD_INT 1
+7051: EQUAL
+7052: IFFALSE 7557
+// begin uc_side = side ;
+7054: LD_ADDR_OWVAR 20
+7058: PUSH
+7059: LD_VAR 0 2
+7063: ST_TO_ADDR
+// uc_nation = nation ;
+7064: LD_ADDR_OWVAR 21
+7068: PUSH
+7069: LD_VAR 0 5
+7073: ST_TO_ADDR
+// vc_engine = vehengine ;
+7074: LD_ADDR_OWVAR 39
+7078: PUSH
+7079: LD_VAR 0 6
+7083: ST_TO_ADDR
+// vc_control = vehcontrol [ Rand ( 1 , vehcontrol ) ] ;
+7084: LD_ADDR_OWVAR 38
+7088: PUSH
+7089: LD_VAR 0 7
+7093: PUSH
+7094: LD_INT 1
+7096: PPUSH
+7097: LD_VAR 0 7
+7101: PPUSH
+7102: CALL_OW 12
+7106: ARRAY
+7107: ST_TO_ADDR
+// vc_weapon = AMWeapon [ Rand ( 1 , AMWeapon ) ] ;
+7108: LD_ADDR_OWVAR 40
+7112: PUSH
+7113: LD_VAR 0 10
+7117: PUSH
+7118: LD_INT 1
+7120: PPUSH
+7121: LD_VAR 0 10
+7125: PPUSH
+7126: CALL_OW 12
+7130: ARRAY
+7131: ST_TO_ADDR
+// for j = 1 to AMWeapon do
+7132: LD_ADDR_VAR 0 14
+7136: PUSH
+7137: DOUBLE
+7138: LD_INT 1
+7140: DEC
+7141: ST_TO_ADDR
+7142: LD_VAR 0 10
+7146: PUSH
+7147: FOR_TO
+7148: IFFALSE 7449
+// begin if AMWeapon [ j ] = 2 or AMWeapon [ j ] = 3 then
+7150: LD_VAR 0 10
+7154: PUSH
+7155: LD_VAR 0 14
+7159: ARRAY
+7160: PUSH
+7161: LD_INT 2
+7163: EQUAL
+7164: PUSH
+7165: LD_VAR 0 10
+7169: PUSH
+7170: LD_VAR 0 14
+7174: ARRAY
+7175: PUSH
+7176: LD_INT 3
+7178: EQUAL
+7179: OR
+7180: IFFALSE 7233
+// begin amChassisTab = [ 1 , 2 , 3 , 4 , 5 ] ;
+7182: LD_ADDR_VAR 0 19
+7186: PUSH
+7187: LD_INT 1
+7189: PUSH
+7190: LD_INT 2
+7192: PUSH
+7193: LD_INT 3
+7195: PUSH
+7196: LD_INT 4
+7198: PUSH
+7199: LD_INT 5
+7201: PUSH
+7202: EMPTY
+7203: LIST
+7204: LIST
+7205: LIST
+7206: LIST
+7207: LIST
+7208: ST_TO_ADDR
+// vc_chassis = amChassisTab [ Rand ( 1 , amChassisTab ) ] ;
+7209: LD_ADDR_OWVAR 37
+7213: PUSH
+7214: LD_VAR 0 19
+7218: PUSH
+7219: LD_INT 1
+7221: PPUSH
+7222: LD_VAR 0 19
+7226: PPUSH
+7227: CALL_OW 12
+7231: ARRAY
+7232: ST_TO_ADDR
+// end ; if AMWeapon [ j ] = 4 or AMWeapon [ j ] = 5 or AMWeapon [ j ] = 9 or AMWeapon [ j ] = 11 or AMWeapon [ j ] = 7 then
+7233: LD_VAR 0 10
+7237: PUSH
+7238: LD_VAR 0 14
+7242: ARRAY
+7243: PUSH
+7244: LD_INT 4
+7246: EQUAL
+7247: PUSH
+7248: LD_VAR 0 10
+7252: PUSH
+7253: LD_VAR 0 14
+7257: ARRAY
+7258: PUSH
+7259: LD_INT 5
+7261: EQUAL
+7262: OR
+7263: PUSH
+7264: LD_VAR 0 10
+7268: PUSH
+7269: LD_VAR 0 14
+7273: ARRAY
+7274: PUSH
+7275: LD_INT 9
+7277: EQUAL
+7278: OR
+7279: PUSH
+7280: LD_VAR 0 10
+7284: PUSH
+7285: LD_VAR 0 14
+7289: ARRAY
+7290: PUSH
+7291: LD_INT 11
+7293: EQUAL
+7294: OR
+7295: PUSH
+7296: LD_VAR 0 10
+7300: PUSH
+7301: LD_VAR 0 14
+7305: ARRAY
+7306: PUSH
+7307: LD_INT 7
+7309: EQUAL
+7310: OR
+7311: IFFALSE 7360
+// begin amChassisTab = [ 2 , 3 , 4 , 5 ] ;
+7313: LD_ADDR_VAR 0 19
+7317: PUSH
+7318: LD_INT 2
+7320: PUSH
+7321: LD_INT 3
+7323: PUSH
+7324: LD_INT 4
+7326: PUSH
+7327: LD_INT 5
+7329: PUSH
+7330: EMPTY
+7331: LIST
+7332: LIST
+7333: LIST
+7334: LIST
+7335: ST_TO_ADDR
+// vc_chassis = amChassisTab [ Rand ( 1 , amChassisTab ) ] ;
+7336: LD_ADDR_OWVAR 37
+7340: PUSH
+7341: LD_VAR 0 19
+7345: PUSH
+7346: LD_INT 1
+7348: PPUSH
+7349: LD_VAR 0 19
+7353: PPUSH
+7354: CALL_OW 12
+7358: ARRAY
+7359: ST_TO_ADDR
+// end ; if AMWeapon [ j ] = 8 or AMWeapon [ j ] = 6 or AMWeapon [ j ] = 10 then
+7360: LD_VAR 0 10
+7364: PUSH
+7365: LD_VAR 0 14
+7369: ARRAY
+7370: PUSH
+7371: LD_INT 8
+7373: EQUAL
+7374: PUSH
+7375: LD_VAR 0 10
+7379: PUSH
+7380: LD_VAR 0 14
+7384: ARRAY
+7385: PUSH
+7386: LD_INT 6
+7388: EQUAL
+7389: OR
+7390: PUSH
+7391: LD_VAR 0 10
+7395: PUSH
+7396: LD_VAR 0 14
+7400: ARRAY
+7401: PUSH
+7402: LD_INT 10
+7404: EQUAL
+7405: OR
+7406: IFFALSE 7447
+// begin amChassisTab = [ 4 , 5 ] ;
+7408: LD_ADDR_VAR 0 19
+7412: PUSH
+7413: LD_INT 4
+7415: PUSH
+7416: LD_INT 5
+7418: PUSH
+7419: EMPTY
+7420: LIST
+7421: LIST
+7422: ST_TO_ADDR
+// vc_chassis = amChassisTab [ Rand ( 1 , amChassisTab ) ] ;
+7423: LD_ADDR_OWVAR 37
+7427: PUSH
+7428: LD_VAR 0 19
+7432: PUSH
+7433: LD_INT 1
+7435: PPUSH
+7436: LD_VAR 0 19
+7440: PPUSH
+7441: CALL_OW 12
+7445: ARRAY
+7446: ST_TO_ADDR
+// end ; end ;
+7447: GO 7147
+7449: POP
+7450: POP
+// veh = CreateVehicle ;
+7451: LD_ADDR_VAR 0 16
+7455: PUSH
+7456: CALL_OW 45
+7460: ST_TO_ADDR
+// PlaceUnitArea ( veh , area , false ) ;
+7461: LD_VAR 0 16
+7465: PPUSH
+7466: LD_VAR 0 1
+7470: PPUSH
+7471: LD_INT 0
+7473: PPUSH
+7474: CALL_OW 49
+// if vc_control = 1 then
+7478: LD_OWVAR 38
+7482: PUSH
+7483: LD_INT 1
+7485: EQUAL
+7486: IFFALSE 7543
+// begin hc_gallery =  ;
+7488: LD_ADDR_OWVAR 33
+7492: PUSH
+7493: LD_STRING 
+7495: ST_TO_ADDR
+// hc_name =  ;
+7496: LD_ADDR_OWVAR 26
+7500: PUSH
+7501: LD_STRING 
+7503: ST_TO_ADDR
+// PrepareHuman ( false , 3 , mehskill ) ;
+7504: LD_INT 0
+7506: PPUSH
+7507: LD_INT 3
+7509: PPUSH
+7510: LD_VAR 0 4
+7514: PPUSH
+7515: CALL_OW 380
+// un = CreateHuman ;
+7519: LD_ADDR_VAR 0 15
+7523: PUSH
+7524: CALL_OW 44
+7528: ST_TO_ADDR
+// PlaceHumanInUnit ( un , veh ) ;
+7529: LD_VAR 0 15
+7533: PPUSH
+7534: LD_VAR 0 16
+7538: PPUSH
+7539: CALL_OW 52
+// end ; i = i + 1 ;
+7543: LD_ADDR_VAR 0 13
+7547: PUSH
+7548: LD_VAR 0 13
+7552: PUSH
+7553: LD_INT 1
+7555: PLUS
+7556: ST_TO_ADDR
+// end ; if nation = 2 then
+7557: LD_VAR 0 5
+7561: PUSH
+7562: LD_INT 2
+7564: EQUAL
+7565: IFFALSE 8003
+// begin uc_side = side ;
+7567: LD_ADDR_OWVAR 20
+7571: PUSH
+7572: LD_VAR 0 2
+7576: ST_TO_ADDR
+// uc_nation = nation ;
+7577: LD_ADDR_OWVAR 21
+7581: PUSH
+7582: LD_VAR 0 5
+7586: ST_TO_ADDR
+// vc_engine = vehengine ;
+7587: LD_ADDR_OWVAR 39
+7591: PUSH
+7592: LD_VAR 0 6
+7596: ST_TO_ADDR
+// vc_control = vehcontrol [ Rand ( 1 , vehcontrol ) ] ;
+7597: LD_ADDR_OWVAR 38
+7601: PUSH
+7602: LD_VAR 0 7
+7606: PUSH
+7607: LD_INT 1
+7609: PPUSH
+7610: LD_VAR 0 7
+7614: PPUSH
+7615: CALL_OW 12
+7619: ARRAY
+7620: ST_TO_ADDR
+// vc_weapon = ARWeapons [ Rand ( 1 , ARWeapons ) ] ;
+7621: LD_ADDR_OWVAR 40
+7625: PUSH
+7626: LD_VAR 0 9
+7630: PUSH
+7631: LD_INT 1
+7633: PPUSH
+7634: LD_VAR 0 9
+7638: PPUSH
+7639: CALL_OW 12
+7643: ARRAY
+7644: ST_TO_ADDR
+// for j = 1 to ARWeapons do
+7645: LD_ADDR_VAR 0 14
+7649: PUSH
+7650: DOUBLE
+7651: LD_INT 1
+7653: DEC
+7654: ST_TO_ADDR
+7655: LD_VAR 0 9
+7659: PUSH
+7660: FOR_TO
+7661: IFFALSE 7895
+// begin if ARWeapons [ j ] = 24 or ARWeapons [ j ] = 22 or ARWeapons [ j ] = 23 or ARWeapons [ j ] = 30 then
+7663: LD_VAR 0 9
+7667: PUSH
+7668: LD_VAR 0 14
+7672: ARRAY
+7673: PUSH
+7674: LD_INT 24
+7676: EQUAL
+7677: PUSH
+7678: LD_VAR 0 9
+7682: PUSH
+7683: LD_VAR 0 14
+7687: ARRAY
+7688: PUSH
+7689: LD_INT 22
+7691: EQUAL
+7692: OR
+7693: PUSH
+7694: LD_VAR 0 9
+7698: PUSH
+7699: LD_VAR 0 14
+7703: ARRAY
+7704: PUSH
+7705: LD_INT 23
+7707: EQUAL
+7708: OR
+7709: PUSH
+7710: LD_VAR 0 9
+7714: PUSH
+7715: LD_VAR 0 14
+7719: ARRAY
+7720: PUSH
+7721: LD_INT 30
+7723: EQUAL
+7724: OR
+7725: IFFALSE 7774
+// begin arChassisTab = [ 11 , 12 , 13 , 14 ] ;
+7727: LD_ADDR_VAR 0 18
+7731: PUSH
+7732: LD_INT 11
+7734: PUSH
+7735: LD_INT 12
+7737: PUSH
+7738: LD_INT 13
+7740: PUSH
+7741: LD_INT 14
+7743: PUSH
+7744: EMPTY
+7745: LIST
+7746: LIST
+7747: LIST
+7748: LIST
+7749: ST_TO_ADDR
+// vc_chassis = arChassisTab [ Rand ( 1 , arChassisTab ) ] ;
+7750: LD_ADDR_OWVAR 37
+7754: PUSH
+7755: LD_VAR 0 18
+7759: PUSH
+7760: LD_INT 1
+7762: PPUSH
+7763: LD_VAR 0 18
+7767: PPUSH
+7768: CALL_OW 12
+7772: ARRAY
+7773: ST_TO_ADDR
+// end ; if ARWeapons [ j ] = 29 or ARWeapons [ j ] = 28 or ARWeapons [ j ] = 27 or ARWeapons [ j ] = 26 or ARWeapons [ j ] = 25 then
+7774: LD_VAR 0 9
+7778: PUSH
+7779: LD_VAR 0 14
+7783: ARRAY
+7784: PUSH
+7785: LD_INT 29
+7787: EQUAL
+7788: PUSH
+7789: LD_VAR 0 9
+7793: PUSH
+7794: LD_VAR 0 14
+7798: ARRAY
+7799: PUSH
+7800: LD_INT 28
+7802: EQUAL
+7803: OR
+7804: PUSH
+7805: LD_VAR 0 9
+7809: PUSH
+7810: LD_VAR 0 14
+7814: ARRAY
+7815: PUSH
+7816: LD_INT 27
+7818: EQUAL
+7819: OR
+7820: PUSH
+7821: LD_VAR 0 9
+7825: PUSH
+7826: LD_VAR 0 14
+7830: ARRAY
+7831: PUSH
+7832: LD_INT 26
+7834: EQUAL
+7835: OR
+7836: PUSH
+7837: LD_VAR 0 9
+7841: PUSH
+7842: LD_VAR 0 14
+7846: ARRAY
+7847: PUSH
+7848: LD_INT 25
+7850: EQUAL
+7851: OR
+7852: IFFALSE 7893
+// begin arChassisTab = [ 13 , 14 ] ;
+7854: LD_ADDR_VAR 0 18
+7858: PUSH
+7859: LD_INT 13
+7861: PUSH
+7862: LD_INT 14
+7864: PUSH
+7865: EMPTY
+7866: LIST
+7867: LIST
+7868: ST_TO_ADDR
+// vc_chassis = arChassisTab [ Rand ( 1 , arChassisTab ) ] ;
+7869: LD_ADDR_OWVAR 37
+7873: PUSH
+7874: LD_VAR 0 18
+7878: PUSH
+7879: LD_INT 1
+7881: PPUSH
+7882: LD_VAR 0 18
+7886: PPUSH
+7887: CALL_OW 12
+7891: ARRAY
+7892: ST_TO_ADDR
+// end ; end ;
+7893: GO 7660
+7895: POP
+7896: POP
+// veh = CreateVehicle ;
+7897: LD_ADDR_VAR 0 16
+7901: PUSH
+7902: CALL_OW 45
+7906: ST_TO_ADDR
+// PlaceUnitArea ( veh , area , false ) ;
+7907: LD_VAR 0 16
+7911: PPUSH
+7912: LD_VAR 0 1
+7916: PPUSH
+7917: LD_INT 0
+7919: PPUSH
+7920: CALL_OW 49
+// if vc_control = 1 then
+7924: LD_OWVAR 38
+7928: PUSH
+7929: LD_INT 1
+7931: EQUAL
+7932: IFFALSE 7989
+// begin hc_gallery =  ;
+7934: LD_ADDR_OWVAR 33
+7938: PUSH
+7939: LD_STRING 
+7941: ST_TO_ADDR
+// hc_name =  ;
+7942: LD_ADDR_OWVAR 26
+7946: PUSH
+7947: LD_STRING 
+7949: ST_TO_ADDR
+// PrepareHuman ( false , 3 , mehskill ) ;
+7950: LD_INT 0
+7952: PPUSH
+7953: LD_INT 3
+7955: PPUSH
+7956: LD_VAR 0 4
+7960: PPUSH
+7961: CALL_OW 380
+// un = CreateHuman ;
+7965: LD_ADDR_VAR 0 15
+7969: PUSH
+7970: CALL_OW 44
+7974: ST_TO_ADDR
+// PlaceHumanInUnit ( un , veh ) ;
+7975: LD_VAR 0 15
+7979: PPUSH
+7980: LD_VAR 0 16
+7984: PPUSH
+7985: CALL_OW 52
+// end ; i = i + 1 ;
+7989: LD_ADDR_VAR 0 13
+7993: PUSH
+7994: LD_VAR 0 13
+7998: PUSH
+7999: LD_INT 1
+8001: PLUS
+8002: ST_TO_ADDR
+// end ; if nation = 3 then
+8003: LD_VAR 0 5
+8007: PUSH
+8008: LD_INT 3
+8010: EQUAL
+8011: IFFALSE 8417
+// begin uc_side = side ;
+8013: LD_ADDR_OWVAR 20
+8017: PUSH
+8018: LD_VAR 0 2
+8022: ST_TO_ADDR
+// uc_nation = nation ;
+8023: LD_ADDR_OWVAR 21
+8027: PUSH
+8028: LD_VAR 0 5
+8032: ST_TO_ADDR
+// vc_engine = vehengine ;
+8033: LD_ADDR_OWVAR 39
+8037: PUSH
+8038: LD_VAR 0 6
+8042: ST_TO_ADDR
+// vc_control = vehcontrol [ Rand ( 1 , vehcontrol ) ] ;
+8043: LD_ADDR_OWVAR 38
+8047: PUSH
+8048: LD_VAR 0 7
+8052: PUSH
+8053: LD_INT 1
+8055: PPUSH
+8056: LD_VAR 0 7
+8060: PPUSH
+8061: CALL_OW 12
+8065: ARRAY
+8066: ST_TO_ADDR
+// vc_weapon = RUWeapons [ Rand ( 1 , RUWeapons ) ] ;
+8067: LD_ADDR_OWVAR 40
+8071: PUSH
+8072: LD_VAR 0 8
+8076: PUSH
+8077: LD_INT 1
+8079: PPUSH
+8080: LD_VAR 0 8
+8084: PPUSH
+8085: CALL_OW 12
+8089: ARRAY
+8090: ST_TO_ADDR
+// for j = 1 to RuWeapons do
+8091: LD_ADDR_VAR 0 14
+8095: PUSH
+8096: DOUBLE
+8097: LD_INT 1
+8099: DEC
+8100: ST_TO_ADDR
+8101: LD_VAR 0 8
+8105: PUSH
+8106: FOR_TO
+8107: IFFALSE 8309
+// begin if RUWeapons [ j ] = 42 or RUWeapons [ j ] = 43 or RUWeapons [ j ] = 44 or RUWeapons [ j ] = 45 or RUWeapons [ j ] = 49 then
+8109: LD_VAR 0 8
+8113: PUSH
+8114: LD_VAR 0 14
+8118: ARRAY
+8119: PUSH
+8120: LD_INT 42
+8122: EQUAL
+8123: PUSH
+8124: LD_VAR 0 8
+8128: PUSH
+8129: LD_VAR 0 14
+8133: ARRAY
+8134: PUSH
+8135: LD_INT 43
+8137: EQUAL
+8138: OR
+8139: PUSH
+8140: LD_VAR 0 8
+8144: PUSH
+8145: LD_VAR 0 14
+8149: ARRAY
+8150: PUSH
+8151: LD_INT 44
+8153: EQUAL
+8154: OR
+8155: PUSH
+8156: LD_VAR 0 8
+8160: PUSH
+8161: LD_VAR 0 14
+8165: ARRAY
+8166: PUSH
+8167: LD_INT 45
+8169: EQUAL
+8170: OR
+8171: PUSH
+8172: LD_VAR 0 8
+8176: PUSH
+8177: LD_VAR 0 14
+8181: ARRAY
+8182: PUSH
+8183: LD_INT 49
+8185: EQUAL
+8186: OR
+8187: IFFALSE 8236
+// begin ruChassisTab = [ 21 , 22 , 23 , 24 ] ;
+8189: LD_ADDR_VAR 0 17
+8193: PUSH
+8194: LD_INT 21
+8196: PUSH
+8197: LD_INT 22
+8199: PUSH
+8200: LD_INT 23
+8202: PUSH
+8203: LD_INT 24
+8205: PUSH
+8206: EMPTY
+8207: LIST
+8208: LIST
+8209: LIST
+8210: LIST
+8211: ST_TO_ADDR
+// vc_chassis = ruChassisTab [ Rand ( 1 , ruChassisTab ) ] ;
+8212: LD_ADDR_OWVAR 37
+8216: PUSH
+8217: LD_VAR 0 17
+8221: PUSH
+8222: LD_INT 1
+8224: PPUSH
+8225: LD_VAR 0 17
+8229: PPUSH
+8230: CALL_OW 12
+8234: ARRAY
+8235: ST_TO_ADDR
+// end ; if RUWeapons [ j ] = 46 or RUWeapons [ j ] = 47 then
+8236: LD_VAR 0 8
+8240: PUSH
+8241: LD_VAR 0 14
+8245: ARRAY
+8246: PUSH
+8247: LD_INT 46
+8249: EQUAL
+8250: PUSH
+8251: LD_VAR 0 8
+8255: PUSH
+8256: LD_VAR 0 14
+8260: ARRAY
+8261: PUSH
+8262: LD_INT 47
+8264: EQUAL
+8265: OR
+8266: IFFALSE 8307
+// begin ruChassisTab = [ 23 , 24 ] ;
+8268: LD_ADDR_VAR 0 17
+8272: PUSH
+8273: LD_INT 23
+8275: PUSH
+8276: LD_INT 24
+8278: PUSH
+8279: EMPTY
+8280: LIST
+8281: LIST
+8282: ST_TO_ADDR
+// vc_chassis = ruChassisTab [ Rand ( 1 , ruChassisTab ) ] ;
+8283: LD_ADDR_OWVAR 37
+8287: PUSH
+8288: LD_VAR 0 17
+8292: PUSH
+8293: LD_INT 1
+8295: PPUSH
+8296: LD_VAR 0 17
+8300: PPUSH
+8301: CALL_OW 12
+8305: ARRAY
+8306: ST_TO_ADDR
+// end ; end ;
+8307: GO 8106
+8309: POP
+8310: POP
+// veh = CreateVehicle ;
+8311: LD_ADDR_VAR 0 16
+8315: PUSH
+8316: CALL_OW 45
+8320: ST_TO_ADDR
+// PlaceUnitArea ( veh , area , false ) ;
+8321: LD_VAR 0 16
+8325: PPUSH
+8326: LD_VAR 0 1
+8330: PPUSH
+8331: LD_INT 0
+8333: PPUSH
+8334: CALL_OW 49
+// if vc_control = 1 then
+8338: LD_OWVAR 38
+8342: PUSH
+8343: LD_INT 1
+8345: EQUAL
+8346: IFFALSE 8403
+// begin hc_gallery =  ;
+8348: LD_ADDR_OWVAR 33
+8352: PUSH
+8353: LD_STRING 
+8355: ST_TO_ADDR
+// hc_name =  ;
+8356: LD_ADDR_OWVAR 26
+8360: PUSH
+8361: LD_STRING 
+8363: ST_TO_ADDR
+// PrepareHuman ( false , 3 , mehskill ) ;
+8364: LD_INT 0
+8366: PPUSH
+8367: LD_INT 3
+8369: PPUSH
+8370: LD_VAR 0 4
+8374: PPUSH
+8375: CALL_OW 380
+// un = CreateHuman ;
+8379: LD_ADDR_VAR 0 15
+8383: PUSH
+8384: CALL_OW 44
+8388: ST_TO_ADDR
+// PlaceHumanInUnit ( un , veh ) ;
+8389: LD_VAR 0 15
+8393: PPUSH
+8394: LD_VAR 0 16
+8398: PPUSH
+8399: CALL_OW 52
+// end ; i = i + 1 ;
+8403: LD_ADDR_VAR 0 13
+8407: PUSH
+8408: LD_VAR 0 13
+8412: PUSH
+8413: LD_INT 1
+8415: PLUS
+8416: ST_TO_ADDR
+// end ; until i = vehCount ;
+8417: LD_VAR 0 13
+8421: PUSH
+8422: LD_VAR 0 3
+8426: EQUAL
+8427: IFFALSE 7037
+// repeat wait ( 0 0$1 ) ;
+8429: LD_INT 35
+8431: PPUSH
+8432: CALL_OW 67
+// vehicleOK_list = FilterAllUnits ( [ [ f_side , side ] , [ f_type , unit_vehicle ] , [ f_lives , 661 ] ] ) ;
+8436: LD_ADDR_VAR 0 20
+8440: PUSH
+8441: LD_INT 22
+8443: PUSH
+8444: LD_VAR 0 2
+8448: PUSH
+8449: EMPTY
+8450: LIST
+8451: LIST
+8452: PUSH
+8453: LD_INT 21
+8455: PUSH
+8456: LD_INT 2
+8458: PUSH
+8459: EMPTY
+8460: LIST
+8461: LIST
+8462: PUSH
+8463: LD_INT 24
+8465: PUSH
+8466: LD_INT 661
+8468: PUSH
+8469: EMPTY
+8470: LIST
+8471: LIST
+8472: PUSH
+8473: EMPTY
+8474: LIST
+8475: LIST
+8476: LIST
+8477: PPUSH
+8478: CALL_OW 69
+8482: ST_TO_ADDR
+// if vehicleOK_list > 0 then
+8483: LD_VAR 0 20
+8487: PUSH
+8488: LD_INT 0
+8490: GREATER
+8491: IFFALSE 8682
+// begin for i in vehicleOK_list do
+8493: LD_ADDR_VAR 0 13
+8497: PUSH
+8498: LD_VAR 0 20
+8502: PUSH
+8503: FOR_IN
+8504: IFFALSE 8680
+// begin target1 := NearestUnitToUnit ( FilterAllUnits ( [ f_side , targetSide ] ) , i ) ;
+8506: LD_ADDR_VAR 0 21
+8510: PUSH
+8511: LD_INT 22
+8513: PUSH
+8514: LD_VAR 0 11
+8518: PUSH
+8519: EMPTY
+8520: LIST
+8521: LIST
+8522: PPUSH
+8523: CALL_OW 69
+8527: PPUSH
+8528: LD_VAR 0 13
+8532: PPUSH
+8533: CALL_OW 74
+8537: ST_TO_ADDR
+// target2 := NearestUnitToUnit ( FilterAllUnits ( [ [ [ f_side , targetSide ] , [ f_or , [ f_occupied ] , [ f_type , unit_human ] , [ f_type , unit_vehicle ] ] ] ] ) , i ) ;
+8538: LD_ADDR_VAR 0 22
+8542: PUSH
+8543: LD_INT 22
+8545: PUSH
+8546: LD_VAR 0 11
+8550: PUSH
+8551: EMPTY
+8552: LIST
+8553: LIST
+8554: PUSH
+8555: LD_INT 2
+8557: PUSH
+8558: LD_INT 59
+8560: PUSH
+8561: EMPTY
+8562: LIST
+8563: PUSH
+8564: LD_INT 21
+8566: PUSH
+8567: LD_INT 1
+8569: PUSH
+8570: EMPTY
+8571: LIST
+8572: LIST
+8573: PUSH
+8574: LD_INT 21
+8576: PUSH
+8577: LD_INT 2
+8579: PUSH
+8580: EMPTY
+8581: LIST
+8582: LIST
+8583: PUSH
+8584: EMPTY
+8585: LIST
+8586: LIST
+8587: LIST
+8588: LIST
+8589: PUSH
+8590: EMPTY
+8591: LIST
+8592: LIST
+8593: PUSH
+8594: EMPTY
+8595: LIST
+8596: PPUSH
+8597: CALL_OW 69
+8601: PPUSH
+8602: LD_VAR 0 13
+8606: PPUSH
+8607: CALL_OW 74
+8611: ST_TO_ADDR
+// if GetDistUnits ( i , target1 ) + 8 < GetDistUnits ( i , target2 ) then
+8612: LD_VAR 0 13
+8616: PPUSH
+8617: LD_VAR 0 21
+8621: PPUSH
+8622: CALL_OW 296
+8626: PUSH
+8627: LD_INT 8
+8629: PLUS
+8630: PUSH
+8631: LD_VAR 0 13
+8635: PPUSH
+8636: LD_VAR 0 22
+8640: PPUSH
+8641: CALL_OW 296
+8645: LESS
+8646: IFFALSE 8664
+// begin ComAttackUnit ( i , target1 ) ;
+8648: LD_VAR 0 13
+8652: PPUSH
+8653: LD_VAR 0 21
+8657: PPUSH
+8658: CALL_OW 115
+// end else
+8662: GO 8678
+// begin ComAttackUnit ( i , target2 ) ;
+8664: LD_VAR 0 13
+8668: PPUSH
+8669: LD_VAR 0 22
+8673: PPUSH
+8674: CALL_OW 115
+// end ; end ;
+8678: GO 8503
+8680: POP
+8681: POP
+// end ; until FilterAllUnits ( [ [ f_side , side ] , [ f_type , unit_vehicle ] , [ f_lives , 250 ] , [ f_occupied ] , [ f_not , 31 ] ] ) = 0 ;
+8682: LD_INT 22
+8684: PUSH
+8685: LD_VAR 0 2
+8689: PUSH
+8690: EMPTY
+8691: LIST
+8692: LIST
+8693: PUSH
+8694: LD_INT 21
+8696: PUSH
+8697: LD_INT 2
+8699: PUSH
+8700: EMPTY
+8701: LIST
+8702: LIST
+8703: PUSH
+8704: LD_INT 24
+8706: PUSH
+8707: LD_INT 250
+8709: PUSH
+8710: EMPTY
+8711: LIST
+8712: LIST
+8713: PUSH
+8714: LD_INT 59
+8716: PUSH
+8717: EMPTY
+8718: LIST
+8719: PUSH
+8720: LD_INT 3
+8722: PUSH
+8723: LD_INT 31
+8725: PUSH
+8726: EMPTY
+8727: LIST
+8728: LIST
+8729: PUSH
+8730: EMPTY
+8731: LIST
+8732: LIST
+8733: LIST
+8734: LIST
+8735: LIST
+8736: PPUSH
+8737: CALL_OW 69
+8741: PUSH
+8742: LD_INT 0
+8744: EQUAL
+8745: IFFALSE 8429
+// end ; end_of_file
+8747: LD_VAR 0 12
+8751: RET
+// every 0 0$1 do
+8752: GO 8754
+8754: DISABLE
+// begin enable ;
+8755: ENABLE
+// IntBazooka ( 7 , 1 ) ;
+8756: LD_INT 7
+8758: PPUSH
+8759: LD_INT 1
+8761: PPUSH
+8762: CALL 4551 0 2
+// RepairVehicle ( 8 , ArabianRepairArea , 86 , 49 , 1 ) ;
+8766: LD_INT 8
+8768: PPUSH
+8769: LD_INT 14
+8771: PPUSH
+8772: LD_INT 86
+8774: PPUSH
+8775: LD_INT 49
+8777: PPUSH
+8778: LD_INT 1
+8780: PPUSH
+8781: CALL 4859 0 5
+// end ; end_of_file
+8785: END
+// every 0 0$1 trigger eventVar4 = 1 do
+8786: LD_EXP 28
+8790: PUSH
+8791: LD_INT 1
+8793: EQUAL
+8794: IFFALSE 8981
+8796: GO 8798
+8798: DISABLE
+// begin Say ( JMM , D9b-JMM-1 ) ;
+8799: LD_EXP 1
+8803: PPUSH
+8804: LD_STRING D9b-JMM-1
+8806: PPUSH
+8807: CALL_OW 88
+// SayRadio ( Powell , D9b-Pow-1 ) ;
+8811: LD_EXP 9
+8815: PPUSH
+8816: LD_STRING D9b-Pow-1
+8818: PPUSH
+8819: CALL_OW 94
+// Say ( JMM , D9b-JMM-2 ) ;
+8823: LD_EXP 1
+8827: PPUSH
+8828: LD_STRING D9b-JMM-2
+8830: PPUSH
+8831: CALL_OW 88
+// SayRadio ( Powell , D9b-Pow-2 ) ;
+8835: LD_EXP 9
+8839: PPUSH
+8840: LD_STRING D9b-Pow-2
+8842: PPUSH
+8843: CALL_OW 94
+// Say ( JMM , D9b-JMM-3 ) ;
+8847: LD_EXP 1
+8851: PPUSH
+8852: LD_STRING D9b-JMM-3
+8854: PPUSH
+8855: CALL_OW 88
+// SayRadio ( Powell , D9b-Pow-3 ) ;
+8859: LD_EXP 9
+8863: PPUSH
+8864: LD_STRING D9b-Pow-3
+8866: PPUSH
+8867: CALL_OW 94
+// if burlakStatus = 1 then
+8871: LD_EXP 19
+8875: PUSH
+8876: LD_INT 1
+8878: EQUAL
+8879: IFFALSE 8893
+// begin AddMedal ( Burlak , 1 ) ;
+8881: LD_STRING Burlak
+8883: PPUSH
+8884: LD_INT 1
+8886: PPUSH
+8887: CALL_OW 101
+// end else
+8891: GO 8904
+// begin AddMedal ( Burlak , - 1 ) ;
+8893: LD_STRING Burlak
+8895: PPUSH
+8896: LD_INT 1
+8898: NEG
+8899: PPUSH
+8900: CALL_OW 101
+// end ; if IsOk ( Stevens ) then
+8904: LD_EXP 8
+8908: PPUSH
+8909: CALL_OW 302
+8913: IFFALSE 8927
+// begin AddMedal ( Stevens , 1 ) ;
+8915: LD_STRING Stevens
+8917: PPUSH
+8918: LD_INT 1
+8920: PPUSH
+8921: CALL_OW 101
+// end else
+8925: GO 8938
+// begin AddMedal ( Stevens , - 1 ) ;
+8927: LD_STRING Stevens
+8929: PPUSH
+8930: LD_INT 1
+8932: NEG
+8933: PPUSH
+8934: CALL_OW 101
+// end ; if radarOnSpot = 1 then
+8938: LD_EXP 21
+8942: PUSH
+8943: LD_INT 1
+8945: EQUAL
+8946: IFFALSE 8960
+// begin AddMedal ( Observation , 1 ) ;
+8948: LD_STRING Observation
+8950: PPUSH
+8951: LD_INT 1
+8953: PPUSH
+8954: CALL_OW 101
+// end else
+8958: GO 8970
+// begin AddMedal ( Observation , 1 ) ;
+8960: LD_STRING Observation
+8962: PPUSH
+8963: LD_INT 1
+8965: PPUSH
+8966: CALL_OW 101
+// end ; GiveMedals ( MAIN ) ;
+8970: LD_STRING MAIN
+8972: PPUSH
+8973: CALL_OW 102
+// YouWin ;
+8977: CALL_OW 103
+// end ; end_of_file
+8981: END
+// every 0 0$1 trigger sibDestroyedCounter = 2 do var i , tmp , yourSiberite ;
+8982: LD_EXP 22
+8986: PUSH
+8987: LD_INT 2
+8989: EQUAL
+8990: IFFALSE 9126
+8992: GO 8994
+8994: DISABLE
+8995: LD_INT 0
+8997: PPUSH
+8998: PPUSH
+8999: PPUSH
+// begin tmp = FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_building ] , [ f_or , [ f_btype , b_depot ] , [ f_btype , b_warehouse ] ] ] ) ;
+9000: LD_ADDR_VAR 0 2
+9004: PUSH
+9005: LD_INT 22
+9007: PUSH
+9008: LD_INT 1
+9010: PUSH
+9011: EMPTY
+9012: LIST
+9013: LIST
+9014: PUSH
+9015: LD_INT 21
+9017: PUSH
+9018: LD_INT 3
+9020: PUSH
+9021: EMPTY
+9022: LIST
+9023: LIST
+9024: PUSH
+9025: LD_INT 2
+9027: PUSH
+9028: LD_INT 30
+9030: PUSH
+9031: LD_INT 0
+9033: PUSH
+9034: EMPTY
+9035: LIST
+9036: LIST
+9037: PUSH
+9038: LD_INT 30
+9040: PUSH
+9041: LD_INT 1
+9043: PUSH
+9044: EMPTY
+9045: LIST
+9046: LIST
+9047: PUSH
+9048: EMPTY
+9049: LIST
+9050: LIST
+9051: LIST
+9052: PUSH
+9053: EMPTY
+9054: LIST
+9055: LIST
+9056: LIST
+9057: PPUSH
+9058: CALL_OW 69
+9062: ST_TO_ADDR
+// for i in tmp do
+9063: LD_ADDR_VAR 0 1
+9067: PUSH
+9068: LD_VAR 0 2
+9072: PUSH
+9073: FOR_IN
+9074: IFFALSE 9107
+// yourSiberite = yourSiberite + GetResourceType ( GetBase ( i ) , 3 ) ;
+9076: LD_ADDR_VAR 0 3
+9080: PUSH
+9081: LD_VAR 0 3
+9085: PUSH
+9086: LD_VAR 0 1
+9090: PPUSH
+9091: CALL_OW 274
+9095: PPUSH
+9096: LD_INT 3
+9098: PPUSH
+9099: CALL_OW 275
+9103: PLUS
+9104: ST_TO_ADDR
+9105: GO 9073
+9107: POP
+9108: POP
+// if yourSiberite < 79 then
+9109: LD_VAR 0 3
+9113: PUSH
+9114: LD_INT 79
+9116: LESS
+9117: IFFALSE 9126
+// YouLost ( siberite ) ;
+9119: LD_STRING siberite
+9121: PPUSH
+9122: CALL_OW 104
+// end ;
+9126: PPOPN 3
+9128: END
+// every 0 0$1 trigger IsDead ( JMM ) do
+9129: LD_EXP 1
+9133: PPUSH
+9134: CALL_OW 301
+9138: IFFALSE 9150
+9140: GO 9142
+9142: DISABLE
+// YouLost ( JMM ) ; end_of_file
+9143: LD_STRING JMM
+9145: PPUSH
+9146: CALL_OW 104
+9150: END
+// every 5 5$0 + 10 10$0 do
+9151: GO 9153
+9153: DISABLE
+// begin enable ;
+9154: ENABLE
+// RespawnAttackInfantry ( 8 , 2 , [ rand ( 4 , 6 ) , rand ( 5 , 6 ) , 6 ] [ Difficulty ] , 0 , 0 , [ rand ( 1 , 3 ) , rand ( 2 , 5 ) , rand ( 4 , 7 ) ] [ Difficulty ] , 3 , 10 , [ ArabianSpawn1 , ArabianSpawn2 ] [ Rand ( 1 , 2 ) ] , ArabianHealArea , 1 ) ;
+9155: LD_INT 8
+9157: PPUSH
+9158: LD_INT 2
+9160: PPUSH
+9161: LD_INT 4
+9163: PPUSH
+9164: LD_INT 6
+9166: PPUSH
+9167: CALL_OW 12
+9171: PUSH
+9172: LD_INT 5
+9174: PPUSH
+9175: LD_INT 6
+9177: PPUSH
+9178: CALL_OW 12
+9182: PUSH
+9183: LD_INT 6
+9185: PUSH
+9186: EMPTY
+9187: LIST
+9188: LIST
+9189: LIST
+9190: PUSH
+9191: LD_OWVAR 67
+9195: ARRAY
+9196: PPUSH
+9197: LD_INT 0
+9199: PPUSH
+9200: LD_INT 0
+9202: PPUSH
+9203: LD_INT 1
+9205: PPUSH
+9206: LD_INT 3
+9208: PPUSH
+9209: CALL_OW 12
+9213: PUSH
+9214: LD_INT 2
+9216: PPUSH
+9217: LD_INT 5
+9219: PPUSH
+9220: CALL_OW 12
+9224: PUSH
+9225: LD_INT 4
+9227: PPUSH
+9228: LD_INT 7
+9230: PPUSH
+9231: CALL_OW 12
+9235: PUSH
+9236: EMPTY
+9237: LIST
+9238: LIST
+9239: LIST
+9240: PUSH
+9241: LD_OWVAR 67
+9245: ARRAY
+9246: PPUSH
+9247: LD_INT 3
+9249: PPUSH
+9250: LD_INT 10
+9252: PPUSH
+9253: LD_INT 8
+9255: PUSH
+9256: LD_INT 9
+9258: PUSH
+9259: EMPTY
+9260: LIST
+9261: LIST
+9262: PUSH
+9263: LD_INT 1
+9265: PPUSH
+9266: LD_INT 2
+9268: PPUSH
+9269: CALL_OW 12
+9273: ARRAY
+9274: PPUSH
+9275: LD_INT 12
+9277: PPUSH
+9278: LD_INT 1
+9280: PPUSH
+9281: CALL 5694 0 11
+// end ;
+9285: END
+// every 5 5$0 + 10 10$0 do
+9286: GO 9288
+9288: DISABLE
+// begin enable ;
+9289: ENABLE
+// RespawnAttackVehicle ( [ ArabianSpawn1 , ArabianSpawn2 ] [ Rand ( 1 , 2 ) ] , 8 , [ rand ( 1 , 4 ) , rand ( 2 , 5 ) , rand ( 3 , 6 ) ] [ Difficulty ] , 10 , 2 , 3 , [ 1 , 5 , 2 ] , [ ] , [ 25 , 26 , 27 , 28 , 29 ] , [ ] , 1 ) ;
+9290: LD_INT 8
+9292: PUSH
+9293: LD_INT 9
+9295: PUSH
+9296: EMPTY
+9297: LIST
+9298: LIST
+9299: PUSH
+9300: LD_INT 1
+9302: PPUSH
+9303: LD_INT 2
+9305: PPUSH
+9306: CALL_OW 12
+9310: ARRAY
+9311: PPUSH
+9312: LD_INT 8
+9314: PPUSH
+9315: LD_INT 1
+9317: PPUSH
+9318: LD_INT 4
+9320: PPUSH
+9321: CALL_OW 12
+9325: PUSH
+9326: LD_INT 2
+9328: PPUSH
+9329: LD_INT 5
+9331: PPUSH
+9332: CALL_OW 12
+9336: PUSH
+9337: LD_INT 3
+9339: PPUSH
+9340: LD_INT 6
+9342: PPUSH
+9343: CALL_OW 12
+9347: PUSH
+9348: EMPTY
+9349: LIST
+9350: LIST
+9351: LIST
+9352: PUSH
+9353: LD_OWVAR 67
+9357: ARRAY
+9358: PPUSH
+9359: LD_INT 10
+9361: PPUSH
+9362: LD_INT 2
+9364: PPUSH
+9365: LD_INT 3
+9367: PPUSH
+9368: LD_INT 1
+9370: PUSH
+9371: LD_INT 5
+9373: PUSH
+9374: LD_INT 2
+9376: PUSH
+9377: EMPTY
+9378: LIST
+9379: LIST
+9380: LIST
+9381: PPUSH
+9382: EMPTY
+9383: PPUSH
+9384: LD_INT 25
+9386: PUSH
+9387: LD_INT 26
+9389: PUSH
+9390: LD_INT 27
+9392: PUSH
+9393: LD_INT 28
+9395: PUSH
+9396: LD_INT 29
+9398: PUSH
+9399: EMPTY
+9400: LIST
+9401: LIST
+9402: LIST
+9403: LIST
+9404: LIST
+9405: PPUSH
+9406: EMPTY
+9407: PPUSH
+9408: LD_INT 1
+9410: PPUSH
+9411: CALL 6953 0 11
+// end ; end_of_file
+9415: END
+// every 1 1$0 do
+9416: GO 9418
+9418: DISABLE
+// begin enable ;
+9419: ENABLE
+// CreateCratesArea ( rand ( 3 , 5 ) , CratesArea , true ) ;
+9420: LD_INT 3
+9422: PPUSH
+9423: LD_INT 5
+9425: PPUSH
+9426: CALL_OW 12
+9430: PPUSH
+9431: LD_INT 13
+9433: PPUSH
+9434: LD_INT 1
+9436: PPUSH
+9437: CALL_OW 55
+// end ;
+9441: END
