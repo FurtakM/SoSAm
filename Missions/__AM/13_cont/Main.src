@@ -2,17 +2,53 @@ Export JMM, Gary, Frank, Cornell, Lisa, Cyrus, Woodruff, Stevens; // Am heroes
 Export Powell; // Am commander
 Export Burlak, Masha; // Ru hero
 Export Gnyevko, Titov, Xavier, Belkov, Lipshchin; // Burlak's friends
+Export AmSciSib;
 
-Export eventVar1, eventVar2;
+Export spawnBurlak, burlakStatus;
+Export radationResearched;
+Export radarOnSpot;
+
+Export sibDestroyedCounter;
+
+Export arControlTower, arDriver;
+
+Export eventVar1, eventVar2, eventVar3, eventVar4, eventVar5;
+
+Export debugMode;
 
 Starting
 begin
     Resetfog;
     RandomizeAll;
-    
-    SpawnVehicle;
-    PrepareHeroes;
+
+    spawnBurlak = 0;
+    burlakStatus = 0; // 0 = killed, 1 - escaped
+
+    radarOnSpot = 0; // 0 - no, 1 - yes
+
+    radationResearched = 0; // 0 - no or sci dead, 1 - yes
+
+    sibDestroyedCounter = 0; // how many Siberite deposit was destroyed
 
     eventVar1 = 0;
     eventVar2 = 0;
+    eventVar3 = 0;
+    eventVar4 = 0;
+    eventVar5 = 0;
+
+    debugMode = 1;
+    
+    SpawnVehicle;
+    PrepareHeroes;
+end;
+
+Every 0$1 trigger debugMode = 1 do
+var i;
+begin
+    enable;
+    fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
 end;
