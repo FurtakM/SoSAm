@@ -1,0 +1,33 @@
+Every 0$5 trigger FilterAllUnits([[f_side, 8], [f_control, 2]]) > 0 and FilterAllUnits([[f_side, 8], [f_weapon, 31]]) = 0 do 
+var i;
+begin
+    enable;
+
+    uc_side = 8;
+    uc_nation = 2;
+
+    vc_engine = 3;
+    vc_control = 1;
+    vc_weapon = 31;
+    vc_chassis = 14;
+
+    arControlTower = CreateVehicle;
+    PlaceUnitArea(arControlTower, [ArabianSpawn1, ArabianSpawn2][Rand(1, 2)], false);
+
+    hc_name = '';
+    hc_gallery = '';
+    PrepareHuman(false, 3, 10);
+
+    arDriver = CreateHuman;
+    PlaceHumanInUnit(arDriver, arControlTower);
+
+    for i in FilterAllUnits([[f_side, 8], [f_control, 2], [f_not, [f_linked]]]) do
+        ComLinkTo(i, arDriver);
+end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_not, [f_weapon, 31]]]) = 0 do
+begin
+    enable;
+    RemoveUnit(arControlTower);
+    RemoveUnit(arDriver);
+end;

@@ -49,8 +49,10 @@ begin
 end;
 
 // Build Siberite lab + power
-Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full], [f_and, [f_btype, b_lab_siberium], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 do 
+Every 0$1 trigger eventVar1 = 1 do
 begin
+
+    DialogueOn;
     DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-1', 'D3-Sci1-1');
     Say(Gary, 'D3-Gary-1');
     DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-2', 'D3-Sci1-2');
@@ -58,6 +60,7 @@ begin
     DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-3', 'D3-Sci1-3');
     Say(JMM, 'D3-JMM-3');
     DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]), 'D3-Sci1-4', 'D3-Sci1-4');
+    DialogueOff;
 
     SetTech(12, 1, state_enabled);
     SetTech(32, 1, state_enabled);
@@ -65,7 +68,7 @@ begin
 
     ChangeMissionObjectives('M2');
 
-    wait(3$0);
+    wait(5$0);
     if IsOK(Simms) then
     begin
         DialogueOn;
@@ -75,19 +78,22 @@ begin
         Say(Denis, 'D3a-Sci1-2');
         Say(Simms, 'D3a-Sim-3');
         Say(Denis, 'D3a-Sci1-3');
-        Say(Simms, 'D3a-Sim-4');
+        if IsOK(Joan) then Say(Simms, 'D3a-Sim-4')
+        else Say(Simms, 'D3a-Sim-4a');
         Say(Denis, 'D3a-Sci1-4');
         Say(Simms, 'D3a-Sim-5');
         Say(Denis, 'D3a-Sci1-5');
         Say(Simms, 'D3a-Sim-6');
         DialogueOff;
     end;
-
-    wait(2$0);
+ 
+    wait(3$0);
+    DialogueOn;
     DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-1', 'D5-Ar1-1');
     Say(Dietrich, 'D5-Diet-1');
     DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-2', 'D5-Ar1-2');
     Say(Dietrich, 'D5-Diet-2');
+    DialogueOff;
 
 end;
 
@@ -125,25 +131,132 @@ begin
 end;
 
 // Dialog about Arabians and trait
-Every 0$30 trigger GetTech(54, 1) = state_researched do
+Every 0$30 trigger GetTech(54, 1) = state_researched or GetTech(21, 1) = state_researched or GetTech(22, 1) = state_researched do
+var i;
 begin
     DialogueOn;
-    Say(JMM, ' D6-JMM-1');
+    Say(JMM,  'D6-JMM-1');
     Say(Denis, 'D6-Sci1-1');
-    Say(JMM, ' D6-JMM-2');
+    Say(JMM, 'D6-JMM-2');
     Say(Denis, 'D6-Sci1-2');
-    Say(JMM, ' D6-JMM-3');
+    Say(JMM, 'D6-JMM-3');
     Say(Denis, 'D6-Sci1-3');
-    Say(JMM, ' D6-JMM-4');
+    Say(JMM, 'D6-JMM-4');
     DialogueOff;
 
-    wait([2$0, 2$30, 3$0, 3$30, 4$0, 4$30][Rand(1, 6)]);
+    wait([8$0, 8$30, 9$0, 9$30, 10$0, 10$30][Rand(1, 6)]);
 
-    //ArabianTrait;
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_class, 1], [f_sex, 1]] diff [JMM]), 'D8-Sol1-1', 'D8-Sol1-1');
+    for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComExitBuilding(i);
+    wait(0$1);
+    CenterOnXY(76, 19);
+    DialogueOn;
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D8-Sol1-1', 'D8-Sol1-1');
     Say(DeltaDoctor, 'D8-Sci1-1');
     Say(JMM, 'D8-JMM-1');
+    DialogueOff;
+    ArabianTrait;
     wait(0$30);
     Say(Gary, 'D8a-Gary-1');
-
+    wait(0$5);
+    If IsOK(Khatam) then
+    begin
+        SetSide(Khatam, 8);
+        ComExitBuilding(Khatam);
+        wait(0$1);
+        ComExitVehicle(Khatam);
+        wait(0$1);
+        ComMoveToArea(Khatam, ArabianSpawn2);
+        DialogueOn;
+        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-1', 'D8b-FSol1-1');
+        Say(Khatam, 'D8b-Khat-1');
+        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-2', 'D8b-FSol1-2');
+        Say(Khatam, 'D8b-Khat-2');
+        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-3', 'D8b-FSol1-3');
+        Say(Khatam, 'D8b-Khat-4');
+        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-4', 'D8b-FSol1-4');
+        DialogueOff;
+    end;
 end;
+
+Export function ArabianTrait;
+var i;
+begin
+    ChangeSideFog(2, 2);
+    SetAttitude(1, 2, att_enemy, true);
+    SetAttitude(3, 2, att_friend, true);
+    for i in FilterAllUnits([[f_side, 2], [f_type, unit_human]]) do
+    begin
+        ComExitBuilding(i);
+        wait(0$1);
+        AddComAgressiveMove(i, 77, 10);
+        AddComAgressiveMove(i, 82, 5);
+        AddComAgressiveMove(i, 95, 12);
+        AddComAgressiveMove(i, 102, 11);
+        AddComAgressiveMove(i, 116, 15);
+        AddComAgressiveMove(i, 140, 25);
+        AddComAgressiveMove(i, 160, 56);
+        AddComAgressiveMove(i, 189, 79);
+    end; 
+    arabianAttackersAI = 1;
+end;
+
+// Escape Arabian traitors
+Every 0$1 do
+var i;
+begin
+    enable;
+    for i in FilterUnitsInArea(ArabianSpawn2, [f_side, 2]) do
+    begin
+        RemoveUnit(i);
+        arabianEscape = 1;
+        SaveVariable(1, '10_ScientistsEscape_1');
+    end; 
+    if IsInArea(Khatam, ArabianSpawn2) then RemoveUnit(Khatam);
+    if IsInArea(Dietrich, ArabianSpawn2) then SaveVariable(1, '10_GensherEscape_1');
+end;
+
+// Spawn Cornell
+Every 6$30 trigger joinEpsilon = 1 do PrepareCornell;
+//LoadVariable('02_mikhailStatus_1', 0) = 1 < later ;D , kaj 9 misia?
+
+// Cornell dialog 1
+Every 0$1 trigger See(1, Cornell) do 
+begin
+    InGameOn;
+    CenterNowOnUnits(Cornell);
+    Say(Cornell, 'D7-Corn-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM, Joan]), 'D7-Sol1-1', 'D7-FSol1-1');
+    CenterNowOnUnits(Cornell);
+    Say(Cornell, 'D7-Corn-2');
+    Say(JMM, 'D7-JMM-2');
+    CenterNowOnUnits(Cornell);
+    Say(Cornell, 'D7-Corn-3');
+    SetLives(Cornell, 250);
+    SetSide(Cornell, 1);
+    wait(0$1);
+    Say(JMM, 'D7-JMM-3');
+    InGameOff;
+end;
+
+// Cornell dialog 2
+Every 0$15 trigger GetSide(Cornell) = 1 and GetLives(Cornell) > 251 do
+begin
+    DialogueOn;
+    Say(JMM, 'D7a-JMM-1');
+    Say(Cornell, 'D7a-Corn-1');
+    Say(JMM, 'D7a-JMM-2');
+    Say(Cornell, 'D7a-Corn-2');
+    Say(JMM, 'D7a-JMM-3');
+    Say(Cornell, 'D7a-Corn-3');
+    Say(JMM, 'D7a-JMM-4');
+    Say(Cornell, 'D7a-Corn-4');
+    Say(JMM, 'D7a-JMM-5');
+    Say(Cornell, 'D7a-Corn-5');
+    Say(JMM, 'D7a-JMM-6');
+    Say(Cornell, 'D7a-Corn-6');
+    Say(JMM, 'D7a-JMM-7');
+    Say(Cornell, 'D7a-Corn-7');
+    Say(JMM, 'D7a-JMM-8');
+    DialogueOff;
+end;
+

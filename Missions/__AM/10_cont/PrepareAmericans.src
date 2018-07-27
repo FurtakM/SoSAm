@@ -9,6 +9,8 @@ begin
     Bobby = PrepareUnit('Bobby', false);
     Lisa = PrepareUnit('Lisa', false);
 
+    Powell = PrepareUnit('Powell', false);
+
     PlaceHumanInUnit(JMM, playerVehs[1]);
     PlaceHumanInUnit(Gary, playerVehs[2]);
     PlaceHumanInUnit(Cyrus, playerVehs[3]);
@@ -17,10 +19,11 @@ begin
 end;
 
 Export function PrepareVehicles;
-var i, veh, cargoAmount, rnd, rest;
+var i, veh, rnd, cargoAmmount, rest;
 begin
     uc_side = 1;
     uc_nation = 1;
+    rest = 0;
 
     for i := 1 to 5 do
     begin
@@ -36,8 +39,18 @@ begin
 
         if vc_weapon = 12 then
         begin
-            AddCargo(veh, 1, 50);
-            AddCargo(veh, 3, 50);
+            rnd = Rand(1, 10) * 10;
+            rest = 100 - rest - rnd;
+            AddCargo(veh, [1, 3][Rand(1,2)], rnd);
+            cargoAmmount = rnd;
+
+            if rnd = 100 then exit;
+            repeat
+                rest = 100 - rest - rnd;
+                rnd = Rand(1, rest/10) * 10;
+                AddCargo(veh, [1, 3][Rand(1,2)], rnd);
+            until rest = 0;
+            AddCargo(veh, [1, 3][Rand(1,2)], rnd);
         end; 
             
     end;
@@ -87,4 +100,16 @@ begin
 
     AmScout = CreateHuman;
 
+end;
+
+Export function PrepareCornell;
+begin
+    uc_side = 4;
+    uc_nation = 1;
+
+    //Cornell = CreateCharacter('03_Cornel');
+    Cornell = PrepareUnit('Cornell', false);
+    PlaceUnitArea(Cornell, CornellSpawn, false);
+    If IsInUnit(JMM) then ComMoveXY(Cornell, GetX(IsInUnit(JMM)), GetY(IsInUnit(JMM)))
+    else ComMoveXY(Cornell, GetX(JMM), GetY(JMM));
 end;

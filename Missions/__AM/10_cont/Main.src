@@ -1,6 +1,20 @@
+{
+    Map scripts : Nefarem
+    Status: 99%
 
-Export JMM, Gary, Cyrus, Bobby, Lisa; // Heroes with JMM
+    Global Variables:
+    10_GensherEscape_1 = 0 - won't arrive with support in next mission
+    10_GensherEscape_1 = 1 - will arrive with support in next mission
+
+    10_ScientistsEscape_1 = 0 - without new technologies for enemy in next mission
+    10_ScientistsEscape_1 = 1 - new technologies for enemy in next mission
+}
+
+Export JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary; // Heroes with JMM
 Export Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, AmScout; // Heroes from ALpha
+Export Cornell; // Other Am heroes
+Export Powell; // Am commander
+Export Tsaritsyn; // Ru commander
 Export Dietrich; // Ar commander
 Export playerVehs;
 Export joinEpsilon;
@@ -9,8 +23,17 @@ Export ruDepot, ruLab1, ruLab2, ruArm1, ruArm2, ruFab;
 Export ruSolMinLevel, ruSolMaxLevel;
 Export ruBaseReady, russianAI;
 Export activateRUAI;
+Export ruPossition;
+Export ruDestroyedBuildings;
 
 Export arDepot, arLab, arArm;
+Export arabianAttackersAI;
+Export arabianEscape;
+
+Export mission_prefix, mission_prefix_prev;
+
+Export eventVar1, eventVar2;
+Export debugMode;
 
 Starting
 begin
@@ -23,6 +46,19 @@ begin
     ruBaseReady = 0;
     russianAI = 0;
     activateRUAI = 0;
+    ruPossition = 0; // 1 - west 2 - middle 3 - east
+    ruDestroyedBuildings = [];
+
+    arabianEscape = 0; // 0 - killed, 1 - escaped
+    arabianAttackersAI = 0; // 0 - off, 1 - on
+
+    eventVar1 = 0; // block event
+    eventVar2 = 0;
+
+    mission_prefix := '10_';
+    mission_prefix_prev := '09c_';
+
+    debugMode = 1; // 0 - players, 1 - developers
 
     PrepareDifficulty;
     PrepareVehicles;
@@ -37,4 +73,16 @@ begin
     TameApemans;
 
     SaveForQuickRestart;
+
+end;
+
+Every 0$1 trigger debugMode = 1 do
+var i;
+begin
+    enable;
+    fogoff(true);
+   // for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
 end;
