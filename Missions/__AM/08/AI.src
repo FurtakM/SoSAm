@@ -15,6 +15,13 @@ begin
     if SikorskyArrive = 1 then RepairVehicle(3, SikorskyRepairArea, 53, 59, 3);
 end;
 
+Every 0$1 trigger russianAI = 1 do
+var i;
+begin
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_building], [f_btype, b_bunker], [f_not, [f_or, [f_bweapon, 43], [f_bweapon, 44], [f_bweapon, 46]]]]) do PlaceWeaponTurret(i, [43, 44, 46][Rand(1,3)]);
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_building], [f_btype, b_turret], [f_not, [f_or, [f_bweapon, 43], [f_bweapon, 44], [f_bweapon, 46]]]]) do PlaceWeaponTurret(i, [43, 44, 46][Rand(1,3)]);
+end;
+
 Every 0$1 trigger SikorskyAI = 1 do 
 begin
     enable;
