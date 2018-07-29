@@ -119,7 +119,8 @@ ComExitBuilding(russian_troops_2);
 AddComAgressiveMove(russian_troops_2, GetX(un), GetY(un));
 End;
 
-Every 0$01 trigger GetLives(russian_patrol_tanks[1]) < 999 or GetLives(russian_patrol_tanks[2]) < 999 do
+Every 0$01 trigger (GetLives(russian_patrol_tanks[1]) < 999 or GetLives(russian_patrol_tanks[2]) < 999)
+               and See(3, JMM) do
 begin
 active_road_patrol := false;
 ComAttackUnit(russian_patrol_tanks, JMM);

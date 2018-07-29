@@ -1,8 +1,8 @@
 // Prepare base
-Export JMM, Gladstone, Frank, Lisa, Cyrus, Bobby, Donaldson, Brown, Houten, Khatam, Powell;
+Export JMM, Gladstone, Frank, Lisa, Joan, Cyrus, Bobby, Donaldson, Brown, Houten, Khatam, Powell;
 
 Export Function PrepareAmerican;
-var others, veh, team, dep, bar, lab, fac, bun, filter, i, j;
+var team, veh, dep, bar, lab, fac, bun, filter, i, j;
 begin
 PrepareBase;
 
@@ -13,6 +13,11 @@ team := [];
 
 
 JMM := PrepareUnit('JMM', (not debug));
+
+Joan := PrepareUnit('Joan', (not debug));
+
+if Joan then
+   team := team ^ Joan;
 
 Donaldson := PrepareUnit('Donaldson', (not debug));
 
@@ -45,19 +50,19 @@ Lisa := PrepareUnit('Lisa', (not debug));
 if Lisa then
    team := team ^ Lisa;
 
-team := team ^ others;
+team := team ^ CreateCharacterSet('08_other_survivors');
 
 // place units in base
-dep := FilterAllUnits([f_btype, b_depot]);
-bar := FilterAllUnits([f_btype, b_armoury]);
-lab := FilterAllUnits([f_or, [f_btype, b_lab_half], [f_btype, b_lab]]);
+dep := FilterAllUnits([f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
+bar := FilterAllUnits([f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
+lab := FilterAllUnits([f_or, [f_btype, b_lab_full], [f_btype, b_lab_half], [f_btype, b_lab]]);
 fac := FilterAllUnits([f_btype, b_factory]);
 bun := FilterAllUnits([f_or, [f_btype, b_bunker], [f_btype, b_breastwork]]);
 
-SetBName(dep, 'Gamma');
+SetBName(dep[1], 'Gamma');
 
-SetResourceType(GetBase(dep), mat_oil, 10000);
-SetResourceType(GetBase(dep), mat_cans, 10000);
+SetResourceType(GetBase(dep[1]), mat_oil, 10000);
+SetResourceType(GetBase(dep[1]), mat_cans, 10000);
 
 if dep then
    begin
@@ -153,6 +158,10 @@ if lab then
    if UnitsInside(lab[1]) then
       SetSpecResearch(lab[1], 10, false);
 
+
+veh := PrepareTank(1, 1, us_medium_tracked, engine_solar, control_manual, us_double_gun, 100);
+SetDir(veh, rand(0,5));
+PlaceUnitXYR(veh, GetX(dep[1]), GetY(dep[1]), 15, false);
 
 uc_side := 4;
 Powell := PrepareUnit('Powell', false);

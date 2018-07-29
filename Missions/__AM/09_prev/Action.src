@@ -94,6 +94,14 @@ ComMoveXY(tmp, 109, 124);
 wait(0$2);
 
 SaveCharacters(tmp diff [Gary, Bobby, Cyrus], '09_prev_squad');
+
+tmp := [];
+
+for i in FilterAllUnits([f_type, unit_building]) do
+    tmp := tmp ^ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetLives(i)];
+
+SaveVariable(tmp diff 0, '09_ovsyenko_base');
+
 ChangeMap(1, '__am/09');
 
 InGameOff;
