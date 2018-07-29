@@ -28,6 +28,24 @@ begin
    AddComConstruct(rufabsupp, 22, 1, 1, ru_cargo_bay);
 end;
 
+Every 1$0 trigger IsOK(rufabsupp) and GetSide(rufabsupp) = 3 and IsOk(rudepo) and GetSide(rudepo) = 3 and NOT UnitsInside(rufabsupp) do
+var i;
+begin
+
+for i = 1 to 6 do
+begin
+uc_side = 3;
+uc_nation = 3;
+
+hc_gallery := '';
+hc_name := '';
+
+PrepareMechanic(false, rand(RuSolMinLevel, RuSolMaxLevel));
+PlaceHumanInUnit(CreateHuman, rufabsupp);
+end;
+
+end;
+
 // Tame apemans
 Every 2$0 do 
 var i, j;

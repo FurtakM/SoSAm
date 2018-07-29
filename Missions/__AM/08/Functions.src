@@ -580,20 +580,7 @@ begin
 
                         end;
 
-                                        
-                        for i in soldiersOK_list do
-                        begin
-                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                begin
-                                ComAttackUnit(i, target1);
-                                end else
-                                begin
-                                ComAttackUnit(i, target2);
-                        end;
-               end; until soldiersOK_list = [];
+                        until soldiersOK_list = [];
         end;
 
 
@@ -642,20 +629,7 @@ begin
 
                         end;
 
-                                        
-                        for i in soldiersOK_list do
-                        begin
-                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                begin
-                                ComAttackUnit(i, target1);
-                                end else
-                                begin
-                                ComAttackUnit(i, target2);
-                        end;
-               end; until soldiersOK_list = [];
+                      until soldiersOK_list = [];
         end;
 
         if strategy = 3 then
@@ -705,20 +679,7 @@ begin
 
                         end;
 
-                                        
-                        for i in soldiersOK_list do
-                        begin
-                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                begin
-                                ComAttackUnit(i, target1);
-                                end else
-                                begin
-                                ComAttackUnit(i, target2);
-                        end;
-               end; until soldiersOK_list = [];
+               until soldiersOK_list = [];
         end;
 
 END;
@@ -911,7 +872,7 @@ begin
             end;
         end;
       end;
-    until (FilterAllUnits([[f_side, side], [f_type, unit_vehicle]])) = 0;
+    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) = 0;
 
 
 END;
