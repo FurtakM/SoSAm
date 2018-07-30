@@ -83,6 +83,7 @@ Export function PrepareVehicles;
 var i, j, veh, vehicles;
 begin
     vehicles = LoadVariable('06_VehiclesIn06_1', []);
+    resources = LoadVariable('06_ResourcesInCargo06_1', []);
 
     uc_side = 1;
 
@@ -102,8 +103,15 @@ begin
             SetDir(veh, 3);
             PlaceUnitArea(veh, PlayerSpawn, false);
 
-            if vc_weapon = us_cargo_bay then AddCargo(veh, vehicles[i][6], vehicles[i][7]);
-
+            if vc_weapon = us_cargo_bay then
+            begin
+                if resources > 0 then
+                begin
+                   AddCargo(veh, 1, resources[i][1]);
+                   AddCargo(veh, 2, resources[i][2]);
+                   AddCargo(veh, 3, resources[i][3]);
+                end;
+            end;
         end;
     end;
 

@@ -60,7 +60,7 @@ begin
         SaveVariable(1, 'FrankIn06');
     end
      else
-      if IsOk(Lisa) then
+      if IsOk(Frank) then
          SaveVariable(1, 'FrankStayInDelta');
 
     if Brown in selectedPeople then
@@ -69,7 +69,7 @@ begin
         SaveVariable(1, 'BrownIn06');
     end
      else
-      if IsOk(Lisa) then
+      if IsOk(Brown) then
          SaveVariable(1, 'BrownStayInDelta');
 
     if Donaldson in selectedPeople then
@@ -78,7 +78,7 @@ begin
         SaveVariable(1, 'DonaldsonIn06');
     end
      else
-      if IsOk(Lisa) then
+      if IsOk(Donaldson) then
          SaveVariable(1, 'DonaldsonStayInDelta');
 
     if Gladstone in selectedPeople then
@@ -87,7 +87,7 @@ begin
         SaveVariable(1, 'GladstoneIn06');
     end
      else
-      if IsOk(Lisa) then
+      if IsOk(Gladstone) then
          SaveVariable(1, 'GladstoneStayInDelta');
 
     SetSide(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 4);
@@ -102,3 +102,9 @@ begin
     SaveCharacters(FilterAllUnits([[f_side, 4], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff randomsDelta^DeltaDoctor, 'OthersStayInDelta');
 
 end;
+
+Export Function GetMultiCargo(cargo_bay);
+var i;
+begin
+result := [GetCargo(cargo_bay, mat_cans), GetCargo(cargo_bay, mat_oil),GetCargo(cargo_bay, mat_siberit)];
+End;
