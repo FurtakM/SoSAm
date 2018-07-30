@@ -18,7 +18,36 @@ begin
     PlaceUnitArea(Cyrus, PlayerSpawn, false);
     PlaceUnitArea(Denis, PlayerSpawn, false);
     PlaceUnitArea(Frank, PlayerSpawn, false);
-    PlaceUnitArea(Cornell, PlayerSpawn, false);
+    PlaceHumanInUnit(Cornell, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+end;
+
+Export function PrepareVehicles;
+var veh;
+begin
+     uc_side = 1;
+     uc_nation = 1;
+
+    vc_chassis = us_medium_tracked;
+    vc_engine = 3;
+    vc_control = 3;
+    vc_weapon = us_gatling_gun;
+    veh = CreateVehicle;
+    PlaceUnitArea(veh, PlayerSpawn, false);
+
+    vc_weapon = us_double_gun;
+    vc_control = 1;
+    veh = CreateVehicle;
+    PlaceUnitArea(veh, PlayerSpawn, false);
+
+    vc_weapon = us_light_gun;
+    vc_control = 3;
+    vc_chassis = us_medium_wheeled;
+    veh = CreateVehicle;
+    PlaceUnitArea(veh, PlayerSpawn, false);
+
+    vc_weapon = us_gatling_gun;
+    veh = CreateVehicle;
+    PlaceUnitArea(veh, PlayerSpawn, false);
 end;
 
 Export function PowellSupport1;

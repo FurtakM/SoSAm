@@ -7,6 +7,7 @@ functions for example: AI, Dialogs, PrepareUnit etc.
 }
 
 Export destroyedBuildings;
+Export cargoTest;
 
 Export JMM;
 Starting
@@ -17,8 +18,18 @@ begin
     RandomizeAll;
 
     destroyedBuildings = []; // destroyed buildings list
+    cargoTest = [];
 end;
 
 Every 0$1 do
 ComEnterUnit(eng1, ee1);
+
+Every 0$1 do
+var i;
+begin
+cargoTest = [];
+for i in FilterAllUnits([[f_side, 3], [f_weapon, us_cargo_bay]]) do cargoTest = cargoTest ^ GetMultiCargo(i);
+display_strings = [cargoTest];
+enable;
+end;
 
