@@ -1,0 +1,29 @@
+Export function FinishMission;
+begin
+
+    if fastEnd = 1 then
+    begin
+        AddMedal('fastend', -1);
+        AddMedal('fastend', -1);
+        AddMedal('fastend', -1);
+    end;
+
+    if IsOk(Joan) then 
+        AddMedal('protect', 1)
+    else
+        AddMedal('protect', -1);
+
+    if amLaserCounter >= 2 then 
+        AddMedal('double', 1)
+    else
+        AddMedal('double', -1);
+
+    if FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 then 
+        AddMedal('base', 1)
+    else
+        AddMedal('base', -1);
+
+    GiveMedals('Eliminate');
+
+    YouWin;
+end;

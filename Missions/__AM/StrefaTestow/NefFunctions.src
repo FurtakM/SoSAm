@@ -444,3 +444,59 @@ begin
              end;
 
 End;
+
+Export function RepairBuilding(side, building, area);
+var buildings_list, i,engineerOkInside, engineerOkOutside, j;
+begin
+
+  engineerOkInside = UnitsInside(building);
+  engineerOkOutside = FilterUnitsInArea(area, [[f_side, side], [f_class, 2], [f_lives, 1000]]);
+  buildings_list = FilterUnitsInArea(area, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+  if not buildings_list and not engineerOkOutside and not destroyedBuildings then exit;
+
+  if buildings_list > 0 and engineerOkInside > 0 then
+      for i in engineerOkInside do ComExitBuilding(i);
+
+  if engineerOkOutside > 0 then
+  begin
+
+    for i in engineerOkOutside do
+      for j in buildings_list do
+          ComRepairBuilding(i, j[1]);
+
+  end;
+
+  if buildings_list = 0 and engineerOkOutside > 0 then
+      for i in engineerOkOutside do ComEnterUnit(i, building);
+END;
+
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal;
+begin
+
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 251]]);
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_ok]]);
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+  unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_lives, 1000]]]);
+
+  if not damageUnits and not sci_listOutside and not unitsToHeal then exit;
+
+  if damageUnits > 0 and sci_list > 0 then
+    for i in damageUnits do ComMoveToArea(i, healArea);
+
+  if unitsToHeal > 0 and sci_list > 0 then
+  begin
+    for i in sci_list do
+    begin
+
+      ComExitBuilding(i);
+
+      for j in unitsToHeal do AddComHeal(i, j);
+    end;
+  end;
+
+  if damageUnits = 0 and unitsToHeal = 0 and sci_listOutside > 0 then
+      for i in sci_listOutside do ComEnterUnit(i, build);
+
+END;
