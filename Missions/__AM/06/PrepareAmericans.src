@@ -124,7 +124,7 @@ begin
 end;
 
 Export function PrepareRandoms;
-var i, un, tmp;
+var i, un, tmp, filter;
 begin
 
     uc_side = 1;
@@ -132,16 +132,30 @@ begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_btype, b_depot]]);
 
-    if FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis] then
-       deltaDoctor := (FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis])[1];
+    if FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis, Brown] then
+       deltaDoctor := (FilterAllunits([[[f_side, 1], [f_class, 4], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis, Brown])[1]
+      else
+       begin
+       filter := FilterAllunits([[[f_side, 1], [f_sex, sex_male]]]) diff [JMM, Cyrus, Bobby, Frank, Gladstone, Denis, Brown];
 
-    for i = 1 to 6 + Difficulty do 
+       if filter then
+          for i in filter do
+              if GetSkill(i, 4) >= 4 then
+                 begin
+                 deltaDoctor := i;
+                 SetClass(deltaDoctor, 4);
+                 break;
+                 end;
+       end;
+
+    for i = 1 to 6 do 
     begin
         hc_gallery = '';
         hc_name = '';
         PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], rand(3, 5) - Difficulty);
 
         un = CreateHuman;
+        randomsDelta := randomsDelta ^ un;
         PlaceUnitXYR(un, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
     end;
 

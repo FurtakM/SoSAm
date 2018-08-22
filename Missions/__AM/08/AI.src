@@ -1,24 +1,31 @@
 Every 0$1 do 
 begin
     enable;
-    EnterBunkerOrBarrack(3, RussianBase);
+    if escapeAvalaible = 0 then EnterBunkerOrBarrack(3, RussianBase);
+    if escapeAvalaible = 0 then DefenseBase(1, RussianBaseTerritory);
 
     if russianAI = 1 then
     begin
         RepairBuilding(3, ruDepot);
         HealUnitInBase(3, RussianHealArea, RussianBase, ruLab);
-        RebuildBuildings(3, ruDestroyBuilds);
-        RepairVehicle(3, RussianRepairArea, 93, 93, 1);
+        RebuildBuildings(3, ruDestroyedBuildings);
         RepairVehicle(6, RussianRepairArea, 93, 93, 1);
     end;
 
     if SikorskyArrive = 1 then RepairVehicle(3, SikorskyRepairArea, 53, 59, 3);
 end;
 
-Every 5$0 trigger russianAI = 1 and IsOk(ruFab) and GetSide(ruFab) = 3 and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle]]) = 0 do
+Every 0$1 trigger SikorskyAI = 1 do 
 begin
     enable;
-    if Difficulty = 1 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(2, 6), 1, [43, 43, 43, 44, 46], 1, 3, 24);
-    if Difficulty = 2 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(3, 6), 1, [43, 44, 44, 44, 46], 1, 3, 24);
-    if Difficulty = 3 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(4, 6), 1, [44, 46], 1, 3, 24);
+    RepairVehicle(4, SikorskyRepairArea, 93, 93, 3);
+    SikorskyHealUnits(4, SikorskyHealArea, 3);
+end;
+
+Every 5$0 trigger russianAI = 1 and IsOk(ruFab) and GetSide(ruFab) = 3 and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_control, control_computer]]) = 0 do
+begin
+    enable;
+    if Difficulty = 1 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(5, 8), 1, [43, 44, 46], 1, 3, 24);
+    if Difficulty = 2 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(6, 8), 1, [44, 44, 46], 1, 3, 24);
+    if Difficulty = 3 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(7, 8), 1, [44, 46], 1, 3, 24);
 end;

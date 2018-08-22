@@ -1,1 +1,363 @@
-//
+// Start
+Every 1 do
+var i;
+begin
+    CenterNowOnUnits(JMM);
+    Say(JMM, 'D1-JMM-1');
+    Say(Donaldson, 'D1-Don-1');
+    Say(JMM, 'D1-JMM-2');
+    Say(Donaldson, 'D1-Don-2');
+
+    for i in FilterAllUnits([f_side, 1]) do
+    begin
+        ComMoveXY(i, 129, 89);
+        AddComMoveXY(i, 114, 83);
+        AddComMoveXY(i, 99, 82);
+    end;
+end;
+
+// Near river
+Every 0$1 trigger SeeXY(1, 93, 75) do
+var i;
+begin
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D1-Sol1-2', '');
+    Say(JMM, 'D1-JMM-3');
+    ChangeMissionObjectives('M1');
+
+    for i in FilterAllUnits([f_side, 1]) do
+        ComMoveXY(i, 87, 68);
+
+end;
+
+// Bazooker attack ambush
+Every 0$1 do 
+var i, bazook_list, your_units, dec;
+begin
+    bazook_list = FilterUnitsInArea(RussianBazookersSpawn, [[f_side, 3], [f_class, 9]]);
+    your_units = FilterAllUnits([[f_side, 1]]);
+    enable;
+
+    for i in your_units do
+    begin
+        if See(3, i) then
+        begin
+            Disable;
+            ComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            AddComTimeShift(bazook_list, 87, 68);
+            Say(JMM, 'D1a-JMM-1');
+            Say(Donaldson, 'D1a-Don-1');
+            ComMoveXY(i, 87, 68);
+            Say(JMM, 'D1a-JMM-2');
+            wait(0$10);
+            Say(Donaldson, 'D1b-Don-1');
+            Say(JMM, 'D1b-JMM-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D1b-Sol1-1', '');
+            Say(Donaldson, 'D1b-Don-2');
+            Say(JMM, 'D1b-JMM-2');
+
+            dec = ShowQuery1;
+
+            if dec = 1 then
+            begin
+                Say(JMM, 'D2-JMM-1');
+                SayRadio(Powell, 'D2-Pow-1');
+                Say(JMM, 'D2a-JMM-1');
+                SayRadio(Powell, 'D2a-Pow-1');
+                Say(JMM, 'D2a-JMM-2');
+                SayRadio(Powell, 'D2a-Pow-2');
+                Say(JMM, 'D2a-JMM-3');
+                SayRadio(Powell, 'D2a-Pow-3');
+                secondPass = 2;
+            end;
+
+            if dec = 2 then
+            begin
+                Say(JMM, 'D2-JMM-1');
+                SayRadio(Powell, 'D2-Pow-1');
+                Say(JMM, 'D2b-JMM-1');
+                SayRadio(Powell, 'D2b-Pow-1');
+                Say(JMM, 'D2c-JMM-1');
+                SayRadio(Powell, 'D2c-Pow-1');
+                Say(JMM, 'D2c-JMM-2');
+                secondPass = 2;
+            end;
+
+            if dec = 3 then secondPass = 1;
+
+            InGameOff;
+
+                
+        end;
+    end;
+
+end;
+
+// Powell's support
+Every 1$0 trigger secondPass = 2 do
+begin
+    PowellSupport1;
+    Say(JMM, 'DC1-JMM-1');
+    SayRadio(Powell, 'DC1-Pow-1');
+    wait(3$0);
+    PowellSupport2;
+    Say(JMM, 'DC2-JMM-1');
+    SayRadio(Powell, 'DC2-Pow-1');
+    wait(6$0);
+    PowellSupport3;
+    SayRadio(Powell, 'DC3-Pow-1');
+    Say(JMM, 'DC3-JMM-1');
+end;
+
+// Kurt
+Every 4$30 trigger secondPass = 2 do 
+var dec1, dec2;
+begin
+    PrepareKurt;
+
+    Say(Kurt, 'D3-Kurt-1');
+    Say(JMM, 'D3-JMM-1');
+    Say(Kurt, 'D3-Kurt-2');
+    Say(JMM, 'D3-JMM-2');
+    Say(Kurt, 'D3-Kurt-4');
+    Say(JMM, 'D3-JMM-4');
+    Say(Kurt, 'D3-Kurt-5');
+    Say(Kurt, 'D3-Kurt-5a');
+    Say(Kurt, 'D3-Kurt-5b');
+    
+    dec1 = ShowQuery4;
+
+    if dec1 = 1 then
+    begin
+        Say(JMM, 'D3Ka-JMM-1');
+        Say(Kurt, 'D3Ka-Kurt-1');
+        warWithLegion = 1;
+    end;
+
+    if dec1 = 2 then
+    begin
+        Say(JMM, 'D3Kb-JMM-1');
+        Say(Kurt, 'D3Kb-Kurt-1');
+    end;
+
+    if dec1 = 3 then
+    begin
+        Say(JMM, 'D3Kc1-JMM-1');
+        Say(Kurt, 'D3Kc1-Kurt-1');
+        Say(JMM, 'D3Kc1-JMM-2');
+        Say(Kurt, 'D3Kc1-Kurt-2');
+        askSiberite = 1;
+        dec2 = ShowQuery7;
+        
+        if dec2 = 1 then
+        begin
+            Say(JMM, 'D4a-JMM-1');
+            Say(Kurt, 'D4b-Kurt-1');
+            warWithLegion = 1;
+        end; 
+
+        if dec2 = 2 then
+        begin
+            Say(JMM, 'D4b-JMM-1');
+            Say(Kurt, 'D4b-Kurt-1');
+            warWithLegion = 1;
+        end;
+
+        if dec2 = 3 then
+        begin
+            Say(JMM, 'D4c-JMM-1');
+            Say(Kurt, 'D4c-Kurt-1');
+            Say(JMM, 'D4c-JMM-2');
+            Say(Kurt, 'D4c-Kurt-2');
+            fakeInfo = 1;
+        end;
+
+    end;
+
+    if dec1 = 4 then
+    begin
+        Say(Kurt, 'D3Kd-JMM-1');
+        dec2 = ShowQuery8;
+
+        if dec2 = 1 then
+        begin
+            Say(JMM, 'D5Ka-JMM-1');
+            Say(Kurt, 'D5Ka-Kurt-1');
+            warWithLegion = 1;
+        end;   
+
+        if dec2 = 2 then
+        begin
+            Say(JMM, 'D3Ke-JMM-1');
+            Say(Kurt, 'D3Ke-Kurt-1');
+        end;
+    end;
+
+    RemoveUnit(Kurt);
+end;
+
+// Set side cargos
+Every 0$1 trigger IsPlaced(amCargo1) and not GetCargo(amCargo1, 3) do SetSide(amCargo1, 4);
+Every 0$1 trigger IsPlaced(amCargo2) and not GetCargo(amCargo2, 1) and not GetCargo(amCargo2, 3) do SetSide(amCargo2, 4);
+Every 0$1 trigger IsPlaced(amCargo2) and not GetCargo(amCargo3, 1) do SetSide(amCargo3, 4);
+Every 0$1 trigger IsPlaced(amCargo3) and not GetCargo(amCargo4, 2) do SetSide(amCargo4, 4);
+Every 0$1 trigger IsPlaced(amCargo4) and not GetCargo(amCargo5, 1) and not GetCargo(amCargo5, 2)  do SetSide(amCargo5, 4);
+Every 0$1 trigger IsPlaced(amCargo5) and not GetCargo(amCargo6, 1) do SetSide(amCargo6, 4);
+Every 0$1 trigger IsPlaced(amCargo6) and not GetCargo(amCargo6, 2) do SetSide(amCargo7, 4);
+
+// Remove cargo from map
+Every 0$1 do
+var i;
+begin
+    enable;
+    for i in FilterAllUnits([f_side, 4]) do
+    begin
+        ComMoveToArea(i, PlayerSpawn);
+        if IsInArea(i, PlayerSpawn) then RemoveUnit(i);
+    end;
+end;
+
+// Second query if you select option 3 in first query.
+Every 0$1 trigger secondPass = 1 do 
+var i, enemyVehs, dec;
+begin
+    enable;
+    enemyVehs = FilterUnitsInArea(HillArea1, [[f_side, 3], [f_type, unit_vehicle]]);
+
+    for i in enemyVehs do
+    begin
+        if See(1, i) then
+        begin
+            Disable; 
+            DialogueOn;
+            CenterNowOnUnits(i);
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'DT1-Sol1-1', 'DT1-FSol1-1');
+            dec = ShowQuery2;
+
+            if dec = 1 then
+            begin
+                Say(JMM, 'D2-JMM-1');
+                SayRadio(Powell, 'D2-Pow-1');
+                Say(JMM, 'D2a-JMM-1');
+                SayRadio(Powell, 'D2a-Pow-1');
+                Say(JMM, 'D2a-JMM-2');
+                SayRadio(Powell, 'D2a-Pow-2');
+                Say(JMM, 'D2a-JMM-3');
+                SayRadio(Powell, 'D2a-Pow-3');
+                secondPass = 2;
+            end;
+
+            if dec = 2 then
+            begin
+                Say(JMM, 'D2-JMM-1');
+                SayRadio(Powell, 'D2-Pow-1');
+                Say(JMM, 'D2b-JMM-1');
+                SayRadio(Powell, 'D2b-Pow-1');
+                Say(JMM, 'D2c-JMM-1');
+                SayRadio(Powell, 'D2c-Pow-1');
+                Say(JMM, 'D2c-JMM-2');
+                secondPass = 2;
+            end;
+            DialogueOff;     
+        end;
+    end;
+end;
+
+// First tep
+Every 0$1 do
+var i, vehicles;
+begin
+    vehicles = FilterUnitsInArea(OutsideArea1, [f_side, 3]);
+    enable;
+
+    for i in vehicles do
+    begin
+        if See(1, i) and vehicleTeleported = 1 then
+        begin
+            Disable;
+            DialogueOn;
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT1-Sol1-1', 'DT1-FSol1-1');
+            Say(JMM, 'DT1-JMM-1');
+            DialogueOff;
+        end;
+    end;
+
+end;
+
+// Dialog after destroy tanks
+Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
+begin
+    Say(JMM, 'DT1a-JMM-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT1a-Sol1-1', 'DT1a-FSol1-1');
+    Say(JMM, 'DT1a-JMM-2');
+end;
+
+// Second tp
+Every 0$1 do
+var i, vehicles;
+begin
+    vehicles = FilterUnitsInArea(OutsideArea1, [f_side, 3]);
+    enable;
+
+    for i in vehicles do
+    begin
+        if See(1, i) and vehicleTeleported = 2 then
+        begin
+            Disable;
+            DialogueOn;
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT2-Sol1-1', 'DT2-FSol1-1');
+            DialogueOff;
+        end;
+    end;
+
+end;
+
+// Dialog after destroy tanks
+Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
+begin
+    Say(JMM, 'DT2a-JMM-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT2a-Sol1-1', 'DT2a-FSol1-1');
+    Say(Donaldson, 'DT2a-Don-1');
+end;
+
+// See bridge
+Every 0$1 trigger SeeXY(1, 36, 55) do 
+begin
+    DialogueOn;
+    CenterOnXY(36, 55);
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM], 'D5-JMM-1', '');
+    If warWithLegion = 1 then Say(Donaldson, 'D5-Don-1');
+    DialogueOff;
+end;
+
+// See tp
+Every 0$1 trigger See(1, ruteleprt) do 
+begin
+    DialogueOn;
+    CenterNowOnUnits(ruteleprt);
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT3-Sol1-1', 'DT3-FSol1-1');
+    Say(JMM, 'DT3-JMM-1');
+    DialogueOff;
+end;
+
+// Destroy lab
+Every 0$1 trigger IsDying(ruheadlab) do 
+var i,j, vehs;
+begin
+    vehs = FilterUnitsInArea(RuEastBase, [[f_side, 3], [f_type, unit_vehicle], [f_empty]]);
+    DialogueOn;
+    Say(JMM, 'D6-JMM-1');
+    DialogueOff;
+
+    for i in vehs do
+    begin
+        for j in RuScientists do 
+        begin
+            AddComEnterUnit(j, i);
+            AddComMoveToArea([j, i], [EscapeArea1, EscapeArea2][Rand(1,2)]);
+        end;
+    end; 
+end;

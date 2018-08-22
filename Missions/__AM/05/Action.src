@@ -3,7 +3,6 @@ Export Function Action;
 var points, i, sol, team, all, commander, filter;
 begin
 PlaceSeeing(0, 0, 1, -32976);
-SetResourceVisibility(71, 5, 1);
 
 InGameOn;
 
@@ -218,38 +217,46 @@ save_group := CharacterSelection('1', 5, 5,
                                 [sel_dont_change_class, sel_not_changeable, commander],
                                 [class_soldier, class_mechanic, [class_engineer, 1], class_scientistic]);
 
-SaveCharacters(all diff [save_group, JMM, Gladstone], 'othersGamma');
-SaveCharacters(save_group diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, 0], 'othersDelta');
+SaveCharacters(JMM, mission_prefix&'JMM');
 
 if Lisa in save_group then
    begin
    SaveVariable(true, 'LisaInDelta');
+   SaveCharacters(Lisa, mission_prefix&'Lisa');
    end;
 
 if Bobby in save_group then
    begin
    SaveVariable(true, 'BobbyInDelta');
+   SaveCharacters(Bobby, mission_prefix&'Bobby');
    end;
 
 if Cyrus in save_group then
    begin
    SaveVariable(true, 'CyrusInDelta');
+   SaveCharacters(Cyrus, mission_prefix&'Cyrus');
    end;
 
 if Frank in save_group then
    begin
    SaveVariable(true, 'FrankInDelta');
+   SaveCharacters(Frank, mission_prefix&'Frank');
    end;
 
 if Brown in save_group then
    begin
    SaveVariable(true, 'BrownInDelta');
+   SaveCharacters(Brown, mission_prefix&'Brown');
    end;
 
 if Donaldson in save_group then
    begin
    SaveVariable(true, 'DonaldsonInDelta');
+   SaveCharacters(Donaldson, mission_prefix&'Donaldson');
    end;
+
+SaveCharacters(all diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, 0]^save_group, 'othersGamma');
+SaveCharacters(save_group diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, 0], 'othersDelta');
 
 Wait(3);
 

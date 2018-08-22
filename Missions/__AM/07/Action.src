@@ -1,6 +1,6 @@
 // Action module
 Export Function Action;
-var points, i, sol, team, all, commander, filter;
+var points, i, sol, team, filter;
 begin
 InGameOn;
 
@@ -8,272 +8,139 @@ CenterNowOnXY(33, 11);
            
 points := [ [29,21], [41,28], [52,26], [49,16] ];
 
-for i in points do
-    AddComMoveXY([JMM, Gladstone], i[1], i[2]);
+sol := (FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Brown, Cyrus, Bobby, Gladstone, Houten, Khatam])[1];
 
-AddComExitVehicle([JMM, Gladstone]);
+
+if sol then
+   begin
+   ComMoveXY(sol, 50, 18);
+   AddComTurnUnit(sol, Harisson);
+   end;
+
+for i in points do
+    AddComMoveXY(Harisson, i[1], i[2]);
+
+
+AddComExitVehicle(Harisson);
 
 repeat
- wait(0$01);
-until not IsInUnit(JMM) and not IsInUnit(Gladstone);
+ wait(3);
+until not IsInUnit(Harisson);
 
-ComTurnUnit(JMM, Gladstone);
-ComTurnUnit(Gladstone, JMM);
+Say(sol, 'D1-Sol1-1');
 
-sol := FilterAllUnits([f_sex, sex_male]) diff [JMM, Gladstone, Bobby, Cyrus, Frank, Brown];
+ComTurnUnit(Harisson, sol);
 
-if sol then
-   sol := sol[1];
+Say(Harisson, 'D1-Har-1');
 
-team := [];
+Wait(0$0.3);
 
-if sol then
-   team := team ^ sol;
+ComMoveXY(sol, 35, 21);
 
-if Lisa then
-   team := team ^ Lisa;
+ComExitBuilding(JMM);
+AddComMoveUnit(JMM, Harisson);
 
-if Donaldson then
-   team := team ^ Donaldson;
+ComTurnUnit(Harisson, JMM);
 
-if Brown then
-   team := team ^ Brown;
+repeat
+ wait(3);
+until GetDistUnits(JMM, Harisson) < 4;
 
-if Bobby then
-   team := team ^ Bobby;
-
-if Cyrus then
-   team := team ^ Cyrus;
-
-if Frank then
-   team := team ^ Frank;
-
-for i in [FilterUnitsInArea(gammaBaseArea, [[f_not, [f_inside]], [f_type, unit_human]]) diff [JMM, Gladstone]] do
-    team := team ^ i;
-
-if team then
-   begin
-   ComExitBuilding(team);
-   AddComMoveUnit(team, JMM);
-
-   repeat
-    wait(1);
-   until GetDistUnits(JMM, NearestUnitToUnit(team, JMM)) < 6;
-
-   ComTurnUnit(team, JMM);
-   end;
-
-if Lisa then
-   begin
-   ComTurnUnit(JMM, Lisa);
-   Say(Lisa, 'D1-Lisa-1');    
-   end;
-
-if sol then
-   begin
-   ComTurnUnit(JMM, sol);
-   Say(sol, 'D1-Sol1-1');    
-   end;
+ComTurnUnit(JMM, Harisson);
 
 Say(JMM, 'D1-JMM-1');
-Say(JMM, 'D1-JMM-1a');
-
-ComTurnUnit(JMM, Gladstone);
-ComTurnUnit(team, Gladstone);
-
-if Frank then
-   begin
-   Say(Frank, 'D1-Frank-1');
-   ComTurnUnit(JMM, Frank);
-   end;
-
-if Lisa then
-   begin
-   ComTurnUnit(JMM, Lisa);
-   Say(Lisa, 'D1-Lisa-2');    
-   end;
-
-if sol then
-   begin
-   ComTurnUnit(JMM, sol);
-   Say(sol, 'D1-Sol1-2');    
-   end;
-
-Say(Gladstone, 'D1-Glad-2');
-
-ComTurnUnit(team, JMM);
+Say(Harisson, 'D1-Har-2');
 Say(JMM, 'D1-JMM-2');
-
-ComTurnUnit(JMM, Gladstone);
-
-Say(Gladstone, 'D1-Glad-3');
+Say(Harisson, 'D1-Har-3');
 Say(JMM, 'D1-JMM-3');
-Say(Gladstone, 'D1-Glad-4');
-
-if Frank then
-   begin
-   ComTurnUnit(JMM, Frank);
-   Say(Frank, 'D1-Frank-4');
-   end;
-
-ComTurnUnit(JMM, Gladstone);
+Say(Harisson, 'D1-Har-4');
 Say(JMM, 'D1-JMM-4');
-
-if Lisa then
-   begin
-   Say(Lisa, 'D1-Lisa-4');
-
-   if Frank then
-      begin
-      ComTurnUnit(Frank, Lisa);
-      Say(Frank, 'D1-Frank-5');
-      Wait(3);
-      AddComTurnUnit(Frank, JMM);
-      end;
-
-   end;
-
-if sol then
-   Say(sol, 'D1-Sol1-5');
-
+Say(Harisson, 'D1-Har-5');
 Say(JMM, 'D1-JMM-5');
-Say(Gladstone, 'D1-Glad-5');
-
-if Frank then
-   Say(Frank, 'D1-Frank-6');
-
+Say(Harisson, 'D1-Har-6');
 Say(JMM, 'D1-JMM-6');
 
-if Brown and Donaldson then
-Case Query('QCommander') of
-1: donaldson_commander := true;
-2: brown_commander := true;
+EndMission;
+End;
+
+
+Export Function EndMission;
+var commander, i, all;
+begin
+case gamma_commander of
+     1: commander := Donaldson;
+     2: commander := Brown;
+     3: commander := Houten;
 end;
 
-if not Brown and Donaldson then
-   donaldson_commander := true;
+all := FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, commander];
 
-if Brown and not Donaldson then
-   brown_commander := true;
-
-if donaldson_commander then
-   begin
-   ComTurnUnit(JMM, Donaldson);
-   Say(JMM, 'D1a-JMM-1');
-
-   ComMoveUnit(Donaldson, JMM);
-   AddComTurnUnit(Donaldson, JMM);
-
-   Wait(3);
-
-   Say(Donaldson, 'D1a-Don-1');
-   Say(JMM, 'D1b-JMM-2');
-   Say(Donaldson, 'D1a-Don-2');
-
-   ComEnterUnit(Donaldson, FilterAllUnits([f_btype, b_depot])[1]);
-
-   SaveVariable(1, 'GammaCommander');
-   commander := Donaldson;
-   end;
-
-if brown_commander then
-   begin
-   ComTurnUnit(JMM, Brown);
-   Say(JMM, 'D1b-JMM-1');
-
-   ComMoveUnit(Brown, JMM);
-   AddComTurnUnit(Brown, JMM);
-
-   Wait(3);
-
-   Say(Brown, 'D1b-Brown-1');
-   Say(JMM, 'D1a-JMM-2');
-   Say(Brown, 'D1b-Brown-2');
-
-   ComEnterUnit(Brown, FilterAllUnits([f_btype, b_depot])[1]);
-
-   SaveVariable(2, 'GammaCommander');
-   commander := Brown;
-   end;
-
-ComTurnUnit(JMM, Gladstone);
-
-if not donaldson_commander and not brown_commander then
-   begin
-   Say(JMM, 'D1c-JMM-1');
-   SaveVariable(3, 'GammaCommander');
-   end;
-
-Say(JMM, 'D1d-JMM-1');
-
-all := FilterAllUnits([f_type, unit_human]) diff [JMM, Gladstone, commander];
-
-save_group := CharacterSelection('1', 5, 5,
+save_group := CharacterSelection('1', 10, 10,
                                 [sel_change_class, JMM,
-                                 sel_dont_change_class, Gladstone,
-                                 sel_not_hired,sel_changeable, sel_change_class]^all^
-                                [sel_dont_change_class, sel_not_changeable, commander],
-                                [class_soldier, class_mechanic, [class_engineer, 1], class_scientistic]);
+                                 sel_not_hired, sel_changeable, sel_change_class]^all^
+                                [sel_dont_change_class, sel_not_changeable, [commander, Harisson]],
+                                [[class_soldier, 3], [class_mechanic, 3, 6], [class_scientistic, 1]]);
 
-SaveCharacters(all diff [save_group, JMM, Gladstone], 'othersGamma');
-SaveCharacters(save_group diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, 0], 'othersDelta');
+SaveCharacters(all diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, Houten, Harisson, Khatam]^save_group, '07_othersGamma');
+SaveCharacters(save_group diff [JMM, Gladstone, Lisa, Cyrus, Bobby, Frank, Donaldson, Brown, Houten, Harisson, Khatam, 0], '07_others');
 
-if Lisa in save_group then
+SaveCharacters(JMM, mission_prefix&'JMM');
+
+if Lisa then
    begin
-   SaveCharacters(Lisa, 'Lisa');
-   SaveVariable(true, 'LisaInDelta');
+   SaveCharacters(Lisa, mission_prefix&'Lisa');
+
+   if Lisa in save_group then
+      SaveVariable(true, 'LisaIn07');
    end;
 
-if Bobby in save_group then
+if Bobby then
    begin
-   SaveCharacters(Bobby, 'Bobby');
-   SaveVariable(true, 'BobbyInDelta');
+   SaveCharacters(Bobby, mission_prefix&'Bobby');
+
+   if Bobby in save_group then
+      SaveVariable(true, 'BobbyIn07');
    end;
 
-if Cyrus in save_group then
+if Cyrus then
    begin
-   SaveCharacters(Cyrus, 'Cyrus');
-   SaveVariable(true, 'CyrusInDelta');
+   SaveCharacters(Cyrus, mission_prefix&'Cyrus');
+
+   if Cyrus in save_group then
+      SaveVariable(true, 'CyrusIn07');
    end;
 
-if Frank in save_group then
+if Brown then
    begin
-   SaveCharacters(Frank, 'Frank');
-   SaveVariable(true, 'FrankInDelta');
+   SaveCharacters(Brown, mission_prefix&'Brown');
+
+   if Brown in save_group then
+      SaveVariable(true, 'BrownIn07');
    end;
 
-if Brown in save_group then
+if Donaldson then
    begin
-   SaveCharacters(Brown, 'Brown');
-   SaveVariable(true, 'BrownInDelta');
+   SaveCharacters(Donaldson, mission_prefix&'Donaldson');
+
+   if Donaldson in save_group then
+      SaveVariable(true, 'DonaldsonIn07');
    end;
 
-if Donaldson in save_group then
+if Gladstone then
    begin
-   SaveCharacters(Donaldson, 'Donaldson');
-   SaveVariable(true, 'DonaldsonInDelta');
+   SaveCharacters(Gladstone, mission_prefix&'Gladstone');
+
+   if Gladstone in save_group then
+      SaveVariable(true, 'GladstoneIn07');
    end;
 
-Wait(3);
+if Khatam then
+   begin
+   SaveCharacters(Khatam, mission_prefix&'Khatam');
 
-for i in save_group do
-    begin
-    if IsInUnit(i) then
-       ComExitBuilding(i);
-
-    Wait(3);
-    end;
-
-save_group := Insert(save_group, 1, JMM);
-save_group := Insert(save_group, 2, Gladstone);
-
-filter := FilterAllUnits([f_type, unit_vehicle]);
-
-for i = 1 to filter do
-    ComEnterUnit(save_group[i], filter[i]);
-
-AddComMoveXY(save_group, 87, 27);
-Wait(0$05);
+   if Khatam in save_group then
+      SaveVariable(true, 'KhatamIn07');
+   end;
 
 ChangeMap(1, '%_cont');
 End;

@@ -1,32 +1,40 @@
 Export function PrepareKurt; // team #Kurt ; )
-var tmp, rnd, dec, dec2;
+var i, j, tmp, rnd, dec, dec2;
 begin
-
-    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]);
-    rnd = Rand(1, tmp);
+    
+    j = 0;
 
     repeat
-        wait(0$3);
-    until NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, tmp[rnd], 25]]);
+        wait(0$1);
+        for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) do
+        begin
+            if NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, i, 25]]) then
+            begin
+                tmp = i;
+                j = 1;
+            end;
+        end;
+
+    until j = 1;
     
     blockSpawn = 1;
     uc_side = 2;
     uc_nation = 2;
 
     Kurt = PrepareUnit('Kurt', false);
-    PlaceUnitXYR(Kurt, GetX(tmp[rnd]), GetY(tmp[rnd]), 5, true);
+    PlaceUnitXYR(Kurt, GetX(tmp), GetY(tmp), 5, true);
     InGameOn;
     CenterNowOnUnits(Kurt);
     wait(0$2);
-    ComExitVehicle(tmp[rnd]);
-    ComExitBuilding(tmp[rnd]);
+    ComExitVehicle(tmp);
+    ComExitBuilding(tmp);
     wait(0$1);
-    ComTurnUnit(Kurt, tmp[rnd]);
-    ComTurnUnit(tmp[rnd], Kurt);
+    ComTurnUnit(Kurt, tmp);
+    ComTurnUnit(tmp, Kurt);
     DialogueOn;
     Say(Kurt, 'D2-Kurt-1');
 
-    if tmp[rnd] = JMM then 
+    if tmp = JMM then 
     begin
         Say(JMM, 'D2-JMM-1');
         Say(Kurt, 'D2-Kurt-2');
@@ -38,19 +46,19 @@ begin
         DialogueOff;
     end else
     begin
-        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-1');
-        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-1'); 
+        if GetSex(tmp) = 1 then Say(tmp, 'D2-Sol1-1');
+        if GetSex(tmp) = 2 then Say(tmp, 'D2-FSol1-1'); 
         Say(Kurt, 'D2-Kurt-2');
-        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-2');
-        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-2');    
+        if GetSex(tmp) = 1 then Say(tmp, 'D2-Sol1-2');
+        if GetSex(tmp) = 2 then Say(tmp, 'D2-FSol1-2');    
         Say(Kurt, 'D2-Kurt-3');
-        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-3');
-        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-3');  
+        if GetSex(tmp) = 1 then Say(tmp, 'D2-Sol1-3');
+        if GetSex(tmp) = 2 then Say(tmp, 'D2-FSol1-3');  
         Say(Kurt, 'D2-Kurt-4');
-        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-4');
-        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-4');  
-        if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2-Sol1-5');
-        if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2-FSol1-5'); 
+        if GetSex(tmp) = 1 then Say(tmp, 'D2-Sol1-4');
+        if GetSex(tmp) = 2 then Say(tmp, 'D2-FSol1-4');  
+        if GetSex(tmp) = 1 then Say(tmp, 'D2-Sol1-5');
+        if GetSex(tmp) = 2 then Say(tmp, 'D2-FSol1-5'); 
         DialogueOff;
     end;
 
@@ -68,7 +76,7 @@ begin
     if dec = 2 then
     begin
         DialogueOn;
-        if tmp[rnd] = JMM then 
+        if tmp = JMM then 
         begin
             Say(JMM, 'D2b-JMM-1'); 
             Say(Kurt, 'D2b-Kurt-1');
@@ -77,20 +85,21 @@ begin
             DialogueOff;
         end else
         begin
-            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-1');
-            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-1'); 
+            if GetSex(tmp) = 1 then Say(tmp, 'D2b-Sol1-1');
+            if GetSex(tmp) = 2 then Say(tmp, 'D2b-FSol1-1'); 
             Say(Kurt, 'D2b-Kurt-1');
-            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2b-Sol1-2');
-            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2b-FSol1-2');    
+            if GetSex(tmp) = 1 then Say(tmp, 'D2b-Sol1-2');
+            if GetSex(tmp) = 2 then Say(tmp, 'D2b-FSol1-2');    
             Say(Kurt, 'D2b-Kurt-2'); 
-            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2c-Sol1-2');
-            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2c-FSol1-2');   
+            if GetSex(tmp) = 1 then Say(tmp, 'D2c-Sol1-2');
+            if GetSex(tmp) = 2 then Say(tmp, 'D2c-FSol1-2');   
             DialogueOff;
         end;
         dec2 = ShowQuery2;
 
         if dec2 = 1 then
         begin
+            DialogueOn;
             Say(Kurt, 'D2a-Kurt-1');
             DialogueOff;
             InGameOff;
@@ -99,8 +108,9 @@ begin
 
         if dec2 = 2 then
         begin
-            if tmp[rnd] = JMM then 
+            if tmp = JMM then 
             begin
+                DialogueOn;
                 Say(JMM, 'D2c-JMM-1'); 
                 Say(Kurt, 'D2c-Kurt-1');
                 DialogueOff;
@@ -109,8 +119,9 @@ begin
                 readyToEscape = 1;
             end else
             begin
-                if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2c-Sol1-1');
-                if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2c-FSol1-1'); 
+                DialogueOn;
+                if GetSex(tmp) = 1 then Say(tmp, 'D2c-Sol1-1');
+                if GetSex(tmp) = 2 then Say(tmp, 'D2c-FSol1-1'); 
                 Say(Kurt, 'D2c-Kurt-1');
                 DialogueOff;
                 InGameOff;
@@ -123,8 +134,9 @@ begin
     if dec = 3 then
     begin
         DialogueOn;
-        if tmp[rnd] = JMM then 
+        if tmp = JMM then 
         begin
+            DialogueOn;
             Say(JMM, 'D2c-JMM-1'); 
             Say(Kurt, 'D2c-Kurt-1');
             DialogueOff;
@@ -133,8 +145,9 @@ begin
             readyToEscape = 1;
         end else
         begin
-            if GetSex(tmp[rnd]) = 1 then Say(tmp[rnd], 'D2c-Sol1-1');
-            if GetSex(tmp[rnd]) = 2 then Say(tmp[rnd], 'D2c-FSol1-1'); 
+            DialogueOn;
+            if GetSex(tmp) = 1 then Say(tmp, 'D2c-Sol1-1');
+            if GetSex(tmp) = 2 then Say(tmp, 'D2c-FSol1-1'); 
             Say(Kurt, 'D2c-Kurt-1');
             DialogueOff;
             InGameOff;

@@ -8,8 +8,10 @@ begin
     if GetBType(building) = 36 and GetSide(building) = 1 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) = 0 and firstTower = 0 then
     begin
         firstTower = 1;
-        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3]]) diff [JMM], 'D3b-Mech1-1', 'D3b-Mech1-1');
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3], [f_sex, 1]]) diff [JMM], 'D3b-Mech1-1', 'D3b-Mech1-1');
     end;
+
+    if GetBType(building) = 0 and GetSide(building) = 1 then SetBName(building, 'theta');
 
     if GetSide(building) = 3 then
     begin
@@ -64,8 +66,20 @@ begin
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
         end;
-            
     end;
+
+        if GetClass(unit) = 3 and GetSide(unit) = 3 and IsOK(rufab) and GetSide(rufab) = 3 then
+        begin
+              uc_side = 3;
+              uc_nation = 3;
+
+              hc_gallery := '';
+              hc_name := '';
+
+              PrepareMechanic(false, rand(RuSolMinLevel, RuSolMaxLevel));
+              PlaceHumanInUnit(CreateHuman, rufab);
+        end;
+
 end;
 
 On VehicleConstructed(vehicle, building) Do
@@ -80,17 +94,9 @@ begin
     end;
 
     if building = rufabsupp then SetSide(vehicle, 6);
-    if GetSide(building) = 3 and IsOk(building) then
-    begin
-        uc_side = 3;
-        uc_nation = 3;
 
-        hc_gallery := '';
-        hc_name := '';
-
-        PrepareMechanic(false, rand(RuSolMinLevel, RuSolMaxLevel)); 
-        PlaceHumanInUnit(CreateHuman, building);   
-    end; 
+    if building = rufab and GetSide(building) = 3 and [GetWeapon(vehicle) = 42 OR GetWeapon(vehicle) = 43 OR GetWeapon(vehicle) = 44] then
+       russianTanks = russianTanks ^ vehicle;
 
 end; 
 
@@ -98,4 +104,25 @@ On ApemanTamed(apeman, human) Do
 begin
 
     if GetSide(apeman) = 3 then tamedApemans = tamedApemans + 1;
+end;
+
+On UnitGoesToRed(unit) Do
+var i, tmpMeh;
+begin
+    if GetSide(unit) = 3 and GetType(unit) = unit_vehicle and [GetWeapon(unit) = 42 OR GetWeapon(unit) = 43 OR GetWeapon(unit) = 44] then
+    begin
+        AddComConstruct(rufab, GetChassis(unit), GetEngine(unit), GetControl(unit), GetWeapon(unit));
+        for i in russianDamageTanks do
+            if i = unit then russianDamageTanks = russianDamageTanks diff [unit];
+
+        tmpMeh = UnitsInside(unit);
+        ComExitVehicle(tmpMeh);
+        wait(0$01);
+        ComEnterUnit(tmpMeh, rufab);
+    end;
+end;
+
+On EnterBuilding(building, human) Do
+begin
+     if building = rufab and GetSide(human) = 3 then SetLives(human, 1000);
 end;

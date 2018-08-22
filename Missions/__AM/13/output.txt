@@ -1,0 +1,143 @@
+// export JMM , Powell ; starting begin PrepareHeroes ;
+   0: CALL 147 0 0
+// Say ( JMM , D1-JMM-1 ) ;
+   4: LD_EXP 1
+   8: PPUSH
+   9: LD_STRING D1-JMM-1
+  11: PPUSH
+  12: CALL_OW 88
+// SayRadio ( Powell , D1-Pow-1 ) ;
+  16: LD_EXP 2
+  20: PPUSH
+  21: LD_STRING D1-Pow-1
+  23: PPUSH
+  24: CALL_OW 94
+// SayRadio ( Powell , D1-Pow-1a ) ;
+  28: LD_EXP 2
+  32: PPUSH
+  33: LD_STRING D1-Pow-1a
+  35: PPUSH
+  36: CALL_OW 94
+// SayRadio ( Powell , D1-Pow-1b ) ;
+  40: LD_EXP 2
+  44: PPUSH
+  45: LD_STRING D1-Pow-1b
+  47: PPUSH
+  48: CALL_OW 94
+// SayRadio ( Powell , D1-Pow-1c ) ;
+  52: LD_EXP 2
+  56: PPUSH
+  57: LD_STRING D1-Pow-1c
+  59: PPUSH
+  60: CALL_OW 94
+// Say ( JMM , D1-JMM-2 ) ;
+  64: LD_EXP 1
+  68: PPUSH
+  69: LD_STRING D1-JMM-2
+  71: PPUSH
+  72: CALL_OW 88
+// SayRadio ( Powell , D1-Pow-2 ) ;
+  76: LD_EXP 2
+  80: PPUSH
+  81: LD_STRING D1-Pow-2
+  83: PPUSH
+  84: CALL_OW 94
+// Say ( JMM , D1-JMM-3 ) ;
+  88: LD_EXP 1
+  92: PPUSH
+  93: LD_STRING D1-JMM-3
+  95: PPUSH
+  96: CALL_OW 88
+// SayRadio ( Powell , D1-Pow-3 ) ;
+ 100: LD_EXP 2
+ 104: PPUSH
+ 105: LD_STRING D1-Pow-3
+ 107: PPUSH
+ 108: CALL_OW 94
+// Say ( JMM , D1-JMM-4 ) ;
+ 112: LD_EXP 1
+ 116: PPUSH
+ 117: LD_STRING D1-JMM-4
+ 119: PPUSH
+ 120: CALL_OW 88
+// SayRadio ( Powell , D1-Pow-4 ) ;
+ 124: LD_EXP 2
+ 128: PPUSH
+ 129: LD_STRING D1-Pow-4
+ 131: PPUSH
+ 132: CALL_OW 94
+// ChangeMap ( 13 , %_cont ) ;
+ 136: LD_INT 13
+ 138: PPUSH
+ 139: LD_STRING %_cont
+ 141: PPUSH
+ 142: CALL_OW 340
+// end ; end_of_file
+ 146: END
+// export function PrepareHeroes ; begin
+ 147: LD_INT 0
+ 149: PPUSH
+// uc_side = 1 ;
+ 150: LD_ADDR_OWVAR 20
+ 154: PUSH
+ 155: LD_INT 1
+ 157: ST_TO_ADDR
+// JMM = PrepareUnit ( JMM , false ) ;
+ 158: LD_ADDR_EXP 1
+ 162: PUSH
+ 163: LD_STRING JMM
+ 165: PPUSH
+ 166: LD_INT 0
+ 168: PPUSH
+ 169: CALL 210 0 2
+ 173: ST_TO_ADDR
+// Powell = PrepareUnit ( Powell , false ) ;
+ 174: LD_ADDR_EXP 2
+ 178: PUSH
+ 179: LD_STRING Powell
+ 181: PPUSH
+ 182: LD_INT 0
+ 184: PPUSH
+ 185: CALL 210 0 2
+ 189: ST_TO_ADDR
+// PlaceUnitArea ( JMM , JMMSpawn , false ) ;
+ 190: LD_EXP 1
+ 194: PPUSH
+ 195: LD_INT 1
+ 197: PPUSH
+ 198: LD_INT 0
+ 200: PPUSH
+ 201: CALL_OW 49
+// end ; end_of_file
+ 205: LD_VAR 0 1
+ 209: RET
+// export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
+ 210: LD_INT 0
+ 212: PPUSH
+ 213: PPUSH
+// if exist_mode then
+ 214: LD_VAR 0 2
+ 218: IFFALSE 237
+// unit := CreateCharacter ( ident ) else
+ 220: LD_ADDR_VAR 0 4
+ 224: PUSH
+ 225: LD_VAR 0 1
+ 229: PPUSH
+ 230: CALL_OW 34
+ 234: ST_TO_ADDR
+ 235: GO 252
+// unit := NewCharacter ( ident ) ;
+ 237: LD_ADDR_VAR 0 4
+ 241: PUSH
+ 242: LD_VAR 0 1
+ 246: PPUSH
+ 247: CALL_OW 25
+ 251: ST_TO_ADDR
+// result := unit ;
+ 252: LD_ADDR_VAR 0 3
+ 256: PUSH
+ 257: LD_VAR 0 4
+ 261: ST_TO_ADDR
+// end ;
+ 262: LD_VAR 0 3
+ 266: RET

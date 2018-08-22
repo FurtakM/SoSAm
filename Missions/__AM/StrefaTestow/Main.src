@@ -19,11 +19,28 @@ begin
     destroyedBuildings = []; // destroyed buildings list
 end;
 
-Every 0$1 do
+
+
+
+Every 0$01 do
+var b;
+begin
+RemoveResourcesFromArea(area04, 10);
+End;
+
+Export Function RemoveResourcesFromArea(area, materials);
+var amount, i, tmp;
+begin
+for i = 1 to 3 do
+    amount := amount + GetResourceArea(area, i);
+
+if amount < materials then
+   exit;
+
+for i = 1 to 3 do
+    EraseResourceArea(area, i);
+End;
+
+{Every 0$1 do
 ComEnterUnit(eng1, ee1);
 
-Every 0$1 do
-begin
-enable;
-display_strings := GetTaskList(eng1);
-End;

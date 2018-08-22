@@ -30,15 +30,10 @@ begin
           Say(Lisa, 'DR0-Lisa-1');
      end else
      begin
-         If IsOK(Cyrus) then
-         begin
-            Say(Cyrus, 'DR0-Cyrus-1');
-         end else
-         begin
-            DialogRandom(FilterAllUnits([[[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]]) diff [JMM, Gladstone, Frank], 'DR0-Sol1-1', 'DR0-Sol1-1');
-         end;
+          DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank], 'DR0-Sol1-1', 'DR0-Sol1-1');
      end;
-    DialogRandom(FilterAllUnits([[[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]], [f_sex, 1]]]) diff [JMM, Gladstone, Frank], 'DR0-Sol2-1', 'DR0-Sol2-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank], 'DR0-Sol2-1', 'DR0-Sol2-1');
+    If IsOk(Cyrus) then Say(Cyrus, 'DR0-Cyrus-1');
     Say(JMM, 'DR0-JMM-1');
 end;
 
@@ -157,7 +152,7 @@ end;
 // Build first remote vehicle without tower control
 Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) = 0 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) > 0 and firstTower = 0 do 
 begin
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3]]) diff [JMM], 'D3a-Mech1-1', 'D3a-Mech1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3]]) diff [JMM, Brown, Donaldson, Denis, Joan, Bobby, Cyrus, Lisa, Frank, Gladstone], 'D3a-Mech1-1', 'D3a-Mech1-1');
     firstTower = 2;
 end;
 
@@ -284,6 +279,18 @@ begin
     end;
 end;
 
+// Charles dialog near Americans
+Every 0$1 do
+var i, others;
+begin
+     others = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [tempCharles];
+
+     for i in others do
+     begin
+          if GetDistUnits(tempCharles, i) < 6 then begin Disable; Say(tempCharles, 'D5-Sol1-1'); end;
+     end;
+end;
+
 // Remote vehicles
 Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_control, control_remote]]) >= 2 do
 begin
@@ -321,11 +328,11 @@ end;
 Every 32$0 do 
 begin
     DialogueOn;
-    SayRadio(DeltaDoctor, ' D12c-Sci-1');
+    SayRadio(DeltaDoctor, 'D12c-Sci-1');
     DialogueOff;
     wait(3$0);
     DialogueOn;
-    SayRadio(DeltaDoctor, ' D12d-Sci-1');
+    SayRadio(DeltaDoctor, 'D12d-Sci-1');
     DialogueOff;
     cratesStatus = 1;
 end;

@@ -49,6 +49,7 @@ End;
 Every 0$01 trigger not Delta and deltaBuilded and FilterAllUnits([[[f_side, 1], [f_not, [f_constructed]], [f_btype, b_depot]]]) do
 begin
 enable;
+SetRestrict(b_depot, 1, state_disabled);
 Delta := FilterAllUnits([[[f_side, 1], [f_not, [f_constructed]], [f_btype, b_depot]]])[1];
 SetBName(Delta, 'Delta');
 End;
@@ -120,9 +121,9 @@ if Delta then
   else
    CenterNowOnUnits(JMM);
 
-Say(Denis, 'DD-Den-1');
+SayRadio(Denis, 'DD-Den-1');
 Say(JMM, 'DD-JMM-1');
-Say(Denis, 'DD-Den-2');
+SayRadio(Denis, 'DD-Den-2');
 
 Wait(3);
 
