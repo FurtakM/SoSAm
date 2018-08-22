@@ -171,6 +171,8 @@ begin
 uc_side := 3;
 uc_nation := 3;
 
+ru_produce_list := [ru_heavy_tracked, engine_combustion, control_computer, ru_gatling_gun];
+
 for i = 1 to Difficulty do
     ru_produce_list := ru_produce_list ^ [
                                             ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher,
@@ -183,7 +185,7 @@ until ru_produce_list < 4;
 
 case wave of
 1: begin
-   for i = 1 to [5, 6, 8][Difficulty] do
+   for i = 1 to [4, 5, 6][Difficulty] do
        Sold;
 
    for i = 1 to [2, 3, 3][Difficulty] do
@@ -253,7 +255,7 @@ time := [12$00, 11$00, 10$00][Difficulty];
 
 wait(time);
 
-time := [8$00, 7$30, 7$00][Difficulty];
+time := [8$30, 7$50, 7$30][Difficulty];
 wave := 0;
 
 while true do
@@ -265,7 +267,9 @@ if FilterAllUnits([f_side, 2]) then
     wait(0$1);
    until FilterAllUnits([f_side, 2]) = 0;
 
-PrepareAttack(wave);
+if ru_force < 20 then
+   PrepareAttack(wave);
+
 ru_can_attack := true;
 wait(time);
 end;
@@ -297,7 +301,7 @@ for i in ru_force do
        end
       else
        begin
-       if GetDistUnitXY(i, points1[1], points1[2]) > GetDistUnitXY(i, points2[1], points2[2]) and ru_can_attack_terminal then
+       if (GetDistUnitXY(i, points1[1], points1[2]) > GetDistUnitXY(i, points2[1], points2[2]) and ru_can_attack_terminal) or FilterUnitsInArea(ovsyenkoArea, [f_side, 1]) = 0 then
           ComAgressiveMove(i, points2[1], points2[2])
          else
           ComAgressiveMove(i, points1[1], points1[2]);
@@ -305,4 +309,17 @@ for i in ru_force do
 
     end;
 
+End;
+
+// Oil
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_engine, engine_combustion]]) do
+var i, tmp;
+begin
+enable;
+
+tmp := FilterAllUnits([[f_side, 3], [f_engine, engine_combustion]]);
+
+for i in tmp do
+    if GetFuel(i) < 12 then
+       SetFuel(i, 12);
 End;
