@@ -65,9 +65,10 @@ if gamma_commander = 3 then
    end;
 
 if LoadVariable('GladstoneIn06', 0) then
-   Gladstone := PrepareUnit('Gladstone', (not debug), '06c_');
-{  else
-   Gladstone := PrepareUnit('Gladstone', (not debug), '05_');}
+   Gladstone := PrepareUnit('Gladstone', (not debug), '06c_')
+  else
+   if LoadVariable('GladstoneStayInDelta', 0) then
+      Gladstone := PrepareUnit('Gladstone', (not debug), '06_');
 
 if Gladstone then
    team := team ^ Gladstone;
@@ -77,7 +78,7 @@ Khatam := PrepareUnit('Khatam', (not debug), '03_');
 if Khatam then
    team := team ^ Khatam;
 
-{if LoadVariable('FrankIn06', 0) then
+if LoadVariable('FrankIn06', 0) then
    Frank := PrepareUnit('Frank', (not debug), '06c_')
   else
    if LoadVariable('FrankInDelta', 0) then
@@ -86,7 +87,7 @@ if Khatam then
       Frank := PrepareUnit('Frank', (not debug), '04_');
                                                      
 if Frank then
-   team := team  ^ Frank;} // Frank bierze udzia³ w tej misji!!!
+   team := team  ^ Frank; // Frank bierze udzia³ w tej misji!!!
 
 if LoadVariable('LisaIn06', 0) then
    Lisa := PrepareUnit('Lisa', (not debug), '06c_')
@@ -100,8 +101,8 @@ if LoadVariable('LisaIn06', 0) then
 if Lisa then
    team := team ^ Lisa;
 
-{if not Lisa then
-   begin}
+if not Lisa then
+   begin
    if LoadVariable('CyrusIn06', 0) then
       Cyrus := PrepareUnit('Cyrus', (not debug), '06c_')
      else
@@ -119,8 +120,8 @@ if Lisa then
    if Cyrus then
       team := team ^ Cyrus;
 
-   {if not Cyrus then
-      begin}
+   if not Cyrus then
+      begin
 
       if LoadVariable('BobbyIn06', 0) then
          Bobby := PrepareUnit('Bobby', (not debug), '06c_')
@@ -138,9 +139,9 @@ if Lisa then
 
          if Bobby then
             team := team ^ Bobby;
-      {end;}
+      end;
 
-   {end;}
+   end;
 
 
 //others_delta := CreateCharacterSet('05_other_survivors');
