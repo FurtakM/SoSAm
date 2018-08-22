@@ -72,24 +72,34 @@ begin
 end;
 
 Every 0$1 trigger FilterUnitsExceptArea(ExitArea, [[f_side, 1], [f_type, unit_human]]) = 0 do 
-var i;
+var i, cargoType;
 begin
 
     if FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) > 0 then
     begin
         for i in FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) do
         begin
+            cargoType = GetCargoType(i);
             if GetWeapon(i) = us_cargo_bay then
             begin
-                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), GetCargoType(i), GetCargo(i, GetCargoType(i)) ] ];
+                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), cargoType, GetCargo(i, cargoType) ] ];
             end else 
             begin
                 yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)] ];
             end;
         end;  
 
-        SaveVariable(yourVehicles, '06_VehiclesIn06_1');  
+        SaveVariable(yourVehicles, '06_VehiclesIn06_1');
+        
     end;
-
+    SaveCargos;
     ChangeMap(6, '%_cont');
+end;
+
+
+Export function SaveCargos;
+var i;
+begin
+   for i in FilterUnitsInArea(ExitArea,[[f_side, 1], [f_weapon, us_cargo_bay]]) do resources = resources ^ [GetMultiCargo(i)];
+   SaveVariable(resources, '06_ResourcesInCargo06_1');
 end;

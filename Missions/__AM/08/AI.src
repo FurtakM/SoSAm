@@ -15,6 +15,13 @@ begin
     if SikorskyArrive = 1 then RepairVehicle(3, SikorskyRepairArea, 53, 59, 3);
 end;
 
+Every 0$1 trigger russianAI = 1 do
+var i;
+begin
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_building], [f_btype, b_bunker], [f_not, [f_or, [f_bweapon, 43], [f_bweapon, 44], [f_bweapon, 46]]]]) do PlaceWeaponTurret(i, [43, 44, 46][Rand(1,3)]);
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_building], [f_btype, b_turret], [f_not, [f_or, [f_bweapon, 43], [f_bweapon, 44], [f_bweapon, 46]]]]) do PlaceWeaponTurret(i, [43, 44, 46][Rand(1,3)]);
+end;
+
 Every 0$1 trigger SikorskyAI = 1 do 
 begin
     enable;
@@ -28,4 +35,10 @@ begin
     if Difficulty = 1 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(5, 8), 1, [43, 44, 46], 1, 3, 24);
     if Difficulty = 2 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(6, 8), 1, [44, 44, 46], 1, 3, 24);
     if Difficulty = 3 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(7, 8), 1, [44, 46], 1, 3, 24);
+end;
+
+Every 0$1 trigger startCutscene = 1 do
+var i;
+begin
+     for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 650]]]) do ComMoveXY(i, 51, 12);
 end;

@@ -33,6 +33,7 @@ Export askSiberite;
 Export teleportExplored;
 
 Export RuScientists, sciCounter;
+Export RuSolMinLevel, RuSolMaxLevel;
 
 Export eventVar1;
 
@@ -59,7 +60,10 @@ begin
     eventVar1 = 0; // block event
 
     debugMode = 1; // 0 - players, 1 - developers
+
+    PrepareDifficulty;
     
+    PrepareVehicles;
     PrepareAmericanHeroes;
 
     PrepareRussianCommander;
@@ -69,8 +73,13 @@ begin
 
 end;
 
-Every 0$1 trigger debugMode = 1 do 
+Every 0$1 trigger debugMode = 1 do
+var i;
 begin
     enable;
-    display_strings = [RuScientists];
+    fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
 end;

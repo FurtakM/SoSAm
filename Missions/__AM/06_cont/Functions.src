@@ -128,74 +128,59 @@ begin
 
 end;
 
-Export function RepairBuilding(side, building);
-var buildings_list, i,engineerOk_list, j;
+Export function RepairBuilding(side, building, area);
+var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
-        engineerOk_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 2], [f_class, 16]], [f_lives, 1000]]);
-        buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+  engineerOkInside = UnitsInside(building);
+  engineerOkOutside = FilterUnitsInArea(area, [[f_side, side], [f_class, 2], [f_lives, 1000]]);
+  buildings_list = FilterUnitsInArea(area, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-        if buildings_list > 0 and engineerOk_list > 0 then
-        begin
+  if not buildings_list and not engineerOkOutside then exit;
 
-                for i in engineerOk_list do
-                begin
-                     for j in buildings_list do
-                     begin
+  if buildings_list > 0 and engineerOkInside > 0 then
+      for i in engineerOkInside do ComExitBuilding(i);
 
-                        AddComExitBuilding(i);
-                        wait(0$1);
-                        AddComRepairBuilding(i, j);
+  if engineerOkOutside > 0 then
+  begin
 
-                    end;
-                end;
-        end;
-
-        if buildings_list = 0 then
-        begin
-
-           for i in engineerOK_list do
-           begin
-             ComEnterUnit(i, building);
-          end;
-
-        end;
-END;
-
-
-Export function HealUnitInBase(side, healArea, baseArea, build);
-var sci_list,  i, j, damageUnits;
-begin
-
-  sci_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
-
-  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
-
-    if damageUnits > 0 and sci_list > 0 then
-    begin
-
-      for i = 1 to damageUnits do ComMoveToArea(damageUnits[i], healArea);
-
-      for i in sci_list do
-      begin
-
-        ComExitBuilding(i);
-
-        for j in FilterUnitsInArea(healArea,[f_side, side]) do
-        begin
-
-        AddComHeal(i, j);
-        wait(1$0);
-
-        end;
-      end;
-
-    end else
-    begin
-
-    AddComEnterUnit(sci_list, build);
+    for i in engineerOkOutside do
+      for j in buildings_list do
+          ComRepairBuilding(i, j[1]);
 
   end;
+
+  if buildings_list = 0 and engineerOkOutside > 0 then
+      for i in engineerOkOutside do ComEnterUnit(i, building);
+END;
+
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal;
+begin
+
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 251]]);
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_ok]]);
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
+  unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 1000]]]);
+
+  if not damageUnits and not sci_listOutside and not unitsToHeal then exit;
+
+  if damageUnits > 0 and sci_list > 0 then
+    for i in damageUnits do ComMoveToArea(i, healArea);
+
+  if unitsToHeal > 0 and sci_list > 0 then
+  begin
+    for i in sci_list do
+    begin
+
+      ComExitBuilding(i);
+
+      for j in unitsToHeal do AddComHeal(i, j);
+    end;
+  end;
+
+  if damageUnits = 0 and unitsToHeal = 0 and sci_listOutside > 0 then
+      for i in sci_listOutside do ComEnterUnit(i, build);
 
 END;
 
@@ -288,6 +273,8 @@ begin
     mechanicInside_list = [];
     mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
 
+    if damageVehicle_list = 0 and vehicleOK_list = 0 then exit;
+
     if damageVehicle_list > 0 then
         for i in damageVehicle_list do ComMoveXY(i, repX, repY);
 
@@ -301,6 +288,7 @@ begin
                 ComExitVehicle(j);
                 wait(0$1);
                 AddComRepairVehicle(j, i);
+                AddComEnterUnit(j, i);
             end;
         end;
     end;
@@ -313,14 +301,12 @@ begin
         begin
             if i = [5, 6, 6][Difficulty] then
             begin
-                for i in vehicleOk_list do russianTanks = russianTanks ^ i;
-                for i in vehicleOK_list do SetFuel(i, 100);
-                russianDamageTanks = Delete(russianDamageTanks, 1);
-                russianDamageTanks = Delete(russianDamageTanks, 1);
-                russianDamageTanks = Delete(russianDamageTanks, 1);
-                russianDamageTanks = Delete(russianDamageTanks, 1);
-                russianDamageTanks = Delete(russianDamageTanks, 1);
-                if Difficulty = 2 or Difficulty = 3 then russianDamageTanks = Delete(russianDamageTanks, 1);
+                for i in vehicleOk_list do
+                begin
+                 russianTanks = russianTanks ^ i;
+                 SetFuel(i, 100);
+                end;
+                for i in russianDamageTanks do russianDamageTanks = russianDamageTanks diff i;
                 break;
             end;
         end;
