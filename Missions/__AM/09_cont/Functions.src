@@ -101,5 +101,31 @@ End;
 
 Export Function GetTerminalCargo;
 begin
-result := GetResourceType(GetBase(terminal), 3);
+result := GetResourceType(GetBase(terminal), mat_siberit);
+End;
+
+Export Function GetPlayerSib(side);
+var i, tmp;
+begin
+result := 0;
+
+tmp := FilterAllUnits([[f_side, side], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+
+if not tmp then
+   exit;
+
+for i in tmp do
+    result := result + GetResourceType(GetBase(i), mat_siberit);
+End;
+
+Export Function CutTreeInArea(bulldozer, area);
+var i;
+begin
+area = ListEnvironmentArea(area);
+
+if bulldozer > 0 then
+   for i = area downto 1 do
+       if IsEnvironment(area[i][1], area[i][2]) then
+          if not HasTask(bulldozer) then
+             AddComMoveXY(bulldozer, area[i][1], area[i][2]);
 End;

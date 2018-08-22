@@ -65,9 +65,10 @@ if gamma_commander = 3 then
    end;
 
 if LoadVariable('GladstoneIn06', 0) then
-   Gladstone := PrepareUnit('Gladstone', (not debug), '06c_');
-{  else
-   Gladstone := PrepareUnit('Gladstone', (not debug), '05_');}
+   Gladstone := PrepareUnit('Gladstone', (not debug), '06c_')
+  else
+   if LoadVariable('GladstoneStayInDelta', 0) then
+      Gladstone := PrepareUnit('Gladstone', (not debug), '06_');
 
 if Gladstone then
    team := team ^ Gladstone;
