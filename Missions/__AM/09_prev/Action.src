@@ -61,7 +61,7 @@ ComMoveXY(Sikorski, 111, 122);
 
 repeat
  wait(0$01);
-until GetDistUnitXY(Sikorski, 111, 122) < 3;
+until GetDistUnitXY(Sikorski, 111, 122) < 3 or GetLives(Sikorski) < 250;
 
 ComMoveXY(Sikorski, 114, 136);
 
@@ -98,7 +98,7 @@ SaveCharacters(tmp diff [Gary, Bobby, Cyrus], '09_prev_squad');
 tmp := [];
 
 for i in FilterAllUnits([f_type, unit_building]) do
-    tmp := tmp ^ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetLives(i)];
+    tmp := Insert(tmp, 1, [GetBType(i), GetX(i), GetY(i), GetDir(i), GetLives(i)]);
 
 SaveVariable(tmp diff 0, '09_ovsyenko_base');
 
