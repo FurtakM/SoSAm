@@ -192,7 +192,7 @@ End;
 
 // Powell want sib! Now!
 Every 0$1 trigger powell_want_sib_counter = 0$00 {or (debug and tick > 0$5 and terminal)} do
-var tmp, x, y, i, un, powell_happy, take_cargo;
+var tmp, x, y, i, un, powell_happy, take_cargo, time;
 begin
 
 ChangeSideFog(4, 1);
@@ -219,26 +219,29 @@ for i = 3 to 4 do
     PlaceHumanInUnit(powell_trans[i-2], powell_trans[i]);
     SetCargo(powell_trans[i], mat_cans, 100);
     ComMoveXY(powell_trans[i-2], 54, 42);
-    AddComUnload(powell_trans[i-2]);
     AddComMoveXY(powell_trans[i-2], GetX(terminal), GetY(terminal));
     AddComHold(powell_trans[i-2]);
     Wait(0$02);
     end;
 
+time := 0$20;
+
 repeat
  wait(0$01);
+ time := time - 0$01;
 
  for i = 3 to 4 do
      if GetCargo(powell_trans[i], mat_cans) > 0 and not HasTask(powell_trans[i]) then
         begin
-        ComUnload(powell_trans[i]);
         x := rand(0, 5);
         AddComMoveXY(powell_trans[i], ShiftX(GetX(powell_trans[i]), x, 3), ShiftY(GetY(powell_trans[i]), x, 3));
         end;
-until GetDistUnitXY(powell_trans[1], 54, 42) < 4 and
-     (GetCargo(powell_trans[3], mat_cans) = 0) and
-     (GetCargo(powell_trans[4], mat_cans) = 0);
+until GetDistUnitXY(powell_trans[1], 54, 42) < 4 or time = 0;
 
+SetCargo(powell_trans[3], mat_cans, 0);
+SetCargo(powell_trans[4], mat_cans, 0);
+
+AddResourceType(GetBase(terminal), mat_cans, 200);
 
 DialogueOn;
 CenterNowOnXY(53, 35);
@@ -340,6 +343,14 @@ ru_can_attack_terminal := true;
 
 // Ar comes
 Wait(6$00);
+
+if ru_force then
+   for i in ru_force do
+       if not See(1, i) and GetDistUnits(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 3]), i)) > 10 then
+          begin
+          RemoveUnit(i);
+          ru_force := ru_force diff i;
+          end;
 
 repeat
  wait(0$03);
