@@ -64,7 +64,7 @@ if Difficulty > 1 then
    AddComResearch(lab, tech_comp2);
 End;
 
-Every 7$30 trigger ListEnvironmentArea(cutTreeArea) > 3 do
+Every 3$30 trigger ListEnvironmentArea(cutTreeArea) > 3 and not FilterAllUnits([[f_side, 3], [f_weapon, ru_bulldozer]]) do
 begin
 enable;
 ru_produce_list := ru_produce_list ^ [ru_heavy_tracked, engine_combustion, control_computer, ru_bulldozer];
@@ -174,11 +174,9 @@ if fac then
    begin  
    ru_produce_list := [ru_heavy_tracked, engine_combustion, control_computer, ru_gatling_gun];
 
-   for i = 1 to Difficulty do
-       ru_produce_list := ru_produce_list ^ [
-                                             ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher,
-                                             ru_heavy_tracked, engine_combustion, control_computer, ru_heavy_gun
-                                            ];
+   if wave > 1 then
+      for i = 1 to Difficulty do
+          ru_produce_list := ru_produce_list ^ [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher];
 
    repeat
     wait(0$1);
@@ -196,12 +194,20 @@ case wave of
    end;
 
 2..9: begin
-      for i = 1 to [6, 6, 8][Difficulty]+(wave div 2) do
+      for i = 1 to [5, 6, 7][Difficulty]+(wave div 2) do
           Sold;
 
       for i = 1 to [3, 4, 4][Difficulty]+(wave div 2) do
           Tank;
       end;
+
+10: begin
+    for i = 1 to [10, 12, 14][Difficulty] do
+        Sold;
+
+    for i = 1 to [9, 11, 15][Difficulty] do
+        Tank;
+    end;
 
 end;
 
@@ -293,7 +299,7 @@ for i in ru_force do
     begin
     un := NearestUnitToUnit(FilterAllUnits([f_enemy, 3]), i);
 
-    if GetDistUnits(i, un) < 10 then
+    if GetDistUnits(i, un) < 12 then
        begin
        if GetType(i) = unit_human and GetClass(i) = 1 and un in FilterAllUnits([[f_type, unit_vehicle], [f_empty]]) then
           ComEnterUnit(i, un)
@@ -329,7 +335,7 @@ for i in ru_force do
              end
             else
              begin
-             un := NearestUnitToUnit(un, all_units diff un);
+             un := NearestUnitToUnit(all_units diff i, i);
 
              if un in FilterAllUnits([[f_type, unit_vehicle], [f_empty]]) or un in FilterAllUnits([[f_side, 3], [f_lives, 249]]) then
                 ComAttackUnit(i, un);
@@ -355,4 +361,12 @@ tmp := FilterAllUnits([[f_side, 3], [f_engine, engine_combustion]]);
 for i in tmp do
     if GetFuel(i) < 12 then
        SetFuel(i, 12);
+End;
+
+
+Every 0$1 trigger can_end do
+begin
+Wait(1$35);
+PrepareAttack(10);
+ru_can_attack := true;
 End;
