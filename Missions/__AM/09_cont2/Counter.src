@@ -17,18 +17,25 @@ display_strings := [];
 
 
 // Crates
-Every 0$35+1$0 marked 01 do
+Every 1$35 do
+var i, tmp;
 begin
-enable;
+tmp := [0$33, 0$35, 0$41][Difficulty];
+i := 0;
 
-CreateCratesXYR(rand(1, 5), 75, 75, 20, true);
+repeat
+ CreateCratesXYR(rand(1, 5), 75, 75, 20, true);
+ wait(tmp);
+ tmp := tmp + rand(0$3, 0$9);
+ i := i + 1;
 
-if tick > [9$0, 8$0, 7$0][Difficulty] then
-   disable(01);
+ if i mod 3 = 0 and jmm_in_ovsyenko then
+    begin
+    CreateCratesArea(rand(2, 5), cratesArea, true);
+    wait(rand(0$19, 0$21));
+    end;
+
+until tick > game_time;
+
 End;
 
-Every 2$30 trigger jmm_in_ovsyenko do
-begin
-enable;
-CreateCratesArea(rand(2, 5), cratesArea, true);
-End;

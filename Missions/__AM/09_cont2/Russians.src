@@ -163,22 +163,28 @@ if BuildingStatus(fac) = bs_idle then
 End;
 
 Export Function PrepareAttack(wave);
-var i, un, tmp;
+var i, un, tmp, fac;
 begin
 uc_side := 3;
 uc_nation := 3;
 
-ru_produce_list := [ru_heavy_tracked, engine_combustion, control_computer, ru_gatling_gun];
+fac := FilterAllUnits([[f_side, 3], [f_btype, b_factory]]);
 
-for i = 1 to Difficulty do
-    ru_produce_list := ru_produce_list ^ [
-                                            ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher,
-                                            ru_heavy_tracked, engine_combustion, control_computer, ru_heavy_gun
-                                         ];
+if fac then
+   begin  
+   ru_produce_list := [ru_heavy_tracked, engine_combustion, control_computer, ru_gatling_gun];
 
-repeat
- wait(0$1);
-until ru_produce_list < 4;
+   for i = 1 to Difficulty do
+       ru_produce_list := ru_produce_list ^ [
+                                             ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher,
+                                             ru_heavy_tracked, engine_combustion, control_computer, ru_heavy_gun
+                                            ];
+
+   repeat
+    wait(0$1);
+   until ru_produce_list < 4 or UnitsInside(fac[1]) = 0 or BuildingStatus(fac[1]) in [bs_need_extension, bs_need_people, bs_need_power];
+
+   end;
 
 case wave of
 1: begin
