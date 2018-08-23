@@ -119,21 +119,14 @@ tmp := tmp ^ CreateCharacterSet('09_prev_squad');
 
 tmp := tmp diff 0;
 
-if tmp < 4 then // something gone wrong..
-   begin
-
-   for i = 1 to 3 do
-       begin
-       PrepareHuman(false, 1, 5);
-       tmp := tmp ^ CreateHuman;
-       end;
-
-   PrepareHuman(false, 4, 5);
-   tmp := tmp ^ CreateHuman;
-   end;
-       
 for i in tmp do
+    begin
+
+    if GetClass(i) in [2,3] then
+       SetClass(i, 1);
+
     PlaceUnitXYR(i, 106, 122, 5, false);
+    end;
 
 tmp := tmp diff Gary;
 b := FilterAllUnits([[f_side, 4], [f_btype, b_breastwork]]);
