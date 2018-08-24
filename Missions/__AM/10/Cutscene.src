@@ -54,5 +54,19 @@ begin
     Say(Powell, 'D1-Pow-7');
     Say(JMM, 'D1-JMM-8');
 
+    if TestCharacters('08_Frank') = 1 then
+    begin
+       ComExitBuilding(Kikuchi);
+       wait(0$1);
+       ComTurnUnit(Kikuchi, JMM);
+       ComTurnUnit(JMM, Kikuchi);
+       Say(Kikuchi, 'D3b-Yam-1');
+       SaveCharacters(Kikuchi, '10_Kikuchi');
+    end;
+
+    SaveCharacters(JMM, '10_JMM');
+    ComEnterUnit(JMM, car);
+    wait(0$7);
+
     ChangeMap(10, '%_cont');
 end;
