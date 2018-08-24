@@ -168,6 +168,8 @@ begin
 uc_side := 3;
 uc_nation := 3;
 
+ru_can_attack := false;
+
 fac := FilterAllUnits([[f_side, 3], [f_btype, b_factory]]);
 
 if fac then
@@ -211,6 +213,7 @@ case wave of
 
 end;
 
+ru_can_attack := true;
 End;
 
 Function Sold();
@@ -321,7 +324,7 @@ for i in ru_force do
           ComAgressiveMove(i, points2[1], points2[2])
          else
           begin
-          if GetWeapon(i) = ru_rocket_launcher and UnitFilter(ru_force, [f_not, [f_weapon, ru_rocket_launcher]]) then
+          if GetWeapon(i) = ru_rocket_launcher and UnitFilter(ru_force, [f_not, [f_weapon, ru_rocket_launcher]]) > 4 then
              begin
              dist := 9999;
              xy := 0;
@@ -343,7 +346,7 @@ for i in ru_force do
              begin
              un := NearestUnitToUnit(all_units diff i, i);
 
-             if un in FilterAllUnits([[f_type, unit_vehicle], [f_control, control_manual], [f_empty]]) or un in FilterAllUnits([[f_side, 3], [f_not, [f_lives, 249]]]) then
+             if not Attacks(i) and (un in FilterAllUnits([[f_type, unit_vehicle], [f_control, control_manual], [f_empty]]) or un in FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_not, [f_lives, 249]]])) then
                 ComAttackUnit(i, un)
                else
                 ComAgressiveMove(i, points1[1], points1[2]);
@@ -374,5 +377,4 @@ Every 0$1 trigger can_end do
 begin
 Wait(1$35);
 PrepareAttack(10);
-ru_can_attack := true;
 End;
