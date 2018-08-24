@@ -23,7 +23,7 @@ SetResourceType(GetBase(dep), mat_siberit, 30);
 
 for i in FilterAllUnits([[f_side, 3], [f_btype, b_turret]]) do
     begin
-    PlaceWeaponTurret(i, tmp[rand(1, tmp)]);
+    PlaceWeaponTurret(i, tmp[i mod 3 + 1]);
     end;
 
 for i = 1 to 4 do
@@ -194,7 +194,7 @@ case wave of
    end;
 
 2..9: begin
-      for i = 1 to [5, 6, 7][Difficulty]+(wave div 2) do
+      for i = 1 to [4, 5, 6][Difficulty]+(wave div 2) do
           Sold;
 
       for i = 1 to [3, 4, 4][Difficulty]+(wave div 2) do
@@ -216,6 +216,9 @@ End;
 Function Sold();
 var un, skill;
 begin
+uc_side := 3;
+uc_nation := 3;
+
 InitHc;
 
 skill := [6, 7, 7][Difficulty];
@@ -230,6 +233,9 @@ End;
 Function Tank();
 var un, chassis, weapon, skill;
 begin
+uc_side := 3;
+uc_nation := 3;
+
 InitHc;
 
 skill := [5, 6, 7][Difficulty];
@@ -260,7 +266,7 @@ End;
 Every 0$1 do
 var i, time, wave;
 begin
-time := [12$00, 11$00, 10$00][Difficulty];
+time := [14$00, 12$30, 11$00][Difficulty];
 
 wait(time);
 
@@ -315,7 +321,7 @@ for i in ru_force do
           ComAgressiveMove(i, points2[1], points2[2])
          else
           begin
-          if GetWeapon(i) = ru_rocket_launcher then
+          if GetWeapon(i) = ru_rocket_launcher and UnitFilter(ru_force, [f_not, [f_weapon, ru_rocket_launcher]]) then
              begin
              dist := 9999;
              xy := 0;
@@ -338,9 +344,9 @@ for i in ru_force do
              un := NearestUnitToUnit(all_units diff i, i);
 
              if un in FilterAllUnits([[f_type, unit_vehicle], [f_empty]]) or un in FilterAllUnits([[f_side, 3], [f_lives, 249]]) then
-                ComAttackUnit(i, un);
-
-             ComAgressiveMove(i, points1[1], points1[2]);
+                ComAttackUnit(i, un)
+               else
+                ComAgressiveMove(i, points1[1], points1[2]);
              end;
 
           end;

@@ -50,7 +50,7 @@ for un in alpha_engs do
     PlaceUnitXYR(un, 52, 35, 3, false);
 
 for tmp = 1 to (1 + LoadVariable('06_crates_1', 0)) * 2 do
-    CreateResourcesXYR(mat_cans, 5, 54, 40, 2, false);
+    CreateResourcesXYR(mat_cans, 5, 56, 40, 2, false);
 
 if LoadVariable('gamma_commander', 0) < 3 then
    begin
@@ -74,10 +74,10 @@ uc_side := 4;
 // place buildings
 uc_nation := 3;
 
-tmp := LoadVariable('09_ovsyenko_base', [[b_depot, 101, 118, 2],
-                                         [b_breastwork, 109, 114, 4],
-                                         [b_breastwork, 115, 132, 5],
-                                         [b_breastwork, 98, 120, 1]]);
+tmp := LoadVariable('09_ovsyenko_base', [[b_depot, 101, 118, 2, 500],
+                                         [b_breastwork, 109, 114, 4, 500],
+                                         [b_breastwork, 115, 132, 5, 500],
+                                         [b_breastwork, 98, 120, 1, 500]]);
 
 for i in tmp do
     begin
@@ -118,6 +118,17 @@ if Cyrus then
 tmp := tmp ^ CreateCharacterSet('09_prev_squad');
 
 tmp := tmp diff 0;
+
+if debug then
+   begin
+
+   for i = 1 to 6 do
+       begin
+       PrepareHuman(false, 1, 6);
+       tmp := tmp ^ CreateHuman;
+       end;
+
+   end;
 
 for i in tmp do
     begin
