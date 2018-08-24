@@ -937,7 +937,7 @@ can_end := true;
 
 repeat
  wait(0$1);
-until FilterAllUnits([[f_side, 1], [f_type, unit_human]]) <= FilterUnitsInArea(endMissionArea, [[f_side, 1], [f_type, unit_human]]) + FilterAllUnits([[f_side, 1], [f_driving]]);
+until GetTerminalCargo >= 20 and FilterAllUnits([[f_side, 1], [f_type, unit_human]]) <= FilterUnitsInArea(endMissionArea, [[f_side, 1], [f_type, unit_human]]) + FilterAllUnits([[f_side, 1], [f_driving]]);
 
 
 if not player_get_info then
@@ -957,7 +957,7 @@ if sib < (2+Difficulty)*50 then
   else
    AddMedal('MuchSiberite', 1);
 
-
+GiveMedals('MAIN');
 RewardPeople(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 8]]]));
 
 // change mortar class
