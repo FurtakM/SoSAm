@@ -3,11 +3,19 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
-    JMM = PrepareUnit('JMM', false);
+    JMM = PrepareUnit('09_JMM', true);
     Powell = PrepareUnit('Powell', false);
+
+    if TestCharacters('08_Frank') = 1 then
+    begin
+       Kikuchi = PrepareUnit('Yamoko', false);
+       PlaceHumanInUnit(Kikuchi, am_bar);
+    end;
 
     PlaceHumanInUnit(JMM, car);
     PlaceHumanInUnit(Powell, Am_bar);
+
+    SetClass(JMM, 1);
 end;
 
 Export function PrepareConvoy;

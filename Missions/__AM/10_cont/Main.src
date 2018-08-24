@@ -8,11 +8,15 @@
 
     10_ScientistsEscape_1 = 0 - without new technologies for enemy in next mission
     10_ScientistsEscape_1 = 1 - new technologies for enemy in next mission
+
+    10_KhatamStatus_1 = 0 - Killed
+    10_KhatamStatus_1 = 1 - Survive
 }
 
 Export JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary; // Heroes with JMM
 Export Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, AmScout; // Heroes from ALpha
 Export Cornell; // Other Am heroes
+Export others08, others09, ape09; // Others characters
 Export Powell; // Am commander
 Export Tsaritsyn; // Ru commander
 Export Dietrich; // Ar commander
@@ -30,7 +34,11 @@ Export arDepot, arLab, arArm;
 Export arabianAttackersAI;
 Export arabianEscape;
 
+Export KhatamStatus;
+
 Export mission_prefix, mission_prefix_prev;
+
+Export cratesSpawned;
 
 Export eventVar1, eventVar2;
 Export debugMode;
@@ -55,8 +63,12 @@ begin
     eventVar1 = 0; // block event
     eventVar2 = 0;
 
+    KhatamStatus = 0;
+
+    cratesSpawned = 0;
+
     mission_prefix := '10_';
-    mission_prefix_prev := '09c_';
+    mission_prefix_prev := '09_';
 
     debugMode = 1; // 0 - players, 1 - developers
 
@@ -73,7 +85,6 @@ begin
     TameApemans;
 
     SaveForQuickRestart;
-
 end;
 
 Every 0$1 trigger debugMode = 1 do
@@ -81,7 +92,7 @@ var i;
 begin
     enable;
     fogoff(true);
-   // for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
