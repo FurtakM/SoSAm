@@ -460,7 +460,23 @@ end;
 
 DialogueOff;
 
-dep := NearestUnitToUnit(FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]), Gali);
+dep := FilterUnitsInArea(ovsyenkoArea, [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
+
+if dep then
+   dep := dep[1]
+  else
+   dep := NearestUnitToUnit(FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]), Gali);
+
+if not dep then
+   begin
+   case Query('QInfoNothing') of
+   1:;
+   end;
+
+   player_want_info := false;
+   player_want_mortar := false;
+   end;
+
 tmp := FilterAllUnits([[f_side, 2], [f_type, unit_vehicle]]);
 time := 1$35;
 no_oil_gain := false;
