@@ -1,4 +1,4 @@
-// export JMM , Powell ; export convoy , prepConv ; starting begin Resetfog ;
+// export JMM , Powell , Kikuchi ; export convoy , prepConv ; starting begin Resetfog ;
    0: CALL_OW 335
 // SetBName ( Am_dep , alpha ) ;
    4: LD_INT 5
@@ -7,12 +7,12 @@
    9: PPUSH
   10: CALL_OW 500
 // convoy = [ ] ;
-  14: LD_ADDR_EXP 3
+  14: LD_ADDR_EXP 4
   18: PUSH
   19: EMPTY
   20: ST_TO_ADDR
 // PrepareHeroes ;
-  21: CALL 534 0 0
+  21: CALL 646 0 0
 // end ; end_of_file
   25: END
 // every 1 do
@@ -230,7 +230,7 @@
  394: PPUSH
  395: CALL_OW 88
 // PrepareConvoy ;
- 399: CALL 614 0 0
+ 399: CALL 779 0 0
 // Say ( Powell , D1-Pow-4 ) ;
  403: LD_EXP 2
  407: PPUSH
@@ -291,391 +291,476 @@
  516: LD_STRING D1-JMM-8
  518: PPUSH
  519: CALL_OW 88
-// ChangeMap ( 10 , %_cont ) ;
- 523: LD_INT 10
+// if TestCharacters ( 08_Frank ) = 1 then
+ 523: LD_STRING 08_Frank
  525: PPUSH
- 526: LD_STRING %_cont
- 528: PPUSH
- 529: CALL_OW 340
+ 526: CALL_OW 28
+ 530: PUSH
+ 531: LD_INT 1
+ 533: EQUAL
+ 534: IFFALSE 604
+// begin ComExitBuilding ( Kikuchi ) ;
+ 536: LD_EXP 3
+ 540: PPUSH
+ 541: CALL_OW 122
+// wait ( 0 0$1 ) ;
+ 545: LD_INT 35
+ 547: PPUSH
+ 548: CALL_OW 67
+// ComTurnUnit ( Kikuchi , JMM ) ;
+ 552: LD_EXP 3
+ 556: PPUSH
+ 557: LD_EXP 1
+ 561: PPUSH
+ 562: CALL_OW 119
+// ComTurnUnit ( JMM , Kikuchi ) ;
+ 566: LD_EXP 1
+ 570: PPUSH
+ 571: LD_EXP 3
+ 575: PPUSH
+ 576: CALL_OW 119
+// Say ( Kikuchi , D3b-Yam-1 ) ;
+ 580: LD_EXP 3
+ 584: PPUSH
+ 585: LD_STRING D3b-Yam-1
+ 587: PPUSH
+ 588: CALL_OW 88
+// SaveCharacters ( Kikuchi , 10_Kikuchi ) ;
+ 592: LD_EXP 3
+ 596: PPUSH
+ 597: LD_STRING 10_Kikuchi
+ 599: PPUSH
+ 600: CALL_OW 38
+// end ; SaveCharacters ( JMM , 10_JMM ) ;
+ 604: LD_EXP 1
+ 608: PPUSH
+ 609: LD_STRING 10_JMM
+ 611: PPUSH
+ 612: CALL_OW 38
+// ComEnterUnit ( JMM , car ) ;
+ 616: LD_EXP 1
+ 620: PPUSH
+ 621: LD_INT 138
+ 623: PPUSH
+ 624: CALL_OW 120
+// wait ( 0 0$7 ) ;
+ 628: LD_INT 245
+ 630: PPUSH
+ 631: CALL_OW 67
+// ChangeMap ( 10 , %_cont ) ;
+ 635: LD_INT 10
+ 637: PPUSH
+ 638: LD_STRING %_cont
+ 640: PPUSH
+ 641: CALL_OW 340
 // end ; end_of_file
- 533: END
+ 645: END
 // export function PrepareHeroes ; begin
- 534: LD_INT 0
- 536: PPUSH
+ 646: LD_INT 0
+ 648: PPUSH
 // uc_side = 1 ;
- 537: LD_ADDR_OWVAR 20
- 541: PUSH
- 542: LD_INT 1
- 544: ST_TO_ADDR
+ 649: LD_ADDR_OWVAR 20
+ 653: PUSH
+ 654: LD_INT 1
+ 656: ST_TO_ADDR
 // uc_nation = 1 ;
- 545: LD_ADDR_OWVAR 21
- 549: PUSH
- 550: LD_INT 1
- 552: ST_TO_ADDR
-// JMM = PrepareUnit ( JMM , false ) ;
- 553: LD_ADDR_EXP 1
- 557: PUSH
- 558: LD_STRING JMM
- 560: PPUSH
- 561: LD_INT 0
- 563: PPUSH
- 564: CALL 1135 0 2
- 568: ST_TO_ADDR
+ 657: LD_ADDR_OWVAR 21
+ 661: PUSH
+ 662: LD_INT 1
+ 664: ST_TO_ADDR
+// JMM = PrepareUnit ( 09_JMM , true ) ;
+ 665: LD_ADDR_EXP 1
+ 669: PUSH
+ 670: LD_STRING 09_JMM
+ 672: PPUSH
+ 673: LD_INT 1
+ 675: PPUSH
+ 676: CALL 1300 0 2
+ 680: ST_TO_ADDR
 // Powell = PrepareUnit ( Powell , false ) ;
- 569: LD_ADDR_EXP 2
- 573: PUSH
- 574: LD_STRING Powell
- 576: PPUSH
- 577: LD_INT 0
- 579: PPUSH
- 580: CALL 1135 0 2
- 584: ST_TO_ADDR
-// PlaceHumanInUnit ( JMM , car ) ;
- 585: LD_EXP 1
- 589: PPUSH
- 590: LD_INT 138
- 592: PPUSH
- 593: CALL_OW 52
-// PlaceHumanInUnit ( Powell , Am_bar ) ;
- 597: LD_EXP 2
- 601: PPUSH
- 602: LD_INT 58
- 604: PPUSH
- 605: CALL_OW 52
-// end ;
- 609: LD_VAR 0 1
- 613: RET
-// export function PrepareConvoy ; var i , veh , un ; begin
- 614: LD_INT 0
- 616: PPUSH
- 617: PPUSH
- 618: PPUSH
- 619: PPUSH
-// uc_side = 1 ;
- 620: LD_ADDR_OWVAR 20
- 624: PUSH
- 625: LD_INT 1
- 627: ST_TO_ADDR
-// uc_nation = 1 ;
- 628: LD_ADDR_OWVAR 21
- 632: PUSH
- 633: LD_INT 1
- 635: ST_TO_ADDR
-// for i := 1 to 3 do
- 636: LD_ADDR_VAR 0 2
- 640: PUSH
- 641: DOUBLE
- 642: LD_INT 1
- 644: DEC
- 645: ST_TO_ADDR
- 646: LD_INT 3
- 648: PUSH
- 649: FOR_TO
- 650: IFFALSE 796
-// begin vc_engine = 1 ;
- 652: LD_ADDR_OWVAR 39
- 656: PUSH
- 657: LD_INT 1
- 659: ST_TO_ADDR
-// vc_control = 1 ;
- 660: LD_ADDR_OWVAR 38
- 664: PUSH
- 665: LD_INT 1
- 667: ST_TO_ADDR
-// vc_weapon = [ 3 , 4 , 5 ] [ Rand ( 1 , 3 ) ] ;
- 668: LD_ADDR_OWVAR 40
- 672: PUSH
- 673: LD_INT 3
- 675: PUSH
- 676: LD_INT 4
- 678: PUSH
- 679: LD_INT 5
- 681: PUSH
- 682: EMPTY
- 683: LIST
- 684: LIST
- 685: LIST
- 686: PUSH
- 687: LD_INT 1
- 689: PPUSH
- 690: LD_INT 3
- 692: PPUSH
- 693: CALL_OW 12
- 697: ARRAY
- 698: ST_TO_ADDR
-// vc_chassis = 3 ;
- 699: LD_ADDR_OWVAR 37
- 703: PUSH
- 704: LD_INT 3
- 706: ST_TO_ADDR
-// veh = CreateVehicle ;
- 707: LD_ADDR_VAR 0 3
- 711: PUSH
- 712: CALL_OW 45
- 716: ST_TO_ADDR
-// SetDir ( veh , 1 ) ;
- 717: LD_VAR 0 3
- 721: PPUSH
- 722: LD_INT 1
- 724: PPUSH
- 725: CALL_OW 233
-// PlaceUnitArea ( veh , WeaponTanks , false ) ;
- 729: LD_VAR 0 3
+ 681: LD_ADDR_EXP 2
+ 685: PUSH
+ 686: LD_STRING Powell
+ 688: PPUSH
+ 689: LD_INT 0
+ 691: PPUSH
+ 692: CALL 1300 0 2
+ 696: ST_TO_ADDR
+// if TestCharacters ( 08_Frank ) = 1 then
+ 697: LD_STRING 08_Frank
+ 699: PPUSH
+ 700: CALL_OW 28
+ 704: PUSH
+ 705: LD_INT 1
+ 707: EQUAL
+ 708: IFFALSE 738
+// begin Kikuchi = PrepareUnit ( Yamoko , false ) ;
+ 710: LD_ADDR_EXP 3
+ 714: PUSH
+ 715: LD_STRING Yamoko
+ 717: PPUSH
+ 718: LD_INT 0
+ 720: PPUSH
+ 721: CALL 1300 0 2
+ 725: ST_TO_ADDR
+// PlaceHumanInUnit ( Kikuchi , am_bar ) ;
+ 726: LD_EXP 3
+ 730: PPUSH
+ 731: LD_INT 58
  733: PPUSH
- 734: LD_INT 8
- 736: PPUSH
- 737: LD_INT 0
- 739: PPUSH
- 740: CALL_OW 49
-// convoy = convoy ^ veh ;
- 744: LD_ADDR_EXP 3
- 748: PUSH
- 749: LD_EXP 3
- 753: PUSH
- 754: LD_VAR 0 3
- 758: ADD
- 759: ST_TO_ADDR
-// PrepareMechanic ( false , 10 ) ;
- 760: LD_INT 0
- 762: PPUSH
- 763: LD_INT 10
- 765: PPUSH
- 766: CALL_OW 383
-// un = CreateHuman ;
- 770: LD_ADDR_VAR 0 4
- 774: PUSH
- 775: CALL_OW 44
- 779: ST_TO_ADDR
-// PlaceHumanInUnit ( un , veh ) ;
- 780: LD_VAR 0 4
+ 734: CALL_OW 52
+// end ; PlaceHumanInUnit ( JMM , car ) ;
+ 738: LD_EXP 1
+ 742: PPUSH
+ 743: LD_INT 138
+ 745: PPUSH
+ 746: CALL_OW 52
+// PlaceHumanInUnit ( Powell , Am_bar ) ;
+ 750: LD_EXP 2
+ 754: PPUSH
+ 755: LD_INT 58
+ 757: PPUSH
+ 758: CALL_OW 52
+// SetClass ( JMM , 1 ) ;
+ 762: LD_EXP 1
+ 766: PPUSH
+ 767: LD_INT 1
+ 769: PPUSH
+ 770: CALL_OW 336
+// end ;
+ 774: LD_VAR 0 1
+ 778: RET
+// export function PrepareConvoy ; var i , veh , un ; begin
+ 779: LD_INT 0
+ 781: PPUSH
+ 782: PPUSH
+ 783: PPUSH
  784: PPUSH
- 785: LD_VAR 0 3
- 789: PPUSH
- 790: CALL_OW 52
-// end ;
- 794: GO 649
- 796: POP
- 797: POP
+// uc_side = 1 ;
+ 785: LD_ADDR_OWVAR 20
+ 789: PUSH
+ 790: LD_INT 1
+ 792: ST_TO_ADDR
+// uc_nation = 1 ;
+ 793: LD_ADDR_OWVAR 21
+ 797: PUSH
+ 798: LD_INT 1
+ 800: ST_TO_ADDR
 // for i := 1 to 3 do
- 798: LD_ADDR_VAR 0 2
- 802: PUSH
- 803: DOUBLE
- 804: LD_INT 1
- 806: DEC
- 807: ST_TO_ADDR
- 808: LD_INT 3
- 810: PUSH
- 811: FOR_TO
- 812: IFFALSE 950
+ 801: LD_ADDR_VAR 0 2
+ 805: PUSH
+ 806: DOUBLE
+ 807: LD_INT 1
+ 809: DEC
+ 810: ST_TO_ADDR
+ 811: LD_INT 3
+ 813: PUSH
+ 814: FOR_TO
+ 815: IFFALSE 961
 // begin vc_engine = 1 ;
- 814: LD_ADDR_OWVAR 39
- 818: PUSH
- 819: LD_INT 1
- 821: ST_TO_ADDR
+ 817: LD_ADDR_OWVAR 39
+ 821: PUSH
+ 822: LD_INT 1
+ 824: ST_TO_ADDR
 // vc_control = 1 ;
- 822: LD_ADDR_OWVAR 38
- 826: PUSH
- 827: LD_INT 1
- 829: ST_TO_ADDR
-// vc_weapon = 12 ;
- 830: LD_ADDR_OWVAR 40
- 834: PUSH
- 835: LD_INT 12
- 837: ST_TO_ADDR
+ 825: LD_ADDR_OWVAR 38
+ 829: PUSH
+ 830: LD_INT 1
+ 832: ST_TO_ADDR
+// vc_weapon = [ 3 , 4 , 5 ] [ Rand ( 1 , 3 ) ] ;
+ 833: LD_ADDR_OWVAR 40
+ 837: PUSH
+ 838: LD_INT 3
+ 840: PUSH
+ 841: LD_INT 4
+ 843: PUSH
+ 844: LD_INT 5
+ 846: PUSH
+ 847: EMPTY
+ 848: LIST
+ 849: LIST
+ 850: LIST
+ 851: PUSH
+ 852: LD_INT 1
+ 854: PPUSH
+ 855: LD_INT 3
+ 857: PPUSH
+ 858: CALL_OW 12
+ 862: ARRAY
+ 863: ST_TO_ADDR
 // vc_chassis = 3 ;
- 838: LD_ADDR_OWVAR 37
- 842: PUSH
- 843: LD_INT 3
- 845: ST_TO_ADDR
+ 864: LD_ADDR_OWVAR 37
+ 868: PUSH
+ 869: LD_INT 3
+ 871: ST_TO_ADDR
 // veh = CreateVehicle ;
- 846: LD_ADDR_VAR 0 3
- 850: PUSH
- 851: CALL_OW 45
- 855: ST_TO_ADDR
+ 872: LD_ADDR_VAR 0 3
+ 876: PUSH
+ 877: CALL_OW 45
+ 881: ST_TO_ADDR
 // SetDir ( veh , 1 ) ;
- 856: LD_VAR 0 3
- 860: PPUSH
- 861: LD_INT 1
- 863: PPUSH
- 864: CALL_OW 233
-// PlaceUnitArea ( veh , Cargo , false ) ;
- 868: LD_VAR 0 3
- 872: PPUSH
- 873: LD_INT 9
- 875: PPUSH
- 876: LD_INT 0
- 878: PPUSH
- 879: CALL_OW 49
-// AddCargo ( veh , 1 , 100 ) ;
- 883: LD_VAR 0 3
- 887: PPUSH
- 888: LD_INT 1
- 890: PPUSH
- 891: LD_INT 100
- 893: PPUSH
- 894: CALL_OW 291
+ 882: LD_VAR 0 3
+ 886: PPUSH
+ 887: LD_INT 1
+ 889: PPUSH
+ 890: CALL_OW 233
+// PlaceUnitArea ( veh , WeaponTanks , false ) ;
+ 894: LD_VAR 0 3
+ 898: PPUSH
+ 899: LD_INT 8
+ 901: PPUSH
+ 902: LD_INT 0
+ 904: PPUSH
+ 905: CALL_OW 49
 // convoy = convoy ^ veh ;
- 898: LD_ADDR_EXP 3
- 902: PUSH
- 903: LD_EXP 3
- 907: PUSH
- 908: LD_VAR 0 3
- 912: ADD
- 913: ST_TO_ADDR
+ 909: LD_ADDR_EXP 4
+ 913: PUSH
+ 914: LD_EXP 4
+ 918: PUSH
+ 919: LD_VAR 0 3
+ 923: ADD
+ 924: ST_TO_ADDR
 // PrepareMechanic ( false , 10 ) ;
- 914: LD_INT 0
- 916: PPUSH
- 917: LD_INT 10
- 919: PPUSH
- 920: CALL_OW 383
+ 925: LD_INT 0
+ 927: PPUSH
+ 928: LD_INT 10
+ 930: PPUSH
+ 931: CALL_OW 383
 // un = CreateHuman ;
- 924: LD_ADDR_VAR 0 4
- 928: PUSH
- 929: CALL_OW 44
- 933: ST_TO_ADDR
+ 935: LD_ADDR_VAR 0 4
+ 939: PUSH
+ 940: CALL_OW 44
+ 944: ST_TO_ADDR
 // PlaceHumanInUnit ( un , veh ) ;
- 934: LD_VAR 0 4
- 938: PPUSH
- 939: LD_VAR 0 3
- 943: PPUSH
- 944: CALL_OW 52
+ 945: LD_VAR 0 4
+ 949: PPUSH
+ 950: LD_VAR 0 3
+ 954: PPUSH
+ 955: CALL_OW 52
 // end ;
- 948: GO 811
- 950: POP
- 951: POP
-// ComMoveXY ( convoy [ 1 ] , 39 , 38 ) ;
- 952: LD_EXP 3
- 956: PUSH
- 957: LD_INT 1
- 959: ARRAY
- 960: PPUSH
- 961: LD_INT 39
- 963: PPUSH
- 964: LD_INT 38
- 966: PPUSH
- 967: CALL_OW 111
-// AddComMoveXY ( convoy [ 1 ] , 41 , 50 ) ;
- 971: LD_EXP 3
+ 959: GO 814
+ 961: POP
+ 962: POP
+// for i := 1 to 3 do
+ 963: LD_ADDR_VAR 0 2
+ 967: PUSH
+ 968: DOUBLE
+ 969: LD_INT 1
+ 971: DEC
+ 972: ST_TO_ADDR
+ 973: LD_INT 3
  975: PUSH
- 976: LD_INT 1
- 978: ARRAY
- 979: PPUSH
- 980: LD_INT 41
- 982: PPUSH
- 983: LD_INT 50
- 985: PPUSH
- 986: CALL_OW 171
-// ComMoveXY ( convoy [ 2 ] , 39 , 38 ) ;
- 990: LD_EXP 3
- 994: PUSH
- 995: LD_INT 2
- 997: ARRAY
- 998: PPUSH
- 999: LD_INT 39
-1001: PPUSH
-1002: LD_INT 38
-1004: PPUSH
-1005: CALL_OW 111
-// AddComMoveXY ( convoy [ 2 ] , 41 , 47 ) ;
-1009: LD_EXP 3
-1013: PUSH
-1014: LD_INT 2
-1016: ARRAY
-1017: PPUSH
-1018: LD_INT 41
-1020: PPUSH
-1021: LD_INT 47
-1023: PPUSH
-1024: CALL_OW 171
-// ComMoveXY ( convoy [ 3 ] , 39 , 38 ) ;
-1028: LD_EXP 3
-1032: PUSH
-1033: LD_INT 3
-1035: ARRAY
-1036: PPUSH
-1037: LD_INT 39
-1039: PPUSH
-1040: LD_INT 38
-1042: PPUSH
-1043: CALL_OW 111
-// AddComMoveXY ( convoy [ 3 ] , 41 , 44 ) ;
-1047: LD_EXP 3
-1051: PUSH
-1052: LD_INT 3
-1054: ARRAY
+ 976: FOR_TO
+ 977: IFFALSE 1115
+// begin vc_engine = 1 ;
+ 979: LD_ADDR_OWVAR 39
+ 983: PUSH
+ 984: LD_INT 1
+ 986: ST_TO_ADDR
+// vc_control = 1 ;
+ 987: LD_ADDR_OWVAR 38
+ 991: PUSH
+ 992: LD_INT 1
+ 994: ST_TO_ADDR
+// vc_weapon = 12 ;
+ 995: LD_ADDR_OWVAR 40
+ 999: PUSH
+1000: LD_INT 12
+1002: ST_TO_ADDR
+// vc_chassis = 3 ;
+1003: LD_ADDR_OWVAR 37
+1007: PUSH
+1008: LD_INT 3
+1010: ST_TO_ADDR
+// veh = CreateVehicle ;
+1011: LD_ADDR_VAR 0 3
+1015: PUSH
+1016: CALL_OW 45
+1020: ST_TO_ADDR
+// SetDir ( veh , 1 ) ;
+1021: LD_VAR 0 3
+1025: PPUSH
+1026: LD_INT 1
+1028: PPUSH
+1029: CALL_OW 233
+// PlaceUnitArea ( veh , Cargo , false ) ;
+1033: LD_VAR 0 3
+1037: PPUSH
+1038: LD_INT 9
+1040: PPUSH
+1041: LD_INT 0
+1043: PPUSH
+1044: CALL_OW 49
+// AddCargo ( veh , 1 , 100 ) ;
+1048: LD_VAR 0 3
+1052: PPUSH
+1053: LD_INT 1
 1055: PPUSH
-1056: LD_INT 41
+1056: LD_INT 100
 1058: PPUSH
-1059: LD_INT 44
-1061: PPUSH
-1062: CALL_OW 171
-// wait ( 0 0$4 ) ;
-1066: LD_INT 140
-1068: PPUSH
-1069: CALL_OW 67
-// ComMoveXY ( convoy [ 4 ] , 47 , 49 ) ;
-1073: LD_EXP 3
-1077: PUSH
-1078: LD_INT 4
-1080: ARRAY
+1059: CALL_OW 291
+// convoy = convoy ^ veh ;
+1063: LD_ADDR_EXP 4
+1067: PUSH
+1068: LD_EXP 4
+1072: PUSH
+1073: LD_VAR 0 3
+1077: ADD
+1078: ST_TO_ADDR
+// PrepareMechanic ( false , 10 ) ;
+1079: LD_INT 0
 1081: PPUSH
-1082: LD_INT 47
+1082: LD_INT 10
 1084: PPUSH
-1085: LD_INT 49
-1087: PPUSH
-1088: CALL_OW 111
-// ComMoveXY ( convoy [ 5 ] , 47 , 49 ) ;
-1092: LD_EXP 3
-1096: PUSH
-1097: LD_INT 5
-1099: ARRAY
-1100: PPUSH
-1101: LD_INT 47
+1085: CALL_OW 383
+// un = CreateHuman ;
+1089: LD_ADDR_VAR 0 4
+1093: PUSH
+1094: CALL_OW 44
+1098: ST_TO_ADDR
+// PlaceHumanInUnit ( un , veh ) ;
+1099: LD_VAR 0 4
 1103: PPUSH
-1104: LD_INT 49
-1106: PPUSH
-1107: CALL_OW 111
-// ComMoveXY ( convoy [ 6 ] , 47 , 49 ) ;
-1111: LD_EXP 3
-1115: PUSH
-1116: LD_INT 6
-1118: ARRAY
-1119: PPUSH
-1120: LD_INT 47
-1122: PPUSH
-1123: LD_INT 49
-1125: PPUSH
-1126: CALL_OW 111
-// end ; end_of_file
-1130: LD_VAR 0 1
-1134: RET
-// export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
-1135: LD_INT 0
-1137: PPUSH
-1138: PPUSH
-// if exist_mode then
-1139: LD_VAR 0 2
-1143: IFFALSE 1162
-// unit := CreateCharacter ( ident ) else
-1145: LD_ADDR_VAR 0 4
-1149: PUSH
-1150: LD_VAR 0 1
-1154: PPUSH
-1155: CALL_OW 34
-1159: ST_TO_ADDR
-1160: GO 1177
-// unit := NewCharacter ( ident ) ;
-1162: LD_ADDR_VAR 0 4
-1166: PUSH
-1167: LD_VAR 0 1
-1171: PPUSH
-1172: CALL_OW 25
-1176: ST_TO_ADDR
-// result := unit ;
-1177: LD_ADDR_VAR 0 3
-1181: PUSH
-1182: LD_VAR 0 4
-1186: ST_TO_ADDR
+1104: LD_VAR 0 3
+1108: PPUSH
+1109: CALL_OW 52
 // end ;
-1187: LD_VAR 0 3
-1191: RET
+1113: GO 976
+1115: POP
+1116: POP
+// ComMoveXY ( convoy [ 1 ] , 39 , 38 ) ;
+1117: LD_EXP 4
+1121: PUSH
+1122: LD_INT 1
+1124: ARRAY
+1125: PPUSH
+1126: LD_INT 39
+1128: PPUSH
+1129: LD_INT 38
+1131: PPUSH
+1132: CALL_OW 111
+// AddComMoveXY ( convoy [ 1 ] , 41 , 50 ) ;
+1136: LD_EXP 4
+1140: PUSH
+1141: LD_INT 1
+1143: ARRAY
+1144: PPUSH
+1145: LD_INT 41
+1147: PPUSH
+1148: LD_INT 50
+1150: PPUSH
+1151: CALL_OW 171
+// ComMoveXY ( convoy [ 2 ] , 39 , 38 ) ;
+1155: LD_EXP 4
+1159: PUSH
+1160: LD_INT 2
+1162: ARRAY
+1163: PPUSH
+1164: LD_INT 39
+1166: PPUSH
+1167: LD_INT 38
+1169: PPUSH
+1170: CALL_OW 111
+// AddComMoveXY ( convoy [ 2 ] , 41 , 47 ) ;
+1174: LD_EXP 4
+1178: PUSH
+1179: LD_INT 2
+1181: ARRAY
+1182: PPUSH
+1183: LD_INT 41
+1185: PPUSH
+1186: LD_INT 47
+1188: PPUSH
+1189: CALL_OW 171
+// ComMoveXY ( convoy [ 3 ] , 39 , 38 ) ;
+1193: LD_EXP 4
+1197: PUSH
+1198: LD_INT 3
+1200: ARRAY
+1201: PPUSH
+1202: LD_INT 39
+1204: PPUSH
+1205: LD_INT 38
+1207: PPUSH
+1208: CALL_OW 111
+// AddComMoveXY ( convoy [ 3 ] , 41 , 44 ) ;
+1212: LD_EXP 4
+1216: PUSH
+1217: LD_INT 3
+1219: ARRAY
+1220: PPUSH
+1221: LD_INT 41
+1223: PPUSH
+1224: LD_INT 44
+1226: PPUSH
+1227: CALL_OW 171
+// wait ( 0 0$4 ) ;
+1231: LD_INT 140
+1233: PPUSH
+1234: CALL_OW 67
+// ComMoveXY ( convoy [ 4 ] , 47 , 49 ) ;
+1238: LD_EXP 4
+1242: PUSH
+1243: LD_INT 4
+1245: ARRAY
+1246: PPUSH
+1247: LD_INT 47
+1249: PPUSH
+1250: LD_INT 49
+1252: PPUSH
+1253: CALL_OW 111
+// ComMoveXY ( convoy [ 5 ] , 47 , 49 ) ;
+1257: LD_EXP 4
+1261: PUSH
+1262: LD_INT 5
+1264: ARRAY
+1265: PPUSH
+1266: LD_INT 47
+1268: PPUSH
+1269: LD_INT 49
+1271: PPUSH
+1272: CALL_OW 111
+// ComMoveXY ( convoy [ 6 ] , 47 , 49 ) ;
+1276: LD_EXP 4
+1280: PUSH
+1281: LD_INT 6
+1283: ARRAY
+1284: PPUSH
+1285: LD_INT 47
+1287: PPUSH
+1288: LD_INT 49
+1290: PPUSH
+1291: CALL_OW 111
+// end ; end_of_file
+1295: LD_VAR 0 1
+1299: RET
+// export function PrepareUnit ( ident , exist_mode ) ; var unit ; begin
+1300: LD_INT 0
+1302: PPUSH
+1303: PPUSH
+// if exist_mode then
+1304: LD_VAR 0 2
+1308: IFFALSE 1327
+// unit := CreateCharacter ( ident ) else
+1310: LD_ADDR_VAR 0 4
+1314: PUSH
+1315: LD_VAR 0 1
+1319: PPUSH
+1320: CALL_OW 34
+1324: ST_TO_ADDR
+1325: GO 1342
+// unit := NewCharacter ( ident ) ;
+1327: LD_ADDR_VAR 0 4
+1331: PUSH
+1332: LD_VAR 0 1
+1336: PPUSH
+1337: CALL_OW 25
+1341: ST_TO_ADDR
+// result := unit ;
+1342: LD_ADDR_VAR 0 3
+1346: PUSH
+1347: LD_VAR 0 4
+1351: ST_TO_ADDR
+// end ;
+1352: LD_VAR 0 3
+1356: RET

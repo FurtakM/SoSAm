@@ -2,6 +2,7 @@ Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_r
 begin
     case query('QEndMission') of
         1: begin   
+            end_the_mission_allowed = true;
         end;
         2:begin
             FinishMission;
@@ -14,6 +15,9 @@ Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_r
 
 Export function FinishMission;
 begin
+
+    SaveVariable(KhatamStatus, '10_KhatamStatus_1');
+
     if GetTech(tech_LasSight, 1) = state_researched then
     begin
         AddMedal('sights', 1);
@@ -38,11 +42,11 @@ begin
         SaveVariable(0, '10_GensherEscape_1');
         SaveVariable(0, '10_ScientistsEscape_1');
     end
-    else
+    else 
     begin
         AddMedal('renegades', -1);
     end;
-
+    Query('kaj');
     GiveMedals('Main');
     RewardPeople(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]));
 
@@ -60,8 +64,9 @@ begin
     EnchancedSaveCharacters(Houten, mission_prefix&'Houten');
     EnchancedSaveCharacters(Simms, mission_prefix&'Simms');
     EnchancedSaveCharacters(Gary, mission_prefix&'Gary');
+    EnchancedSaveCharacters(DeltaDoctor, mission_prefix&'DeltaDoctor');
 
-    SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Denis, Joan, Houten, Simms, Gary],'10_other_survivors');
+    SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Denis, Joan, Houten, Simms, Gary, DeltaDoctor],'10_other_survivors');
 
     YouWin;
 end;
