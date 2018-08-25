@@ -1,6 +1,9 @@
 // Start mission
 Every 1 do 
 begin
+
+    RevealFogArea(1, EpsilonTerrain);
+
     CenterNowOnUnits(IsInUnit(JMM));
 
     if IsOk(Gary) then
@@ -29,7 +32,7 @@ begin
     wait(0$1);
     repeat
         wait(0$1);
-        ComMoveUnit([Simms, Joan, Denis, Khatam], JMM);
+        ComMoveUnit([Simms, Joan, Denis, Khatam, Kikuchi], JMM);
     until GetDistUnits(JMM, Simms) < 5;
 
     ComTurnUnit(JMM, Simms);
@@ -57,6 +60,15 @@ begin
         ComTurnUnit(JMM, Khatam);
         Say(JMM, 'D2c-JMM-1');
         Say(Khatam, 'D2c-Khat-1');
+    end;
+
+    if IsOK(Kikuchi) then
+    begin
+        repeat
+            wait(0$1);
+            ComMoveUnit(Kikuchi, JMM);
+        until GetDistUnits(JMM, Kikuchi) < 5;
+        Say(Kikuchi, 'D3b-Yam-1');
     end;
 
     InGameOff;
