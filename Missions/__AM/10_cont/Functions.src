@@ -247,10 +247,55 @@ begin
 
             if GetDistUnits(list[i], ta) <= 12 then
                 begin
-
                     Case c of
-                    1: ComTimeShift(list[i], GetX(ta), GetY(ta));
-                    2: ComSpaceShift(list[i], GetX(ta) + Rand(-1,1), GetY(ta) + Rand(-1,1));
+                    1: begin
+                        ComTimeShift(list[i], GetX(ta), GetY(ta));
+
+                        if eventVar2 = 0 then
+                        begin
+                            eventVar2 = 1;
+                            wait(0$7);
+                            CenterOnXY(GetX(ta), GetY(ta));
+                            DialogueOn;
+                            if IsOK(Cyrus) then
+                            begin
+                                Say(Cyrus, 'D9a-Cyrus-1');
+                            end
+                            else
+                            begin
+                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9a-Sol1-1', 'D9a-Sol1-1');
+                            end;
+                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9b-Sol1-1', 'D9b-Sol1-1');
+                            if LoadVariable('09_arInfo', 0) = 1 then Say(JMM, 'D9a-JMM-1');
+                            Say(JMM, 'D9c-JMM-1');
+                            If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
+                            DialogueOff;
+                        end;
+
+                    end; 
+                    2: begin
+                        ComSpaceShift(list[i], GetX(ta) + Rand(-1,1), GetY(ta) + Rand(-1,1));
+                        if eventVar2 = 0 then
+                        begin
+                            eventVar2 = 1;
+                            wait(0$7);
+                            CenterOnXY(GetX(ta), GetY(ta));
+                            DialogueOn;
+                            if IsOK(Cyrus) then
+                            begin
+                                Say(Cyrus, 'D9a-Cyrus-1');
+                            end
+                            else
+                            begin
+                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9a-Sol1-1', 'D9a-Sol1-1');
+                            end;
+                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9b-Sol1-1', 'D9b-Sol1-1');
+                            if LoadVariable('09_arInfo', 0) = 1 then Say(JMM, 'D9a-JMM-1');
+                            Say(JMM, 'D9c-JMM-1');
+                            If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
+                            DialogueOff;
+                        end;
+                    end; 
                     3: ;
                     end;
 
@@ -715,9 +760,13 @@ repeat
     end;
 
 until FilterAllUnits([[f_side, 2], [f_class, 4]]) = 0  or FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) = 0;
-
-for i in FilterAllUnits([[f_side, 2], [f_class, 12]]) do SetClass(i, [16, 15][Rand(1,2)]);
-for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComEnterUnit(i, arLab);
+wait(0$30);
+for i in FilterAllUnits([[f_side, 2], [f_class, 12]]) do
+begin
+    SetClass(i, [16, 15][Rand(1,2)]);
+    ComMoveXY(i, GetX(arDepot), GetY(arDepot));
+end; 
+for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComEnterUnit(i, FilterAllUnits([[f_side, 2], [f_btype, b_lab_full]])[1]);
 
 end;
 
