@@ -5,30 +5,58 @@ begin
     uc_nation = 1;
 
     JMM = PrepareUnit('10_JMM', true);
-    Gary = PrepareUnit(mission_prefix_prev&'Gary', true);
-    Cyrus = PrepareUnit(mission_prefix_prev&'Cyrus', true);
-    Bobby = PrepareUnit(mission_prefix_prev&'Bobby', true);
-    Lisa = PrepareUnit('08_Lisa', true);
-    if TestCharacters('08_Frank') then Kikuchi = PrepareUnit('10_Kikuchi', true);
+    Gary = PrepareUnit('10_Gary', true);
+    Cyrus = PrepareUnit('10_Cyrus', true);
+    Bobby = PrepareUnit('10_Bobby', true);
+    Lisa = PrepareUnit('10_Lisa', true);
+    Kikuchi = PrepareUnit('10_Kikuchi', true);
 
-    others08 = CreateCharacterSet('08_other_survivors');
+    Brown = PrepareUnit('10_Brown', true);
+    Donaldson = PrepareUnit('10_Donaldson', true);
+    Frank = PrepareUnit('10_Frank', true);
+    Houten = PrepareUnit('10_Houten', true);
+
+    others10 = CreateCharacterSet('OthersIn10');
 
     Powell = PrepareUnit('Powell', false);
 
     PlaceHumanInUnit(JMM, playerVehs[1]);
     PlaceHumanInUnit(Gary, playerVehs[2]);
+        if not IsPlaced(Gary) and not IsPlaced(Brown) and UnitsInside(playerVehs[2]) = [] then PlaceHumanInUnit(Brown, playerVehs[2]);
+        if not IsPlaced(Gary) and not IsPlaced(Donaldson) and UnitsInside(playerVehs[2]) = [] then PlaceHumanInUnit(Donaldson, playerVehs[2]);
+        if not IsPlaced(Gary) and not IsPlaced(Frank) and UnitsInside(playerVehs[2]) = [] then PlaceHumanInUnit(Frank, playerVehs[2]);
+        if not IsPlaced(Gary) and not IsPlaced(Houten) and UnitsInside(playerVehs[2]) = [] then PlaceHumanInUnit(Houten, playerVehs[2]);
+
     PlaceHumanInUnit(Cyrus, playerVehs[3]);
+        if not IsPlaced(Cyrus) and not IsPlaced(Brown) and UnitsInside(playerVehs[3]) = [] then PlaceHumanInUnit(Brown, playerVehs[3]);
+        if not IsPlaced(Cyrus) and not IsPlaced(Donaldson) and UnitsInside(playerVehs[3]) = [] then PlaceHumanInUnit(Donaldson, playerVehs[3]);
+        if not IsPlaced(Cyrus) and not IsPlaced(Frank) and UnitsInside(playerVehs[3]) = [] then PlaceHumanInUnit(Frank, playerVehs[3]);
+        if not IsPlaced(Cyrus) and not IsPlaced(Houten) and UnitsInside(playerVehs[3]) = [] then PlaceHumanInUnit(Houten, playerVehs[3]);
+
+
     PlaceHumanInUnit(Bobby, playerVehs[4]);
+        if not IsPlaced(Bobby) and not IsPlaced(Brown) and UnitsInside(playerVehs[4]) = [] then PlaceHumanInUnit(Brown, playerVehs[4]);
+        if not IsPlaced(Bobby) and not IsPlaced(Donaldson) and UnitsInside(playerVehs[4]) = [] then PlaceHumanInUnit(Donaldson, playerVehs[4]);
+        if not IsPlaced(Bobby) and not IsPlaced(Frank) and UnitsInside(playerVehs[4]) = [] then PlaceHumanInUnit(Frank, playerVehs[4]);
+        if not IsPlaced(Bobby) and not IsPlaced(Houten) and UnitsInside(playerVehs[4]) = [] then PlaceHumanInUnit(Houten, playerVehs[4]);
+
+
     PlaceHumanInUnit(Lisa, playerVehs[5]);
+        if not IsPlaced(Lisa) and not IsPlaced(Brown) and UnitsInside(playerVehs[5]) = [] then PlaceHumanInUnit(Brown, playerVehs[5]);
+        if not IsPlaced(Lisa) and not IsPlaced(Donaldson) and UnitsInside(playerVehs[5]) = [] then PlaceHumanInUnit(Donaldson, playerVehs[5]);
+        if not IsPlaced(Lisa) and not IsPlaced(Frank) and UnitsInside(playerVehs[5]) = [] then PlaceHumanInUnit(Frank, playerVehs[5]);
+        if not IsPlaced(Lisa) and not IsPlaced(Houten) and UnitsInside(playerVehs[5]) = [] then PlaceHumanInUnit(Houten, playerVehs[5]);
+
+
     if TestCharacters('08_Frank') then PlaceHumanInUnit(Kikuchi, playerVehs[6]);
 
-    SetClass([Gary, Cyrus, Bobby, Lisa], 1);
+    SetClass(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 1);
 
     BonusVehicles;
 
     if FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]) > 0 then
     begin
-        for i in others08 do
+        for i in others10 do
         begin
             for j in FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]) do
             begin
@@ -37,7 +65,13 @@ begin
             end;
         end;
     end;
-        
+
+    if not IsPlaced(Brown) and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]) > 0 then PlaceHumanInUnit(Brown, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]); 
+    if not IsPlaced(Donaldson) and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]) > 0 then PlaceHumanInUnit(Donaldson, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    if not IsPlaced(Frank) and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]) > 0 then PlaceHumanInUnit(Frank, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    if not IsPlaced(Houten) and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]]) > 0 then PlaceHumanInUnit(Houten, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+
+
 end;
 
 Export function BonusVehicles; // Trzeba nagradzac starania ;)
@@ -104,16 +138,7 @@ begin
 
         if vc_weapon = 12 then
         begin
-            rnd = Rand(1, 10) * 10;
-            rest = 100 - rest - rnd;
-            AddCargo(veh, [1, 3][Rand(1,2)], rnd);
-            cargoAmmount = rnd;
-
-            repeat
-                rest = 100 - rest - rnd;
-                rnd = Rand(1, rest/10) * 10;
-                AddCargo(veh, [1, 3][Rand(1,2)], rnd);
-            until rest = 0;
+            rnd = Rand(5, 10) * 10;
             AddCargo(veh, [1, 3][Rand(1,2)], rnd);
         end; 
             
@@ -147,9 +172,9 @@ begin
 
     SetClass([Simms, Khatam, Denis, Gladstone, DeltaDoctor, Joan], 4);
 
-    if others09 > [6, 5, 4][Difficulty] then
+    if others09 > 2 then
     begin
-        for i := 1 to [7, 6, 5][Difficulty] do PlaceUnitArea(others09[i], CathyTeamSpawn,  false);
+        for i := 1 to 3 do PlaceUnitArea(others09[i], CathyTeamSpawn,  false);
     end else
     begin
         for i in others09 do PlaceUnitArea(i, CathyTeamSpawn, false);

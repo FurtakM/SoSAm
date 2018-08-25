@@ -1,6 +1,6 @@
 {
     Map scripts : Nefarem
-    Status: 99%
+    Status: 100%
 
     Global Variables:
     10_GensherEscape_1 = 0 - won't arrive with support in next mission
@@ -16,7 +16,7 @@
 Export JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary; // Heroes with JMM
 Export Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, AmScout; // Heroes from ALpha
 Export Cornell; // Other Am heroes
-Export others08, others09, ape09; // Others characters
+Export others10, others09, ape09; // Others characters
 Export Powell; // Am commander
 Export Tsaritsyn; // Ru commander
 Export Dietrich; // Ar commander
@@ -33,12 +33,16 @@ Export ruDestroyedBuildings;
 Export arDepot, arLab, arArm;
 Export arabianAttackersAI;
 Export arabianEscape;
+Export arabianDefeated;
+Export arabianTrait;
 
 Export KhatamStatus;
 
 Export mission_prefix, mission_prefix_prev;
 
 Export cratesSpawned;
+
+Export fastEnd;
 
 Export eventVar1, eventVar2;
 Export debugMode;
@@ -59,9 +63,13 @@ begin
 
     arabianEscape = 0; // 0 - killed, 1 - escaped
     arabianAttackersAI = 0; // 0 - off, 1 - on
+    arabianDefeated = 0; 
+    arabianTrait = 0;
 
     eventVar1 = 0; // block event
     eventVar2 = 0;
+
+    fastEnd = 0;
 
     KhatamStatus = 0;
 
@@ -70,7 +78,7 @@ begin
     mission_prefix := '10_';
     mission_prefix_prev := '09_';
 
-    debugMode = 1; // 0 - players, 1 - developers
+    debugMode = 0; // 0 - players, 1 - developers
 
     PrepareDifficulty;
     PrepareVehicles;

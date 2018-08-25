@@ -1,7 +1,7 @@
 // Start mission
 Every 1 do 
 begin
-    CenterNowOnUnits(JMM);
+    CenterNowOnUnits(IsInUnit(JMM));
 
     if IsOk(Gary) then
     begin
@@ -91,6 +91,7 @@ begin
     SetTech(12, 1, state_enabled);
     SetTech(32, 1, state_enabled);
     SetRestrict(12, 1, true);
+    SetRestrict(33, 1, true);
 
     ChangeMissionObjectives('M2');
 
@@ -112,14 +113,6 @@ begin
         Say(Simms, 'D3a-Sim-6');
         DialogueOff;
     end;
- 
-    wait(3$0);
-    DialogueOn;
-    DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-1', 'D5-Ar1-1');
-    Say(Dietrich, 'D5-Diet-1');
-    DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-2', 'D5-Ar1-2');
-    Say(Dietrich, 'D5-Diet-2');
-    DialogueOff;
 
 end;
 
@@ -174,7 +167,28 @@ begin
         DialogueOff;
     end;
 
+    wait(0$30);
+
+    if arabianTrait = 0 then
+    begin
+        DialogueOn;
+        DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-1', 'D5-Ar1-1');
+        Say(Dietrich, 'D5-Diet-1');
+        DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-2', 'D5-Ar1-2');
+        Say(Dietrich, 'D5-Diet-2');
+        DialogueOff;
+    end;
+
     wait([1$0, 1$30, 2$0, 2$30][Rand(1, 4)]);
+
+    if arabianTrait = 0 then PrepareArabianTrait;
+    arabianTrait = 1;
+
+end;
+
+Export function PrepareArabianTrait;
+var i, tmp;
+begin
 
     for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComExitBuilding(i);
     wait(0$1);
@@ -185,35 +199,7 @@ begin
     else  DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D8-Sol1-1', 'D8-Sol1-1');
     Say(JMM, 'D8-JMM-1');
     DialogueOff;
-    ArabianTrait;
-    wait(0$30);
-    If IsOk(Gary) then Say(Gary, 'D8a-Gary-1');
-    wait(0$5);
-    If IsOK(Khatam) then
-    begin
-        tmp = FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]])[1];
 
-        SetSide(Khatam, 8);
-        ComExitBuilding(Khatam);
-        wait(0$1);
-        ComExitVehicle(Khatam);
-        wait(0$1);
-        ComMoveToArea(Khatam, ArabianSpawn2);
-        DialogueOn;
-        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-1', 'D8b-FSol1-1');
-        Say(Khatam, 'D8b-Khat-1');
-        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-2', 'D8b-FSol1-2');
-        Say(Khatam, 'D8b-Khat-2');
-        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-3', 'D8b-FSol1-3');
-        Say(Khatam, 'D8b-Khat-3');
-        DialogRandom(FilterAllUnits([[f_side, 1]] diff [JMM, Khatam, Joan]), 'D8b-Sol1-4', 'D8b-FSol1-4');
-        DialogueOff;
-    end;
-end;
-
-Export function ArabianTrait;
-var i;
-begin
     ChangeSideFog(2, 2);
     SetAttitude(1, 2, att_enemy, true);
     SetAttitude(3, 2, att_friend, true);
@@ -231,6 +217,30 @@ begin
         AddComAgressiveMove(i, 189, 79);
     end; 
     arabianAttackersAI = 1;
+
+    wait(0$30);
+    If IsOk(Gary) then Say(Gary, 'D8a-Gary-1');
+    wait(0$5);
+    If IsOK(Khatam) then
+    begin
+        tmp = FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Khatam, Joan][1];
+
+        SetSide(Khatam, 8);
+        ComExitBuilding(Khatam);
+        wait(0$1);
+        ComExitVehicle(Khatam);
+        wait(0$1);
+        ComMoveToArea(Khatam, ArabianSpawn2);
+        DialogueOn;
+        DialogRandom(tmp, 'D8b-Sol1-1', 'D8b-FSol1-1');
+        Say(Khatam, 'D8b-Khat-1');
+        DialogRandom(tmp, 'D8b-Sol1-2', 'D8b-FSol1-2');
+        Say(Khatam, 'D8b-Khat-2');
+        DialogRandom(tmp, 'D8b-Sol1-3', 'D8b-FSol1-3');
+        Say(Khatam, 'D8b-Khat-3');
+        DialogRandom(tmp, 'D8b-Sol1-4', 'D8b-FSol1-4');
+        DialogueOff;
+    end;
 end;
 
 // Escape Arabian traitors
@@ -255,6 +265,17 @@ end;
 // Khatam dead
 Every 0$1 trigger IsDead(Khatam) do KhatamStatus = 0;
 
+// Change variable value
+Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 and FilterAllUnits([[f_side, 4], [f_type, unit_human]]) = 0  do
+    arabianDefeated = 1;
+
+// Force arabian trait if player fast research siberite techs 
+Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_researched and GetTech(21, 1) = state_researched and GetTech(22, 1) = state_researched and GetTech(tech_LasSight, 1) = state_researched and GetTech(tech_AI, 1) = state_researched and fastEnd = 0 and arabianTrait = 0 do 
+begin
+    PrepareArabianTrait;
+    arabianTrait = 1;
+end;
+
 // Spawn Cornell
 Every 6$30 trigger joinEpsilon = 1 and LoadVariable('02_mikhailStatus_1', 0) = 1 do PrepareCornell;
 
@@ -264,7 +285,7 @@ begin
     InGameOn;
     CenterNowOnUnits(Cornell);
     Say(Cornell, 'D7-Corn-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM, Joan]), 'D7-Sol1-1', 'D7-FSol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Joan], 'D7-Sol1-1', 'D7-FSol1-1');
     CenterNowOnUnits(Cornell);
     Say(Cornell, 'D7-Corn-2');
     Say(JMM, 'D7-JMM-2');
