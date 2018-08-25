@@ -17,6 +17,7 @@ begin
     AddCargo(cargo1, 1, 100);
     AddCargo(cargo2, 1, 50);
     AddCargo(cargo2, 3, 50);
+    SaveForQuickRestart;
 end;
 
 // Meet Cathy and others
@@ -191,7 +192,8 @@ var i, tmp;
 begin
 
     for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComExitBuilding(i);
-    wait(0$1);
+    for i in FilterAllUnits([[f_side, 2], [f_class, 3]]) do ComExitVehicle(i);
+    wait(0$3);
     CenterOnXY(76, 19);
     DialogueOn;
     DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D8-Sol1-1', 'D8-Sol1-1');
@@ -250,16 +252,17 @@ begin
     enable;
     for i in FilterUnitsInArea(ArabianSpawn2, [f_side, 2]) do
     begin
-        RemoveUnit(i);
+        if GetClass(i) = 4 then SaveVariable(1, '10_ScientistsEscape_1');
+        if i = Dietrich then SaveVariable(1, '10_GensherEscape_1');
         arabianEscape = 1;
-        SaveVariable(1, '10_ScientistsEscape_1');
+        RemoveUnit(i);
+
     end; 
     if IsInArea(Khatam, ArabianSpawn2) then
     begin
         KhatamStatus = 1;
         RemoveUnit(Khatam);
-    end; 
-    if IsInArea(Dietrich, ArabianSpawn2) then SaveVariable(1, '10_GensherEscape_1');
+    end;
 end;
 
 // Khatam dead
