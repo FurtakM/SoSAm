@@ -50,9 +50,13 @@ begin
     Say(Powell, 'D1-Pow-5');
     Say(JMM, 'D1-JMM-6');
     Say(Powell, 'D1-Pow-6');
+
+    ComMoveXY(convoy, 78, 3);
+
     Say(JMM, 'D1-JMM-7');
     Say(Powell, 'D1-Pow-7');
     Say(JMM, 'D1-JMM-8');
+
 
     if TestCharacters('08_Frank') = 1 then
     begin
@@ -65,8 +69,9 @@ begin
     end;
 
     SaveCharacters(JMM, '10_JMM');
-    ComEnterUnit(JMM, car);
-    wait(0$7);
+    SaveCharacters(FilterUnitsInArea(AddHeroes, [[f_side, 1], [f_type, unit_human]]) diff [JMM, Powell, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Houten, Gary, Kikuchi], 'OthersIn10');
+   // ComEnterUnit(JMM, car);
+    //wait(0$7);
 
     ChangeMap(10, '%_cont');
 end;

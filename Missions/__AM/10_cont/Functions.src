@@ -245,7 +245,7 @@ begin
         for ta in filter do
             begin
 
-            if GetDistUnits(list[i], ta) <= 13 then
+            if GetDistUnits(list[i], ta) <= 12 then
                 begin
 
                     Case c of
@@ -295,35 +295,31 @@ end;
 
 end;
 
+
 Export function RepairBuilding(side, building);
-var buildings_list, i,engineerOk_list, j;
+var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
-    engineerOk_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 2], [f_class, 16]], [f_lives, 1000]]);
-    buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+  engineerOkInside = UnitsInside(building);
+  engineerOkOutside = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000]]);
+  buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-    if buildings_list > 0 and engineerOk_list > 0 then
-    begin
+  if not buildings_list and not engineerOkOutside then exit;
 
-        for i in engineerOk_list do
-        begin
-            for j in buildings_list do
-            begin
+  if buildings_list > 0 and engineerOkInside > 0 then
+      for i in engineerOkInside do ComExitBuilding(i);
 
-                AddComExitBuilding(i);
-                wait(0$1);
-                AddComRepairBuilding(i, j);
+  if engineerOkOutside > 0 then
+  begin
 
-            end;
-        end;
-    end;
+    for i in engineerOkOutside do
+      for j in buildings_list do
+          ComRepairBuilding(i, j[1]);
 
-    if buildings_list = 0 then
-    begin
+  end;
 
-        for i in engineerOK_list do ComEnterUnit(i, building);
-
-    end;
+  if buildings_list = 0 and engineerOkOutside > 0 then
+      for i in engineerOkOutside do ComEnterUnit(i, building);
 END;
 
 Export function RebuildBuildings(side, destroyedBuildings);
@@ -339,35 +335,38 @@ begin
 end;
 end;
 
-Export function HealUnitInBase(side, healArea, baseArea);
-var i, j, scientisticsOutside, scientisticsInside, labs, damageUnits;
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal, tmp, rnd;
 begin
 
-labs = FilterAllUnits([[f_side, side], [f_lives, 251], [f_or, [f_btype, b_lab_basic], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
-scientisticsOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_lives, 251]]);
-damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 251]]);
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_ok]]);
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
+  unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 1000]]]);
 
-if labs > 0 and damageUnits > 0 then 
-    for i in labs do scientisticsInside = UnitsInside(i);
+  if not damageUnits and not sci_listOutside and not unitsToHeal then exit;
 
-if labs > 0 and damageUnits > 0 then
-    for i in scientisticsInside do ComExitBuilding(i);
+  if damageUnits > 0 and sci_list > 0 then
+    for i in damageUnits do ComMoveToArea(i, healArea);
 
-if damageUnits > 0 and scientisticsOutside > 0 then
-begin
+  if unitsToHeal > 0 and sci_list > 0 then
+  begin
+    for i in sci_list do
+    begin
 
-    ComMoveToArea(damageUnits, healArea);
+      ComExitBuilding(i);
 
-    for i in scientisticsOutside do
-        for j in damageUnits do
-            AddComHeal(i, j);
+      for j in unitsToHeal do AddComHeal(i, j);
+    end;
+  end;
 
-end else
-begin
-
-    ComEnterUnit(scientisticsOutside, labs[Rand(1, labs)]);
-
-end;
+  if damageUnits = 0 and unitsToHeal = 0 and sci_listOutside > 0 then
+      for i in sci_listOutside do
+      begin
+          tmp = FilterAllUnits([[f_side, side], [f_type, unit_building], [f_btype, b_lab_full]]);
+          rnd = rand(1, tmp);
+          ComEnterUnit(i, tmp[rnd]);
+      end; 
 
 END;
 

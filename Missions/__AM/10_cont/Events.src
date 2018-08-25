@@ -83,8 +83,21 @@ begin
             arLab = building;
         end;
 
-        if GetBType(building) = b_breastwork then
+        if GetBType(building) = b_breastwork and FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]]) > 0 then
             ComEnterUnit(FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]])[1], building);
+    
+        if GetBType(building) = b_solar_power then 
+            if FilterAllUnits([[f_side, 2], [f_btype, b_solar_power]]) = 2 then
+            begin
+                for i in FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]]) do 
+                begin
+                    AddComMoveXY(i, 92, 34);
+                    AddComMoveXY(i, 82, 57);
+                    AddComMoveXY(i, 36, 28);
+                    AddComEnterUnit(i, arDepot);
+                end;
+            end;
+    
     end;
 
 end;
@@ -203,8 +216,8 @@ begin
     end;
 end;
 
-On Command(comandid) do
-var i, j, tmp;
+{On Command(comandid) do
+var i, j, x, tmp;
 begin
     for i in FilterAllUnits([[f_side, 6],[f_class, 9]]) do
     begin       
@@ -213,23 +226,40 @@ begin
             for j = 1 to GetTaskList(i) do
             begin       
                 tmp = GetTaskList(i)[j][4];
-                eventVar2 = 1;
-                wait(0$5);
-                DialogueOn;
-                if IsOK(Cyrus) then
+
+                for x in FilterAllUnits([[f_side, 1]]) do
                 begin
-                    Say(Cyrus, 'D9a-Cyrus-1');
-                end
-                else
-                begin
-                    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9a-Sol1-1', 'D9a-Sol1-1');
+                    
+                    if See(6, i) then
+                    begin         
+                        eventVar2 = 1;
+                        wait(0$5);
+                        DialogueOn;
+                        if IsOK(Cyrus) then
+                        begin
+                            Say(Cyrus, 'D9a-Cyrus-1');
+                        end
+                        else
+                        begin
+                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9a-Sol1-1', 'D9a-Sol1-1');
+                        end;
+                        DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9b-Sol1-1', 'D9b-Sol1-1');
+                        if LoadVariable('09_arInfo', 0) = 1 then Say(JMM, 'D9a-JMM-1');
+                        Say(JMM, 'D9c-JMM-1');
+                        If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
+                        DialogueOff;
+                    end;
+
                 end;
-                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9b-Sol1-1', 'D9b-Sol1-1');
-                Say(JMM, 'D9a-JMM-1');
-                Say(JMM, 'D9c-JMM-1');
-                If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
-                DialogueOff;
+
             end;
         end;
     end;
-end;
+end;}
+
+On EndTheMissionRaised(bla) do
+begin
+    end_the_mission_allowed = false;
+    fastEnd = 1;
+    FinishMission;
+End;
