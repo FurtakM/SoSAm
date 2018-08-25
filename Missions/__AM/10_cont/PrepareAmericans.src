@@ -1,4 +1,50 @@
-Export function PrepareJMMTeam;
+{
+   TODO:
+   - Niech te pojazdy na filmiku w Alfie przeje¿dzaj¹ przez bazê na po³udnie
+   - Kikuczi przenieœæ do sk³adu Cathy Simms ¿eby by³a razem z naukowcami,
+     oczywiœcie tylko w przypadku gdy Frank ¿yje (wtedy te¿ ma mówiæ ten dialog).
+     Dodatkowo mapa powinna byæ ods³onieta w rejonie Epsilonu
+     je¿eli Kikuczi ¿yje.
+   - Poprawiæ kod spawnowania pojazdów:
+     - Najpierw wczytujemy postacie, np:
+       Gary := PrepareUnit('10_Gary', true);
+       tmp := tmp ^ Gary;
+
+     - Po wczytaniu wszystkich postaci tworzymy samochody w pêtli:
+       for i in tmp do
+           begin
+           // kod na pojazd
+           PlaceHumanInUnit(i, pojazd);
+           end;
+   - Poprawiæ kod przypisywania ludzi do tej misji wg. schematu:
+     - JMM
+     - Gary
+     - Dwóch engów z poprzedniej misji (trzeci eng w sk³adzie Cathy Simms)
+     - Je¿eli ¿yje Bobby
+     - Je¿eli ¿yje Cyrus
+     - Je¿eli ¿yje Houten (tylko jeœli by³ w 9 misji)
+     ----------------Domyœlnie mamy mieæ 7 ludzi na start--------------------------------
+     - Je¿eli brakuje engów z Alfy to bierzemy ludzi z pozosta³ych ludzi z 9 misji np. Henry Lynch
+     - Je¿eli brakuje Bobbiego/Cyrusa/Houtena to bierzemy Lisê/Browna/Donaldson/Franka/Reszta*
+     * - Przyk³ad: Je¿eli brakuje tylko Cyrusa to bierzemy na jego miejsce Lisê,
+         natomiast je¿eli brakuje Bobbiego i Houtena to bierzemy Lisê i Browna.
+         Czyli dobieramy brakuj¹c¹ liczbê ludzi z tych których mamy.
+         Je¿eli brakuje nam ludzi z 09 to wczytujemy ludzi z poprzednich misji.
+         Gdy nie bedzie kogo wczytaæ generujemy randomów.
+     - W przypadku bugerowym czyli kiedy brakuje nam odpowiedniej liczby ludzi
+       to generujemy randomów.
+   - Kwestia samochodów na starcie:
+     - 4 komory transportowe
+       - 2 komory ze skrzynami (200 skrzyñ)
+       - 2 komory z syberytem (200 syba max! lub mniej gdy gracz wydoby³ mniej syba).
+     - 2 czo³gi z podwójnym dzia³em i jeden z gatlinem.
+   W sumie 7 czo³gów bo ma byæ 7 ludzi na start.
+   - Urozmaiciæ ruskie ataki: np. ¿eby atakowali te¿ od wschodu.
+   - Zmniejszyæ liczbê rektu ze strony ruskich bo naprawdê ciê¿ko siê broniæ ;/
+}
+
+
+Export function PrepareJMMTeam; // DO POPRAWY!
 var i, j;
 begin
     uc_side = 1;
