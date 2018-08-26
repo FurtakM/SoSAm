@@ -3,6 +3,16 @@ begin
     if GetSide(building) = 4 then SetBName(building, 'epsilon');
     if GetSide(building) = 1 and GetBType(building) = b_depot then SetBName(building, 'epsilon');
     if GetSide(building) = 3 and GetBType(building) = b_depot then SetBName(building, 'chuikov');
+
+    if GetSide(building) = 2 then
+    begin
+         if GetBType(building) = b_lab or GetBType(building) = b_lab_basic then
+        begin
+            AddComUpgradeLab(building, b_lab_weapon);
+            AddComUpgradeLab(building, b_lab_siberium);
+        end; 
+    end;
+
 end;
 
 On BuildingComplete(building) Do
@@ -88,14 +98,11 @@ begin
     
         if GetBType(building) = b_solar_power then 
             if FilterAllUnits([[f_side, 2], [f_btype, b_solar_power]]) = 2 then
-            begin
-                for i in FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]]) do 
-                begin
-                    AddComMoveXY(i, 92, 34);
-                    AddComMoveXY(i, 82, 57);
-                    AddComMoveXY(i, 36, 28);
-                    AddComEnterUnit(i, arDepot);
-                end;
+            begin 
+                AddComMoveXY(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]])[1], 92, 34);
+                AddComMoveXY(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]])[1], 82, 57);
+                AddComMoveXY(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]])[1], 36, 28);
+                AddComEnterUnit(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]]), arDepot);
             end;
     
     end;
@@ -163,6 +170,12 @@ begin
     begin
         wait(0$1);
         SetClass(human, class_bazooker);
+    end;
+
+    if GetSide(human) = 3 and GetClass(human) = 9 and GetBType(building) = b_bunker then
+    begin
+        wait(0$1);
+        SetClass(human, 1);
     end;
 end;
 

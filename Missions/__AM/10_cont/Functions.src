@@ -263,9 +263,9 @@ begin
                             end
                             else
                             begin
-                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9a-Sol1-1', 'D9a-Sol1-1');
+                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Khatam, Cyrus], 'D9a-Sol1-1', 'D9a-Sol1-1');
                             end;
-                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9b-Sol1-1', 'D9b-Sol1-1');
+                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Khatam, Cyrus], 'D9b-Sol1-1', 'D9b-Sol1-1');
                             if LoadVariable('09_arInfo', 0) = 1 then Say(JMM, 'D9a-JMM-1');
                             Say(JMM, 'D9c-JMM-1');
                             If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
@@ -287,9 +287,9 @@ begin
                             end
                             else
                             begin
-                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9a-Sol1-1', 'D9a-Sol1-1');
+                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Khatam, Cyrus], 'D9a-Sol1-1', 'D9a-Sol1-1');
                             end;
-                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM, Khatam]), 'D9b-Sol1-1', 'D9b-Sol1-1');
+                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Khatam, Cyrus], 'D9b-Sol1-1', 'D9b-Sol1-1');
                             if LoadVariable('09_arInfo', 0) = 1 then Say(JMM, 'D9a-JMM-1');
                             Say(JMM, 'D9c-JMM-1');
                             If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
@@ -314,7 +314,7 @@ If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true th
 end;
 
 Export function EnterBunkerOrBarrack(side, area);
-var i,j, soldiers_list, turretList, temp, barrackList;
+var i,j, soldiers_list, turretList, temp, barrackList, insideUnits;
 begin
 
 
@@ -327,12 +327,14 @@ begin
 
     if turretList = 0 then
     begin
-        for i in soldiers_list do ComEnterUnit(i, barrackList[1]);
+        for i in soldiers_list do ComEnterUnit(i, barrackList[Rand(1, barrackList)]);
     end else
     begin
         for i in barrackList do 
         begin
-            ComEnterUnit(UnitsInside(i), turretList[1]);
+            insideUnits = UnitsInside(i);
+            ComEnterUnit(insideUnits[1], turretList[1]);
+            ComEnterUnit(soldiers_list[1], turretList[1]);
         end;
     end;
 
@@ -494,13 +496,13 @@ begin
 
             IF ARWeapons[j] = 24 or ARWeapons[j] = 22 or ARWeapons[j] = 23 or ARWeapons[j] = 30 then
             begin
-                arChassisTab = [11, 12, 13, 14];
+                arChassisTab = [14];
                 vc_chassis = arChassisTab[Rand(1, arChassisTab)];
             end;
 
             IF ARWeapons[j] = 29 or ARWeapons[j] = 28 or ARWeapons[j] = 27 or ARWeapons[j] = 26 or ARWeapons[j] = 25 then
             begin
-                arChassisTab = [13, 14];
+                arChassisTab = [14];
                 vc_chassis = arChassisTab[Rand(1, arChassisTab)];
             end;
 
@@ -763,8 +765,8 @@ until FilterAllUnits([[f_side, 2], [f_class, 4]]) = 0  or FilterUnitsInArea(Natu
 wait(0$30);
 for i in FilterAllUnits([[f_side, 2], [f_class, 12]]) do
 begin
-    SetClass(i, [16, 15][Rand(1,2)]);
     ComMoveXY(i, GetX(arDepot), GetY(arDepot));
+    SetClass(i, [16, 15][Rand(1,2)]);
 end; 
 for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComEnterUnit(i, FilterAllUnits([[f_side, 2], [f_btype, b_lab_full]])[1]);
 
