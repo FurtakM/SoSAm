@@ -5,6 +5,13 @@ begin
     if GetSide(building) = 3 and GetBType(building) = b_depot then SetBName(building, 'chuikov');
 end;
 
+On UnitGoesToRed(un) do
+begin
+
+   if un in FilterAllUnits([[f_side, 6], [f_nation, 3], [f_type, unit_vehicle]]) and not telep_ru_dialog then
+      telep_ru_dialog := [GetX(un), GetY(un)];
+End;
+
 On BuildingComplete(building) Do
 var i;
 begin
@@ -88,14 +95,14 @@ begin
     
         if GetBType(building) = b_solar_power then 
             if FilterAllUnits([[f_side, 2], [f_btype, b_solar_power]]) = 2 then
-            begin
-                for i in FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]]) do 
-                begin
-                    AddComMoveXY(i, 92, 34);
-                    AddComMoveXY(i, 82, 57);
-                    AddComMoveXY(i, 36, 28);
-                    AddComEnterUnit(i, arDepot);
-                end;
+            begin  // cameras
+            i := FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]])[1];
+
+            AddComMoveXY(i, 92, 34);
+            AddComMoveXY(i, 82, 57);
+            AddComMoveXY(i, 36, 28);
+
+            AddComEnterUnit(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]]), arDepot);
             end;
     
     end;
@@ -175,8 +182,18 @@ begin
     end;
 end;
 
+// Also lost
+Every 0$3 trigger (FilterUnitsInArea(arBaseArea, [[f_side, 1], [f_type, unit_building]]) or FilterUnitsInArea(arBaseArea, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]) > 2) and GetAttitude(1, 2) = att_friend do
+begin
+SayRadio(Powell, 'D6b-Pow-1');
+YouLost('Powell');
+End;
+
 On UnitDestroyed(unit) do 
 begin
+
+    if unit = JMM then
+       YouLost('JMM');
 
     if GetSide(unit) = 3 and GetType(unit) = unit_building then
     begin

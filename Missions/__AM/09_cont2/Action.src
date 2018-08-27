@@ -342,7 +342,13 @@ if powell_happy then
 ru_can_attack_terminal := true;
 
 // Ar comes
-Wait(6$00);
+Wait(12$00);
+time := 2$00;
+
+repeat
+ wait(0$1);
+ time := time - 0$1;
+until not ru_can_attack or ru_force = 0 or time = 0$0;
 
 if ru_force then
    for i in ru_force do

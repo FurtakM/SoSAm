@@ -77,10 +77,24 @@ end;
 // AI functions
 
 Export function BuildRussianBase(position);
-var i, engineers, buildingsTab;
+var i, engineers, buildingsTab, area;
 begin
 
-// 1 - west , 2 - middle, 3 - east 
+// 1 - west , 2 - middle, 3 - east
+
+   case position of
+   1: area := westConv;
+   2: area := midConv;
+   3: area := eastConv;
+   end;
+
+   area := AreaToList(area, 0);
+
+    for i = 1 to area[1] do
+       begin
+       PlaceSeeing(area[1][i], area[2][i], 1, 1);
+       RemoveSeeing(area[1][i], area[2][i], 1);
+       end; 
 
    ruPossition = position;
 
@@ -610,7 +624,7 @@ Export function RespawnAttackInfantry(side, nation, soldierCount, sniperCount, b
 var i, j,  un, damageUnit_list, medic_list, soldiersOK_list, enemyUnits, und, target1, target2;
 begin
 
-        for i = 1 to medicCount do
+        {for i = 1 to medicCount do
         begin
 
                 uc_side = side;
@@ -623,7 +637,7 @@ begin
                 un = CreateHuman;
                 PlaceUnitArea(un, spawnArea, false);
 
-        end;
+        end;}
 
 
        for i = 1 to soldierCount do

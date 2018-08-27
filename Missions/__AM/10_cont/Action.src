@@ -292,7 +292,7 @@ begin
 end;
 
 // Spawn Cornell
-Every 6$30 trigger joinEpsilon = 1 and LoadVariable('02_mikhailStatus_1', 0) = 1 do PrepareCornell;
+Every 9$30 trigger joinEpsilon = 1 and LoadVariable('02_mikhailStatus_1', 0) = 1 do PrepareCornell;
 
 // Cornell dialog 1
 Every 0$1 trigger See(1, Cornell) do 
@@ -334,4 +334,19 @@ begin
     Say(JMM, 'D7a-JMM-8');
     DialogueOff;
 end;
+
+// Ru teleport vehicle
+Every 0$1 trigger telep_ru_dialog do
+begin
+DialogueOn;
+CenterNowOnXY(telep_ru_dialog[1], telep_ru_dialog[2]);
+
+if IsOk(Cyrus) then
+   Say(Cyrus, 'D10-Cyrus-1')
+  else
+   if IsOk(JMM) then
+      Say(JMM, 'D10-JMM-1');
+
+DialogueOff;
+End;
 
