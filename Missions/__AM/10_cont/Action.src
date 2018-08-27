@@ -194,13 +194,16 @@ begin
 
     wait([1$0, 1$30, 2$0, 2$30][Rand(1, 4)]);
 
-    if arabianTrait = 0 then PrepareArabianTrait;
-    arabianTrait = 1;
+    if arabianTrait = 0 then
+    begin
+        arabianTrait = 1;
+        PrepareArabianTrait;
+    end;
 
 end;
 
 Export function PrepareArabianTrait;
-var i, tmp;
+var i, tmp, un;
 begin
 
     for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComExitBuilding(i);
@@ -208,9 +211,9 @@ begin
     wait(0$3);
     CenterOnXY(76, 19);
     DialogueOn;
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D8-Sol1-1', 'D8-Sol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Khatam], 'D8-Sol1-1', 'D8-Sol1-1');
     If IsOK(DeltaDoctor) then Say(DeltaDoctor, 'D8-Sci1-1')
-    else  DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D8-Sol1-1', 'D8-Sol1-1');
+    else  DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Khatam], 'D8-Sol1-1', 'D8-Sol1-1');
     Say(JMM, 'D8-JMM-1');
     DialogueOff;
 
@@ -237,7 +240,7 @@ begin
     wait(0$5);
     If IsOK(Khatam) then
     begin
-        tmp = FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Khatam, Joan][1];
+        tmp = FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Khatam, Joan];
 
         SetSide(Khatam, 8);
         ComExitBuilding(Khatam);
@@ -246,13 +249,17 @@ begin
         wait(0$1);
         ComMoveToArea(Khatam, ArabianSpawn2);
         DialogueOn;
-        DialogRandom(tmp, 'D8b-Sol1-1', 'D8b-FSol1-1');
+        If GetSex(tmp[1]) = sex_male then Say(tmp[1], 'D8b-Sol1-1')
+        else Say(tmp[1], 'D8b-FSol1-1');
         Say(Khatam, 'D8b-Khat-1');
-        DialogRandom(tmp, 'D8b-Sol1-2', 'D8b-FSol1-2');
+        If GetSex(tmp[1]) = sex_male then Say(tmp[1], 'D8b-Sol1-2')
+        else Say(tmp[1], 'D8b-FSol1-2');
         Say(Khatam, 'D8b-Khat-2');
-        DialogRandom(tmp, 'D8b-Sol1-3', 'D8b-FSol1-3');
+        If GetSex(tmp[1]) = sex_male then Say(tmp[1], 'D8b-Sol1-3')
+        else Say(tmp[1], 'D8b-FSol1-3');
         Say(Khatam, 'D8b-Khat-3');
-        DialogRandom(tmp, 'D8b-Sol1-4', 'D8b-FSol1-4');
+        If GetSex(tmp[1]) = sex_male then Say(tmp[1], 'D8b-Sol1-4')
+        else Say(tmp[1], 'D8b-FSol1-4');
         DialogueOff;
     end;
 end;
@@ -287,8 +294,8 @@ Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 and Fi
 // Force arabian trait if player fast research siberite techs 
 Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_researched and GetTech(21, 1) = state_researched and GetTech(22, 1) = state_researched and GetTech(tech_LasSight, 1) = state_researched and GetTech(tech_AI, 1) = state_researched and fastEnd = 0 and arabianTrait = 0 do 
 begin
-    PrepareArabianTrait;
     arabianTrait = 1;
+    PrepareArabianTrait;
 end;
 
 // Spawn Cornell
