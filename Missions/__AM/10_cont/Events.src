@@ -16,10 +16,19 @@ begin
 end;
 
 On UnitGoesToRed(un) do
+var i, tmpMeh;
 begin
 
    if un in FilterAllUnits([[f_side, 3], [f_nation, 3], [f_type, unit_vehicle]]) and not telep_ru_dialog then
       telep_ru_dialog := [GetX(un), GetY(un)];
+
+    if GetSide(un) = 3 and GetType(un) = unit_vehicle and GetControl(un) = control_manual then
+    begin
+        tmpMeh = UnitsInside(un);
+        ComExitVehicle(tmpMeh);
+        wait(0$01);
+        ComEnterUnit(tmpMeh, ruFab);
+    end;
 End;
 
 On BuildingComplete(building) Do
@@ -28,8 +37,11 @@ begin
 
     if GetSide(building) = 1 then
     begin
-        if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full], [f_and, [f_btype, b_lab_siberium], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 and eventVar1 = 0 then
+       if GetBType(building) = 26 or GetBType(building) = 27 or GetBType(building) = 28 or GetBType(building) = 11  then
+       begin
+        if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]], [f_and, [f_btype, b_lab_siberium]], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 and eventVar1 = 0 then
             eventVar1 = 1;
+       end;
     end;
 
     if GetSide(building) = 3 then
@@ -244,6 +256,18 @@ begin
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetX(unit);
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
+        end;
+
+        if GetClass(unit) = 3 and GetSide(unit) = 3 and IsOK(ruFab) and GetSide(ruFab) = 3 then
+        begin
+              uc_side = 3;
+              uc_nation = 3;
+
+              hc_gallery := '';
+              hc_name := '';
+
+              PrepareMechanic(false, rand(RuSolMinLevel, RuSolMaxLevel));
+              PlaceHumanInUnit(CreateHuman, ruFab);
         end;
             
     end;

@@ -17,6 +17,20 @@ begin
     IntBazooka(3, 1);
     IntBazooka(6, 1);  
 end;
+Every 0$1 trigger ArabianTrait = 1 do 
+begin
+    CreateMineField(MineField1);
+    If Difficulty > 1 then CreateMineField(MineField2);
+    If Difficulty > 2 then CreateMineField(MineField3);
+end;
+
+Every 0$1 trigger ArabianTrait = 1 do 
+begin
+    enable;
+    ExplodeMineField(MineField1);
+    If Difficulty > 1 then ExplodeMineField(MineField2);
+    If Difficulty > 2 then ExplodeMineField(MineField3);
+end;
 
 Every 5$0 trigger russianAI = 1 and IsOk(ruFab) and GetSide(ruFab) = 3 and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_control, control_computer]]) = 0 do
 begin

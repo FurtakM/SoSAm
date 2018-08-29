@@ -37,7 +37,9 @@ Export arabianAttackersAI;
 Export arabianEscape;
 Export arabianDefeated;
 Export arabianTrait;
+Export arabianMines;
 
+Export GensherStatus;
 Export KhatamStatus;
 
 Export mission_prefix, mission_prefix_prev;
@@ -48,6 +50,8 @@ Export ru_vehs_counter, ru_sold_counter;
 Export telep_ru_dialog;
 
 Export fastEnd;
+
+Export attackAvalaible;
 
 Export eventVar1, eventVar2;
 Export debugMode;
@@ -67,6 +71,7 @@ begin
     ruPossition = 0; // 1 - west 2 - middle 3 - east
     ruDestroyedBuildings = [];
 
+    arabianMines = [];
     arabianEscape = 0; // 0 - killed, 1 - escaped
     arabianAttackersAI = 0; // 0 - off, 1 - on
     arabianDefeated = 0; 
@@ -79,11 +84,14 @@ begin
     fastEnd = 0;
 
     KhatamStatus = 0;
+    GensherStatus = 0; // 0 - dead or move, 1 - escape
 
     cratesSpawned = 0;
 
-    ru_vehs_counter := [2, 3, 4][Difficulty];
+    ru_vehs_counter := [1, 2, 2][Difficulty];
     ru_sold_counter := [3, 4, 5][Difficulty];
+
+    attackAvalaible = 1;
     
     mission_prefix := '10_';
     mission_prefix_prev := '09_';

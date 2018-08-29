@@ -35,12 +35,6 @@ begin
 
     others10 = CreateCharacterSet('OthersIn10');
     Powell = PrepareUnit('Powell', false);
-{
-         - 4 komory transportowe
-       - 2 komory ze skrzynami (200 skrzyń)
-       - 2 komory z syberytem (200 syba max! lub mniej gdy gracz wydobył mniej syba).
-     - 2 czołgi z podwójnym działem i jeden z gatlinem.
-}
 
     for i in JMMSquad do
     begin
@@ -152,10 +146,18 @@ begin
 
     if others09 > 2 then
     begin
-        for i := 1 to 3 do PlaceUnitArea(others09[i], CathyTeamSpawn,  false);
+        for i := 1 to 3 do
+        begin
+            PlaceUnitArea(others09[i], CathyTeamSpawn,  false);
+            SetClass(others09[i], 2);
+        end;
     end else
     begin
-        for i in others09 do PlaceUnitArea(i, CathyTeamSpawn, false);
+        for i in others09 do
+        begin
+            PlaceUnitArea(i, CathyTeamSpawn, false);
+            SetClass(i, 2);
+        end; 
     end;
 
     if FilterAllUnits([[f_side, 4], [f_class, 2]]) = 0 then
