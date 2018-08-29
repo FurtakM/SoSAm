@@ -18,7 +18,7 @@ end;
 On UnitGoesToRed(un) do
 begin
 
-   if un in FilterAllUnits([[f_side, 6], [f_nation, 3], [f_type, unit_vehicle]]) and not telep_ru_dialog then
+   if un in FilterAllUnits([[f_side, 3], [f_nation, 3], [f_type, unit_vehicle]]) and not telep_ru_dialog then
       telep_ru_dialog := [GetX(un), GetY(un)];
 End;
 
@@ -199,7 +199,7 @@ begin
 end;
 
 // Also lost
-Every 0$3 trigger (FilterUnitsInArea(arBaseArea, [[f_side, 1], [f_type, unit_building]]) or FilterUnitsInArea(arBaseArea, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]) > 2) and GetAttitude(1, 2) = att_friend do
+Every 0$3 trigger (FilterUnitsInArea(arBaseArea, [[f_side, 1], [f_type, unit_building]]) or FilterUnitsInArea(arBaseArea, [[f_side, 1], [f_type, unit_vehicle], [f_empty]])) and GetAttitude(1, 2) = att_friend do
 begin
 SayRadio(Powell, 'D6b-Pow-1');
 YouLost('Powell');
