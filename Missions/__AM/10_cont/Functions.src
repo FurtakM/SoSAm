@@ -138,7 +138,7 @@ begin
             [b_ext_computer, 50, 90, 0]
         ];
 
-        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComMoveXY(i, 53, 82);
+        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComAgressiveMove(i, 53, 82);
 
         for i := 1 to buildingsTab do
             AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
@@ -174,7 +174,7 @@ begin
             [b_ext_computer, 92, 105, 0]
         ];
 
-        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComMoveXY(i, 96, 99);
+        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComAgressiveMove(i, 96, 99);
 
         for i := 1 to buildingsTab do
             AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
@@ -219,7 +219,7 @@ begin
             [b_ext_computer, 159, 95, 1]
         ];
 
-        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComMoveXY(i, 141, 65);
+        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComAgressiveMove(i, 141, 65);
 
         for i := 1 to buildingsTab do
             AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
@@ -336,7 +336,7 @@ var i,j, soldiers_list, turretList, temp, barrackList, insideUnits;
 begin
 
 
-soldiers_list = FilterAllUnits([[f_side, side], [f_outside], [f_lives, 700], [f_or, [f_class, 1], [f_class, 9]]]);
+soldiers_list = FilterAllUnits([[f_side, side], [f_outside], [f_lives, 700],  [f_not, [f_hastask]], [f_or, [f_class, 1], [f_class, 9]]]);
 turretList = FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
 barrackList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
 
@@ -369,12 +369,12 @@ begin
   engineerOkOutside = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000]]);
   buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-  if not buildings_list and not engineerOkOutside then exit;
+  if not buildings_list and not engineerOkOutside and not rudestroyedBuildings then exit;
 
-  if buildings_list > 0 and engineerOkInside > 0 then
-      for i in engineerOkInside do ComExitBuilding(i);
+  if buildings_list > 0 and engineerOkInside then
+     for i in FilterAllUnits([[f_side, side], [f_class, 2]]) do ComExitBuilding(i);
 
-  if engineerOkOutside > 0 then
+  if buildings_list > 0  and engineerOkOutside > 0 then
   begin
 
     for i in engineerOkOutside do
@@ -837,3 +837,51 @@ begin
 
     end;
 END;
+
+Export function CreateMineField(area);
+var i,xx, enemy;
+begin
+
+   enemy = 2;
+  arabianMines:=[];
+  for i=1 to 10 do
+    begin
+      xx:=RandHexArea(area,false);
+      PlaceMine(xx[1],xx[2],enemy,0);
+      arabianMines:=arabianMines ^ xx;
+      wait(0$1);
+    end;
+
+end;
+
+Export function ExplodeMineField(area);
+var un,list,mine, dist, pom_list, mine_xy, first_mine_exploded;
+begin
+    
+    if FilterUnitsInArea(area, [f_side, 1]) > 0 and arabianMines > 0 then
+    begin
+        list:=FilterUnitsInArea(area, [f_side, 1]);
+        pom_list:=[];
+        for un in list do
+            begin
+            if GetType(un)=unit_human then
+                dist:=3
+            else
+                dist:=4;
+            for mine=1 to (arabianMines div 2) do
+                if GetDistXY(arabianMines[(mine*2)-1],arabianMines[(mine*2)],GetX(un),GetY(un))<dist then
+                begin
+                    LaunchMineAtPos(arabianMines[(mine*2)-1],arabianMines[(mine*2)], 1);
+                    if not first_mine_exploded then
+                    begin
+                        first_mine_exploded:=true;
+                        mine_xy:=[arabianMines[(mine*2)-1],arabianMines[(mine*2)]];
+                    end;
+                end
+                else
+                pom_list:=pom_list ^ arabianMines[(mine*2)-1] ^ arabianMines[(mine*2)];
+            arabianMines:=pom_list;
+            pom_list:=[];
+    end;
+    end;
+end;
