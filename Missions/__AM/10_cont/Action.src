@@ -2,18 +2,38 @@
 Every 1 do 
 begin
 
+    if FilterAllUnits([[f_or, [f_side, 1], [f_side, 4]], [f_class, 2]]) = 0 then
+       SetClass(JMM, 2);
+
+    InGameOn;
+
     RevealFogArea(1, EpsilonTerrain);
 
-    CenterNowOnUnits(IsInUnit(JMM));
+    CenterNowOnUnits(Simms);
+
+    if FilterAllUnits([[f_side, 4], [f_class, 2]]) then
+       begin
+       repeat
+        wait(0$1);
+       until FilterAllUnits([[f_side, 4], [f_btype, b_depot]]);
+
+       Wait(0$1);
+       end
+      else
+       Wait(0$3);
+
+    CenterOnUnits(IsInUnit(JMM));
+
+    Wait(0$1);
 
     if IsOk(Gary) then
     begin
-        DialogueOn;
-        Say(Gary, 'D2-Gary-1');
-        Say(JMM, 'D2-JMM-1');
-        Say(Gary, 'D2-Gary-2');
-        DialogueOff;
+    Say(Gary, 'D2-Gary-1');
+    Say(JMM, 'D2-JMM-1');
+    Say(Gary, 'D2-Gary-2');
     end;
+
+    InGameOff;
 
     ChangeMissionObjectives('M1');
 
@@ -27,9 +47,12 @@ end;
 Every 0$1 trigger GetDistUnits(JMM, Simms) < 15 do
 begin
     InGameOn;
+
     ComExitVehicle(JMM);
     CenterNowOnUnits(JMM);
-    wait(0$1);
+
+    AddComTurnUnit(JMM, Simms);
+   
     repeat
         wait(0$1);
         ComMoveUnit([Simms, Joan, Denis, Khatam, Kikuchi], JMM);
@@ -37,7 +60,9 @@ begin
 
     ComTurnUnit(JMM, Simms);
     ComTurnUnit([Simms, Joan, Denis, Khatam], JMM);
+
     CenterNowOnUnits([JMM, Simms]);
+
     Say(Simms, 'D2a-Sim-1');
     Say(JMM, 'D2a-JMM-1');
 
@@ -55,20 +80,24 @@ begin
         Say(Denis, 'D2c-Den-1');
     end;
 
-    if IsOk(Khatam) then
-    begin
-        ComTurnUnit(JMM, Khatam);
-        Say(JMM, 'D2c-JMM-1');
-        Say(Khatam, 'D2c-Khat-1');
-    end;
-
+    
     if IsOK(Kikuchi) then
     begin
         repeat
             wait(0$1);
             ComMoveUnit(Kikuchi, JMM);
         until GetDistUnits(JMM, Kikuchi) < 5;
+
+        ComTurnUnit(JMM, Kikuchi);
         Say(Kikuchi, 'D3b-Yam-1');
+
+    end;
+
+    if IsOk(Khatam) then
+    begin
+        ComTurnUnit(JMM, Khatam);
+        Say(JMM, 'D2c-JMM-1');
+        Say(Khatam, 'D2c-Khat-1');
     end;
 
     InGameOff;
@@ -83,23 +112,28 @@ Every 0$1 trigger eventVar1 = 1 do
 var tmp1, tmp2;
 begin
 
-    tmp1 = FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]])[1];
-    tmp2 = FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3]]])[1];
+    tmp1 = FilterAllUnits([[f_side, 1], [f_class, 4], [f_sex, 1]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary, Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, AmScout, Cornell, Powell];
+    tmp2 = FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary, Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, AmScout, Cornell, Powell];
 
-    DialogueOn;
-    if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-1')
-    else Say(tmp1, 'D3-Sci1-1');
-    If IsOk(Gary) then Say(Gary, 'D3-Gary-1')
-    else Say(tmp2, 'D3-Gary-1');
-    if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-2')
-    else Say(tmp1, 'D3-Sci1-2');
-    Say(JMM, 'D3-JMM-2');
-    if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-3')
-    else Say(tmp1, 'D3-Sci1-3');
-    Say(JMM, 'D3-JMM-3');
-    if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-4')
-    else Say(tmp1, 'D3-Sci1-4');
-    DialogueOff;
+    if (Gary or tmp2) and (DeltaDoctor or tmp1) then
+       begin
+       DialogueOn;
+
+       if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-1')
+       else Say(tmp1, 'D3-Sci1-1');
+       If IsOk(Gary) then Say(Gary, 'D3-Gary-1')
+       else Say(tmp2, 'D3-Gary-1');
+       if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-2')
+       else Say(tmp1, 'D3-Sci1-2');
+       Say(JMM, 'D3-JMM-2');
+       if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-3')
+       else Say(tmp1, 'D3-Sci1-3');
+       Say(JMM, 'D3-JMM-3');
+       if IsOk(DeltaDoctor) then Say(DeltaDoctor, 'D3-Sci1-4')
+       else Say(tmp1, 'D3-Sci1-4');
+
+       DialogueOff;
+       end;
 
     SetTech(12, 1, state_enabled);
     SetTech(32, 1, state_enabled);
@@ -108,7 +142,12 @@ begin
 
     ChangeMissionObjectives('M2');
 
-    wait(5$0);
+    wait(3$0);
+
+    repeat
+     wait(0$1);
+    until not InBattle(1);
+
     if IsOK(Simms) and IsOk(Denis) then
     begin
         DialogueOn;
@@ -167,27 +206,34 @@ Every 0$30 trigger GetTech(54, 1) = state_researched or GetTech(21, 1) = state_r
 var i, tmp;
 begin
 
-    If IsOk(Denis) then
-    begin
-        DialogueOn;
-        Say(JMM,  'D6-JMM-1');
-        Say(Denis, 'D6-Sci1-1');
-        Say(JMM, 'D6-JMM-2');
-        Say(Denis, 'D6-Sci1-2');
-        Say(JMM, 'D6-JMM-3');
-        Say(Denis, 'D6-Sci1-3');
-        Say(JMM, 'D6-JMM-4');
-        DialogueOff;
-    end;
+    if IsOk(DeltaDoctor) then
+       tmp := DeltaDoctor
+      else
+       tmp := Denis;
+
+    if tmp then
+       begin
+       DialogueOn;
+       Say(JMM,  'D6-JMM-1');
+       Say(Denis, 'D6-Sci1-1');
+       Say(JMM, 'D6-JMM-2');
+       Say(Denis, 'D6-Sci1-2');
+       Say(JMM, 'D6-JMM-3');
+       Say(Denis, 'D6-Sci1-3');
+       Say(JMM, 'D6-JMM-4');
+       DialogueOff;
+       end;
 
     wait(0$30);
 
     if arabianTrait = 0 then
     begin
         DialogueOn;
-        DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-1', 'D5-Ar1-1');
+        Say(Ahmed, 'D5-Ar1-1');
+        //DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-1', 'D5-Ar1-1');
         Say(Dietrich, 'D5-Diet-1');
-        DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-2', 'D5-Ar1-2');
+        Say(Ahmed, 'D5-Ar1-2');
+        //DialogRandom(FilterAllUnits([[f_side, 2], [f_class, 4], [f_sex, 1]]), 'D5-Ar1-2', 'D5-Ar1-2');
         Say(Dietrich, 'D5-Diet-2');
         DialogueOff;
     end;
@@ -197,6 +243,10 @@ begin
     if arabianTrait = 0 then
     begin
         arabianTrait = 1;
+
+        SetAttitude(2, 3, att_friend, true);
+        SetAttitude(2, 6, att_friend, true);
+
         PrepareArabianTrait;
     end;
 
@@ -211,9 +261,9 @@ begin
     wait(0$3);
     CenterOnXY(76, 19);
     DialogueOn;
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]]) diff [JMM, Khatam], 'D8-Sol1-1', 'D8-Sol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]]), 'D8-Sol1-1', 'D8-Sol1-1');
     If IsOK(DeltaDoctor) then Say(DeltaDoctor, 'D8-Sci1-1')
-    else  DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Khatam], 'D8-Sol1-1', 'D8-Sol1-1');
+    else  DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]), 'D8-Sol1-1', 'D8-Sol1-1');
     Say(JMM, 'D8-JMM-1');
     DialogueOff;
 
@@ -235,12 +285,12 @@ begin
     end; 
     arabianAttackersAI = 1;
 
-    wait(0$30);
+    wait(0$10);
     If IsOk(Gary) then Say(Gary, 'D8a-Gary-1');
     wait(0$5);
     If IsOK(Khatam) then
     begin
-        tmp = FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Khatam, Joan];
+        tmp = FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary, Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, Cornell, Powell];
 
         SetSide(Khatam, 8);
         ComExitBuilding(Khatam);
@@ -248,6 +298,10 @@ begin
         ComExitVehicle(Khatam);
         wait(0$1);
         ComMoveToArea(Khatam, ArabianSpawn2);
+
+        if not tmp then
+           exit;
+
         DialogueOn;
         If GetSex(tmp[1]) = sex_male then Say(tmp[1], 'D8b-Sol1-1')
         else Say(tmp[1], 'D8b-FSol1-1');
@@ -292,22 +346,23 @@ Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 and Fi
     arabianDefeated = 1;
 
 // Force arabian trait if player fast research siberite techs 
-Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_researched and GetTech(21, 1) = state_researched and GetTech(22, 1) = state_researched and GetTech(tech_LasSight, 1) = state_researched and GetTech(tech_AI, 1) = state_researched and fastEnd = 0 and arabianTrait = 0 do 
+Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_researched and GetTech(21, 1) = state_researched and GetTech(22, 1) = state_researched and GetTech(tech_LasSight, 1) = state_researched and GetTech(tech_AI, 1) = state_researched and fastEnd = 0 and arabianTrait = 0 and tick >= 15$00 do
 begin
     arabianTrait = 1;
     PrepareArabianTrait;
 end;
 
 // Spawn Cornell
-Every 9$30 trigger joinEpsilon = 1 and LoadVariable('02_mikhailStatus_1', 0) = 1 do PrepareCornell;
+Every 8$30 trigger joinEpsilon and LoadVariable('02_mikhailStatus_1', 0) = 1 and FilterAllUnits([f_side, 5]) = 0 and (FilterAllUnits([f_side, 2]) = 0 or arabianTrait = 0) do
+PrepareCornell;
 
 // Cornell dialog 1
-Every 0$1 trigger See(1, Cornell) do 
+Every 0$1 trigger GetDistUnits(NearestUnitToUnit(FilterAllUnits([f_side, 1]), Cornell), Cornell) < 9 do
 begin
     InGameOn;
     CenterNowOnUnits(Cornell);
     Say(Cornell, 'D7-Corn-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Joan], 'D7-Sol1-1', 'D7-FSol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]), 'D7-Sol1-1', 'D7-FSol1-1');
     CenterNowOnUnits(Cornell);
     Say(Cornell, 'D7-Corn-2');
     Say(JMM, 'D7-JMM-2');
@@ -343,8 +398,9 @@ begin
 end;
 
 // Ru teleport vehicle
-Every 0$1 trigger telep_ru_dialog do
+Every 0$1 trigger telep_ru_dialog and (IsOk(JMM) or IsOk(Cyrus)) do
 begin
+Wait(0$2);
 DialogueOn;
 CenterNowOnXY(telep_ru_dialog[1], telep_ru_dialog[2]);
 

@@ -158,15 +158,23 @@ begin
         for i in others09 do PlaceUnitArea(i, CathyTeamSpawn, false);
     end;
 
-    if FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_class, 2]]) diff [Simms, Khatam, Denis, Gladstone, DeltaDoctor, Joan] = 0 then
+    if FilterAllUnits([[f_side, 4], [f_class, 2]]) = 0 then
     begin
-        tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_class, 2]]) diff [Simms, Khatam, Denis, Gladstone, DeltaDoctor, Joan];
+        tmp = FilterAllUnits([[f_side, 4], [f_class, 2]]) diff [Simms, Khatam, Denis, Gladstone, DeltaDoctor, Joan];
+
+        if not tmp then
+           begin
+           if Denis then
+              SetClass(Denis, 2);
+           exit;
+           end;
+
         SetClass(tmp[1], 2);
     end;
 
     for i in ape09 do PlaceUnitArea(i, CathyTeamSpawn, false);
 
-    AddComBuild(FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_class, 2]]), b_depot, 101, 30, 2);
+    AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_depot, 101, 30, 2);
 
     uc_side = 1;
 
@@ -182,11 +190,17 @@ end;
 
 Export function PrepareCornell;
 begin
+
+    ChangeSideFog(4, 4);
+
     uc_side = 4;
     uc_nation = 1;
 
     Cornell = PrepareUnit('03_Cornel', true);
     PlaceUnitArea(Cornell, CornellSpawn, false);
+
+    SetLives(Cornell, 350);
+
     If IsInUnit(JMM) then ComMoveXY(Cornell, GetX(IsInUnit(JMM)), GetY(IsInUnit(JMM)))
     else ComMoveXY(Cornell, GetX(JMM), GetY(JMM));
 end;
