@@ -17,7 +17,7 @@ begin
     IntBazooka(3, 1);
     IntBazooka(6, 1);  
 end;
-Every 0$1 trigger ArabianTrait = 1 do 
+Every 0$1 trigger ArabianTrait = 1 do
 begin
     PlaceMines(MineField1, 10);
     If Difficulty > 1 then PlaceMines(MineField2, 10);
@@ -32,26 +32,17 @@ begin
     if Difficulty = 3 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(7, 8), 1, [44, 45, 46], 1, [1,3], 22);
 end;
 
-Every 0$01 trigger arabianMines do
-var i, p;
+Every 105 trigger arabianMines and arabianTrait do
+var i;
 begin
 enable;
 
-p := 1;
-
-for i = 1 to arabianMines/2 do
-begin
-//if HexInfo(arabianMines[p], arabianMines[p+1]) > 0 then
-//if GetSide(HexInfo(arabianMines[p], arabianMines[p+1])) <> 2 then
-if FilterAllUnits([[f_side, 1], [f_distxy, arabianMines[p], arabianMines[p+1], 2]]) then
-begin
-wait(0$0.5);
-LaunchMineAtPos(arabianMines[p], arabianMines[p+1], 2);
-arabianMines := Delete(arabianMines, p);
-arabianMines := Delete(arabianMines, p);
-p := p - 2;
-end;
-
-p := p + 2;
-end;
+for i in arabianMines do
+    begin 
+    if FilterAllUnits([[f_side, 1], [f_distxy, arabianMines[i][1], arabianMines[i][2], 3]]) then
+       begin
+       LaunchMineAtPos(arabianMines[i][1], arabianMines[i][2], 2);
+       arabianMines := Delete(arabianMines, i);
+       end;
+    end;
 End;
