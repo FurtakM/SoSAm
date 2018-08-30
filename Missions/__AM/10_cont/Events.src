@@ -21,15 +21,12 @@ begin
 
    if un in FilterAllUnits([[f_side, 3], [f_nation, 3], [f_type, unit_vehicle]]) and not telep_ru_dialog then
       telep_ru_dialog := [GetX(un), GetY(un)];
-
-    if GetSide(un) = 3 and GetType(un) = unit_vehicle and GetControl(un) = control_manual then
-    begin
-        tmpMeh = UnitsInside(un);
-        ComExitVehicle(tmpMeh);
-        wait(0$01);
-        ComEnterUnit(tmpMeh, ruFab);
-    end;
 End;
+
+On LeaveVehicle(vehicle, human) Do
+begin
+    if GetSide(human) = 3 and GetSide(ruFab) = 3 and IsOk(rufab) then ComEnterUnit(human, ruFab);
+end;
 
 On BuildingComplete(building) Do
 var i;
@@ -199,6 +196,9 @@ begin
         wait(0$1);
         SetClass(human, 1);
     end;
+
+    if GetSide(human) = 3 and GetClass(human) = 3 and building = rufab then SetLives(human, 1000);
+
 end;
 
 On Contact(side1, side2) Do
@@ -257,6 +257,7 @@ begin
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetY(unit);
             ruDestroyedBuildings = ruDestroyedBuildings ^  GetDir(unit);
         end;
+    end;
 
         if GetClass(unit) = 3 and GetSide(unit) = 3 and IsOK(ruFab) and GetSide(ruFab) = 3 then
         begin
@@ -269,8 +270,6 @@ begin
               PrepareMechanic(false, rand(RuSolMinLevel, RuSolMaxLevel));
               PlaceHumanInUnit(CreateHuman, ruFab);
         end;
-            
-    end;
 end;
 
 On EndTheMissionRaised(bla) do
