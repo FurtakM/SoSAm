@@ -19,17 +19,9 @@ begin
 end;
 Every 0$1 trigger ArabianTrait = 1 do 
 begin
-    CreateMineField(MineField1);
-    If Difficulty > 1 then CreateMineField(MineField2);
-    If Difficulty > 2 then CreateMineField(MineField3);
-end;
-
-Every 0$1 trigger ArabianTrait = 1 do 
-begin
-    enable;
-    ExplodeMineField(MineField1);
-    If Difficulty > 1 then ExplodeMineField(MineField2);
-    If Difficulty > 2 then ExplodeMineField(MineField3);
+    PlaceMines(MineField1, 10);
+    If Difficulty > 1 then PlaceMines(MineField2, 10);
+    If Difficulty > 2 then PlaceMines(MineField3, 10);
 end;
 
 Every 5$0 trigger russianAI = 1 and IsOk(ruFab) and GetSide(ruFab) = 3 and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_control, control_computer]]) = 0 do
@@ -39,3 +31,27 @@ begin
     if Difficulty = 2 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(6, 8), 1, [44, 45, 46], 1, [1,3], 22);
     if Difficulty = 3 then BuildingVehicleAndAttackEnemy(3, ruFab, rand(7, 8), 1, [44, 45, 46], 1, [1,3], 22);
 end;
+
+Every 0$01 trigger arabianMines do
+var i, p;
+begin
+enable;
+
+p := 1;
+
+for i = 1 to arabianMines/2 do
+begin
+//if HexInfo(arabianMines[p], arabianMines[p+1]) > 0 then
+//if GetSide(HexInfo(arabianMines[p], arabianMines[p+1])) <> 2 then
+if FilterAllUnits([[f_side, 1], [f_distxy, arabianMines[p], arabianMines[p+1], 2]]) then
+begin
+wait(0$0.5);
+LaunchMineAtPos(arabianMines[p], arabianMines[p+1], 2);
+arabianMines := Delete(arabianMines, p);
+arabianMines := Delete(arabianMines, p);
+p := p - 2;
+end;
+
+p := p + 2;
+end;
+End;

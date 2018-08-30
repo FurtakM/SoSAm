@@ -232,11 +232,11 @@ begin
        begin
        DialogueOn;
        Say(JMM,  'D6-JMM-1');
-       Say(Denis, 'D6-Sci1-1');
+       Say(tmp, 'D6-Sci1-1');
        Say(JMM, 'D6-JMM-2');
-       Say(Denis, 'D6-Sci1-2');
+       Say(tmp, 'D6-Sci1-2');
        Say(JMM, 'D6-JMM-3');
-       Say(Denis, 'D6-Sci1-3');
+       Say(tmp, 'D6-Sci1-3');
        Say(JMM, 'D6-JMM-4');
        DialogueOff;
        end;
@@ -286,7 +286,7 @@ begin
     ChangeSideFog(2, 2);
     SetAttitude(1, 2, att_enemy, true);
     SetAttitude(3, 2, att_friend, true);
-    for i in FilterAllUnits([[f_side, 2], [f_type, unit_human]]) do
+    for i in FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 8], [f_class, 15]]]) do
     begin
         ComExitBuilding(i);
         wait(0$1);
@@ -299,6 +299,21 @@ begin
         AddComAgressiveMove(i, 160, 56);
         AddComAgressiveMove(i, 189, 79);
     end; 
+
+    for i in FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_or, [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 16]]]) do
+    begin
+        ComExitBuilding(i);
+        wait(0$1);
+        AddComMoveXY(i, 77, 10);
+        AddComMoveXY(i, 82, 5);
+        AddComMoveXY(i, 95, 12);
+        AddComMoveXY(i, 102, 11);
+        AddComMoveXY(i, 116, 15);
+        AddComMoveXY(i, 140, 25);
+        AddComMoveXY(i, 160, 56);
+        AddComMoveXY(i, 189, 79);
+    end; 
+
     arabianAttackersAI = 1;
 
     wait(0$10);
