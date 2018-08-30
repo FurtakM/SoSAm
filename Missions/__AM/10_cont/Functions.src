@@ -366,7 +366,7 @@ var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
   engineerOkInside = UnitsInside(building);
-  engineerOkOutside = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000]]);
+  engineerOkOutside = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000], [f_not, [f_inside]]]);
   buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
   if not buildings_list and not engineerOkOutside and not rudestroyedBuildings then exit;
@@ -838,50 +838,32 @@ begin
     end;
 END;
 
-Export function CreateMineField(area);
-var i,xx, enemy;
+	Export Function PlaceMines(area, n);
+var i, r, x;
 begin
+r := 100;
+x := 0;
 
-   enemy = 2;
-  arabianMines:=[];
-  for i=1 to 10 do
+while(x < n) do
+for i = 1 to AreaToList(area, 0)[1] do
     begin
-      xx:=RandHexArea(area,false);
-      PlaceMine(xx[1],xx[2],enemy,0);
-      arabianMines:=arabianMines ^ xx;
-      wait(0$1);
-    end;
+    if r > 50 then
+       begin
+       if not MineAtPos(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]) then
+          begin
+          PlaceMine(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i], 2, 0);
 
-end;
+          arabianMines := Insert(arabianMines, arabianMines+1, AreaToList(area, 0)[1][i]);
+          arabianMines := Insert(arabianMines, arabianMines+1, AreaToList(area, 0)[2][i]);
 
-Export function ExplodeMineField(area);
-var un,list,mine, dist, pom_list, mine_xy, first_mine_exploded;
-begin
-    
-    if FilterUnitsInArea(area, [f_side, 1]) > 0 and arabianMines > 0 then
-    begin
-        list:=FilterUnitsInArea(area, [f_side, 1]);
-        pom_list:=[];
-        for un in list do
-            begin
-            if GetType(un)=unit_human then
-                dist:=3
-            else
-                dist:=4;
-            for mine=1 to (arabianMines div 2) do
-                if GetDistXY(arabianMines[(mine*2)-1],arabianMines[(mine*2)],GetX(un),GetY(un))<dist then
-                begin
-                    LaunchMineAtPos(arabianMines[(mine*2)-1],arabianMines[(mine*2)], 1);
-                    if not first_mine_exploded then
-                    begin
-                        first_mine_exploded:=true;
-                        mine_xy:=[arabianMines[(mine*2)-1],arabianMines[(mine*2)]];
-                    end;
-                end
-                else
-                pom_list:=pom_list ^ arabianMines[(mine*2)-1] ^ arabianMines[(mine*2)];
-            arabianMines:=pom_list;
-            pom_list:=[];
+          r := 0;
+          x := x + 1;
+          end
+           else
+            r := r + 35;
+       end
+        else
+         r := r + rand(10, 25);
     end;
-    end;
-end;
+End;
+

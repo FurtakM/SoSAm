@@ -9,6 +9,8 @@ functions for example: AI, Dialogs, PrepareUnit etc.
 Export destroyedBuildings;
 Export cargoTest;
 
+Export arabianMines;
+
 Export JMM;
 Starting
 var i;
@@ -19,6 +21,9 @@ begin
 
     destroyedBuildings = []; // destroyed buildings list
     cargoTest = [];
+    arabianMines = [];
+
+    PlaceMines(MineField1, 10);
 end;
 
 
@@ -27,7 +32,7 @@ end;
 Every 0$01 do
 var b;
 begin
-RemoveResourcesFromArea(area04, 10);
+//RemoveResourcesFromArea(area04, 10);
 End;
 
 Export Function RemoveResourcesFromArea(area, materials);
@@ -55,3 +60,9 @@ for i in FilterAllUnits([[f_side, 3], [f_weapon, us_cargo_bay]]) do cargoTest = 
 enable;
 end;
 
+}
+
+Every 0$1 do
+begin
+display_strings = [arabianMines];
+end;
