@@ -838,7 +838,7 @@ begin
     end;
 END;
 
-	Export Function PlaceMines(area, n);
+Export Function PlaceMines(area, n);
 var i, r, x;
 begin
 r := 100;
@@ -853,8 +853,7 @@ for i = 1 to AreaToList(area, 0)[1] do
           begin
           PlaceMine(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i], 2, 0);
 
-          arabianMines := Insert(arabianMines, arabianMines+1, AreaToList(area, 0)[1][i]);
-          arabianMines := Insert(arabianMines, arabianMines+1, AreaToList(area, 0)[2][i]);
+          arabianMines := Insert(arabianMines, 1, [AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]]);
 
           r := 0;
           x := x + 1;
@@ -865,5 +864,7 @@ for i = 1 to AreaToList(area, 0)[1] do
         else
          r := r + rand(10, 25);
     end;
+
+arabianMines := arabianMines diff 0;
 End;
 
