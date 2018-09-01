@@ -104,6 +104,9 @@ begin
 
 end;
 
+// Ar cargo move
+Every 0$1 trigger GetCargo(cargo1, 1) = 0 and GetCargo(cargo2, 1) = 0  and GetCargo(cargo2, 2) = 0 do ComMoveXY([cargo1, cargo2], 62, 6);
+
 // Build Siberite lab + power
 Every 0$1 trigger eventVar1 = 1 do
 var tmp1, tmp2, tmp3;
@@ -286,6 +289,9 @@ begin
     ChangeSideFog(2, 2);
     SetAttitude(1, 2, att_enemy, true);
     SetAttitude(3, 2, att_friend, true);
+
+    ChangeMissionObjectives('M4');
+
     for i in FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 8], [f_class, 15]]]) do
     begin
         ComExitBuilding(i);
@@ -447,4 +453,6 @@ End;
 // Delete mission objectives
 Every 0$1 trigger GetTech(tech_LasSight, 1) = state_researched do ChangeMissionObjectives('M2b');
 Every 0$1 trigger GetTech(tech_AI, 1) = state_researched do ChangeMissionObjectives('M2c');
+Every 0$1 trigger arabianDefeated = 1 do ChangeMissionObjectives('M4a');   //M2a
+Every 0$1 trigger GetTech(54, 1) = state_researched and GetTech(55, 1) = state_researched and GetTech(21, 1) = state_researched and GetTech(22, 1) = state_researched do ChangeMissionObjectives('M2a');
 

@@ -32,12 +32,15 @@ On BuildingComplete(building) Do
 var i;
 begin
 
-    if GetSide(building) = 1 then
+    if GetSide(building) = 1 and eventVar1 = 0 then
     begin
-       if GetBType(building) = 26 or GetBType(building) = 27 or GetBType(building) = 28 or GetBType(building) = 11  then
+       if GetBType(building) = 26 or GetBType(building) = 27 or GetBType(building) = 28  then
        begin
-        if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]], [f_and, [f_btype, b_lab_siberium]], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 and eventVar1 = 0 then
-            eventVar1 = 1;
+            if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]]]) > 0 then
+            begin
+                 for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]]]) do
+                     if GetLabKind(i, 1) = b_lab_siberium or GetLabKind(i, 2) = b_lab_siberium then eventVar1 = 1;
+            end;
        end;
     end;
 
@@ -132,10 +135,16 @@ On UpgradeComplete(building) Do
 var i;
 begin
 
-    if GetSide(building) = 1 then
+   if GetSide(building) = 1 and eventVar1 = 0 then
     begin
-        if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full], [f_and, [f_btype, b_lab_siberium], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 and eventVar1 = 0 then
-            eventVar1 = 1;
+       if GetBType(building) = b_lab_half or GetBType(building) = b_lab_full then
+       begin
+            if FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]])  > 0 then
+            begin
+                 for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]]]) do
+                     if GetLabKind(i, 1) = b_lab_siberium or GetLabKind(i, 2) = b_lab_siberium then eventVar1 = 1;
+            end;
+       end;
     end;
 
     if GetSide(building) = 2 then
