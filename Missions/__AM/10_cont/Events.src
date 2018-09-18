@@ -13,6 +13,11 @@ begin
         end; 
     end;
 
+    if GetSide(building) = 3 then
+    begin
+         if GetBType(building) = 2 then AddComUpgrade(building);
+    end;
+
 end;
 
 On UnitGoesToRed(un) do
@@ -32,12 +37,15 @@ On BuildingComplete(building) Do
 var i;
 begin
 
-    if GetSide(building) = 1 then
+    if GetSide(building) = 1 and eventVar1 = 0 then
     begin
-       if GetBType(building) = 26 or GetBType(building) = 27 or GetBType(building) = 28 or GetBType(building) = 11  then
+       if GetBType(building) = 26 or GetBType(building) = 27 or GetBType(building) = 28  then
        begin
-        if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]], [f_and, [f_btype, b_lab_siberium]], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 and eventVar1 = 0 then
-            eventVar1 = 1;
+            if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]]]) > 0 then
+            begin
+                 for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]]]) do
+                     if GetLabKind(i, 1) = b_lab_siberium or GetLabKind(i, 2) = b_lab_siberium then eventVar1 = 1;
+            end;
        end;
     end;
 
@@ -81,7 +89,7 @@ begin
         end;
 
         if GetBType(building) = b_bunker then AddComPlaceWeapon(building, [44, 45, 46][Rand(1, 3)]);
-        if GetBType(building) = b_turret then AddComPlaceWeapon(building, [44, 46, 46][Rand(1, 3)]);
+        if GetBType(building) = b_turret then AddComPlaceWeapon(building, [44, 45, 46][Rand(1, 3)]);
 
         if GetBType(building) = b_ext_computer then russianAI = 1;
           
@@ -109,8 +117,8 @@ begin
 
         if  GetBType(building) = 2 or GetBType(building) = 4 then ComUpgrade(building);
 
-        if GetBType(building) = b_breastwork and FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]]) > 0 then
-            ComEnterUnit(FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]])[1], building);
+       // if GetBType(building) = b_breastwork and FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]]) > 0 then
+         //   ComEnterUnit(FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]])[1], building);
     
         if GetBType(building) = b_solar_power then 
             if FilterAllUnits([[f_side, 2], [f_btype, b_solar_power]]) = 2 then
@@ -122,6 +130,10 @@ begin
             AddComMoveXY(i, 36, 28);
 
             AddComEnterUnit(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 2]]), arDepot);
+
+            ComEnterUnit(FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]])[1], FilterAllUnits([[f_side, 2], [f_btype, 31], [f_empty]])[1]);
+            ComEnterUnit(FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]])[2], FilterAllUnits([[f_side, 2], [f_btype, 31], [f_empty]])[2]);
+            ComEnterUnit(FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]])[3], FilterAllUnits([[f_side, 2], [f_btype, 31], [f_empty]])[3]);
             end;
     
     end;
@@ -132,10 +144,16 @@ On UpgradeComplete(building) Do
 var i;
 begin
 
-    if GetSide(building) = 1 then
+   if GetSide(building) = 1 and eventVar1 = 0 then
     begin
-        if FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full], [f_and, [f_btype, b_lab_siberium], [f_and, [f_or, [f_btype, b_oil_power], [f_btype, b_solar_power], [f_btype, b_siberite_power]]]]]]) > 0 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]]) > 0 and eventVar1 = 0 then
-            eventVar1 = 1;
+       if GetBType(building) = b_lab_half or GetBType(building) = b_lab_full then
+       begin
+            if FilterAllUnits([[f_side, 1], [f_or, [f_btype, 26], [f_btype, 27], [f_btype, 28]]])  > 0 then
+            begin
+                 for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab_half], [f_btype, b_lab_full]]]) do
+                     if GetLabKind(i, 1) = b_lab_siberium or GetLabKind(i, 2) = b_lab_siberium then eventVar1 = 1;
+            end;
+       end;
     end;
 
     if GetSide(building) = 2 then
