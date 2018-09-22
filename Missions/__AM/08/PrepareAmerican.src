@@ -1,5 +1,5 @@
 Export function PrepareHeroes;
-var i, fac, lab, arm, j, placed, ct, bun;
+var i, fac, lab, arm, j, placed, ct, bun, tmp;
 begin
     uc_side = 1;
     uc_nation = 1;
@@ -25,6 +25,15 @@ begin
     Powell = PrepareUnit('Powell', false);
 
     others_gamma = CreateCharacterSet('07_othersGamma');
+
+    tmp := 8 - others_gamma;
+
+    if tmp then
+       for i = 1 to tmp do
+           begin
+           PrepareHuman(false, 1, 5);
+           others_gamma := others_gamma ^ CreateHuman;
+           end;
 
     arm := FilterAllUnits([[f_side, 1], [f_btype, b_barracks]]);
     lab := FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);

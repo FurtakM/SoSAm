@@ -262,16 +262,12 @@ begin
             SetSide(Frank, 0);
             ComMoveToArea(Frank, FrankSpot);
             SaveCharacters(Frank, 'Frank');
+            Wait(0$3);
+            frankScoutBase = 1;
+            RemoveUnit(Frank);
         end;
 
     end;  
-end;
-
-// Remove Frank from map
-Every 1 trigger IsInArea(Frank, FrankSpot) and GetSide(Frank) = 0 do 
-begin
-    RemoveUnit(Frank);
-    frankScoutBase = 1;
 end;
 
 // Coop attack with Donaldson
@@ -314,8 +310,12 @@ begin
 
     repeat
         wait(0$1);
-        ComMoveXY(Frank, 51, 15);
-    until GetDistUnits(Frank, JMM) < 6;
+
+        if not IsInUnit(JMM) and GetDistUnits(JMM, ambdept0) < 20 then
+           ComMoveXY(Frank, GetX(JMM), GetY(JMM))
+          else
+           ComMoveXY(Frank, 51, 15);
+    until GetDistUnits(Frank, JMM) < 10;
 
     CenterNowOnUnits([JMM, Frank]);
     DialogueOn;
