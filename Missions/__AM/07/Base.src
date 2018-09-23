@@ -155,6 +155,13 @@ others := others union others4;
 //others := others diff others_delta;
 team := team ^ others;
 
+if team < 10 then
+   repeat
+    wait(0$01);
+    PrepareHuman(false, rand(1,4), 5);
+    team := team ^ CreateHuman;
+   until team < 10;
+
 for i in others do
     begin
     if GetClass(i) = 2 then
