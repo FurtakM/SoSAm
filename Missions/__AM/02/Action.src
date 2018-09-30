@@ -265,7 +265,7 @@ begin
      wait(0$3);
 
      Say(JMM, 'DCorpses-JMM-1');
-     SetLives(DyingSold, 150);
+     SetLives(DyingSold, 100);
 
      IF IsOK(Khatam) then
      begin
@@ -278,7 +278,7 @@ begin
 
           SetLives(DyingSold, 10);
           wait(0$3);
-          SetLives(DyingSold, 0);
+          KillUnit(DyingSold);
 
           wait(0$1);
           CenterNowOnUnits([JMM, Khatam]);
@@ -299,13 +299,13 @@ end;
 Every 0$1 trigger spotCorpses = 1 do
 begin
      enable;
-     SetLives(DyingSold, 150);
+     SetLives(DyingSold, 10);
 
 end;
 
 // Find new AM soldiers
 
-Every 1 trigger FilterUnitsInArea(WaterScene, [f_side, 1]) > 0 AND NOT GetSide(dep1) = 1 AND NOT GetSide(dep2) = 1  do
+Every 1 trigger (FilterUnitsInArea(WaterScene, [f_side, 1]) > 0 OR GetDistUnits(NearestUnitToUnit(FilterAllUnits([f_side, 1]), Jerry), Jerry) < 15) do
 var i;
 begin
     InGameOn;
@@ -325,7 +325,7 @@ end;
 
 // Kill russians near river
 
-Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 AND NOT GetSide(dep1) = 1 AND NOT GetSide(dep2) = 1 do
+Every 0$1 trigger FilterUnitsInArea(WaterArea, [f_side, 3]) = 0 do
 begin
 
     If NOT IsDead(Brian) then SetSide(Brian, 1);
@@ -470,7 +470,7 @@ end;
 
 // Capture all enemy bases and spawn Mikhail
 
-Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 do
+Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND FilterUnitsInArea(NorthBase, [f_side, 3]) = 0 do
 var temp, i;
 begin
 
@@ -488,6 +488,10 @@ begin
 
     ChangeMissionObjectives('M2');
     Say(JMM, 'D3b-JMM-1');
+
+    repeat
+     wait(0$1);
+    until FilterUnitsInArea(NorthBase, [[f_side, 1], [f_class, 2]]);
 
     wait(0$5);
     InGameOn;
@@ -607,16 +611,17 @@ begin
         begin
             if GetDistUnits(i, j) < 7 then
             begin
-                Disable;
+                disable;
                 ComMoveXY([cargo1, cargo2], 7, 9);
 
                 If cargoSee = 0 then
                 begin
                    cargoSee = 1;
+                   cargoEscape = 1;
                    Say(driver1, 'D5-Rus2-1a');
-                end;
-
-                cargoEscape = 1;
+                   exit;
+                end; 
+                
             end;
         end;
     end;
@@ -627,6 +632,8 @@ end;
 Every 0$1 trigger cargoEscape > 0 do
 begin
     enable;
+
+    ComMoveToArea([cargo1, cargo2], RussianAttack);
 
     if IsInArea(cargo1, RussianAttack) OR IsInArea(driver1, RussianAttack) then
     begin
@@ -660,7 +667,7 @@ begin
 end;
 
 // Macmillan's alert about attack depots
-Every 0$1 trigger GetLives(dep1) < 1000 OR GetLives(dep2) < 1000 do
+Every 0$1 trigger (GetSide(dep1) = 3 and GetLives(dep1) < 1000) OR (GetSide(dep2) = 3 and GetLives(dep2) < 1000) do
 begin
      Say(JMM, 'D8-JMM-1');
 end;
@@ -721,7 +728,8 @@ end;
 Every 1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 4 do
 begin
      enable;
-     
+
+     InGameOn;
      SetSide(Mikhail, 1);
 
      repeat
@@ -734,6 +742,8 @@ begin
           ComEnterUnit(Mikhail, dep2);
        end;
      until IsInUnit(Mikhail);
+
+     InGameOff;
 
      mikhailInBase = 1;
 

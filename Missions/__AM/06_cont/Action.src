@@ -16,26 +16,28 @@ begin
 
     SaveForQuickRestart;
 
+    Wait(Rand(0$10,0$25));
+
+    CreateCratesArea(5, FirstCrate, true);
 end;
 
-// First crate and dialog
-every 0$1 do
+// First crate spawn
+Every 0$1 trigger firstCrateSpawn do
 begin
-     Wait(Rand(0$10,0$25));
-     CreateCratesArea(5, FirstCrate, true);
-     wait(0$15);
 
-     if IsOk(Lisa) then
-     begin
-          Say(Lisa, 'DR0-Lisa-1');
-     end else
-     begin
-          DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank], 'DR0-Sol1-1', 'DR0-Sol1-1');
-     end;
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank], 'DR0-Sol2-1', 'DR0-Sol2-1');
-    If IsOk(Cyrus) then Say(Cyrus, 'DR0-Cyrus-1');
+    if IsOk(Lisa) then
+       Say(Lisa, 'DR0-Lisa-1')
+     else
+       DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank, Brown, Donaldson], 'DR0-Sol1-1', 'DR0-Sol1-1');
+
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank, Lisa, Brown, Donaldson], 'DR0-Sol2-1', 'DR0-Sol2-1');
+    if IsOk(Cyrus) then
+       Say(Cyrus, 'DR0-Cyrus-1');
+
     Say(JMM, 'DR0-JMM-1');
-end;
+
+End;
+
 
 // Frank dialog
 Every 5$0 trigger IsOk(Frank) and FilterAllUnits([[f_side, 1], [f_class, 16]]) > 0 do
@@ -236,25 +238,6 @@ begin
     PrepareKurt;
 end;
 
-// Remove Kurt
-Every 0$1 trigger IsInArea(Kurt, KurtEscape) and readyToEscape = 1 do
-begin
-     RemoveUnit(Kurt);
-     SaveCharacters(Kurt, 'Kurt');
-
-     if GetAttitude(1, 2) = att_neutral then KurtStatus = 1;
-     if GetAttitude(1, 2) = att_enemy then KurtStatus = 2;
-
-end;
-
-// Attack Kurt
-Every 0$1 trigger GetAttitude(1, 2) = att_enemy and IsOK(Kurt) do
-begin
-     DialogueOn;
-     Say(Kurt, 'D2a-Kurt-1');
-     DialogueOff;
-
-end;
 
 // Spawn Joan + dialog
 Every 35$0 do

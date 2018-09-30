@@ -469,9 +469,7 @@ DialogueOff;
 dep := FilterUnitsInArea(ovsyenkoArea, [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
 
 if dep then
-   dep := dep[1]
-  else
-   dep := NearestUnitToUnit(FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]), Gali);
+   dep := dep[1];
 
 if not dep then
    begin
@@ -613,6 +611,9 @@ if player_want_mortar then
 
         wait(1);
 
+        InGameOn;
+        CenterNowOnUnits(Gali);
+
         SetSide(Gali, 1);
         ComBuild(Gali, b_armoury, 107, 131, 0);
 
@@ -621,6 +622,8 @@ if player_want_mortar then
         until FilterAllUnits([[f_btype, b_armoury], [f_nation, nation_arabian]]);
 
         SetSide(Gali, 2);
+        InGameOff;
+
         b := FilterAllUnits([[f_btype, b_armoury], [f_nation, nation_arabian]])[1];
 
         repeat

@@ -1,5 +1,5 @@
 Export function PrepareHeroes;
-var i, fac, lab, arm, j, placed, ct, bun;
+var i, fac, lab, arm, j, placed, ct, bun, tmp;
 begin
     uc_side = 1;
     uc_nation = 1;
@@ -25,6 +25,15 @@ begin
     Powell = PrepareUnit('Powell', false);
 
     others_gamma = CreateCharacterSet('07_othersGamma');
+
+    tmp := 8 - others_gamma;
+
+    if tmp then
+       for i = 1 to tmp do
+           begin
+           PrepareHuman(false, 1, 5);
+           others_gamma := others_gamma ^ CreateHuman;
+           end;
 
     arm := FilterAllUnits([[f_side, 1], [f_btype, b_barracks]]);
     lab := FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
@@ -188,43 +197,43 @@ begin
     Joan = PrepareUnit('06c_Joan', true);
     PlaceUnitArea(Joan, GammaSupport, false);
 
-    if LoadVariable('GladstoneIn07', 0) = 0 then
+    if not LoadVariable('GladstoneIn07', 0) then
     begin
         Gladstone = PrepareUnit('06c_Gladstone', true);
 
         if not Gladstone and LoadVariable('GladstoneStayInDelta', 0) then
-           Gladstone = PrepareUnit('06_Gladstone', true);
+           Gladstone = PrepareUnit('05_Gladstone', true);
 
         PlaceUnitArea(Gladstone, GammaSupport, false);
     end;
 
     if LoadVariable('LisaStayInDelta', 0) then
        begin
-       Lisa = PrepareUnit('06_Lisa', true);
+       Lisa = PrepareUnit('05_Lisa', true);
        PlaceUnitArea(Lisa, GammaSupport, false);
        end;
 
     if LoadVariable('BobbyStayInDelta', 0) then
        begin
-       Bobby = PrepareUnit('06_Bobby', true);
+       Bobby = PrepareUnit('05_Bobby', true);
        PlaceUnitArea(Bobby, GammaSupport, false);
        end;
 
     if LoadVariable('CyrusStayInDelta', 0) then
        begin
-       Cyrus = PrepareUnit('06_Cyrus', true);
+       Cyrus = PrepareUnit('05_Cyrus', true);
        PlaceUnitArea(Cyrus, GammaSupport, false);
        end;
 
     if LoadVariable('BrownStayInDelta', 0) then
        begin
-       Brown = PrepareUnit('06_Brown', true);
+       Brown = PrepareUnit('05_Brown', true);
        PlaceUnitArea(Brown, GammaSupport, false);
        end;
 
     if LoadVariable('DonaldsonStayInDelta', 0) then
        begin
-       Donaldson = PrepareUnit('06_Donaldson', true);
+       Donaldson = PrepareUnit('05_Donaldson', true);
        PlaceUnitArea(Donaldson, GammaSupport, false);
        end;
 
