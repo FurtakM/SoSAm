@@ -82,20 +82,20 @@ Export function PrepareDifficulty;
 begin
     if Difficulty = 1 then
     begin
-        RuSolMinLevel = 3;
-        RuSolMaxLevel = 6;
+        RuSolMinLevel = 2;
+        RuSolMaxLevel = 4;
     end;
 
     if Difficulty = 2 then
     begin
-        RuSolMinLevel = 5;
-        RuSolMaxLevel = 6;
+        RuSolMinLevel = 3;
+        RuSolMaxLevel = 5;
     end;
 
     if Difficulty = 3 then
     begin
-        RuSolMinLevel = 5;
-        RuSolMaxLevel = 7;
+        RuSolMinLevel = 3;
+        RuSolMaxLevel = 6;
     end;
 end;
 
@@ -128,61 +128,68 @@ begin
 
 end;
 
-Export function RepairBuilding(side, building, area);
+Export function RepairAndRebuildBase(side, building, area, destroyedBuildings);
 var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
   engineerOkInside = UnitsInside(building);
-  engineerOkOutside = FilterUnitsInArea(area, [[f_side, side], [f_class, 2], [f_lives, 1000]]);
-  buildings_list = FilterUnitsInArea(area, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+  engineerOkOutside = FilterUnitsInArea(area,[[f_side, side], [f_class, 2], [f_lives, 750], [f_not, [f_inside]]]);
+  buildings_list = FilterUnitsInArea(area,[[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-  if not buildings_list and not engineerOkOutside then exit;
+  if not buildings_list and not FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 250]]) then exit;
 
-  if buildings_list > 0 and engineerOkInside > 0 then
-      for i in engineerOkInside do ComExitBuilding(i);
+  if buildings_list > 0 and engineerOkInside then ComExitBuilding(engineerOkInside);
 
-  if engineerOkOutside > 0 then
-  begin
+  if buildings_list > 0  and engineerOkOutside > 0 then ComRepairBuilding(engineerOkOutside, buildings_list[1]);
 
-    for i in engineerOkOutside do
-      for j in buildings_list do
-          ComRepairBuilding(i, j[1]);
+  if buildings_list = 0 and destroyedBuildings = 0 and engineerOkOutside > 0 then ComEnterUnit(engineerOkOutside, building);
 
-  end;
+  if engineerOkOutside > 0 and buildings_list = 0 and destroyedBuildings > 0  then ComBuild(engineerOkOutside, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
 
-  if buildings_list = 0 and engineerOkOutside > 0 then
-      for i in engineerOkOutside do ComEnterUnit(i, building);
+
 END;
 
 Export function HealUnitInBase(side, healArea, baseArea, build);
-var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal;
+var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal, tmp, rnd;
 begin
 
-  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 251]]);
-  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_ok]]);
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_nation ,2], [f_lives, 251]]);
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_nation, 2], [f_class, 4], [f_ok]]);
   damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
   unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 1000]]]);
 
-  if not damageUnits and not sci_listOutside and not unitsToHeal then exit;
+  if not damageUnits and not unitsToHeal and not sci_list then exit;
 
-  if damageUnits > 0 and sci_list > 0 then
-    for i in damageUnits do ComMoveToArea(i, healArea);
+  if damageUnits > 0 and sci_list > 0 then ComMoveToArea(damageUnits, healArea);
 
-  if unitsToHeal > 0 and sci_list > 0 then
-  begin
-    for i in sci_list do
-    begin
+  if unitsToHeal > 0 and sci_list > 0 then ComExitBuilding(sci_list);
 
-      ComExitBuilding(i);
-
-      for j in unitsToHeal do AddComHeal(i, j);
-    end;
-  end;
+  if unitsToHeal > 0 and sci_listOutside > 0 then ComHeal(sci_listOutside, unitsToHeal[1]);
 
   if damageUnits = 0 and unitsToHeal = 0 and sci_listOutside > 0 then
-      for i in sci_listOutside do ComEnterUnit(i, build);
+  begin
+          tmp = FilterAllUnits([[f_side, side], [f_type, unit_building], [f_btype, b_lab_full]]);
+          rnd = rand(1, tmp);
+          ComEnterUnit(UnitFilter(sci_listOutside, [f_not, [f_hastask]]), tmp[rnd]);
+  end;
 
 END;
+
+Export function DefendDepot(side, build);
+var i, j, tmpTab;
+begin
+     tmpTab = [];
+
+     if FilterAllUnits([[f_side, side], [f_btype, b_bunker]]) > 0 then
+     begin
+       for i in FilterAllUnits([[f_side, side], [f_btype, b_bunker]]) do
+       begin
+            for j in UnitsInside(i) do tmpTab = tmpTab ^ j;
+       end;
+     end;
+
+     ComAgressiveMove(tmpTab, GetX(build), GetY(build));
+end;
 
 Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, weaponTab, engine, control, chassis);
 var i, weapon;
@@ -228,7 +235,7 @@ begin
                         begin
                             if tmp = russianTanks[i] then
                             begin
-                                russianTanks = Delete(russianTanks, i);
+                                russianTanks = russianTanks diff tmp;
                                 russianDamageTanks = russianDamageTanks ^ tmp;
                             end;
                         end;
@@ -273,48 +280,42 @@ begin
     mechanicInside_list = [];
     mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
 
-    if damageVehicle_list = 0 and vehicleOK_list = 0 then exit;
-
-    if damageVehicle_list > 0 then
-        for i in damageVehicle_list do ComMoveXY(i, repX, repY);
+    if damageVehicle_list > 0 then ComMoveXY(damageVehicle_list, repX, repY);
 
     if vehicleNeedRepair_list > 0 then
     begin
         for i in vehicleNeedRepair_list  do
         begin
             mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
-            for j in mechanicInside_list do
-            begin
-                ComExitVehicle(j);
-                wait(0$1);
-                AddComRepairVehicle(j, i);
-                AddComEnterUnit(j, i);
-            end;
+            ComExitVehicle(mechanicInside_list);
+            wait(0$1);
+            if mechanicInside_list > 0 then AddComRepairVehicle(mechanicInside_list[1], i);
+            AddComEnterUnit(mechanicInside_list[1], i);
         end;
     end;
 
-    if vehicleDontNeedRepair_list > 0 then ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
+    if vehicleDontNeedRepair_list > 0 then AddComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
 
     if vehicleOK_list > 0 and russianDamageTanks > 0 then
     begin
         for i := 1 to vehicleOK_list do
         begin
-            if i = [5, 6, 6][Difficulty] then
+            if i = [5, 6, 6] then
             begin
-                for i in vehicleOk_list do
-                begin
-                 russianTanks = russianTanks ^ i;
-                 SetFuel(i, 100);
-                end;
-                for i in russianDamageTanks do russianDamageTanks = russianDamageTanks diff i;
+                for i in vehicleOK_list do russianTanks = russianTanks ^ i;
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
                 break;
             end;
         end;
-    end; 
-   
+    end;
+
     for i in not FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]) do ComMoveXY(i, repX, repY);
 
 END;
+
 
 
 Export function CollectCrates(side, cargo, cratesArea);
@@ -329,52 +330,35 @@ begin
         AddComCollect(cargo_list[1], crate_list[1], crate_list[2]);
         SetFuel(cargo_list[1], 100);
     end;
-end; 
+end;
 
-
-Export function RebuildBuildings(side, destroyedBuildings);
-var i;
+Export function EnterBunkerOrBarrack(side, area);
+var i,j, soldiers_list, turretList, temp, barrackList, insideUnits;
 begin
-    if FilterAllUnits([[f_side, side], [f_class, 2]]) > 0 and FilterAllUnits([[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]) = 0 and destroyedBuildings > 0  then
+
+    soldiers_list = FilterUnitsInArea(area, [[f_side, side], [f_outside], [f_lives, 700],  [f_not, [f_hastask]], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]]);
+    turretList = FilterUnitsInArea(area, [[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
+    barrackList = FilterUnitsInArea(area, [[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
+
+    if barrackList > 0 then
     begin
-        for i in FilterAllUnits([[f_side, side], [f_class, 2]]) do 
+        if turretList = 0 then
         begin
-            AddComExitBuilding(i);
-            AddComBuild(i, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
+            if soldiers_list > 0 then ComEnterUnit(soldiers_list, barrackList[Rand(1, barrackList)]);
+        end else
+        begin
+            for i in barrackList do
+            begin
+                insideUnits = UnitsInside(i);
+                if insideUnits > 0 then ComEnterUnit(insideUnits[1], turretList[1]);
+                if soldiers_list > 0 then ComEnterUnit(soldiers_list[1], turretList[1]);
+            end;
         end;
+
     end;
+
 end;
 
-Export function EscapeToBarrack(side, build, area);
-var i,j, soldiers_list, turretList, temp, specialClass_list;
-begin
-
-
-    soldiers_list = FilterAllUnits([[f_side, side], [f_class, 1], [f_outside], [f_lives, 700]]);
-    turretList = FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
-    specialClass_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 5], [f_class, 8], [f_class, 9]]]);
-
-    temp = UnitsInside(build) diff specialClass_list;
-
-  if turretList = 0 and temp = 0  then
-  begin
-     for i in soldiers_list do
-     begin
-       if IsOK(build) then ComEnterUnit(i, build);
-     end;
-  end else
-  begin
-    for i = 1 to turretList do
-    begin
-     for j = 1 to temp do
-     begin
-       ComExitBuilding(temp[j]);
-      AddComEnterUnit(temp[j], turretList[i]);
-      end;
-    end;
-  end;
-
-end;
 
 Export function AttackNearBuildings(side, enemySide);
 var i, j, turretsList, enemyBuildings;

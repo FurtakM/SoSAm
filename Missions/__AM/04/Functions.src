@@ -334,12 +334,12 @@ begin
                     if GetLives(i) < 659 then
                     begin
                         tmp = i;
-                        
+
                         for i := 1 to russianTanks do
                         begin
                             if tmp = russianTanks[i] then
                             begin
-                                russianTanks = Delete(russianTanks, i);
+                                russianTanks = russianTanks diff tmp;
                                 russianDamageTanks = russianDamageTanks ^ tmp;
                             end;
                         end;
@@ -598,45 +598,38 @@ begin
     mechanicInside_list = [];
     mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
 
-    if damageVehicle_list = 0 and vehicleOK_list = 0 then exit;
-
-    if damageVehicle_list > 0 then
-        for i in damageVehicle_list do ComMoveXY(i, repX, repY);
+    if damageVehicle_list > 0 then ComMoveXY(damageVehicle_list, repX, repY);
 
     if vehicleNeedRepair_list > 0 then
     begin
         for i in vehicleNeedRepair_list  do
         begin
             mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
-            for j in mechanicInside_list do
+            ComExitVehicle(mechanicInside_list);
+            wait(0$1);
+            if mechanicInside_list > 0 then AddComRepairVehicle(mechanicInside_list[1], i);
+            AddComEnterUnit(mechanicInside_list[1], i);
+        end;
+    end;
+
+    if vehicleDontNeedRepair_list > 0 then AddComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
+
+    if vehicleOK_list > 0 and russianTanks > 0 then
+    begin
+        for i := 1 to vehicleOK_list do
+        begin
+            if i = 4 then
             begin
-                ComExitVehicle(j);
-                wait(0$1);
-                AddComRepairVehicle(j, i);
-                AddComEnterUnit(j, i);
+                for i in vehicleOK_list do russianTanks = russianTanks ^ i;
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                russianDamageTanks = Delete(russianDamageTanks, 1);
+                break;
             end;
         end;
     end;
 
-    if vehicleDontNeedRepair_list > 0 then ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
-
-    if vehicleOK_list > 0 and russianDamageTanks > 0 then
-    begin
-        for i := 1 to vehicleOK_list do
-        begin
-            if i = [5, 6, 6][Difficulty] then
-            begin
-                for i in vehicleOk_list do
-                begin
-                 russianTanks = russianTanks ^ i;
-                 SetFuel(i, 100);
-                end;
-                for i in russianDamageTanks do russianDamageTanks = russianDamageTanks diff i;
-                break;
-            end;
-        end;
-    end; 
-   
     for i in not FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]) do ComMoveXY(i, repX, repY);
 
 END;

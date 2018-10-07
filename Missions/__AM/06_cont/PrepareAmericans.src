@@ -80,10 +80,11 @@ begin
 end;
 
 Export function PrepareVehicles;
-var i, j, veh, vehicles;
+var i, j, veh, vehicles, cargoList;
 begin
     vehicles = LoadVariable('06_VehiclesIn06_1', []);
     resources = LoadVariable('06_ResourcesInCargo06_1', []);
+    cargoList = [];
 
     uc_side = 1;
 
@@ -102,17 +103,21 @@ begin
             veh = CreateVehicle;
             SetDir(veh, 3);
             PlaceUnitArea(veh, PlayerSpawn, false);
-
-            if vc_weapon = us_cargo_bay then
-            begin
-                if resources > 0 then
-                begin
-                   AddCargo(veh, 1, resources[i][1]);
-                   AddCargo(veh, 2, resources[i][2]);
-                   AddCargo(veh, 3, resources[i][3]);
-                end;
-            end;
         end;
+
+        cargoList = FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_weapon, us_cargo_bay]]);
+
+        if cargoList > 0 then
+          for i = 1 to cargoList do
+          begin
+             if resources > 0 then
+             begin
+                   AddCargo(cargoList[i], 1, resources[i][1]);
+                   AddCargo(cargoList[i], 2, resources[i][2]);
+                   AddCargo(cargoList[i], 3, resources[i][3]);
+             end;
+          end;
+
     end;
 
 end;
