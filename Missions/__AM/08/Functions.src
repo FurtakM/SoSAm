@@ -85,7 +85,7 @@ begin
     if Difficulty = 3 then
     begin
         RuSolMinLevel = 5;
-        RuSolMaxLevel = 7;
+        RuSolMaxLevel = 6;
         SetTech(57, 3, state_enabled);
         SetTech(51, 3, state_enabled);
         SetTech(52, 3, state_enabled);
@@ -916,3 +916,34 @@ begin
                 end;
         end;
 end;
+
+
+
+Export Function MCB_Extension(x, y, d);
+var list;
+begin
+list := [];
+
+     Case d of
+     0: begin
+        list := [[x-4, y-4, 2], [x-3, y, 1], [x+4, y, 4], [x+3, y+3, 5], [x, y+4, 0]];
+        end;
+     1: begin
+        list := [[x, y-4, 3], [x-3, y-3, 2], [x-4, y, 1], [x, y+3, 0], [x+4, y+4, 5]];
+        end;
+     2: begin
+        list := [[x, y-3, 3], [x+4, y, 4], [x, y+4, 0], [x-3, y, 1], [x-4, y-4, 2]];
+        end;
+     3: begin
+        list := [[x+3, y, 4], [x+4, y+4, 5], [x-4, y, 1], [x, y-4, 3], [x-3, y-3, 2]];
+        end;
+     4: begin
+        list := [[x, y+4, 0], [x+3, y+3, 5], [x+3, y, 4], [x, y-3, 3], [x-4, y-4, 2]];
+        end;
+     5: begin
+        list := [[x-4, y, 1], [x, y-4, 3], [x+4, y+4, 5], [x+3, y, 4], [x, y+3, 0]];
+        end;
+     End;
+
+result := list;
+End;
