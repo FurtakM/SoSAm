@@ -15,6 +15,9 @@ team := [];
 
 JMM := PrepareUnit('JMM', (not debug), '06c_');
 
+if GetClass(JMM) = 2 then
+   SetClass(JMM, 1);
+
 gamma_commander := LoadVariable('GammaCommander', 3);
 
 
@@ -77,7 +80,7 @@ Khatam := PrepareUnit('Khatam', (not debug), '03_');
 
 if Khatam then
    team := team ^ Khatam;
-
+{
 if LoadVariable('FrankIn06', 0) then
    Frank := PrepareUnit('Frank', (not debug), '06c_')
   else
@@ -87,7 +90,7 @@ if LoadVariable('FrankIn06', 0) then
       Frank := PrepareUnit('Frank', (not debug), '04_');
                                                      
 if Frank then
-   team := team  ^ Frank; // Frank bierze udzia³ w tej misji!!!
+   team := team  ^ Frank;}
 
 if LoadVariable('LisaIn06', 0) then
    Lisa := PrepareUnit('Lisa', (not debug), '06c_')
@@ -151,6 +154,13 @@ others := CreateCharacterSet('06_other_survivors');
 others := others union others4;
 //others := others diff others_delta;
 team := team ^ others;
+
+if team < 10 then
+   repeat
+    wait(0$01);
+    PrepareHuman(false, rand(1,4), 5);
+    team := team ^ CreateHuman;
+   until team < 10;
 
 for i in others do
     begin

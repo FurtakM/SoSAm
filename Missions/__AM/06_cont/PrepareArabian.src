@@ -157,5 +157,18 @@ begin
     end;
 
     blockSpawn = 0;
+
+    repeat
+     wait(0$1);
+    until (IsInArea(Kurt, KurtEscape) and readyToEscape) or IsDead(Kurt);
+
+    if IsDead(Kurt) then
+       exit;
+
+    RemoveUnit(Kurt);
+    SaveCharacters(Kurt, 'Kurt');
+
+    if GetAttitude(1, 2) = att_neutral then KurtStatus = 1;
+    if GetAttitude(1, 2) = att_enemy then KurtStatus = 2;
         
 end;

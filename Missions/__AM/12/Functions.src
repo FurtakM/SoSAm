@@ -25,6 +25,46 @@ begin
   
 end;
 
+Export function PrepareDifficulty;
+var tmp;
+begin
+    if Difficulty = 1 then
+    begin
+        RuSolMinLevel = 8;
+        RuSolMaxLevel = 10;
+    end;   
+
+    if Difficulty = 2 then
+    begin
+        RuSolMinLevel = 9;
+        RuSolMaxLevel = 10;
+
+        uc_nation = 3;
+        uc_side = 3;
+
+        bc_level = 10;
+        bc_type = b_turret;
+        tmp = CreateAndPlaceBuildingXYD(77, 16, 2);
+        PlaceWeaponTurret(tmp, 49);
+    end; 
+
+    if Difficulty = 3 then
+    begin
+        RuSolMinLevel = 10;
+        RuSolMaxLevel = 10;
+
+        uc_nation = 3;
+        uc_side = 3;
+
+        bc_level = 10;
+        bc_type = b_turret;
+        tmp = CreateAndPlaceBuildingXYD(77, 16, 2);
+        PlaceWeaponTurret(tmp, 49);
+        tmp = CreateAndPlaceBuildingXYD(84, 13, 2);
+        PlaceWeaponTurret(tmp, 49);
+    end;
+end;
+
 Export function ShowQuery1;
 begin
     case query('Q1') of

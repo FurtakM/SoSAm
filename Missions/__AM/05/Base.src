@@ -2,7 +2,7 @@
 Export JMM, Gladstone, Frank, Lisa, Cyrus, Bobby, Donaldson, Brown;
 
 Export Function PrepareAmerican;
-var others3, others4, veh, team, dep, bar, lab, fac, bun, filter, i;
+var others3, others4, veh, team, dep, bar, lab, fac, bun, filter, i, tmp;
 begin
 PrepareBase;
 
@@ -64,6 +64,13 @@ if others4 then
 
 if others3 then
    team := team ^ others3;
+
+
+if team < 9 then
+   repeat
+   PrepareHuman(false, rand(1,4), 4);
+   team := team ^ CreateHuman;
+   until team = 9;
 
 // place units in base
 dep := FilterAllUnits([f_btype, b_depot])[1];

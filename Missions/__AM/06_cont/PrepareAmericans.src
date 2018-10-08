@@ -80,9 +80,11 @@ begin
 end;
 
 Export function PrepareVehicles;
-var i, j, veh, vehicles;
+var i, j, veh, vehicles, cargoList;
 begin
     vehicles = LoadVariable('06_VehiclesIn06_1', []);
+    resources = LoadVariable('06_ResourcesInCargo06_1', []);
+    cargoList = [];
 
     uc_side = 1;
 
@@ -101,10 +103,21 @@ begin
             veh = CreateVehicle;
             SetDir(veh, 3);
             PlaceUnitArea(veh, PlayerSpawn, false);
-
-            if vc_weapon = us_cargo_bay then AddCargo(veh, vehicles[i][6], vehicles[i][7]);
-
         end;
+
+        cargoList = FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_weapon, us_cargo_bay]]);
+
+        if cargoList > 0 then
+          for i = 1 to cargoList do
+          begin
+             if resources > 0 then
+             begin
+                   AddCargo(cargoList[i], 1, resources[i][1]);
+                   AddCargo(cargoList[i], 2, resources[i][2]);
+                   AddCargo(cargoList[i], 3, resources[i][3]);
+             end;
+          end;
+
     end;
 
 end;
@@ -210,7 +223,7 @@ begin
 
     repeat
         wait(0$1);
-        for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) do
+        for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) do
         begin
             if NOT FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist, i, 25]]) AND GetDistUnits(i, JMM) < 15 then
             begin

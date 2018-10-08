@@ -12,12 +12,12 @@ Todo
 - Am06  100% 
 - Am07  100% []
 - Am08  100% []
-- Am09  0% []
-- Am10  95% []
-- Am11  0% []
+- Am09  100%
+- Am10  100%
+- Am11  1% []
 - Am12  80% []
 - Am13  90% []
-- Am14  0% []
+- Am14  70% []
 - Am15  0% []
 - Am16  0% []
 - Am17  0% []
@@ -54,16 +54,16 @@ git push origin <twój_branch>
 # Zadania
 Serpent: 
 ```
-Dokończenie misji 07.
+Dokończenie misji 11.
 ```
 
 Nefarem: 
 ```
-Dokończenie misji 08.
+Dokończenie misji 10, 11..
 
 ```
 
 Prażanin: 
 ```
-Dodanie okrzyków dla JMM.
+?
 ```

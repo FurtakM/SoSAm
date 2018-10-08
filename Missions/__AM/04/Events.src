@@ -104,6 +104,19 @@ end;
 On UnitDestroyed(unit) Do
 begin
     if GetType(unit) = unit_human and GetSide(unit) = 1 then lostCounter = lostCounter + 1;
+
+    if GetClass(unit) = 3 and GetSide(unit) = 3 and IsOK(rubfact0) and GetSide(rubfact0) = 3 then
+    begin
+        uc_side = 3;
+        uc_nation = 3;
+
+        hc_gallery := '';
+        hc_name := '';
+
+        PrepareMechanic(false, rand(RuSoldMinLevel, RuSoldMaxLevel));
+        PlaceHumanInUnit(CreateHuman, rubfact0);
+    end;
+
 end;
 
 On Contact(side1, side2) Do
@@ -134,6 +147,29 @@ begin
         SetSide(vehicle, 6);
         SetSide(UnitsInside(vehicle), 6);
     end;
+
+end;
+
+On UnitGoesToRed(unit) Do
+var i, tmpMeh;
+begin
+    if GetSide(unit) = 3 and GetType(unit) = unit_vehicle then
+      if GetWeapon(unit) = 42 OR GetWeapon(unit) = 43 OR GetWeapon(unit) = 44 then
+        AddComConstruct(rubfact0, GetChassis(unit), GetEngine(unit), GetControl(unit), GetWeapon(unit));
+end;
+
+On LeaveVehicle(vehicle, human) Do
+begin
+    If GetSide(vehicle) = 3 and GetSide(human) = 3 and IsOk(vehicle) then
+    begin
+        ComRepairVehicle(human, vehicle);
+        AddComEnterUnit(human, vehicle);
+        SetFuel(vehicle, 100);
+    end;
+
+    If GetSide(vehicle) = 3 and GetSide(human) = 3 and IsOK(rubfact0) and NOT IsOk(vehicle) then
+       ComEnterUnit(human, rubfact0);
+
 end;
 
 On Command(comandid) do

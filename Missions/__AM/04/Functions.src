@@ -71,8 +71,9 @@ begin
     end;
   
 end;
-
+//rubbrwr1 rubbrwr0
 Export function PrepareDifficulty;
+var tmp;
 begin
   if Difficulty = 1 then
   begin 
@@ -85,6 +86,16 @@ begin
     RuSoldMinLevel = 1;
     RuSoldMaxLevel = 2;
     RemoveUnit(ambbrwr1);
+    RemoveUnit(rubbrwr1);
+
+    uc_nation = 3;
+    uc_side = 3;
+
+    bc_level = 5;
+    bc_type = 32;
+    tmp = CreateAndPlaceBuildingXYD(76, 91, 2);
+    PlaceWeaponTurret(tmp, 43);
+
     SetTech(51, 3, state_enabled);
   end;
 
@@ -94,6 +105,20 @@ begin
     RuSoldMaxLevel = 3;
     RemoveUnit(ambbrwr0);
     RemoveUnit(ambbrwr1);
+    RemoveUnit(rubbrwr0);
+    RemoveUnit(rubbrwr1);
+
+    uc_nation = 3;
+    uc_side = 3;
+
+    bc_level = 5;
+    bc_type = 32;
+    tmp = CreateAndPlaceBuildingXYD(76, 91, 2);
+    PlaceWeaponTurret(tmp, 44);
+
+    tmp = CreateAndPlaceBuildingXYD(83, 84, 2);
+    PlaceWeaponTurret(tmp, 43);
+
     SetTech(51, 3, state_enabled);
     SetTech(52, 3, state_enabled);
     PlaceWeaponTurret(rubbunk0, ru_gun);
@@ -214,119 +239,106 @@ begin
 
 end; 
 
-Export function RepairBuilding(side, building);
-var buildings_list, i,engineerOk_list, j;
+Export function RepairBuilding(side, building, area);
+var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
-        engineerOk_list = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000]]);
-        buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-        if buildings_list > 0 and engineerOk_list > 0 then
-        begin
+  engineerOkInside = UnitsInside(building);
+  engineerOkOutside = FilterUnitsInArea(area,[[f_side, side], [f_class, 2], [f_lives, 750], [f_not, [f_inside]]]);
+  buildings_list = FilterUnitsInArea(area,[[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-                for i in engineerOk_list do
-                begin
-                     for j in buildings_list do
-                     begin
+  if not buildings_list and not FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 250]]) then exit;
 
-                        AddComExitBuilding(i);
-                        wait(0$1);
-                        AddComRepairBuilding(i, j);
+  if buildings_list > 0 and engineerOkInside then ComExitBuilding(engineerOkInside);
 
-                    end;
-                end;
-        end;
+  if buildings_list > 0  and engineerOkOutside > 0 then ComRepairBuilding(engineerOkOutside, buildings_list[1]);
 
-        if buildings_list = 0 then
-        begin
-
-           for i in engineerOK_list do
-           begin
-             ComEnterUnit(i, building);
-          end;
-
-        end;
+  if buildings_list = 0 and engineerOkOutside > 0 then ComEnterUnit(engineerOkOutside, building);
 END;
 
-
 Export function HealUnitInBase(side, healArea, baseArea, build);
-var sci_list,  i, j, damageUnits;
+var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal, tmp, rnd;
 begin
 
-  sci_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_nation ,2], [f_lives, 251]]);
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_nation, 2], [f_class, 4], [f_ok]]);
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
+  unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 1000]]]);
 
-  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+  if not damageUnits and not unitsToHeal and not sci_list then exit;
 
-    if damageUnits > 0 and sci_list > 0 then
-    begin
+  if damageUnits > 0 and sci_list > 0 then ComMoveToArea(damageUnits, healArea);
 
-      for i = 1 to damageUnits do ComMoveToArea(damageUnits[i], healArea);
+  if unitsToHeal > 0 and sci_list > 0 then ComExitBuilding(sci_list);
 
-      for i in sci_list do
-      begin
+  if unitsToHeal > 0 and sci_listOutside > 0 then ComHeal(sci_listOutside, unitsToHeal[1]);
 
-        ComExitBuilding(i);
-
-        for j in FilterUnitsInArea(healArea,[f_side, side]) do
-        begin
-
-        AddComHeal(i, j);
-        wait(1$0);
-
-        end;
-      end;
-
-    end else
-    begin
-
-    AddComEnterUnit(sci_list, build);
-
+  if damageUnits = 0 and unitsToHeal = 0 and sci_listOutside > 0 then
+  begin
+          tmp = FilterAllUnits([[f_side, side], [f_type, unit_building], [f_btype, b_lab_full]]);
+          rnd = rand(1, tmp);
+          ComEnterUnit(UnitFilter(sci_listOutside, [f_not, [f_hastask]]), tmp[rnd]);
   end;
 
 END;
 
-Export function BuildingVehicleAndAttackEnemy(side, fabric, vehCount, targetSide, weaponTab, engine, control, chassis);
-var i, j, lastIndex, weaponTabTemp, temp, target1, target2;
+Export function BuildingVehicle(side, fabric, vehCount, weaponTab, engine, control, chassis);
+var i;
 begin
 
-     IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
-     begin
+    if FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount then
+        for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
 
-       for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
-
-    end;
-
-    IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) >= vehCount then
-    begin
- 
-
-    repeat begin
-    wait(0$1);
-
-      if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) > 0 then
-      begin
-
-        for i in FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]) do
-        begin
-
-          target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-          target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                 If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                 begin
-                    ComAttackUnit(i, target1);
-                  end
-                 else
-                  begin
-                    ComAttackUnit(i, target2);
-                  end;
-        end;
-
-      end;
-
-    end until FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) <= vehCount;
-   end;
 END;
+
+Export function AttackVehicles(side, meetArea, wayX, wayY);
+var i, j, vehiclesOK, target1, target2, seeEnemy;
+begin
+    vehiclesOK = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 650]]);
+
+    if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000]]) >= [3, 4, 5][Difficulty] then
+        repeat
+            wait(0$1);
+
+            vehiclesOK = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 650]]);
+
+            if not FilterAllUnits([[f_side, side], [f_inarea, meetArea]]) and seeEnemy = 0 then for i := 1 to wayX do AddComAgressiveMove(vehiclesOK, wayX[i], wayY[i]);
+
+            if FilterAllUnits([[f_side, side], [f_inarea, meetArea]]) then
+            begin
+                seeEnemy = 1;
+
+                for j in vehiclesOK do
+                begin
+                    target1 := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_enemy, side], [f_see, 1], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), j);
+
+                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                    else ComAttackUnit(j, target2);
+                end;
+            end;
+
+
+        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000]]) = 0;
+        seeEnemy = 0;
+end;
+
+Export function RepairVehicles(side, area, repX, repY);
+var i, j, damageVehicles;
+begin
+    damageVehicles = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 650]]]);
+
+    if damageVehicles > 0 then ComMoveXY(damageVehicles, repX, repY);
+
+    if UnitFilter(damageVehicles, [[f_inarea, area], [f_not, [f_empty]]]) > 0 then
+        for i in UnitFilter(damageVehicles, [[f_inarea, area], [f_not, [f_empty]]]) do ComExitVehicle(UnitsInside(i));
+end;
+
+
+
+
+
 
 Export function RespawnAttackInfantry(side, nation, soldierCount, sniperCount, bazookCount, mortalCount, medicCount, skil, spawnArea, healArea, targetSide, strategy);
 var i, j,  un, damageUnit_list, medic_list, soldiersOK_list, enemyUnits, und, target1, target2;
@@ -413,7 +425,7 @@ begin
 
         medic_list = FilterAllUnits([[f_side, side], [f_class, 4]]);
 
-                for i in medic_list do ComMoveToArea(i, healArea);
+        ComMoveToArea(medic_list, healArea);
 
 
         // strategy , 1 - flank and attack oil drilling mine,  2 - front attack, 
@@ -440,32 +452,12 @@ begin
                         begin
                                 if damageUnit_list > 0 then
                                 begin
-                                        for i in damageUnit_list  do
-                                        begin
-                                                ComMoveToArea(i, healArea);
-                                                for j in medic_list do 
-                                                AddComHeal(j, i);
-                                        end;
+                                    ComMoveToArea(damageUnit_list, healArea);
+                                    AddComHeal(medicCount, damageUnit_list[1]);
                                  end;
                         end;
 
-                        for i in soldiersOK_list do
-                        begin
 
-                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                begin
-                                        ComAttackUnit(i, target1);
-                                        end  else
-                                        begin
-                                        ComAttackUnit(i, target2);
-                                end;
-
-                        end;
-
-                                        
                         for i in soldiersOK_list do
                         begin
                                 target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
@@ -502,31 +494,10 @@ begin
                         begin
                                 if damageUnit_list > 0 then
                                 begin
-                                        for i in damageUnit_list  do
-                                        begin
-                                                ComMoveToArea(i, healArea);
-                                                for j in medic_list do 
-                                                AddComHeal(j, i);
-                                        end;
+                                    ComMoveToArea(damageUnit_list, healArea);
+                                    AddComHeal(medicCount, damageUnit_list[1]);
                                  end;
                         end;
-
-                        for i in soldiersOK_list do
-                        begin
-
-                                target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-                                If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                                begin
-                                        ComAttackUnit(i, target1);
-                                        end  else
-                                        begin
-                                        ComAttackUnit(i, target2);
-                                end;
-
-                        end;
-
                                         
                         for i in soldiersOK_list do
                         begin
@@ -545,69 +516,6 @@ begin
 
 END;
 
-// Vehicle - Attack/Repair/Attack
-
-Export function RepairVehicle(side, repairArea, repX, repY, targetSide);
-var i,j, vehicleOK_list, damageVehicle_list, vehicleNeedRepair_list, vehicleDontNeedRepair_list, mechanicInside_list, mechanicOutside_list, target1, target2;
-begin
-    vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 660], [f_not, [f_empty]], [f_not, [f_weapon, 53]]]);
-    damageVehicle_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 660]]]);
-
-    vehicleNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 1000]]]);
-    vehicleDontNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_empty], [f_not, [f_weapon, 53]]]);
-
-    mechanicInside_list = [];
-    mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
-    
-    if damageVehicle_list > 0 then
-    begin
-        for i in damageVehicle_list do 
-        begin
-            ComMoveXY(i, repX, repY);
-        end;
-    end;
-
-    if vehicleNeedRepair_list > 0 then
-    begin
-        for i in vehicleNeedRepair_list  do
-        begin
-            mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
-            for j in mechanicInside_list do
-            begin
-                ComExitVehicle(i);
-                wait(0$1);
-                ComRepairVehicle(i, j);
-            end;
-        end;
-    end;
-
-    if vehicleDontNeedRepair_list > 0 then
-    begin
-        ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
-        SetFuel(vehicleDontNeedRepair_list[1], 100);
-    end;
-
-    if vehicleOK_list > 0 then
-    begin
-        for i in vehicleOK_list do
-        begin
-            target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-            target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-            If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-            begin
-                ComAttackUnit(i, target1);
-            end
-            else
-            begin
-                ComAttackUnit(i, target2);
-            end;
-        end; 
-    end;
-
-    for i in not FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]) do ComMoveXY(i, repX, repY);
-
-end;
 
 // Spawn vehicle and attack
 
@@ -776,9 +684,8 @@ begin
 
     repeat
         wait(0$1);
-        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 661]]);
 
-        IF vehicleOK_list > 0 then
+        IF FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_not, [f_empty]]]) > 0 then
         begin
 
             for i in vehicleOK_list  do
@@ -797,7 +704,7 @@ begin
             end;
         end;
       end;
-    until (FilterAllUnits([[f_side, side], [f_type, unit_vehicle]])) = 0;
+    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_not, [f_empty]]]) = 0;
 
 
 END;

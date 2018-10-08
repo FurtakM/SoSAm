@@ -15,11 +15,17 @@ begin
             bc_type = buildings[i][1];
             bc_level = buildings[i][2];
 
-            if bc_type = b_lab_half or bc_type =  b_lab_full then
-            begin
-                bc_kind1 = buildings[i][6];
-                bc_kind2 = buildings[i][7];
-            end;
+            if bc_type = b_lab_half or bc_type = b_lab_full then
+               begin
+               if buildings[i][6] then
+                  bc_kind1 = buildings[i][6];
+
+               if buildings[i][7] then
+                  bc_kind2 = buildings[i][7];
+
+               if not buildings[i][6] and not buildings[i][7] then
+                  bc_type := b_lab;
+               end;
 
             building = CreateAndPlaceBuildingXYD(buildings[i][3], buildings[i][4], buildings[i][5]);
 

@@ -1,5 +1,5 @@
 Export function PrepareHeroes;
-var i;
+var i, tmp;
 begin
     uc_side = 1;
     uc_nation = 1;
@@ -16,7 +16,12 @@ begin
 
     if Lisa = false then Bobby = PrepareUnit('Bobby', true);
     if Lisa = false and Bobby = false then Cyrus = PrepareUnit('Cyrus', true);
-    if Lisa = false and Bobby = false and Cyrus = false then  RandomBeforeMission = PrepareUnit('03_others', true);
+    if Lisa = false and Bobby = false and Cyrus = false then
+    begin        
+         tmp = CreateCharacterSet('03_others');
+         for i = 1 to tmp do RandomBeforeMission = tmp[Rand(1, tmp)];
+         
+    end;
             
     uc_side = 4;
     Donaldson = PrepareUnit('Donaldson', false);

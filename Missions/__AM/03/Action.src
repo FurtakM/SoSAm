@@ -779,6 +779,12 @@ var i, filter;
 begin
 enable;
 
+if not jmm_on_west then
+   begin
+   YouLost('4');
+   exit;
+   end;
+
 if not game_end then
    game_end := true;
 
@@ -1002,9 +1008,18 @@ ResetFog;
 InGameOff;
 End;
 
-Every 0$30 trigger GetDistUnits(JMM, Cornel) < 3 and FilterAllUnits([[f_side, 4], [f_type, unit_building]]) do
+Every 0$15 trigger (FilterUnitsInArea(cornelBaseArea, [f_side, 1]) and IsOk(Cornel)) or
+                   GetDistUnits(NearestUnitToUnit(FilterAllUnits([f_side, 1]), Cornel), Cornel) < 30 do
 begin
 enable;
+powell_warn := powell_warn + 1;
+
+if powell_warn = 3 then
+   begin
+   YouLost('5');
+   exit;
+   end;
+
 SayRadio(Powell, 'DWarn-Pow-1');
 End;
 

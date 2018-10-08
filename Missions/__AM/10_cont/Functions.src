@@ -12,9 +12,13 @@ End;
 
 Export function DialogRandom(characters, dialogMID, dialogFID);
 var i, rnd;
-begin 
+begin  
+characters := characters diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary, Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, AmScout, Cornell, Powell];
 
-rnd = rand(1, characters);  
+if not characters then
+   exit;
+
+rnd = rand(1, characters);
 
 for i = 1 to characters do
 begin
@@ -77,10 +81,24 @@ end;
 // AI functions
 
 Export function BuildRussianBase(position);
-var i, engineers, buildingsTab;
+var i, engineers, buildingsTab, area;
 begin
 
-// 1 - west , 2 - middle, 3 - east 
+// 1 - west , 2 - middle, 3 - east
+
+   case position of
+   1: area := westConv;
+   2: area := midConv;
+   3: area := eastConv;
+   end;
+
+   area := AreaToList(area, 0);
+
+    for i = 1 to area[1] do
+       begin
+       PlaceSeeing(area[1][i], area[2][i], 1, 1);
+       RemoveSeeing(area[1][i], area[2][i], 1);
+       end; 
 
    ruPossition = position;
 
@@ -120,7 +138,7 @@ begin
             [b_ext_computer, 50, 90, 0]
         ];
 
-        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComMoveXY(i, buildingsTab[2][2] + 3, buildingsTab[2][3] + 2);
+        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComAgressiveMove(i, 53, 82);
 
         for i := 1 to buildingsTab do
             AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
@@ -156,7 +174,7 @@ begin
             [b_ext_computer, 92, 105, 0]
         ];
 
-        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComMoveXY(i, buildingsTab[2][2] + 2, buildingsTab[2][3] + 1);
+        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComAgressiveMove(i, 96, 99);
 
         for i := 1 to buildingsTab do
             AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
@@ -201,7 +219,7 @@ begin
             [b_ext_computer, 159, 95, 1]
         ];
 
-        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComMoveXY(i, buildingsTab[2][2] + 2, buildingsTab[2][3] + 3);
+        for i in FilterAllUnits([[f_side, 3], [f_not, [f_class, 2]]]) do AddComAgressiveMove(i, 141, 65);
 
         for i := 1 to buildingsTab do
             AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
@@ -245,13 +263,58 @@ begin
         for ta in filter do
             begin
 
-            if GetDistUnits(list[i], ta) <= 13 then
+            if GetDistUnits(list[i], ta) <= 15 then
                 begin
-
                     Case c of
-                    1: ComTimeShift(list[i], GetX(ta), GetY(ta));
-                    2: ComSpaceShift(list[i], GetX(ta) + Rand(-1,1), GetY(ta) + Rand(-1,1));
-                    3: ;
+                    1: begin
+                        ComTimeShift(list[i], GetX(ta), GetY(ta));
+
+                        if eventVar2 = 0 then
+                        begin
+                            eventVar2 = 1;
+                            wait(0$7);
+                            CenterOnXY(GetX(ta), GetY(ta));
+                            DialogueOn;
+                            if IsOK(Cyrus) then
+                            begin
+                                Say(Cyrus, 'D9a-Cyrus-1');
+                            end
+                            else
+                            begin
+                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]) diff [JMM, Khatam, Cyrus], 'D9a-Sol1-1', 'D9a-Sol1-1');
+                            end;
+                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]) diff [JMM, Khatam, Cyrus], 'D9b-Sol1-1', 'D9b-Sol1-1');
+                            if LoadVariable('09_arInfo', 0) = 1 then Say(JMM, 'D9a-JMM-1');
+                            Say(JMM, 'D9c-JMM-1');
+                            If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
+                            DialogueOff;
+                        end;
+
+                    end; 
+                    2: begin
+                        ComSpaceShift(list[i], GetX(ta) + Rand(-1,1), GetY(ta) + Rand(-1,1));
+                        if eventVar2 = 0 then
+                        begin
+                            eventVar2 = 1;
+                            wait(0$7);
+                            CenterOnXY(GetX(ta), GetY(ta));
+                            DialogueOn;
+                            if IsOK(Cyrus) then
+                            begin
+                                Say(Cyrus, 'D9a-Cyrus-1');
+                            end
+                            else
+                            begin
+                                DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]) diff [JMM, Khatam, Cyrus], 'D9a-Sol1-1', 'D9a-Sol1-1');
+                            end;
+                            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]) diff [JMM, Khatam, Cyrus], 'D9b-Sol1-1', 'D9b-Sol1-1');
+                            if LoadVariable('09_arInfo', 0) = 1 then Say(JMM, 'D9a-JMM-1');
+                            Say(JMM, 'D9c-JMM-1');
+                            If GetTech(tech_LasSight, 1) = state_researched then Say(JMM, 'D9c-JMM-1a');
+                            DialogueOff;
+                        end;
+                    end; 
+                    3: ComAttackUnit(list[i], ta);
                     end;
 
                 end;
@@ -269,11 +332,11 @@ If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true th
 end;
 
 Export function EnterBunkerOrBarrack(side, area);
-var i,j, soldiers_list, turretList, temp, barrackList;
+var i,j, soldiers_list, turretList, temp, barrackList, insideUnits;
 begin
 
 
-soldiers_list = FilterAllUnits([[f_side, side], [f_outside], [f_lives, 700], [f_or, [f_class, 1], [f_class, 9]]]);
+soldiers_list = FilterAllUnits([[f_side, side], [f_outside], [f_lives, 700],  [f_not, [f_hastask]], [f_or, [f_class, 1], [f_class, 9]]]);
 turretList = FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
 barrackList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
 
@@ -282,48 +345,46 @@ begin
 
     if turretList = 0 then
     begin
-        for i in soldiers_list do ComEnterUnit(i, barrackList[1]);
+        for i in soldiers_list do ComEnterUnit(i, barrackList[Rand(1, barrackList)]);
     end else
     begin
         for i in barrackList do 
         begin
-            ComEnterUnit(UnitsInside(i), turretList[1]);
+            insideUnits = UnitsInside(i);
+            ComEnterUnit(insideUnits[1], turretList[1]);
+            ComEnterUnit(soldiers_list[1], turretList[1]);
         end;
     end;
 
 end;
 
 end;
+
 
 Export function RepairBuilding(side, building);
-var buildings_list, i,engineerOk_list, j;
+var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
-    engineerOk_list = FilterAllUnits([[f_side, side], [f_or, [f_class, 2], [f_class, 16]], [f_lives, 1000]]);
-    buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+  engineerOkInside = UnitsInside(building);
+  engineerOkOutside = FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 1000], [f_not, [f_inside]]]);
+  buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
-    if buildings_list > 0 and engineerOk_list > 0 then
-    begin
+  if not buildings_list and not engineerOkOutside and not rudestroyedBuildings then exit;
 
-        for i in engineerOk_list do
-        begin
-            for j in buildings_list do
-            begin
+  if buildings_list > 0 and engineerOkInside then
+     for i in FilterAllUnits([[f_side, side], [f_class, 2]]) do ComExitBuilding(i);
 
-                AddComExitBuilding(i);
-                wait(0$1);
-                AddComRepairBuilding(i, j);
+  if buildings_list > 0  and engineerOkOutside > 0 then
+  begin
 
-            end;
-        end;
-    end;
+    for i in engineerOkOutside do
+      for j in buildings_list do
+          ComRepairBuilding(i, j[1]);
 
-    if buildings_list = 0 then
-    begin
+  end;
 
-        for i in engineerOK_list do ComEnterUnit(i, building);
-
-    end;
+  if buildings_list = 0 and engineerOkOutside > 0 then
+      for i in engineerOkOutside do ComEnterUnit(i, building);
 END;
 
 Export function RebuildBuildings(side, destroyedBuildings);
@@ -339,35 +400,38 @@ begin
 end;
 end;
 
-Export function HealUnitInBase(side, healArea, baseArea);
-var i, j, scientisticsOutside, scientisticsInside, labs, damageUnits;
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal, tmp, rnd;
 begin
 
-labs = FilterAllUnits([[f_side, side], [f_lives, 251], [f_or, [f_btype, b_lab_basic], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
-scientisticsOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_lives, 251]]);
-damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 251]]);
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_ok]]);
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
+  unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 1000]]]);
 
-if labs > 0 and damageUnits > 0 then 
-    for i in labs do scientisticsInside = UnitsInside(i);
+  if not damageUnits and not sci_listOutside and not unitsToHeal then exit;
 
-if labs > 0 and damageUnits > 0 then
-    for i in scientisticsInside do ComExitBuilding(i);
+  if damageUnits > 0 and sci_list > 0 then
+    for i in damageUnits do ComMoveToArea(i, healArea);
 
-if damageUnits > 0 and scientisticsOutside > 0 then
-begin
+  if unitsToHeal > 0 and sci_list > 0 then
+  begin
+    for i in sci_list do
+    begin
 
-    ComMoveToArea(damageUnits, healArea);
+      ComExitBuilding(i);
 
-    for i in scientisticsOutside do
-        for j in damageUnits do
-            AddComHeal(i, j);
+      for j in unitsToHeal do AddComHeal(i, j);
+    end;
+  end;
 
-end else
-begin
-
-    ComEnterUnit(scientisticsOutside, labs[Rand(1, labs)]);
-
-end;
+  if damageUnits = 0 and unitsToHeal = 0 and sci_listOutside > 0 then
+      for i in sci_listOutside do
+      begin
+          tmp = FilterAllUnits([[f_side, side], [f_type, unit_building], [f_btype, b_lab_full]]);
+          rnd = rand(1, tmp);
+          ComEnterUnit(i, tmp[rnd]);
+      end; 
 
 END;
 
@@ -450,13 +514,13 @@ begin
 
             IF ARWeapons[j] = 24 or ARWeapons[j] = 22 or ARWeapons[j] = 23 or ARWeapons[j] = 30 then
             begin
-                arChassisTab = [11, 12, 13, 14];
+                arChassisTab = [14];
                 vc_chassis = arChassisTab[Rand(1, arChassisTab)];
             end;
 
             IF ARWeapons[j] = 29 or ARWeapons[j] = 28 or ARWeapons[j] = 27 or ARWeapons[j] = 26 or ARWeapons[j] = 25 then
             begin
-                arChassisTab = [13, 14];
+                arChassisTab = [14];
                 vc_chassis = arChassisTab[Rand(1, arChassisTab)];
             end;
 
@@ -566,7 +630,7 @@ Export function RespawnAttackInfantry(side, nation, soldierCount, sniperCount, b
 var i, j,  un, damageUnit_list, medic_list, soldiersOK_list, enemyUnits, und, target1, target2;
 begin
 
-        for i = 1 to medicCount do
+        {for i = 1 to medicCount do
         begin
 
                 uc_side = side;
@@ -579,7 +643,7 @@ begin
                 un = CreateHuman;
                 PlaceUnitArea(un, spawnArea, false);
 
-        end;
+        end;}
 
 
        for i = 1 to soldierCount do
@@ -716,9 +780,13 @@ repeat
     end;
 
 until FilterAllUnits([[f_side, 2], [f_class, 4]]) = 0  or FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) = 0;
-
-for i in FilterAllUnits([[f_side, 2], [f_class, 12]]) do SetClass(i, [16, 15][Rand(1,2)]);
-for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComEnterUnit(i, arLab);
+wait(0$30);
+for i in FilterAllUnits([[f_side, 2], [f_class, 12]]) do
+begin
+    ComMoveXY(i, GetX(arDepot), GetY(arDepot));
+    SetClass(i, [16, 15][Rand(1,2)]);
+end; 
+for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComEnterUnit(i, FilterAllUnits([[f_side, 2], [f_btype, b_lab_full]])[1]);
 
 end;
 
@@ -769,3 +837,33 @@ begin
 
     end;
 END;
+
+Export Function PlaceMines(area, n);
+var i, r, x;
+begin
+r := 100;
+x := 0;
+
+while(x < n) do
+for i = 1 to AreaToList(area, 0)[1] do
+    begin
+    if r > 50 then
+       begin
+       if not MineAtPos(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]) then
+          begin
+          PlaceMine(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i], 5, 0);
+
+          arabianMines := Insert(arabianMines, 1, [AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]]);
+
+          r := 0;
+          x := x + 1;
+          end
+           else
+            r := r + 35;
+       end
+        else
+         r := r + rand(10, 25);
+    end;
+
+End;
+

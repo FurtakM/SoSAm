@@ -2,7 +2,9 @@
 Every 1 do
 var i;
 begin
+    TeleportExit(ruteleprt, 110, 114);
     CenterNowOnUnits(JMM);
+    InGameOn;
     Say(JMM, 'D1-JMM-1');
     Say(Donaldson, 'D1-Don-1');
     Say(JMM, 'D1-JMM-2');
@@ -20,7 +22,8 @@ end;
 Every 0$1 trigger SeeXY(1, 93, 75) do
 var i;
 begin
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D1-Sol1-2', '');
+    CenterOnXY(90, 70);
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D1-Sol1-2', '');
     Say(JMM, 'D1-JMM-3');
     ChangeMissionObjectives('M1');
 
@@ -50,12 +53,12 @@ begin
             AddComTimeShift(bazook_list, 87, 68);
             Say(JMM, 'D1a-JMM-1');
             Say(Donaldson, 'D1a-Don-1');
-            ComMoveXY(i, 87, 68);
+            for i in FilterAllUnits([f_side, 1]) do ComMoveXY(i, 100, 82);
             Say(JMM, 'D1a-JMM-2');
             wait(0$10);
             Say(Donaldson, 'D1b-Don-1');
             Say(JMM, 'D1b-JMM-1');
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1]] diff [JMM]), 'D1b-Sol1-1', '');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D1b-Sol1-1', '');
             Say(Donaldson, 'D1b-Don-2');
             Say(JMM, 'D1b-JMM-2');
 
@@ -89,6 +92,7 @@ begin
             if dec = 3 then secondPass = 1;
 
             InGameOff;
+            exit;
 
                 
         end;
@@ -100,16 +104,22 @@ end;
 Every 1$0 trigger secondPass = 2 do
 begin
     PowellSupport1;
+    DialogueOn;
     Say(JMM, 'DC1-JMM-1');
     SayRadio(Powell, 'DC1-Pow-1');
+    DialogueOff;
     wait(3$0);
     PowellSupport2;
+    DialogueOn;
     Say(JMM, 'DC2-JMM-1');
     SayRadio(Powell, 'DC2-Pow-1');
+    DialogueOff;
     wait(6$0);
     PowellSupport3;
+    DialogueOn;
     SayRadio(Powell, 'DC3-Pow-1');
     Say(JMM, 'DC3-JMM-1');
+    DialogueOff;
 end;
 
 // Kurt
@@ -117,6 +127,7 @@ Every 4$30 trigger secondPass = 2 do
 var dec1, dec2;
 begin
     PrepareKurt;
+    DialogueOn;
 
     Say(Kurt, 'D3-Kurt-1');
     Say(JMM, 'D3-JMM-1');
@@ -193,9 +204,11 @@ begin
         begin
             Say(JMM, 'D3Ke-JMM-1');
             Say(Kurt, 'D3Ke-Kurt-1');
+            PrepareLegionForPlayer;
         end;
     end;
 
+    DialogueOff;
     RemoveUnit(Kurt);
 end;
 
@@ -261,7 +274,8 @@ begin
                 Say(JMM, 'D2c-JMM-2');
                 secondPass = 2;
             end;
-            DialogueOff;     
+            DialogueOff; 
+            exit;    
         end;
     end;
 end;
@@ -282,6 +296,7 @@ begin
             DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT1-Sol1-1', 'DT1-FSol1-1');
             Say(JMM, 'DT1-JMM-1');
             DialogueOff;
+            exit;
         end;
     end;
 
@@ -290,9 +305,12 @@ end;
 // Dialog after destroy tanks
 Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
 begin
+    vehicleTeleported = 3;
+    DialogueOn;
     Say(JMM, 'DT1a-JMM-1');
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT1a-Sol1-1', 'DT1a-FSol1-1');
     Say(JMM, 'DT1a-JMM-2');
+    DialogueOff;
 end;
 
 // Second tp
@@ -310,17 +328,21 @@ begin
             DialogueOn;
             DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT2-Sol1-1', 'DT2-FSol1-1');
             DialogueOff;
+            exit;
         end;
     end;
 
 end;
 
 // Dialog after destroy tanks
-Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
+Every 0$10 trigger vehicleTeleported = 2 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
 begin
+    vehicleTeleported = 4;
+    DialogueOn;
     Say(JMM, 'DT2a-JMM-1');
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT2a-Sol1-1', 'DT2a-FSol1-1');
     Say(Donaldson, 'DT2a-Don-1');
+    DialogueOff;
 end;
 
 // See bridge
