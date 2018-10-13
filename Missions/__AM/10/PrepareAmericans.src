@@ -9,7 +9,9 @@ begin
 
     Bobby = PrepareUnit('09_Bobby', true);
     PlaceUnitArea(Bobby, CoreHeroes, false);
+
     ComTurnXY(Bobby, 42, 35);
+
     if IsPlaced(Bobby) then
     begin
         coreHeroesTab = coreHeroesTab ^ Bobby;
@@ -60,7 +62,7 @@ begin
             if IsPlaced(Houten) then
             begin
                 coreHeroesTab = coreHeroesTab ^ Houten;
-                SaveCharacters(Houten, '10_Houten');
+                SaveCharacters(Houten, '10_Houten');;
             end; 
         end;
 
@@ -293,6 +295,7 @@ begin
                 PlaceUnitArea(others08[1], addHeroes, false);
                 ComTurnXY(others08[1], 42, 35);
                 addHeroesTab = addHeroesTab ^ others08[1];
+                others08 := Delete(others08, 1);
             end;
 
          if not IsPlaced(Donaldson) then
@@ -335,6 +338,7 @@ begin
                 PlaceUnitArea(others08[2], addHeroes, false);
                 ComTurnXY(others08[2], 42, 35);
                 addHeroesTab = addHeroesTab ^ others08[2];
+                others08 := Delete(others08, 2);
             end;
 
     end;
@@ -346,6 +350,7 @@ begin
             PlaceUnitArea(others08[i], addHeroes, false);
             ComTurnXY(others08[i], 42, 35);
             addHeroesTab = addHeroesTab ^ others08[i];
+            others08 := Delete(others08, i);
         end;
     end;
 
