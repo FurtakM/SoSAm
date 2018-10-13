@@ -32,3 +32,31 @@ begin
     if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 2 then vehicleTeleported = 3;
     if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 3 then vehicleTeleported = 4;
 end;
+
+On VehicleConstructed(vehicle, factory) Do
+begin
+    if factory = ru_fact or factory = rufab2 then
+        if GetSide(vehicle) = 3 then
+        begin
+            if GetWeapon(vehicle) = 46 or GetWeapon(vehicle) = 45 or GetWeapon(vehicle) = 44 then 
+                russianTanks = russianTanks ^ vehicle;
+
+            if GetWeapon(vehicle) = 49 then 
+                russianTimeLapsers = russianTimeLapsers ^ vehicle;
+        end;
+end;
+
+On UnitGoesToRed(unit) Do
+var i;
+begin
+    if GetSide(unit) = 3 and GetType(unit) = unit_vehicle then
+    begin
+        if russianTanks > 0 then
+            for i in russianTanks do
+                if i = unit then russianTanks = russianTanks diff [unit];
+
+        if russianTimeLapsers > 0 then
+            for i in russianTimeLapsers do
+                if i = unit then russianTimeLapsers = russianTimeLapsers diff [unit];
+    end;
+end;

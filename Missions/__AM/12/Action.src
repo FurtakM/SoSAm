@@ -2,24 +2,25 @@
 Every 1 do
 var i;
 begin
-    TeleportExit(ruteleprt, 110, 114);
+    TeleportExit(ruteleprt, 117, 131);
+    TeleportExit(rutp, 84, 61);
     CenterNowOnUnits(JMM);
-    InGameOn;
+   // InGameOn;
+
+   ComMoveXY(FilterAllUnits([f_side, 1]), 130, 102);
+   AddComMoveXY(i, 114, 102);
+
     Say(JMM, 'D1-JMM-1');
     Say(Donaldson, 'D1-Don-1');
     Say(JMM, 'D1-JMM-2');
     Say(Donaldson, 'D1-Don-2');
 
-    for i in FilterAllUnits([f_side, 1]) do
-    begin
-        ComMoveXY(i, 129, 89);
-        AddComMoveXY(i, 114, 83);
-        AddComMoveXY(i, 99, 82);
-    end;
+    AddComMoveXY(FilterAllUnits([f_side, 1]), 104, 96);
+
 end;
 
 // Near river
-Every 0$1 trigger SeeXY(1, 93, 75) do
+Every 0$1 trigger SeeXY(1, 101, 92) do
 var i;
 begin
     CenterOnXY(90, 70);
@@ -28,7 +29,7 @@ begin
     ChangeMissionObjectives('M1');
 
     for i in FilterAllUnits([f_side, 1]) do
-        ComMoveXY(i, 87, 68);
+        ComMoveXY(i, 93, 83);
 
 end;
 
@@ -45,15 +46,18 @@ begin
         if See(3, i) then
         begin
             Disable;
-            ComTimeShift(bazook_list, 87, 68);
-            AddComTimeShift(bazook_list, 87, 68);
-            AddComTimeShift(bazook_list, 87, 68);
-            AddComTimeShift(bazook_list, 87, 68);
-            AddComTimeShift(bazook_list, 87, 68);
-            AddComTimeShift(bazook_list, 87, 68);
+            ComTimeShift(bazook_list, 96, 85);
+            AddComTimeShift(bazook_list, 96, 85);
+            AddComTimeShift(bazook_list, 96, 85);
+            AddComTimeShift(bazook_list, 96, 85);
+            AddComTimeShift(bazook_list, 96, 85);
+            AddComTimeShift(bazook_list, 96, 85);
+
             Say(JMM, 'D1a-JMM-1');
             Say(Donaldson, 'D1a-Don-1');
-            for i in FilterAllUnits([f_side, 1]) do ComMoveXY(i, 100, 82);
+
+            for i in FilterAllUnits([f_side, 1]) do ComMoveXY(i, 109, 102);
+
             Say(JMM, 'D1a-JMM-2');
             wait(0$10);
             Say(Donaldson, 'D1b-Don-1');

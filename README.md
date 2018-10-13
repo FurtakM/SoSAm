@@ -25,32 +25,6 @@ Todo
 - Am19  0% []
 - Am20  0% []
 
-# Komendy GIT
-Pobranie repo:
-```sh
-git clone git://github.com/FurtakM/AmRemakeMod.git
-```
-
-Pobieranie zmian:
-```sh
-git pull
-```
-
-Dodanie nowych plików do commit'a:
-```sh
-git add .
-```
-
-Commit:
-```sh
-git commit -m "<nazwa_mapy>:<krótki opis>"
-```
-
-Push:
-```sh
-git push origin <twój_branch>
-```
-
 # Zadania
 Serpent: 
 ```

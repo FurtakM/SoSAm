@@ -1,9 +1,14 @@
 Every 0$1 do 
 begin
     enable;
-    RepairBuilding(3, ruwestdepot, RuWestBase);
-    RepairBuilding(3, rueastdepot, RuEastBase);
+    RepairAndRebuildBase(3, ruwestdepot, RuWestBase, ruDestroyedBuildings);
+    RepairAndRebuildBase(3, rueastdepot, RuEastBase, ruDestroyedBuildings);
+    HealUnitInBase(3, RuWestHealArea, RuWestBase, rulab1);
+    HealUnitInBase(3, RuEastHealArea, RuEastBase, [rulab2, rulab3, rulab4]);
+    AttackVehicles(3);
 end;
+
+Every 0$1 do begin enable; TimeLapsersAI(3); end;
 
 Every 0$1 do 
 begin
@@ -11,4 +16,11 @@ begin
     ResAllTechs(3, rulab2, 3);
     ResAllTechs(3, rulab3, 3);
     ResAllTechs(3, ruheadlab, 3);
+end;
+
+Every 5$0 trigger secondPass = 2 and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_ok], [f_not, [f_empty]]]) diff FilterUnitsInArea(RussianOutsideVehs, [[f_side, 3], [f_type, unit_vehicle]]) = 0 do
+begin
+    enable;
+    BuildingVehicle(3, ru_fact, [3, 4, 4][Difficulty], [46, 45, 44], 3, [1, 3][Rand(1, 2)], 24);
+    BuildingVehicle(3, rufab2, [3, 4, 4][Difficulty], [49, 49], 3, 3, 24);
 end;

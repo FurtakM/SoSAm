@@ -98,9 +98,18 @@ begin
     AddComMoveXY(truckdriver,98,61);
 end;
 
-every 0$1 trigger IsInArea(truck,ExitArea) do
+every 0$1 trigger FilterUnitsInArea(ExitArea, [f_side, 4]) do
+var i;
 begin
-RemoveUnit(truckdriver);
-RemoveUnit(truck);
+enable;
+for i in FilterUnitsInArea(ExitArea, [f_side, 4]) do RemoveUnit(i);
+end;
+
+Every 0$1 trigger GetDistUnits(truck, tank1) < 5 do
+begin
+  AddComMoveXY(tank1, 79, 53);
+  AddComMoveXY(tank1, 87, 57);
+  AddComMoveXY(tank1, 95, 60);
+  AddComMoveXY(tank1, 96, 60);
 end;
 
