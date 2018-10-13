@@ -277,7 +277,7 @@ begin
         repeat
             wait(0$1);
 
-            vehiclesOK = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_not, [f_empty], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]]]]);
+            vehiclesOK = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]], [f_not, [f_empty]]]);
 
             if not FilterAllUnits([[f_side, side], [f_inarea, meetArea]]) and seeEnemy = 0 then for i := 1 to wayX do ComAgressiveMove(vehiclesOK, wayX[i], wayY[i]);
 
@@ -296,8 +296,28 @@ begin
             end;
 
 
-        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_not, [f_empty], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]]]]) = 0;
+        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]], [f_not, [f_empty]]]) = 0;
         seeEnemy = 0;
+end;
+
+Export function SikorskyVehiclesAttack(side);
+var i, j, target1, target2, vehiclesOk;
+begin
+        repeat
+            wait(0$1);
+
+            vehiclesOK = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 651]]);
+
+                for j in vehiclesOK do
+                begin
+                    target1 := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_enemy, side], [f_see, 1], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), j);
+
+                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                    else ComAttackUnit(j, target2);
+                end;
+
+        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) = 0;
 end;
 
 Export function RepairAndRebuildBase(side, building, area, destroyedBuildings);
@@ -781,7 +801,7 @@ begin
 
     repeat
         wait(0$1);
-        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 661]]);
+        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]);
 
         IF vehicleOK_list > 0 then
         begin
