@@ -1,0 +1,39 @@
+Export JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
+       Gladstone, Houten, Powell, Cornel, Gary, Frank, Kikuchi;
+Export Function PrepareAmerican;
+var i, un, tmp, selected;
+begin
+uc_side := 4;
+uc_nation := 1;
+
+Powell := PrepareUnit('Powell', false);
+
+uc_side := 1;
+
+JMM := PrepareUnit('JMM', (not debug));
+Lisa := PrepareUnit('Lisa', (not debug));
+Donaldson := PrepareUnit('Donaldson', (not debug));
+Bobby := PrepareUnit('Bobby', (not debug));
+Cyrus := PrepareUnit('Cyrus', (not debug));
+Denis := PrepareUnit('Denis', (not debug));
+Brown := PrepareUnit('Brown', (not debug));
+Gladstone := PrepareUnit('Gladstone', (not debug));
+Houten := PrepareUnit('Houten', (not debug));
+Cornel := PrepareUnit('Cornel', (not debug));
+Gary := PrepareUnit('Gary', (not debug));
+Frank := PrepareUnit('Frank', (not debug));
+Kikuchi := PrepareUnit('Kikuchi', (not debug));
+
+// basic squad
+tmp := [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+tmp := tmp diff 0;
+
+// from 10th mission
+tmp := tmp union CreateCharacterSet('10_other_survivors');
+ 
+selected := CharacterSelection('1', 12, 12,
+                                [sel_change_class, JMM,
+                                 sel_not_hired,sel_changeable, sel_change_class]^tmp^
+                                [sel_dont_change_class, sel_not_changeable, Powell],
+                                [class_soldier, [class_engineer, 1], [class_mechanic, 0, 5], class_scientistic, [class_sniper, 0, 2]]);
+End;
