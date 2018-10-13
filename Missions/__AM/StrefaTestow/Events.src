@@ -37,18 +37,7 @@ begin
         end;
             
     end;
-    
-    if GetSide(un) = 3 and GetType(un) = unit_vehicle then
-    begin
-        for i in CPU1DamageTanks do
-        begin
-            if i = un then
-            begin
-                AddComConstruct(rufab, GetChassis(un), GetEngine(un), GetControl(un), GetWeapon(un));
-                CPU1DamageTanks = Delete(CPU1DamageTanks, i[i]);
-            end;
-        end;
-    end;
+
 
 end;
 
@@ -66,10 +55,16 @@ begin
         
 end;
 
+On LeaveVehicle(vehicle, human) Do
+begin
+    ComRepairVehicle(human, vehicle);
+    AddComEnterUnit(human, vehicle);
+end;
+
 On VehicleConstructed(vehicle, building) Do
 begin
 
-    if GetSide(vehicle) = 3 then CPU1Tanks = CPU1Tanks ^ vehicle;
+    //if GetSide(vehicle) = 3 then CPU1Tanks = CPU1Tanks ^ vehicle;
 
 end;
 
