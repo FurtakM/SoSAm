@@ -377,26 +377,9 @@ begin
     if (gammaCommander = 2 or gammaCommander = 3) and not Donaldson then
        Donaldson = PrepareUnit(mission_prefix_prev&'Donaldson', true);
 
-    if not Bobby then
-       Bobby = PrepareUnit(mission_prefix_prev&'Bobby', true);
 
-    if not Cyrus then
-       Cyrus = PrepareUnit(mission_prefix_prev&'Cyrus', true);
-
-    if not Lisa then
-       Lisa = PrepareUnit(mission_prefix_prev&'Lisa', true);
-
-    if not Frank then
-       Frank = PrepareUnit(mission_prefix_prev&'Frank', true);
-
-    if not Gladstone then
-       Gladstone = PrepareUnit(mission_prefix_prev&'Gladstone', true);
-
-    if not Kikuchi then
-       Kikuchi = PrepareUnit(mission_prefix_prev&'Kikuchi', true);
-
-    if gammaCommander = 1 or gammaCommander = 3 then PlaceUnitArea(Brown, GammaSupport, false);
-    if gammaCommander = 2 or gammaCommander = 3 then PlaceUnitArea(Donaldson, GammaSupport, false);
+    if Brown and gammaCommander <> 2 then PlaceUnitArea(Brown, GammaSupport, false);
+    if Donaldson and gammaCommander <> 1 then PlaceUnitArea(Donaldson, GammaSupport, false);
 
     veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
     JMM = PrepareUnit(mission_prefix_prev&'JMM', true);
