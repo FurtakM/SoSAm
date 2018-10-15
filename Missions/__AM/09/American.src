@@ -5,19 +5,24 @@ begin
 uc_side := 4;
 uc_nation := 1;
 
-Sikorski = PrepareUnit('Sikorski', false);
+Sikorski = PrepareUnit('Sikorski', false, '');
 PlaceUnitXY(Sikorski, 98, 97, false);
 
-Gary := PrepareUnit('Gary', false);
+Gary := PrepareUnit('Gary', false, '');
 tmp := Gary;
 
-Bobby := PrepareUnit('Bobby', true);
+Bobby := PrepareUnit('Bobby', (not debug), '08_');
+
+if not Bobby then
+   Bobby := PrepareUnit('Bobby', (not debug), '03_');
+
 if Bobby then
    tmp := tmp ^ Bobby;
 
-Cyrus := PrepareUnit('Cyrus', true);
-if Cyrus then
-   tmp := tmp ^ Cyrus;
+Cyrus := PrepareUnit('Cyrus', (not debug), '08_');
+
+if not Cyrus then
+   Cyrus := PrepareUnit('Cyrus', (not debug), '03_');
 
 tmp := tmp ^ CreateCharacterSet('03_others');
 

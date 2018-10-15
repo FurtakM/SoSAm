@@ -5,13 +5,13 @@ begin
     uc_nation = 1;
 
     if gammaCommander = 1 then begin
-        Donaldson = PrepareUnit('Donaldson', true);
+        Donaldson = PrepareUnit('04_Donaldson', true);
         PlaceUnitArea(Donaldson, GammaSpawn, false); 
     end; 
 
     if gammaCommander = 2 then
     begin
-        Brown = PrepareUnit('Brown', true);
+        Brown = PrepareUnit('04_Brown', true);
         PlaceUnitArea(Brown, GammaSpawn, false); 
     end; 
 
@@ -23,6 +23,32 @@ begin
         
     Harisson = PrepareUnit('Harisson', false);
     Powell = PrepareUnit('Powell', false);
+
+
+    // load main characters from 4th mission
+    // conditions:
+    // - save after 4th mission
+    // - not in Delta
+    // - not in 7th mission
+    if CheckCharacterSet('04_Lisa') and not LoadVariable('LisaInDelta', 0) and
+       not CheckCharacterSet('07_Lisa') then
+       Lisa := PrepareUnit('04_Lisa', true);
+
+    if CheckCharacterSet('04_Bobby') and not LoadVariable('BobbyInDelta', 0) and
+       not CheckCharacterSet('07_Bobby') then
+       Bobby := PrepareUnit('04_Bobby', true);
+
+    if CheckCharacterSet('04_Cyrus') and not LoadVariable('CyrusInDelta', 0) and
+       not CheckCharacterSet('07_Cyrus') then
+       Cyrus := PrepareUnit('04_Cyrus', true);
+
+    if CheckCharacterSet('04_Brown') and not LoadVariable('BrownInDelta', 0) and
+       not CheckCharacterSet('07_Brown') and gammaCommander <> 2 {not Brown} then
+       Brown := PrepareUnit('04_Brown', true);
+
+    if CheckCharacterSet('04_Donaldson') and not LoadVariable('DonaldsonInDelta', 0) and
+       not CheckCharacterSet('07_Donaldson') and gammaCommander <> 1 {not Donaldson} then
+       Brown := PrepareUnit('04_Donaldson', true);
 
     others_gamma = CreateCharacterSet('07_othersGamma');
 
@@ -329,14 +355,30 @@ begin
     end;
 
     JMM = PrepareUnit(mission_prefix_prev&'JMM', true);
-    if gammaCommander = 1 or gammaCommander = 3 then Brown = PrepareUnit(mission_prefix_prev&'Brown', true);
-    if gammaCommander = 2 or gammaCommander = 3 then Donaldson = PrepareUnit(mission_prefix_prev&'Donaldson', true);
-    Bobby = PrepareUnit(mission_prefix_prev&'Bobby', true);
-    Cyrus = PrepareUnit(mission_prefix_prev&'Cyrus', true);
-    Lisa = PrepareUnit(mission_prefix_prev&'Lisa', true);
-    Frank = PrepareUnit(mission_prefix_prev&'Frank', true);
-    Gladstone = PrepareUnit(mission_prefix_prev&'Gladstone', true);
-    Kikuchi = PrepareUnit(mission_prefix_prev&'Kikuchi', true);
+
+    if (gammaCommander = 1 or gammaCommander = 3) and not Brown then
+       Brown = PrepareUnit(mission_prefix_prev&'Brown', true);
+
+    if (gammaCommander = 2 or gammaCommander = 3) and not Donaldson then
+       Donaldson = PrepareUnit(mission_prefix_prev&'Donaldson', true);
+
+    if not Bobby then
+       Bobby = PrepareUnit(mission_prefix_prev&'Bobby', true);
+
+    if not Cyrus then
+       Cyrus = PrepareUnit(mission_prefix_prev&'Cyrus', true);
+
+    if not Lisa then
+       Lisa = PrepareUnit(mission_prefix_prev&'Lisa', true);
+
+    if not Frank then
+       Frank = PrepareUnit(mission_prefix_prev&'Frank', true);
+
+    if not Gladstone then
+       Gladstone = PrepareUnit(mission_prefix_prev&'Gladstone', true);
+
+    if not Kikuchi then
+       Kikuchi = PrepareUnit(mission_prefix_prev&'Kikuchi', true);
 
     if gammaCommander = 1 or gammaCommander = 3 then PlaceUnitArea(Brown, GammaSupport, false);
     if gammaCommander = 2 or gammaCommander = 3 then PlaceUnitArea(Donaldson, GammaSupport, false);
@@ -347,39 +389,74 @@ begin
     end else begin PlaceUnitArea(JMM, GammaSupport, false); end;
 
     veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
-    Bobby = PrepareUnit(mission_prefix_prev&'Bobby', true);
-    if veh > 0 then begin PlaceHumanInUnit(Bobby, veh[1]);
-    end else begin PlaceUnitArea(Bobby, GammaSupport, false); end;
+
+    if not Bobby then
+       begin
+       Bobby = PrepareUnit(mission_prefix_prev&'Bobby', true);
+
+       if veh > 0 then begin PlaceHumanInUnit(Bobby, veh[1]);
+       end else begin PlaceUnitArea(Bobby, GammaSupport, false); end;
+       end;
 
     veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
-    Cyrus = PrepareUnit(mission_prefix_prev&'Cyrus', true);
-    if veh > 0 then begin PlaceHumanInUnit(Cyrus, veh[1]);
-    end else begin PlaceUnitArea(Cyrus, GammaSupport, false); end;
+
+    if not Cyrus then
+       begin
+       Cyrus = PrepareUnit(mission_prefix_prev&'Cyrus', true);
+
+       if veh > 0 then begin PlaceHumanInUnit(Cyrus, veh[1]);
+       end else begin PlaceUnitArea(Cyrus, GammaSupport, false); end;
+       end;
 
     veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
-    Lisa = PrepareUnit(mission_prefix_prev&'Lisa', true);
-    if veh > 0 then begin PlaceHumanInUnit(Lisa, veh[1]);
-    end else begin PlaceUnitArea(Lisa, GammaSupport, false); end;
 
-    veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
-    Frank = PrepareUnit(mission_prefix_prev&'Frank', true);
-    if veh > 0 then begin PlaceHumanInUnit(Frank, veh[1]);
-    end else begin PlaceUnitArea(Frank, GammaSupport, false); end;
+    if not Lisa then
+       begin
+       Lisa = PrepareUnit(mission_prefix_prev&'Lisa', true);
 
-    veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
-    Gladstone = PrepareUnit(mission_prefix_prev&'Gladstone', true);
-    if veh > 0 then begin PlaceHumanInUnit(Gladstone, veh[1]);
-    end else begin PlaceUnitArea(Gladstone, GammaSupport, false); end;
-          
-    veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
-    Kikuchi = PrepareUnit(mission_prefix_prev&'Kikuchi', true);
-    if veh > 0 then begin PlaceHumanInUnit(Kikuchi, veh[1]);
-    end else begin PlaceUnitArea(Kikuchi, GammaSupport, false); end;
+       if veh > 0 then begin PlaceHumanInUnit(Lisa, veh[1]);
+       end else begin PlaceUnitArea(Lisa, GammaSupport, false); end;
+       end;
 
     veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);
-    Khatam = PrepareUnit(mission_prefix_prev&'Khatam', true);
-    if veh > 0 then begin PlaceHumanInUnit(Khatam, veh[1]);
-    end else begin PlaceUnitArea(Khatam, GammaSupport, false); end;
+
+    if not Frank then
+       begin  
+       Frank = PrepareUnit(mission_prefix_prev&'Frank', true);
+
+       if veh > 0 then begin PlaceHumanInUnit(Frank, veh[1]);
+       end else begin PlaceUnitArea(Frank, GammaSupport, false); end;
+       end;
+
+    veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
+
+    if not Gladstone then
+       begin
+       Gladstone = PrepareUnit(mission_prefix_prev&'Gladstone', true);
+
+       if veh > 0 then begin PlaceHumanInUnit(Gladstone, veh[1]);
+       end else begin PlaceUnitArea(Gladstone, GammaSupport, false); end;
+       end;
+
+    veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
+
+    if not Kikuchi then
+       begin
+       Kikuchi = PrepareUnit(mission_prefix_prev&'Kikuchi', true);
+
+       if veh > 0 then begin PlaceHumanInUnit(Kikuchi, veh[1]);
+       end else begin PlaceUnitArea(Kikuchi, GammaSupport, false); end;
+       end;
+
+    veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);
+
+    if not Khatam then
+       begin
+       Khatam = PrepareUnit(mission_prefix_prev&'Khatam', true);
+
+       if veh > 0 then begin PlaceHumanInUnit(Khatam, veh[1]);
+       end else begin PlaceUnitArea(Khatam, GammaSupport, false); end;
+       end;
 
     other = CreateCharacterSet('07c_others');
     for i in other do 
