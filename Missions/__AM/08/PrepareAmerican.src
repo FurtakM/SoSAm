@@ -1,5 +1,5 @@
 Export function PrepareHeroes;
-var i, x, y, d, b, fac, lab, arm, j, placed, ct, bun, tmp;
+var i, x, y, d, b, fac, lab, arm, j, placed, ct, bun, tmp, tmp2;
 begin
     uc_side = 1;
     uc_nation = 1;
@@ -30,25 +30,40 @@ begin
     // - save after 4th mission
     // - not in Delta
     // - not in 7th mission
-    if CheckCharacterSet('04_Lisa') and not LoadVariable('LisaInDelta', 0) and
-       not CheckCharacterSet('07_Lisa') then
+    if TestCharacters(['04_Lisa']) and not LoadVariable('LisaInDelta', 0) and
+       not TestCharacters(['07_Lisa']) then
+       begin
        Lisa := PrepareUnit('04_Lisa', true);
+       tmp2 := tmp2 ^ Lisa;
+       end;
 
-    if CheckCharacterSet('04_Bobby') and not LoadVariable('BobbyInDelta', 0) and
-       not CheckCharacterSet('07_Bobby') then
+    if TestCharacters(['04_Bobby']) and not LoadVariable('BobbyInDelta', 0) and
+       not TestCharacters(['07_Bobby']) then
+       begin
        Bobby := PrepareUnit('04_Bobby', true);
+       tmp2 := tmp2 ^ Bobby;
+       end;
 
-    if CheckCharacterSet('04_Cyrus') and not LoadVariable('CyrusInDelta', 0) and
-       not CheckCharacterSet('07_Cyrus') then
+    if TestCharacters(['04_Cyrus']) and not LoadVariable('CyrusInDelta', 0) and
+       not TestCharacters(['07_Cyrus']) then
+       begin
        Cyrus := PrepareUnit('04_Cyrus', true);
+       tmp2 := tmp2 ^ Cyrus;
+       end;
 
-    if CheckCharacterSet('04_Brown') and not LoadVariable('BrownInDelta', 0) and
-       not CheckCharacterSet('07_Brown') and gammaCommander <> 2 {not Brown} then
+    if TestCharacters(['04_Brown']) and not LoadVariable('BrownInDelta', 0) and
+       not TestCharacters(['07_Brown']) and gammaCommander <> 2 {not Brown} then
+       begin
        Brown := PrepareUnit('04_Brown', true);
+       tmp2 := tmp2 ^ Brown;
+       end;
 
-    if CheckCharacterSet('04_Donaldson') and not LoadVariable('DonaldsonInDelta', 0) and
-       not CheckCharacterSet('07_Donaldson') and gammaCommander <> 1 {not Donaldson} then
-       Brown := PrepareUnit('04_Donaldson', true);
+    if TestCharacters(['04_Donaldson']) and not LoadVariable('DonaldsonInDelta', 0) and
+       not TestCharacters(['07_Donaldson']) and gammaCommander <> 1 {not Donaldson} then
+       begin
+       Donaldson := PrepareUnit('04_Donaldson', true);
+       tmp2 := tmp2 ^ Donaldson;
+       end;
 
     others_gamma = CreateCharacterSet('07_othersGamma');
 
@@ -90,7 +105,7 @@ begin
     ct  := FilterAllUnits([[f_side, 1], [f_btype, b_control_tower]]);
     bun := FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_breastwork], [f_btype, b_bunker]]]);
 
-    for i in others_gamma do
+    for i in others_gamma^tmp2 do
         begin
         placed := false;
 
