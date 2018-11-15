@@ -1,0 +1,845 @@
+// Macro Module By Serpent
+//
+Export callback_error;
+Export skirmish;
+Export mc_bases, mc_building_need_repair, mc_building_repairs,
+       mc_need_heal, mc_healers, mc_build_list, mc_builders,
+       mc_construct_list, mc_turret_list, mc_empty_turret_list,
+       mc_mines, mc_miners, mc_minefields, mc_crates, mc_crates_collector,
+       mc_vehicles, mc_attack, mc_produce;
+
+Export Function InitMacro;
+begin
+callback_error := false;
+skirmish := false;
+mc_bases := [];
+mc_building_need_repair := [];
+mc_building_repairs := [];
+mc_need_heal := [];
+mc_healers := [];
+mc_build_list := [];
+mc_builders := [];
+mc_construct_list := [];
+mc_turret_list := [];
+mc_empty_turret_list := [];
+mc_miners := [];
+mc_mines := [];
+mc_minefields := [];
+mc_crates := [];
+mc_crates_collector := [];
+mc_vehicles := [];
+mc_attack := [];
+mc_produce := [];
+End;
+
+Export Function RunMacro;
+var i;
+begin
+
+for i = 1 to mc_bases do
+    begin
+    mc_building_need_repair := Replace(mc_building_need_repair, i, []);
+    mc_building_repairs := Replace(mc_building_repairs, i, []);
+    mc_need_heal := Replace(mc_need_heal, i, []);
+    mc_healers := Replace(mc_healers, i, [[], []]);
+    mc_build_list := Replace(mc_build_list, i, []);
+    mc_construct_list := Replace(mc_construct_list, i, []);
+    mc_turret_list := Replace(mc_turret_list, i, []);
+    mc_empty_turret_list := Replace(mc_empty_turret_list, i, []);
+    mc_empty_turret_list := Add(mc_empty_turret_list, [i, 1], []);
+    mc_empty_turret_list := Add(mc_empty_turret_list, [i, 2], []);
+    mc_miners := Replace(mc_miners, i, []);
+    mc_mines := Replace(mc_mines, i, []);
+    mc_minefields := Replace(mc_minefields, i, []);
+    mc_crates := Replace(mc_crates, i, []);
+    mc_crates_collector := Replace(mc_crates_collector, i, []);
+    mc_vehicles := Replace(mc_vehicles, i, []);
+    mc_attack := Replace(mc_attack, i, []);
+    mc_produce := Replace(mc_produce, i, []);
+    end;
+
+// set mines
+MC_SetMinesField(1, 8, minefield1_left);
+MC_SetMinesField(2, 6, minefield2_left);
+MC_SetMinesField(3, 6, minefield3_left);
+
+skirmish := true;
+End;
+
+// main module
+Every 0$01 trigger skirmish do
+begin
+enable;
+
+// check conditions and register action
+MC_CheckBuildings();
+MC_CheckPeopleLife();
+
+// action's
+RaiseSailEvent(103); // mc_build
+RaiseSailEvent(104); // mc_weapon_turret
+RaiseSailEvent(105); // mc_empty_turret
+RaiseSailEvent(106); // mc_plant_mines
+RaiseSailEvent(107); // mc_collect_crates
+RaiseSailEvent(108); // mc_remote_link
+RaiseSailEvent(109); // mc_produce_vehicle
+RaiseSailEvent(200); // mc_idle
+End;
+
+
+{
+  MC EVENT LIST
+  101: RepairBuilding
+  102: Heal
+  103: BuildBuilding
+  104: WeaponTurretMount
+  105: TurretCrew
+  106: PlantMines
+  107: CollectCrates
+  108: LinkRemoteControl
+  109: ProduceVehicle
+
+}
+On SailEvent(event) do
+begin
+
+// repair building
+if event = 101 then
+   MC_RepairBuildings();
+// heal people
+if event = 102 then
+   MC_Heal();
+// build
+if event = 103 then
+   MC_Build();
+// weapon turret
+if event = 104 then
+   MC_TurretWeapon();
+// turret crew
+if event = 105 then
+   MC_TurretCrew();
+// plant mines
+if event = 106 then
+   MC_PlantMines();
+// collect crates
+if event = 107 then
+   MC_CollectCrates();
+// link remote control
+if event = 108 then
+   MC_LinkRemoteControl();
+// produce vehicle
+if event = 109 then
+   MC_ProduceVehicle();
+
+
+
+// idle event
+if event = 200 then
+   MC_Idle();
+End;
+
+Export Function MC_Reset(base, tag);
+var i;
+begin
+if not mc_bases[base] or not tag then
+   exit;
+
+for i in mc_bases[base] do
+    if GetTag(i) = tag then
+       SetTag(i, 0);
+End;
+
+
+Export Function MC_CheckBuildings();
+var i, j, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    tmp := UnitFilter(mc_bases[i], [[f_type, unit_building], [f_not, [f_lives, 1000]]]);
+
+    if not tmp then
+       begin
+       mc_building_need_repair := Replace(mc_building_need_repair, i, []);
+       continue;
+       end;
+
+    for j in tmp do
+        if not j in mc_building_need_repair[i] then
+           mc_building_need_repair := Add(mc_building_need_repair, [i, mc_building_need_repair[i]+1], j);
+    end;
+
+if mc_building_need_repair then
+   RaiseSailEvent(101); 
+End;
+
+Export Function MC_CheckPeopleLife();
+var i, j, k, tmp, need_heal_1, need_heal_2;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    tmp := UnitFilter(mc_bases[i], [[f_type, unit_human], [f_and, [f_not, [f_inside]], [f_not, [f_lives, 700]]]]);
+    need_heal_1 := UnitFilter(mc_bases[i], [[f_type, unit_human], [f_and, [f_not, [f_inside]], [f_not, [f_lives, 250]]]]);
+    need_heal_2 := tmp diff need_heal_1;
+
+    if not need_heal_1 then
+       mc_need_heal := Add(mc_need_heal, [i, 1], [])
+      else
+       mc_need_heal := Add(mc_need_heal, [i, 1], need_heal_1);
+
+    if not need_heal_2 then
+       mc_need_heal := Add(mc_need_heal, [i, 2], [])
+      else
+       mc_need_heal := Add(mc_need_heal, [i, 2], need_heal_2);
+
+    if need_heal_2 then
+       for j in need_heal_2 do
+           begin
+           tmp := UnitFilter(mc_bases[i], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full], [f_btype, b_depot], [f_btype, b_warehouse], [f_class, 4]]);
+
+           if tmp then
+              begin
+              k := NearestUnitToUnit(tmp, j);
+
+              if GetDistUnits(j, k) > 7 then
+                 ComMoveUnit(j, k);
+              end;
+           end;
+
+    if not need_heal_1 and not need_heal_2 then
+       continue;
+    end;
+
+RaiseSailEvent(102);
+End;
+
+// Action's
+Export Function MC_RepairBuildings();
+var i, j, un, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    if not mc_building_need_repair[i] then
+       begin
+       mc_building_repairs := Replace(mc_building_repairs, i, []);
+       MC_Reset(i, 101);
+       continue;
+       end;
+
+    mc_builders := Replace(mc_builders, i, []);
+    MC_Reset(i, 103);
+     
+
+    // get engs/ape engs
+    tmp := UnitFilter(mc_bases[i], [[f_or, [f_class, 2], [f_class, 16]]]);
+
+    if not tmp then
+       continue;
+
+    for j in tmp do
+        begin
+
+        if mc_need_heal[i] then
+           if j in mc_need_heal[i][1] or j in mc_need_heal[i][2] then
+              continue;
+
+        if IsInUnit(j) then
+           ComExitBuilding(j);
+
+        if not j in mc_building_repairs[i] then
+           begin
+           SetTag(j, 101);
+           mc_building_repairs := Add(mc_building_repairs, [i, mc_building_repairs[i]+1], j);
+           end;
+
+        Wait(3);
+
+        ComRepairBuilding(j, NearestUnitToUnit(mc_building_need_repair[i], j));
+        end;
+    end;
+End;
+
+Export Function MC_Heal;
+var i, j, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    if not mc_need_heal[i][1] and not mc_need_heal[i][2] then
+       begin
+       mc_healers := Replace(mc_healers, i, []);
+       MC_Reset(i, 102);
+       continue;
+       end;
+
+    // sci
+    tmp := UnitFilter(mc_bases[i], [f_class, 4]);
+
+    if not tmp then
+       continue;
+
+    for j in tmp do
+        begin
+
+        if IsInUnit(j) then
+           ComExitBuilding(j);
+
+        if not j in mc_healers[i] then
+           mc_healers := Add(mc_healers, [i, mc_healers[i]+1], j);
+
+        if not GetTag(j) then
+           SetTag(j, 102);
+
+        Wait(3);
+
+        if mc_need_heal[i][1] then
+           ComHeal(j, mc_need_heal[i][1][1])
+          else
+           if not HasTask(j) and mc_need_heal[i][2] then
+              ComHeal(j, mc_need_heal[i][2][1]);
+        end;
+    end;
+End;
+
+
+Export Function MC_Build();
+var i, j, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    if not mc_build_list[i] and not mc_construct_list[i] then
+       begin
+       mc_builders := Replace(mc_builders, i, []);
+       MC_Reset(i, 103);
+       continue;
+       end;
+                       
+    if mc_construct_list[i] then
+       begin
+       tmp := UnitFilter(mc_bases[i], [f_class, 2]) diff mc_building_repairs[i];
+
+       if not tmp then
+          continue;
+
+       for j in tmp do
+           begin
+           if not mc_builders[i] then
+              begin
+              SetTag(j, 103);
+              mc_builders := Add(mc_builders, [i, mc_builders[i]+1], j);
+              end;
+
+           if IsInUnit(j) then
+              ComExitBuilding(j);
+
+           wait(3);
+
+           if not HasTask(j) then
+              ComComplete(j, mc_construct_list[i][1]);
+           end;
+
+       end
+    else if mc_build_list[i] then
+    if CanBeBuilded(UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]])[1], mc_build_list[i][1][1], mc_build_list[i][1][2], mc_build_list[i][1][3], mc_build_list[i][1][4]) then
+       begin
+       tmp := UnitFilter(mc_bases[i], [f_class, 2]) diff mc_building_repairs[i];
+
+       if not tmp then
+          continue;
+
+       for j in tmp do
+           begin
+           if not mc_builders[i] then
+              begin
+              SetTag(j, 103);
+              mc_builders := Add(mc_builders, [i, mc_builders[i]+1], j);
+              end;
+
+           if IsInUnit(j) then
+              ComExitBuilding(j);
+
+           wait(3);
+
+           if not HasTask(j) then
+              ComBuild(j, mc_build_list[i][1][1], mc_build_list[i][1][2], mc_build_list[i][1][3], mc_build_list[i][1][4]);
+           end;
+       end;
+    end;
+End;
+
+Export Function MC_TurretWeapon();
+var i, j, tmp, t, busy, weapon;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    if not mc_turret_list[i] or not UnitFilter(mc_bases[i], [f_btype, b_factory]) then
+       continue;
+
+    if GetBWeapon(mc_turret_list[i][1]) then
+       begin
+       tmp := Delete(mc_turret_list[i], 1);
+       mc_turret_list := Replace(mc_turret_list, i, tmp);
+
+       if not mc_turret_list[i] then
+          continue;
+       end;
+
+    busy := false;
+    tmp := UnitFilter(mc_bases[i], [f_btype, b_factory]);
+
+    for j in tmp do
+        if not BuildingStatus(j) = bs_idle then
+           busy := true;
+
+    if busy then
+       continue;
+
+    weapon := GetTurretWeapon(mc_turret_list[i][1]);
+
+    if not weapon then
+       continue;
+
+    ComPlaceWeapon(mc_turret_list[i][1], weapon);
+    end;
+End;
+
+Export Function MC_TurretCrew();
+var i, j, t, tmp, x;
+begin
+if not mc_bases then
+   exit;
+
+   for i = 1 to mc_bases do
+       begin
+       x := UnitFilter(mc_bases[i], [[f_lives, 375], [f_or, [f_btype, b_bunker], [f_btype, b_breastwork]], [f_empty]]);
+
+       if not x then
+          continue;
+
+       mc_empty_turret_list := Add(mc_empty_turret_list, [i, 1], x);
+
+       if not mc_empty_turret_list[i] or not mc_empty_turret_list[i][1] or not mc_empty_turret_list[i][1][1] then
+          continue;
+                     
+       if UnitsInside(mc_empty_turret_list[i][1][1]) = 0 then
+          if not mc_empty_turret_list[i][2] then
+             begin
+             tmp := UnitFilter(mc_bases[i], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
+
+             if not tmp then
+                continue;
+
+             for j in tmp do
+                 begin
+                 t := UnitFilter(UnitsInside(j), [f_class, 1]);
+
+                 if t then
+                    begin
+                    mc_empty_turret_list := Add(mc_empty_turret_list, [i, 2], t);
+                    break;
+                    end;
+                 end;
+             end
+            else
+             begin
+             if IsDead(mc_empty_turret_list[i][2][1]) then
+                begin
+                mc_empty_turret_list := Add(mc_empty_turret_list, [i, 2], []);
+                break;
+                end;
+
+             if not HasTask(mc_empty_turret_list[i][2][1]) and not mc_empty_turret_list[i][2][1] in UnitsInside(mc_empty_turret_list[i][1][1]) then
+                begin
+                if IsInUnit(mc_empty_turret_list[i][2][1]) then
+                   ComExitBuilding(mc_empty_turret_list[i][2][1]);
+               
+                AddComEnterUnit(mc_empty_turret_list[i][2][1], mc_empty_turret_list[i][1][1]);
+
+                repeat
+                 wait(0$1);
+
+                 if not mc_empty_turret_list[i][2] then
+                    break;
+
+                until IsInUnit(mc_empty_turret_list[i][2][1]);
+
+                mc_empty_turret_list := Add(mc_empty_turret_list, [i, 2], []);
+                exit;
+                end;
+
+             end;
+       end;
+End;
+
+Export Function MC_PlantMines();
+var i, j, k, tmp, list;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    if mc_minefields[i] and mc_miners[i] then
+       CheckMinesInArea(mc_minefields[i], [[f_enemy, GetSide(mc_miners[i][1])], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]);
+
+    if not mc_mines[i] or mc_mines[i] = mc_miners[i] then
+       continue;
+
+    if mc_miners[i] then
+       for j = 1 to mc_miners[i] do
+           begin
+           if IsDead(mc_miners[i][j]) then
+              begin
+              tmp := mc_miners[i] diff mc_miners[i][j];
+              mc_miners := Replace(mc_miners, [i, mc_miners[i]+1], tmp);
+              continue;
+              end;
+
+           if not MineOfUnit(mc_miners[i][j]) and DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][j][1], mc_mines[i][j][2], 12)[4] = 0 then
+              begin
+              if IsInUnit(mc_miners[i][j]) then
+                 ComExitBuilding(mc_miners[i][j]);
+
+              wait(3);
+
+              if not MineAtPos(mc_mines[i][j][1], mc_mines[i][j][2]) and not HasTask(mc_miners[i][j]) then
+                 ComPlaceRemoteCharge(mc_miners[i][j], mc_mines[i][j][1], mc_mines[i][j][2], 0);
+              end;
+           end;
+
+    tmp := UnitFilter(mc_bases[i], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
+
+    if not tmp then
+       continue;
+
+    list := [];
+
+    for j in tmp do
+        begin
+
+        for k in UnitsInside(j) do
+            if GetClass(k) = 1 and not MineOfUnit(k) then
+               list := list ^ k;
+        end;
+
+    list := list diff mc_miners[i];
+
+    if not list then
+       continue;
+
+    k := mc_mines[i]-mc_miners[i];
+
+    if k > list then
+       k := list;
+
+    for j = 1 to k do
+        mc_miners := Add(mc_miners, [i, mc_miners[i]+1], list[j]);
+
+    end;
+
+End;
+
+Export Function MC_CollectCrates();
+var i, j, tmp, target;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    if not mc_bases[i] then
+       continue;
+           
+    if not mc_crates[i] and mc_crates_collector[i] then
+       begin
+       mc_crates_collector := Replace(mc_crates_collector, i, []);
+       MC_Reset(i, 107);
+       continue;
+       end;
+                  
+    target := [];
+
+    for j = mc_crates[i] downto 1 do
+        begin
+
+        if ValidHex(mc_crates[i][j][2], mc_crates[i][j][3]) and
+           GetResourceAmountXY(mc_crates[i][j][2], mc_crates[i][j][3]) = 0 then
+           begin
+           tmp := Delete(mc_crates[i], j);
+           mc_crates := Replace(mc_crates, i, tmp);
+           continue;
+           end;
+
+        if DangerAtRangeXY(GetSide(mc_bases[i][1]), mc_crates[i][j][2], mc_crates[i][j][3], 20)[4] = 0 then
+           begin
+           target := mc_crates[i][j];
+           break;
+           end;
+
+        end;
+
+    if not target then
+       continue;
+
+    if mc_crates_collector[i] < 5 then
+       begin
+       tmp := UnitFilter(mc_bases[i], [[f_or, [f_class, 2], [f_class, 16]], [f_lives, 750]]);
+
+       if not tmp then
+          continue;
+
+       for j in tmp do
+           if GetTag(j) = 0 then
+              begin
+              mc_crates_collector := Add(mc_crates_collector, [i, mc_crates_collector[i]+1], j);
+              SetTag(j, 107);
+
+              if mc_crates_collector[i] > 5 then
+                 break;
+              end;
+       end;
+
+    if mc_crates_collector[i] and target then
+       begin
+       if mc_crates_collector[i] < target[1] then
+          tmp := mc_crates_collector[i]
+         else
+          tmp := target[1];
+
+       for j = 1 to tmp do
+           begin
+           if IsInUnit(mc_crates_collector[i][j]) then
+              ComExitBuilding(mc_crates_collector[i][j]);
+
+           wait(3);
+           ComCollect(mc_crates_collector[i][j], target[2], target[3]);
+           end;
+
+       end;
+
+    end;
+End;
+
+Export Function MC_LinkRemoteControl();
+var i, j, tmp;
+begin
+if not mc_bases then
+   exit;
+          
+for i = 1 to mc_bases do
+    begin
+    tmp := UnitFilter(mc_vehicles[i], [f_control, control_remote]);
+
+    if tmp then
+       for j in tmp do
+           if not IsControledBy(j) and GetLives(j) >= 250 then
+              Connect(j)
+             else
+              if GetLives(j) < 250 and IsControledBy(j) then
+                 ComUnlink(j);
+    end;
+
+End;
+
+Export Function MC_ProduceVehicle();
+var i, j, tmp, fac;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    if not mc_produce[i] then
+       continue;
+
+    fac := UnitFilter(mc_bases[i], [f_btype, b_factory]);
+
+    if not fac then
+       continue;
+
+    for j in fac do
+        begin
+        if BuildingStatus(j) <> bs_idle or DangerAtRange(j, 20)[4] or UnitsInside(j) = 0 then
+           continue;
+
+        if CanBeConstructed(j, mc_produce[i][1][1], mc_produce[i][1][2], mc_produce[i][1][3], mc_produce[i][1][4]) then
+           begin
+           ComConstruct(j, mc_produce[i][1][1], mc_produce[i][1][2], mc_produce[i][1][3], mc_produce[i][1][4]);
+           tmp := Delete(mc_produce[i], 1);
+           mc_produce := Replace(mc_produce, i, tmp);
+           break;
+           end;
+        end;
+    end;
+
+End;
+
+Export Function MC_Back(base_unit_list, unit, class);
+var i, j, tmp;
+begin
+if not base_unit_list or not unit or not class in [1, 2, 3, 4, 5, 8, 9] then
+   exit;
+
+base_unit_list := UnitFilter(base_unit_list, [[f_type, unit_building], [f_lives, 250]]);
+
+if class in [5, 8, 9] then
+   class := 1;
+
+case class of
+1: tmp := UnitFilter(base_unit_list, [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
+2: tmp := UnitFilter(base_unit_list, [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
+3: tmp := UnitFilter(base_unit_list, [f_or, [f_btype, b_workshop], [f_btype, b_factory]]);
+4: tmp := UnitFilter(base_unit_list, [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]);
+end;
+
+if not tmp then
+   exit;
+
+for i in tmp do
+    begin
+    if (UnitsInside(i) < 6 and not GetBType(i) in [b_breastwork, b_bunker]) or UnitsInside(i) = 0 then
+       begin
+       j := i;
+       break;
+       end;
+    end;
+
+if j then
+   ComEnterUnit(unit, j);
+End;
+
+Export Function MC_Idle();
+var i, j, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    tmp := UnitFilter(mc_bases[i], [f_type, unit_human]);
+
+    if not tmp then
+       exit;   
+
+    for j in tmp do
+        begin
+        if not GetTag(j) and not HasTask(j) and not IsInUnit(j) and not mc_need_heal[i][1] and not mc_need_heal[i][2] then
+           MC_Back(mc_bases[i], j, GetClass(j));
+        end;
+    end;
+End;
+
+
+// Setter's
+// Delete previous minefield and get new mine pos
+Export Function MC_SetMinesField(base, amount, area); 
+var i, c, tmp, list, x, j;
+begin
+if not mc_bases[base] then
+   exit;
+
+tmp := [];
+list := AreaToList(area, 0);
+
+if not list then
+   exit;
+
+for i = 1 to amount do
+    begin
+    c := rand(1, list[1]-i);
+    tmp := Replace(tmp, i, [list[1][c], list[2][c]]);
+
+    for j = 1 to 2 do
+        begin
+        x := Delete(list[j], c);
+        list := Replace(list, j, x);
+        end;
+
+    if not list then
+       break;
+    end;
+
+mc_mines := Replace(mc_mines, base, tmp);
+mc_minefields := Replace(mc_minefields, base, area);
+End;
+
+Export Function MC_SetProduceList(base, produce_list);
+begin
+if not mc_bases[base] then
+   exit;
+
+mc_produce := Replace(mc_produce, base, produce_list);
+End;
+
+Export Function MC_PrepareAttack(base, group, enemy, conditons);
+var i, j, tmp;
+begin
+if not mc_bases[base] then
+   exit;
+
+{
+   * Wywo³anie odbywa siê w oddzielnej instacji RaiseSailEvent gdzie skrypt wykonywany jest w pêtli
+     do czasu a¿ zostanie wykonane zadanie lub wszystkie jednostki atakuj¹ce zgin¹
+   * Przy odpaleniu przekazujemy argumenty z mc_attack do lokalnego tmp i czyœcimy mc_attack
+   * Po odpaleniu funkcji zbierane s¹ wszystkie dostêpne jednostki z group
+   * Je¿eli nie mo¿na wype³niæ group wówczas wysy³a polecenie produkcji
+     brakuj¹cych pojazdów, olewa jednostki ¿ywe
+   * Po zebraniu wymaganych jednostek nastêpuje pod¹¿anie po wyznaczonej trasie:
+     * Przejazd polega na pod¹zaniu z punktu A do punktu B
+     * Po dotarciu do punktu B nastêpuje skasowanie punktu A
+     * Nastêpuje przejazd z punktu B do C
+     * Ca³a operacja wykonywana jest oddzielnie dla ka¿dej z jednostek z group
+     * Po wykryciu wroga (SEE lub DIST < 10) przejazd jest anulowany, a jednostka atakuje
+       napotkanego wroga
+     * Atak nastêpuje po wykryciu wroga
+     * Podczas ataku uzglêdniane s¹ flagi ustawieñ:
+       * mc_ignore_area - stara siê unikaæ wjazdu na dany obszar => [x, y, range]
+       * mc_capture - okreœla czy jednostki atakuj¹ce mog¹ przejmowaæ wrogie pojazdy => [bool]
+       * mc_ignore_civ - stara siê unikaæ jednostki cywilne wroga (mechanicy, naukowcy, komory trans.) => [bool]
+       * mc_ignore_empty - stara siê unikaæ pustych budynków => [bool]
+       * mc_murder - okreœla czy jednostki wroga maj¹ byæ dobijane => [bool]
+       * mc_mines - okreœla czy jednostki mog¹ podk³adaæ ³adunki czasowe => [bool]
+       * mc_repair - okreœla czy jednostki mog¹ wycofywaæ siê i naprawiaæ (wymaga mechanikow w group) => [bool]
+       * mc_heal - okreœla czy jednostki mog¹ wycofywaæ siê i leczyæ (wymaga naukowców w group) => [bool]
+       * mc_spacetime - okreœla czy jednostki mog¹ korzystaæ z amunicji czasoprzestrznnej (wymaga bazookerow) => [bool]
+       * mc_attack_depot - okreœla czy celem priorytetowym ma byæ magazyn w bazie wroga => [bool]
+       * mc_crawl - okreœla czy ¿o³nierze mog¹ siê czo³gaæ => [bool]
+
+     ** Stara siê ignorowaæ -> Cel nie jest priorytetowy ale mo¿e staæ siê celem ataku!
+
+   mc_attack [ [ [group, path, flags] ] ]
+
+   flags:
+   - mc_ignore_area
+   - mc_capture
+   - mc_ignore_civ
+   - mc_ignore_empty
+}
+End;
+
+// Getter's
+Export Function MC_GetMinesField(base);
+begin
+result := mc_mines[base];
+End;

@@ -28,13 +28,31 @@ begin
 end;
 
 
-
-
 Every 0$01 do
+var un, un2;
+begin
+uc_side := 0;
+uc_nation := 0;
+
+hc_class := 1;
+hc_gallery := '';
+un := CreateHuman;
+un2 := CreateHuman;
+PlaceUnitXY(un, 192,25, false);
+PlaceUnitXY(un2, 190, 25, false);
+
+SetTag(un, 0);
+
+display_strings := [not GetTag(un), not GetTag(un2)];
+End;
+
+
+
+{Every 0$01 do
 var b;
 begin
-//RemoveResourcesFromArea(area04, 10);
-End;
+display_strings := SortByDistanceUnit(eng1, FilterAllUnits([f_type, unit_vehicle]), false);
+End;}
 
 Export Function RemoveResourcesFromArea(area, materials);
 var amount, i, tmp;

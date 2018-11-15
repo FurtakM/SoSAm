@@ -1,0 +1,153 @@
+On UnitDestroyed(un) do
+var i, j, btype, pos, tmp;
+begin
+
+if un in FilterAllUnits([f_type, unit_building]) then
+   begin
+
+   if not mc_bases then
+      exit;
+
+   pos := mc_build_list[i]+1;
+   btype := GetBType(un);
+
+   if btype = b_warehouse then
+      begin
+      btype := b_depot;
+      pos := 1;
+      end;
+   if btype = b_factory then
+      begin
+      btype := b_workshop;
+      pos := 1;
+      end;
+   if btype in [b_lab_half, b_lab_full] then
+      btype := b_lab;
+
+   for i = 1 to mc_bases do
+       if un in mc_bases[i] or un in mc_construct_list[i] then
+          begin
+          mc_build_list := Add(mc_build_list, [i, mc_build_list[i]+1], [btype, GetX(un), GetY(un), GetDir(un)]);
+
+          if pos = 1 then
+             begin
+             tmp := mc_build_list[i];
+
+             if UnitFilter(tmp, [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]) then
+                pos := 2;
+
+             tmp := ReplaceWith(tmp, pos, tmp);
+             mc_build_list := Replace(mc_build_list, i, tmp);
+             end;
+
+          if un in mc_bases[i] then
+             begin
+             tmp := mc_bases[i] diff un;
+             mc_bases := Replace(mc_bases, i, tmp);
+             end;
+
+          if un in mc_construct_list[i] then
+             begin
+             tmp := mc_construct_list[i] diff un;
+             mc_construct_list := Replace(mc_construct_list, i, tmp);
+             end;
+
+          break;
+          end;
+
+   end;
+End;
+
+On BuildingStarted(building, builder) do
+var i, j, tmp, btype, x, y, d;
+begin
+if not mc_bases then
+   exit;
+
+btype := GetBType(building);
+    x := GetX(building);
+    y := GetY(building);
+    d := GetDir(building);
+
+for i = 1 to mc_bases do
+    begin
+
+    if not mc_build_list[i] then
+       continue;
+
+    if CompareArray([btype, x, y, d], mc_build_list[i][1]) then
+       begin
+       tmp := Delete(mc_build_list[i], 1);
+       mc_build_list := Replace(mc_build_list, i, tmp);
+
+       mc_construct_list := Add(mc_construct_list, [i, mc_construct_list[i]+1], building);
+       exit;
+       end;
+
+    end;
+End;
+
+On BuildingComplete(building) do
+var i, j, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    if building in mc_construct_list[i] then
+       begin
+       tmp := mc_construct_list[i] diff building;
+       mc_construct_list := Replace(mc_construct_list, i, tmp);
+       mc_bases := Add(mc_bases, [i, mc_bases[i]+1], building);
+
+       if GetBType(building) in [b_bunker, b_turret] then
+          mc_turret_list := Add(mc_turret_list, [i, mc_turret_list[i]+1], building);
+       exit;
+       end;
+
+    end;
+End;
+
+On CrateSpawn(id, x, y, amount, mode) do
+var i, depot;
+begin
+if not mc_bases then
+   exit;
+
+repeat
+ wait(0$1);
+until GetResourceAmountXY(x, y);
+
+for i = 1 to mc_bases do
+    begin     
+    depot := UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
+
+    if not depot then
+       continue;
+             
+    if GetDistUnitXY(depot[1], x, y) < 30 then
+       begin         
+       mc_crates := Add(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
+       break;
+       end;
+    end;
+
+End;
+
+On VehicleConstructed(vehicle, factory) do
+var i, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    if factory in mc_bases[i] then
+       begin
+       mc_vehicles := Add(mc_vehicles, [i, mc_vehicles[i]+1], vehicle);
+       exit;
+       end;
+    end;
+End;
