@@ -1,22 +1,53 @@
 // Mission 11 by Serpent
 // 12-10-2018
 // I lecimy yolo!
-// Marcin D¿argi³o jest cieciem w Leclercu lol
+
 
 Starting
 begin
-ResetFog;
+ResetFog;    
+Randomize;
 
 InitVariables;
-PrepareAmerican;
+InitMacro;
+
+if debug then
+   FogOff(1);
+
+//PrepareAmerican;
+PrepareArabian;
+
+RunMacro;
+
+Debuger;
 End;
 
-
-Export debug;
+Export debug, game;
 Export mission_prefix, mission_prefix_prev;
 Function InitVariables;
 begin
 debug := true;
+game := true;
 mission_prefix := '11_';
 mission_prefix_prev := '10c_';
+End;
+
+Function Debuger;
+var i;
+begin 
+if not debug then
+   exit;
+
+game_speed := 7;
+
+uc_side := 1;
+uc_nation := 1;
+
+vc_chassis := us_medium_wheeled;
+vc_control := control_computer;
+vc_engine := engine_combustion;
+vc_weapon := us_rocket_launcher;
+
+for i = 1 to 4 do
+    PlaceUnitXYR(CreateVehicle, 137, 91, 6, false);
 End;
