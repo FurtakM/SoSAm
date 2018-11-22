@@ -10,6 +10,27 @@ if exist_mode then
 result := unit;
 End;
 
+Export Function PrepareVehicle(chassis, engine, control, weapon, fuel);
+begin
+vc_chassis := chassis;
+vc_engine := engine;
+vc_control := control;
+vc_weapon := weapon;
+vc_fuel_battery := fuel;
+End;
+
+Export Function WantPlant(unit);
+var task;
+begin
+result := false;
+
+task := GetTaskList(unit);
+
+if task then
+   if task[1][1] = 'p' then
+      result := true;
+End;
+
 // arr - tablica
 // pos - tablica pozycji
 // value - nowa wartoœæ do wstawienia
@@ -70,20 +91,22 @@ result := ReplaceIn(list, pos, val)
 End;
 
 
+
+Export Function SortByDistanceUnit(unit, list, asc, mode);
+begin
+result := SortByDistanceXY(GetX(unit), GetY(unit), list, asc, mode);
+End;
+
 {
 SortByDistanceXY(x, y, list, asc)
 - Sortuje jednostki zadane tablic¹ wg. dystansu od zadanego koordynatu
 * x, y - koordynaty
 * list - tablica jednostek
 * asc - true -> rosn¹co | false -> malej¹co
+* mode - true -> zwraca tylko liste jednostek | false -> zwraca liste i odleglosci
 = array
 }
-Export Function SortByDistanceUnit(unit, list, asc);
-begin
-result := SortByDistanceXY(GetX(unit), GetY(unit), list, asc);
-End;
-
-Export Function SortByDistanceXY(x, y, list, asc);
+Export Function SortByDistanceXY(x, y, list, asc, mode);
 var i, j, tmp;
 begin
 if not list then
@@ -120,6 +143,18 @@ if result and not asc then
    for i = tmp downto 1 do
        result := Replace(result, tmp - i + 1, tmp[i]);
    end;
+
+tmp := [];
+
+if mode then
+   begin
+
+   for i = 1 to result do
+       tmp := Replace(tmp, i, result[i][1]);
+
+   result := tmp;
+   end;
+
 End;
 {
     DangerAtRange(unit, range)
@@ -373,7 +408,6 @@ for i in result do
        mech := i;
     end;
 
-display_strings := [GetSkill(mech[1], 3), UnitsLinked(mech[1])];
 if mech then
    ComLinkTo(vehicle, mech[1]);
 End;
@@ -919,6 +953,429 @@ begin
          temp_list2 = temp_list2 ^ [[i[1] + x, i[2] + y]];
 
      result = temp_list2;
+End;
+
+Export Function EnemyInRange(unit, dist);
+begin
+result := DangerAtRangeXY(GetSide(unit), GetX(unit), GetY(unit), dist)[4];
+End;
+
+Export Function PlayerSeeMe(unit);
+begin
+result := See(your_side, unit);
+End;
+
+
+// hexes: [ [x1, y1], [x2, y2], ..]
+Export Function GetClosestHex(unit, hexes);
+var i, dist, tmp, hex;
+begin
+if not hexes then
+   exit;
+
+dist := 9999;
+
+for i = 1 to hexes do
+    begin
+    if GetDistUnitXY(unit, hexes[i][1], hexes[i][2]) < dist then
+       begin
+       hex := hexes[i];
+       dist := GetDistUnitXY(unit, hexes[i][1], hexes[i][2]);
+       end;
+    end;
+
+result := hex;
+End;
+
+Export Function ComAutodestruct(unit);
+var i;
+begin
+if not unit or not unit in FilterAllUnits([[f_type, unit_vehicle], [f_nation, 2]]) then
+   exit;
+
+for i = 1 to 3 do
+    MineExplosion(GetX(unit), GetY(unit), 1);
+End;
+
+Export Function AttackHovercraft(unit, enemy_unit);
+var i, j, tmp, x, y;
+begin
+if not unit or not enemy_unit or HasTask(unit) then
+   exit;
+
+x := GetX(enemy_unit);
+y := GetY(enemy_unit);
+
+if not x or not y then
+   exit;
+
+tmp := [ [ShiftX(x, 0, 4), ShiftY(y, 0, 4)],
+         [ShiftX(x, 1, 4), ShiftY(y, 1, 4)],
+         [ShiftX(x, 2, 4), ShiftY(y, 2, 4)],
+         [ShiftX(x, 3, 4), ShiftY(y, 3, 4)],
+         [ShiftX(x, 4, 4), ShiftY(y, 4, 4)],
+         [ShiftX(x, 5, 4), ShiftY(y, 5, 4)]];
+
+for i = tmp downto 1 do
+    if not ValidHex(tmp[i][1], tmp[i][2]) or HexInfo(tmp[i][1], tmp[i][2]) <> 0 then
+       tmp := Delete(tmp, i);
+
+j := GetClosestHex(unit, tmp);
+
+ComMoveXY(unit, j[1], j[2]);
+End;
+
+
+
+
+// ATTACK
+{
+   * Wywo³anie odbywa siê w oddzielnej instacji RaiseSailEvent gdzie skrypt wykonywany jest w pêtli
+     do czasu a¿ zostanie wykonane zadanie lub wszystkie jednostki atakuj¹ce zgin¹
+   * Przy odpaleniu przekazujemy argumenty z mc_attack do lokalnego tmp i czyœcimy mc_attack
+   * Po odpaleniu funkcji zbierane s¹ wszystkie dostêpne jednostki z group
+   * Po zebraniu wymaganych jednostek nastêpuje pod¹¿anie po wyznaczonej trasie:
+     * Przejazd polega na pod¹zaniu z punktu A do punktu B
+     * Po dotarciu do punktu B nastêpuje skasowanie punktu A
+     * Nastêpuje przejazd z punktu B do C
+     * Ca³a operacja wykonywana jest oddzielnie dla ka¿dej z jednostek z group
+     * Po wykryciu wroga (SEE lub DIST < 10) przejazd jest anulowany, a jednostka atakuje
+       napotkanego wroga
+     * Atak nastêpuje po wykryciu wroga
+     * Podczas ataku uzglêdniane s¹ flagi ustawieñ:
+       * mc_ignore_area - stara siê unikaæ wjazdu na dany obszar => [x, y, range]
+       * mc_capture - okreœla czy jednostki atakuj¹ce mog¹ przejmowaæ wrogie pojazdy => [bool]
+       * mc_ignore_civ - stara siê unikaæ jednostki cywilne wroga (mechanicy, naukowcy, komory trans.) => [bool]
+       * mc_murder - okreœla czy jednostki wroga maj¹ byæ dobijane => [bool]
+       * mc_mines - okreœla czy jednostki mog¹ podk³adaæ ³adunki czasowe => [bool]
+       * mc_repair - okreœla czy jednostki mog¹ wycofywaæ siê i naprawiaæ (wymaga mechanikow w group) => [bool]
+       * mc_heal - okreœla czy jednostki mog¹ wycofywaæ siê i leczyæ (wymaga naukowców w group) => [bool]
+       * mc_spacetime - okreœla czy jednostki mog¹ korzystaæ z amunicji czasoprzestrznnej (wymaga bazookerow) => [bool]
+       * mc_attack_depot - okreœla czy celem priorytetowym ma byæ magazyn w bazie wroga => [bool]
+       * mc_crawl - okreœla czy ¿o³nierze mog¹ siê czo³gaæ => [bool]
+
+     ** Stara siê ignorowaæ -> Cel nie jest priorytetowy ale mo¿e staæ siê celem ataku!
+
+   Attack
+    list => [ [ [base, group, path, flags] ] ]
+}
+Export Function Attack(list);
+var base, group, path, flags, i, j, k, x, z, tmp, tmp2, units_path,
+    f_ignore_area, f_capture, f_ignore_civ, 
+    f_murder, f_mines, f_repair, f_heal, f_spacetime, f_attack_depot,
+    f_crawl,
+    mined, bombed, attacking;
+begin                
+if not list then
+   exit;
+
+base := list[1];
+group := list[2];
+path := list[3];
+flags := list[4];
+
+mined := [];
+bombed := [];
+
+if not group or not path then
+   exit;
+
+// prepare flags
+if flags then
+   begin
+   f_ignore_area := flags[1];
+   f_capture := flags[2];
+   f_ignore_civ := flags[3];  // not implement!
+   f_murder := flags[4];
+   f_mines := flags[5];
+   f_repair := flags[6]; // not implement!
+   f_heal := flags[7]; // not implement!
+   f_spacetime := flags[8]; // not implement!
+   f_attack_depot := flags[9];
+   f_crawl := flags[10];
+   end
+  else
+   begin
+   f_ignore_area := false;
+   f_capture := false;
+   f_ignore_civ := false;
+   f_murder := false;
+   f_mines := false;
+   f_repair := false;
+   f_heal := false;
+   f_spacetime := false;
+   f_attack_depot := false;
+   f_crawl := false;
+   end;
+
+// prepare path for every unit from group
+units_path := [];
+
+for i = 1 to group do
+    begin
+    units_path := Replace(units_path, i, path);
+    end;
+
+
+// main block 
+repeat
+ for i = group downto 1 do
+    begin
+    tmp := [];
+    attacking := false;
+
+    // remove dead unit from list
+    if IsDead(group[i]) or not group[i] then
+       begin
+       group := Delete(group, i);
+       units_path := Delete(units_path, i);
+       continue;
+       end;
+
+    // scan terrain
+    if not EnemyInRange(group[i], 10) and not units_path[i] = [] then
+       begin 
+
+       // little cheat ;) Refuel if player dont see me
+       if GetEngine(group[i]) in [engine_combustion, engine_solar] then
+          if GetFuel(group[i]) < 10 and not PlayerSeeMe(group[i]) then
+             SetFuel(group[i], 12);
+
+       if units_path[i] then
+          begin
+          if GetDistUnitXY(group[i], units_path[i][1][1], units_path[i][1][2]) > 6 then
+             begin
+             if not HasTask(group[i]) then
+                ComAgressiveMove(group[i], units_path[i][1][1], units_path[i][1][2]);
+             end
+          else
+             begin
+             tmp2 := Delete(units_path[i], 1);
+             units_path := Replace(units_path, i, tmp2);
+             continue;
+             end;
+          end;
+       end
+      else // find some enemy
+       begin
+       tmp := FilterAllUnits([f_enemy, GetSide(group[i])]);
+                
+       if not tmp then
+          continue; // end here!
+
+       // f_ignore_area
+       // ignore units from flag area
+       if f_ignore_area then
+          begin
+          tmp2 := UnitFilter(tmp, [f_not, [f_distxy, f_ignore_area[1], f_ignore_area[2], f_ignore_area[3]]]);
+
+          if (tmp diff tmp2) then
+             tmp := tmp diff tmp2;
+          end;
+
+       // f_murder
+       // attack units on red hp
+       if not f_murder then
+          begin
+          tmp2 := UnitFilter(tmp, [f_not, [f_ok]]);
+
+          if (tmp diff tmp2) then
+             tmp := tmp diff tmp2;
+          end;
+
+       tmp := SortByDistanceUnit(group[i], tmp, true, true);
+
+       // check unit type
+       // soldier
+       if GetClass(group[i]) = 1 then
+          begin
+
+          if WantPlant(group[i]) then
+             continue;
+
+          if f_capture and not IsInUnit(group[i]) and tmp[1] in UnitFilter(tmp, [[f_type, unit_vehicle], [f_empty]]) then
+             begin
+             ComEnterUnit(group[i], tmp[1]);
+             attacking := true;
+             continue;
+             end;
+
+          if f_crawl and GetLives(group[i]) < 800 and not Crawls(group[i]) then
+             ComCrawl(group[i]);
+                         
+          if f_mines then
+             begin
+             if GetType(tmp[1]) = unit_building and not tmp[1] in mined then
+                begin
+                ComPlaceDelayedCharge(group[i], GetX(tmp[1]), GetY(tmp[1]), tmp[1]);
+                AddComWait(group[i], 0$2);
+                mined := Replace(mined, mined+1, tmp[1]);
+                attacking := true;
+                continue;
+                end;
+             end;
+
+          end;
+
+       // kamikaze
+       if GetClass(group[i]) = 17 then
+          begin
+          k := 3;
+
+          if tmp < k then
+             k := tmp;
+
+          for j = 1 to k do
+              begin
+              if not tmp[j] in UnitFilter(tmp, [f_empty]) then
+                 begin
+                 ComAttackUnit(group[i], tmp[j]);
+                 attacking := true;
+                 break;
+                 end;
+              end;
+          end;
+
+       // mortar or rockets
+       if GetClass(group[i]) = 8 or GetWeapon(group[i]) in [ar_rocket_launcher, ru_rocket_launcher, us_rocket_launcher, ru_rocket] then
+          begin
+          if GetBType(tmp[1]) in [b_bunker, b_breastwork, b_turret, b_armoury, b_barracks] then
+             begin
+             k := GetBuildingHexes(GetBType(tmp[1]), GetX(tmp[1]), GetY(tmp[1]), GetDir(tmp[1]), GetNation(tmp[1]), 0);
+             j := GetClosestHex(group[i], k);
+
+             if j then
+                if ValidHex(j[1], j[2]) then
+                   begin
+                   ComAttackPlace(group[i], j[1], j[2]);
+                   attacking := true;
+                   continue;
+                   end;
+             end
+            else
+             begin
+             ComAttackUnit(group[i], tmp[1]);
+             attacking := true;
+             end;
+          end;
+
+       // hovercraft
+       if GetChassis(group[i]) = ar_hovercraft then
+          begin      
+          k := 10;
+          x := 0;
+
+          if tmp < k then
+             k := tmp;
+
+          for j = k downto 1 do
+              begin
+              if GetType(tmp[j]) = unit_human then
+                 begin
+                 AttackHovercraft(group[i], tmp[j]);
+                 x := tmp[j];
+                 attacking := true;
+                 end;
+              end;  
+
+          if not x then
+             begin
+             attacking := true;
+
+             if GetHexInfo(GetX(group[i]), GetY(group[i]))[2] = GetHexInfo(GetX(tmp[1]), GetY(tmp[1]))[2] then
+                AttackHovercraft(group[i], tmp[1])
+               else
+                ComAttackUnit(group[i], tmp[1]);
+             end;
+          end;
+
+       // self propelled bomb
+       if GetWeapon(group[i]) = ar_selfpropelled_bomb then
+          begin
+
+          if WantsToAttack(group[i]) in bombed then
+             continue;
+
+          k := 8;
+          x := 0;
+
+          if tmp < k then
+             k := tmp;
+
+          for j = 1 to k do
+              begin
+              if GetType(tmp[j]) = unit_building then
+                 if not tmp[j] in bombed and UnitsInside(tmp[j]) then
+                    begin
+                    ComAttackUnit(group[i], tmp[j]);
+                    bombed := Replace(bombed, bombed+1, tmp[j]);
+                    break;
+                    end;
+              end;
+
+          attacking := true;
+
+          if GetLives(group[i]) < 500 then
+             ComAttackUnit(group[i], tmp[1]);
+          end;
+
+
+       // autodestruction
+       if GetLives(group[i]) < 250 and group[i] in FilterAllUnits([[f_type, unit_vehicle], [f_nation, 2]]) then
+          begin
+          k := NearestUnitToUnit(all_units diff group[i], group[i]);
+
+          if not k then
+             continue;
+
+          if k in FilterAllUnits([f_enemy, GetSide(group[i])]) and GetDistUnits(k, group[i]) < 5 then
+             ComAutodestruct(group[i]);
+          end; 
+          
+       if f_attack_depot then
+          begin
+          k := 6;
+
+          if tmp < k then
+             k := tmp;
+
+          for j = 1 to k do
+              if GetBType(j) in [b_depot, b_warehouse] then
+                 begin
+                 ComAttackUnit(group[i], tmp[j]);
+                 attacking := true;
+                 break;
+                 end;
+          end;
+
+       // others..
+       if IsOk(group[i]) and not attacking then
+          begin
+          k := 8;
+          x := 0;
+
+          if tmp < k then
+             k := tmp;
+
+          for j = 1 to k do
+              if GetType(tmp[j]) = unit_human and ((GetLives(tmp[j]) < 250 and f_murder) or (not f_murder and GetLives(tmp[j]) >= 250)) then
+                 begin
+                 x := tmp[j];
+                 break;
+                 end;
+
+          if x then
+             ComAttackUnit(group[i], x)
+            else
+             ComAttackUnit(group[i], tmp[1]);
+          end;
+    end;
+
+ end;
+
+ wait(0$1);
+until group = [];
+
 End;
 
 

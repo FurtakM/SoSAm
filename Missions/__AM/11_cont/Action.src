@@ -1,4 +1,155 @@
 Export Function Action;
+var tmp, p, radar, sols, i;
 begin
+InGameOn;
+CenterNowOnUnits(JMM);
 
+tmp := FilterAllUnits([[f_side, 1], [f_class, 1]]);
+radar := FilterAllUnits([[f_side, 1], [f_weapon, us_radar]])[1];
+
+for i = 1 to tmp do
+    begin
+    if i = 5 then
+       break;
+    sols := Replace(sols, i, tmp[i]);
+    end;
+
+tmp := ar_force_tmp;
+
+PlaceUnitXY(tmp[1], 108, 139, false);
+ComTurnUnit(tmp[1], JMM);
+
+PlaceUnitXY(tmp[2], 114, 132, false);
+PlaceUnitXY(tmp[3], 115, 132, false);
+
+ComHold([tmp[2], tmp[3]]);
+
+// action!
+ComMoveXY(radar, 83, 123);
+
+Wait(0$01);
+
+CenterOnXY(90, 144);
+
+ComMoveXY(sols, 88, 129);
+
+p := [ [92, 131], [88, 127], [91, 132], [92, 134] ];
+
+for i = 1 to sols do
+    begin
+    AddComMoveXY(sols[i], p[i][1], p[i][2]);
+    AddComCrawl(sols[i]);
+    AddComHold(sols);
+    end;
+
+repeat
+ wait(0$1);
+until GetDistUnitXY(sols[1], 92, 131) < 4;
+
+CenterOnXY(96, 139);
+
+wait(0$3);
+
+PlaceSeeing(111, 135, 1, -25);
+
+ComMoveXY(tmp[2], GetX(tmp[1])+3, GetY(tmp[1]));
+ComEnterUnit(tmp[3], ar_dep_s);
+
+AddComTurnUnit(tmp[2], tmp[1]);
+
+repeat
+ wait(0$1);
+until GetDistUnits(tmp[1], tmp[2]) < 5;
+
+ComTurnUnit(tmp[1], tmp[2]);
+
+// czeœæ, problemy z prostat¹?
+Say(tmp[1], 'D1a-Merc1-1');
+// (hmm) - "langu faszysta" - powiedzia³a ³ódzka dziewucha
+Say(tmp[2], 'D1a-FMerc2-1');
+
+ComHeal(tmp[2], tmp[1]);
+SetLives(tmp[1], 500);
+
+wait(0$2);
+
+// upada na ziemie po otrzymaniu wiadomoœci o aresztowaniu stonogi
+SetLives(tmp[1], 4);
+
+wait(0$0.3);
+ForceSay(tmp[1], 'D1a-Merc1-2');
+wait(0$0.3);
+
+KillUnit(tmp[1]);
+
+ComMoveToArea(tmp[2], escape_area);
+
+// fiufiufiu
+Say(tmp[2], 'D1a-FMerc2-2');
+
+wait(0$1);
+
+CenterOnUnits(ar_dep_s);
+
+wait(0$2);
+
+ForceSay(Saliba, 'D1a-Saliba-1');
+KillUnit(Saliba);
+
+ComExitBuilding(tmp[3]);
+
+InGameOff; // game start now!
+
+CenterOnUnits(JMM);
+
+ChangeMissionObjectives('M1');
+
+SaveForQuickRestart;
+
+ar_run := true;
+End;
+
+// ar run to south
+Every 0$2 trigger ar_run do
+var i, tmp, k;
+begin
+tmp := ar_force_tmp ^ UnitFilter(ar_force_south, [f_type, unit_human]);
+
+SetSide(tmp, 5);
+
+ChangeSideFog(5, 1);
+
+k := 1;
+for i in tmp do
+    begin
+    if IsInUnit(i) then
+       ComExitBuilding(i);
+
+    if GetClass(i) = 3 then
+       begin
+       AddComEnterUnit(i, ar_vehicles_tmp[k]);
+       k := k + 1;
+       end;
+
+    AddComMoveToArea(i, escape_area);
+    end;
+
+repeat
+ wait(0$0.3);
+
+ for i in tmp do
+     if not HasTask(i) then
+        ComMoveToArea(i, escape_area);
+
+ k := FilterUnitsInArea(escape_area, [f_side, 5]);
+
+ if k then
+    for i in k do
+        begin
+        RemoveUnit(i);
+        tmp := tmp diff i;
+        end;
+until not tmp;
+
+ar_patrol := true;
 End;

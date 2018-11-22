@@ -14,22 +14,27 @@ InitMacro;
 if debug then
    FogOff(1);
 
-//PrepareAmerican;
+PrepareAmerican;
 PrepareArabian;
 
-RunMacro;
+Action;
 
-Debuger;
+RunMacro;
+// Debuger;
 End;
 
 Export debug, game;
 Export mission_prefix, mission_prefix_prev;
+Export ar_run, base_captured, ar_patrol;
 Function InitVariables;
 begin
 debug := true;
 game := true;
 mission_prefix := '11_';
 mission_prefix_prev := '10c_';
+ar_run := false;
+ar_patrol := false;
+base_captured := false;
 End;
 
 Function Debuger;
@@ -50,4 +55,26 @@ vc_weapon := us_rocket_launcher;
 
 for i = 1 to 4 do
     PlaceUnitXYR(CreateVehicle, 137, 91, 6, false);
+
+SetSide(ar_force_south, 1);
 End;
+
+{
+Every 0$5 do
+begin
+MC_SetProduceList(1, [ [ar_hovercraft, engine_combustion, control_remote, ar_double_machine_gun],
+                       [ar_half_tracked, engine_combustion, control_remote, ar_gatling_gun],
+                       [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+                       [ar_half_tracked, engine_combustion, control_remote, ar_selfpropelled_bomb]
+                     ]);
+
+repeat
+ wait(0$1);
+until mc_vehicles[1] >= 4;
+
+{
+   f_ignore_area f_capture f_ignore_civ f_murder f_mines
+   f_repair f_heal f_spacetime f_attack_depot f_crawl
+}
+{MC_PrepareAttack(1, mc_vehicles[1], [ [96,38], [57,7], [55,72] ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+End; }

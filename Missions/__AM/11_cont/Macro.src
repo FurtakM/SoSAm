@@ -83,6 +83,7 @@ RaiseSailEvent(106); // mc_plant_mines
 RaiseSailEvent(107); // mc_collect_crates
 RaiseSailEvent(108); // mc_remote_link
 RaiseSailEvent(109); // mc_produce_vehicle
+RaiseSailEvent(110); // mc_attack
 RaiseSailEvent(200); // mc_idle
 End;
 
@@ -130,6 +131,9 @@ if event = 108 then
 // produce vehicle
 if event = 109 then
    MC_ProduceVehicle();
+// send attack
+if event = 110 then
+   MC_SendAttack();
 
 
 
@@ -695,6 +699,25 @@ for i = 1 to mc_bases do
 
 End;
 
+Export Function MC_SendAttack();
+var i, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    if mc_attack[i] then
+       begin
+       tmp := mc_attack[i][1];
+       mc_attack := Replace(mc_attack, i, []);
+
+       Attack(tmp);
+       exit;
+       end;
+    end;
+End;
+
 Export Function MC_Back(base_unit_list, unit, class);
 var i, j, tmp;
 begin
@@ -792,19 +815,11 @@ if not mc_bases[base] then
 mc_produce := Replace(mc_produce, base, produce_list);
 End;
 
-Export Function MC_PrepareAttack(base, group, enemy, conditons);
-var i, j, tmp;
-begin
-if not mc_bases[base] then
-   exit;
-
 {
    * Wywo³anie odbywa siê w oddzielnej instacji RaiseSailEvent gdzie skrypt wykonywany jest w pêtli
      do czasu a¿ zostanie wykonane zadanie lub wszystkie jednostki atakuj¹ce zgin¹
    * Przy odpaleniu przekazujemy argumenty z mc_attack do lokalnego tmp i czyœcimy mc_attack
    * Po odpaleniu funkcji zbierane s¹ wszystkie dostêpne jednostki z group
-   * Je¿eli nie mo¿na wype³niæ group wówczas wysy³a polecenie produkcji
-     brakuj¹cych pojazdów, olewa jednostki ¿ywe
    * Po zebraniu wymaganych jednostek nastêpuje pod¹¿anie po wyznaczonej trasie:
      * Przejazd polega na pod¹zaniu z punktu A do punktu B
      * Po dotarciu do punktu B nastêpuje skasowanie punktu A
@@ -828,14 +843,15 @@ if not mc_bases[base] then
 
      ** Stara siê ignorowaæ -> Cel nie jest priorytetowy ale mo¿e staæ siê celem ataku!
 
-   mc_attack [ [ [group, path, flags] ] ]
+   mc_attack [ [ [base, group, path, flags] ] ]
+}     
+Export Function MC_PrepareAttack(base, group, path, flags);
+var i, j, tmp;
+begin
+if not mc_bases[base] then
+   exit;
 
-   flags:
-   - mc_ignore_area
-   - mc_capture
-   - mc_ignore_civ
-   - mc_ignore_empty
-}
+mc_attack := Add(mc_attack, [base, mc_attack[base]+1], [base, group, path, flags]);
 End;
 
 // Getter's

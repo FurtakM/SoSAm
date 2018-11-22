@@ -28,22 +28,37 @@ begin
 end;
 
 
+Export d;
 Every 0$01 do
 var un, un2;
 begin
-uc_side := 0;
-uc_nation := 0;
+uc_side := 1;
+uc_nation := 2;
 
 hc_class := 1;
 hc_gallery := '';
 un := CreateHuman;
-un2 := CreateHuman;
+d := CreateHuman;
 PlaceUnitXY(un, 192,25, false);
-PlaceUnitXY(un2, 190, 25, false);
+PlaceUnitXY(d, 190, 25, false);
+End;
 
-SetTag(un, 0);
+Every 0$01 do
+begin
+enable;
+display_strings := WantPlant(d);
+End;
 
-display_strings := [not GetTag(un), not GetTag(un2)];
+Export Function WantPlant(unit);
+var task;
+begin
+result := false;
+
+task := GetTaskList(unit);
+
+if task then
+   if task[1][1] = 'p' then
+      result := true;
 End;
 
 
