@@ -19,6 +19,33 @@ vc_weapon := weapon;
 vc_fuel_battery := fuel;
 End;
 
+Export Function CanSayRand(side);
+begin
+result := FilterAllUnits([[f_side, side], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+End;
+
+Export Function SayRand(sex, dial);
+begin
+result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+
+if not result then
+   exit;
+
+result := result[1];
+Say(result, dial);
+End;
+
+Export Function SayRand2(sex, dial, filter);
+begin
+result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi]^filter;
+
+if not result then
+   exit;
+
+result := result[1];
+Say(result, dial);
+End;
+
 Export Function WantPlant(unit);
 var task;
 begin
@@ -1187,7 +1214,7 @@ repeat
 
        // check unit type
        // soldier
-       if GetClass(group[i]) = 1 then
+       {if GetClass(group[i]) = 1 then
           begin
 
           if WantPlant(group[i]) then
@@ -1215,12 +1242,13 @@ repeat
                 end;
              end;
 
-          end;
-
+          end;}
+                
        // kamikaze
        if GetClass(group[i]) = 17 then
           begin
-          k := 3;
+          attacking := false;
+          k := 5;
 
           if tmp < k then
              k := tmp;
@@ -1231,7 +1259,7 @@ repeat
                  begin
                  ComAttackUnit(group[i], tmp[j]);
                  attacking := true;
-                 break;
+                 continue;
                  end;
               end;
           end;
@@ -1239,6 +1267,8 @@ repeat
        // mortar or rockets
        if GetClass(group[i]) = 8 or GetWeapon(group[i]) in [ar_rocket_launcher, ru_rocket_launcher, us_rocket_launcher, ru_rocket] then
           begin
+          attacking := false;
+
           if GetBType(tmp[1]) in [b_bunker, b_breastwork, b_turret, b_armoury, b_barracks] then
              begin
              k := GetBuildingHexes(GetBType(tmp[1]), GetX(tmp[1]), GetY(tmp[1]), GetDir(tmp[1]), GetNation(tmp[1]), 0);
@@ -1251,11 +1281,6 @@ repeat
                    attacking := true;
                    continue;
                    end;
-             end
-            else
-             begin
-             ComAttackUnit(group[i], tmp[1]);
-             attacking := true;
              end;
           end;
 

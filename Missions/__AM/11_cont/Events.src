@@ -1,6 +1,28 @@
+On ArtifactLoaded(cargo, artifact) do
+begin
+if GetSide(cargo) = 1 then
+   artifact_get := true;
+if GetSide(cargo) = 2 then
+   begin
+   artifact_get := false;
+   artifact_stolen := true;
+   end;
+
+artifact_oncargo := true;
+End;
+
+On ArtifactUnloaded(cargo, artifact) do
+begin
+artifact_oncargo := false;
+End;
+
+
 On UnitDestroyed(un) do
 var i, j, btype, pos, tmp;
 begin
+
+if un in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]) then
+   loses_counter := loses_counter + 1;
 
 if un in FilterAllUnits([f_type, unit_building]) then
    begin
@@ -120,6 +142,9 @@ repeat
  wait(0$1);
 until GetResourceAmountXY(x, y);
 
+if GetResourceTypeXY(x, y) = mat_artefact then
+   exit;
+
 for i = 1 to mc_bases do
     begin     
     depot := UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
@@ -150,4 +175,10 @@ for i = 1 to mc_bases do
        exit;
        end;
     end;
+End;
+
+On UnitKamikazed(unit) do
+begin
+if not kamikazed then
+   kamikazed := unit;
 End;

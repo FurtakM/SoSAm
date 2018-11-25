@@ -1,7 +1,18 @@
 Export JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
        Gladstone, Houten, Powell, Cornel, Gary, Frank, Kikuchi;
+Export us_team;
+
+{
+  W tym miejscu powinno wczytywaæ wszystkie postacie jakiekolwiek
+  wystapi³y do tej pory w kampanii. W kolejnych misjach u¿ywaæ
+  save'ów z tej misji!
+  - 11_others - postacie drugoplanowe nie wybrane do tej misji.
+  - 11c_others - postacie drugoplanowe wybrane do tej misji.
+  - 11_IdentPostaci - postacie pierwszoplanowe
+}
+
 Export Function PrepareAmerican;
-var i, k, un, tmp, selected, vehs, veh;
+var i, k, un, tmp, selected, vehs, veh, others;
 begin
 uc_side := 4;
 uc_nation := 1;
@@ -54,6 +65,14 @@ selected := CharacterSelection('1', 12, 12,
                                 [sel_dont_change_class, sel_not_changeable, Powell],
                                 [[class_soldier, 4], [class_engineer, 1], [class_mechanic, 0, 5], [class_scientistic, 0, 3], [class_sniper, 0, 2]]);
 
+// save others xd
+others := tmp diff selected;
+others := tmp diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+
+if others then
+   SaveCharacters(others, '11_others');
+
+us_team := tmp;
 
 vehs := [ [us_medium_tracked, engine_combustion, control_manual, us_gatling_gun],
           [us_medium_wheeled, engine_solar, control_manual, us_double_gun],
