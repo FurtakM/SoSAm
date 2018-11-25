@@ -1,5 +1,5 @@
 Export ar_force_west, ar_force_south, ar_force_north, ar_force_east;
-Export ar_force_tmp, ar_vehicles_tmp;
+Export ar_force_tmp, ar_vehicles_tmp, ar_kamikadze;
 Export Saliba;
 
 Export Function PrepareArabian;
@@ -29,7 +29,7 @@ for i = 1 to 3 do
     PlaceHumanInUnit(CreateHuman, un);
     end;
 
-ar_force_north := PrepareBase(ar_dep_n, 'dammam', skill, [3000, 500, 300], [-1, -1, -1, 4]);
+ar_force_north := PrepareBase(ar_dep_n, 'dammam', skill, [10000, 1000, 300], [-1, -1, -1, 4]);
 ar_force_north := ar_force_north ^ PrepareBase(ar_dep_n2, '', skill, [100, 60, 0], [-1, 4, 0, 0]);
 ar_force_west := PrepareBase(ar_dep_w, 'jeddah', skill, [700, 300, 10], [-1, 5, 0, 2]);
 ar_force_south := PrepareBase(ar_dep_s, 'riyadh', skill, [500, 60, 0], [4, 2, 3, 1]);
@@ -55,6 +55,46 @@ for i in FilterAllUnits([[f_side, 2], [f_btype, b_breastwork], [f_empty]]) do
     SetDir(un, d);
     PlaceHumanInUnit(un, i);
     end;
+
+if Difficulty > 1 then
+   begin
+   ar_kamikadze := [];
+
+   PrepareHuman(false, 1, skill);
+   un := CreateHuman;
+   SetDir(un, 3);
+   PlaceUnitXY(un, 23, 44, false);
+   ComCrawl(un);
+
+   un := CreateHuman;
+   SetDir(un, 3);
+   PlaceUnitXY(un, 30, 39, false);
+   ComCrawl(un);
+
+   PrepareHuman(false, 17, skill);
+   un := CreateHuman;
+   SetDir(un, 3);
+   PlaceUnitXY(un, 45, 86, false);
+   ComHold(un);
+
+   ar_kamikadze := Replace(ar_kamikadze, ar_kamikadze+1, un);
+
+   un := CreateHuman;
+   SetDir(un, 3);
+   PlaceUnitXY(un, 60, 85, false);
+   ComHold(un); 
+   
+   ar_kamikadze := Replace(ar_kamikadze, ar_kamikadze+1, un);
+
+   un := CreateHuman;
+   SetDir(un, 3);
+   PlaceUnitXY(un, 222, 166, false);
+   ComHold(un);
+
+   ar_kamikadze := Replace(ar_kamikadze, ar_kamikadze+1, un);
+   end;
+
+
 
 ar_force_tmp := [];
 
@@ -102,4 +142,226 @@ for i = 1 to 4 do
     end;
 
 InitHc;
+
+
+// artifact
+CreateResourcesXY(mat_artifact, 5, 10, 5, false);
+End;
+
+Every 0$1 trigger ar_kamikadze do
+var i;
+begin
+enable;
+
+for i in ar_kamikadze do
+    if See(1, i) then
+       ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_side, 1]), i));
+End;
+
+
+
+// Try to stole artifact
+Every 5$20 trigger artifact_get do
+var i, cargo, tmp, pos;
+begin
+repeat
+ wait(0$1);
+until MC_GetProduceList(1) = 0;
+
+MC_SetProduceList(1, [ [ar_half_tracked, engine_siberite, control_remote, ar_cargo_bay] ]);
+
+repeat
+ wait(0$1);
+until UnitFilter(mc_vehicles[1], [[f_control, control_remote], [f_weapon, ar_cargo_bay]]);
+
+cargo := UnitFilter(mc_vehicles[1], [[f_control, control_remote], [f_weapon, ar_cargo_bay]])[1];
+
+// scan artifact pos
+pos := FindArtifact(5);
+
+repeat
+ wait(0$1);
+ pos := FindArtifact(5);
+ tmp := 100;
+
+ if pos then
+    tmp := DangerAtRangeXY(2, pos[1], pos[2], 20)[4];
+until pos and not artifact_oncargo and tmp < 10;
+
+ComGet(cargo, pos[1], pos[2]);
+AddComMoveXY(cargo,  198, 113);
+AddComMoveXY(cargo, 124, 7);
+End;
+
+
+
+// Escape!!
+Every 12$00 do   // TODO  + Zwierzta
+begin
+
+End;
+
+
+// ATTACKS
+// First attempt
+// Attacks from 3 side's
+Every 5$00 trigger base_captured do
+var i, un, tmp, skill, coords, flags, w, list;
+begin
+skill := [5, 6, 7][Difficulty];
+coords := [];
+flags := [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+MC_SetProduceList(1, [ [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+                       [ar_half_tracked, engine_combustion, control_remote, ar_gatling_gun],
+                       [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+                       [ar_half_tracked, engine_combustion, control_remote, ar_selfpropelled_bomb]
+                     ]);
+
+// wait until jakes get rage
+wait([9$00, 8$00, 7$20][Difficulty]);
+
+
+InitHc;
+InitUc;
+
+uc_side := 2;
+uc_nation := 2;
+
+// attack from North
+tmp := mc_vehicles[1] diff FilterAllUnits([f_weapon, ar_cargo_bay]);
+
+for i = 1 to Difficulty do
+    begin
+    PrepareVehicle(ar_medium_trike, engine_siberite, control_apeman, ar_selfpropelled_bomb, 100);
+    tmp := Replace(tmp, tmp+1, CreateVehicle);
+    SetDir(tmp[tmp], 3);
+    PlaceUnitArea(tmp[tmp], north_attack_spawn, false);
+    ComMoveXY(tmp[tmp], 51, 10);
+    wait(0$2);
+    end;
+
+coords := [ [51,24], [75,90] ];
+MC_PrepareAttack(1, tmp, coords, flags);
+
+tmp := [];
+
+// attack from West
+// kamikaze
+for i = 1 to [2,3,3][Difficulty] do
+    begin
+    PrepareHuman(false, 17, skill);
+    un := CreateHuman;
+    tmp := Replace(tmp, tmp+1, un);
+    PlaceUnitArea(un, west_attack_spawn, false);
+    end;
+
+// mortar
+for i = 1 to [3,4,4][Difficulty] do
+    begin
+    PrepareHuman(false, [1,8][rand(1,2)], skill);
+    un := CreateHuman;
+    tmp := Replace(tmp, tmp+1, un);
+    PlaceUnitArea(un, west_attack_spawn, false);
+    end;
+
+coords := [ [51,24], [75,90] ];
+MC_PrepareAttack(1, tmp, coords, flags);
+
+
+// attack from South
+tmp := [];
+
+// kamikadze
+for i = 1 to [1,2,3][Difficulty] do
+    begin
+    PrepareHuman(false, 17, skill);
+    un := CreateHuman;
+    tmp := Replace(tmp, tmp+1, un);
+    PlaceUnitArea(un, south_attack_spawn, false);
+    end;
+
+coords := [ [148,158], [148,158] ];
+MC_PrepareAttack(1, tmp, coords, flags);
+
+// attack from East
+tmp := [];
+
+for i = 1 to [3, 4, 5][Difficulty] do
+    begin
+    PrepareVehicle(ar_half_tracked, engine_siberite, [control_manual, control_apeman][rand(1,2)], [ar_gun, ar_flame_thrower, ar_rocket_launcher][rand(1,3)], 100);
+    tmp := Replace(tmp, tmp+1, CreateVehicle);
+    SetDir(tmp[tmp], 5);
+    PlaceUnitArea(tmp[tmp], east_attack_spawn, false);
+
+    if GetControl(tmp[tmp]) = control_manual then
+       begin
+       PrepareHuman(false, 3, skill);
+       PlaceHumanInUnit(CreateHuman, tmp[tmp]);
+       end;
+
+    ComMoveXY(tmp[tmp], 179, 135);
+    wait(0$2);
+    end;
+
+vc_chassis := 15;
+tmp := Replace(tmp, tmp+1, CreateVehicle);
+PlaceUnitArea(tmp[tmp], east_attack_spawn, false);
+
+PrepareHuman(false, class_desert_warior, skill);
+tmp := Replace(tmp, tmp+1, CreateHuman);
+PlaceHumanInUnit(tmp[tmp], tmp[tmp-1]);
+
+coords := [ [148, 140] ];
+MC_PrepareAttack(1, tmp, coords, flags);
+
+
+Wait(10$00);
+
+w := 1;
+
+repeat
+  tmp := [];
+
+  if w mod 4 = 0 then
+     list := [ [ar_hovercraft, engine_combustion, control_remote, ar_gun],
+               [ar_hovercraft, engine_combustion, control_remote, ar_gun],
+               [ar_hovercraft, engine_combustion, control_remote, ar_gun],
+               [ar_hovercraft, engine_combustion, control_remote, ar_gun]
+             ]
+  else
+  list := [ [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+            [ar_half_tracked, engine_combustion, control_remote, ar_gatling_gun],
+            [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+            [ar_half_tracked, engine_combustion, control_remote, ar_selfpropelled_bomb]
+          ];
+
+  if w mod 3 = 0 then
+     list := Add(list, [1, list[i]+1], [ar_half_tracked, engine_combustion, control_remote, [ar_gatling_gun, ar_rocket_launcher][rand(1,2)]]);
+
+  MC_SetProduceList(1, list);
+
+  repeat
+   wait(0$1);
+  until UnitFilter(mc_vehicles[1], [f_not, [f_weapon, ar_cargo_bay]]) >= 4;
+
+  wait(0$10);
+
+  tmp := UnitFilter(mc_vehicles[1], [f_not, [f_weapon, ar_cargo_bay]]);
+
+  if Prob(100) < 50 then
+     coords := [ [51,24], [75,90] ]
+  else
+     coords := [ [128,94], [180,135] ];
+
+  if w mod 4 = 0 then
+     coords := [ [91,58], [117,107] ];
+
+  MC_PrepareAttack(1, tmp, coords, flags);
+
+  wait(rand(9$30, 12$30));
+  w := w + 1;
+
+until IsDead(ar_dep_n);
+
 End;

@@ -1,6 +1,5 @@
 // Mission 11 by Serpent
 // 12-10-2018
-// I lecimy yolo!
 
 
 Starting
@@ -20,21 +19,30 @@ PrepareArabian;
 Action;
 
 RunMacro;
-// Debuger;
 End;
 
 Export debug, game;
 Export mission_prefix, mission_prefix_prev;
-Export ar_run, base_captured, ar_patrol;
+Export ar_run, base_captured, ar_patrol, us_scout, seen, kamikazed,
+       artifact_stolen, artifact_get, artifact_oncargo, game_time, powell_warn, loses_counter;
 Function InitVariables;
 begin
-debug := true;
+debug := false;
 game := true;
 mission_prefix := '11_';
 mission_prefix_prev := '10c_';
 ar_run := false;
 ar_patrol := false;
 base_captured := false;
+us_scout := 0;
+seen := [0, 0, 0, 0, 0];
+kamikazed := false;
+artifact_stolen := false;
+artifact_get := false;
+game_time := [90$00, 80$00, 75$00][Difficulty];
+powell_warn := false;
+loses_counter := 0;
+artifact_oncargo := false;
 End;
 
 Function Debuger;
@@ -58,23 +66,3 @@ for i = 1 to 4 do
 
 SetSide(ar_force_south, 1);
 End;
-
-{
-Every 0$5 do
-begin
-MC_SetProduceList(1, [ [ar_hovercraft, engine_combustion, control_remote, ar_double_machine_gun],
-                       [ar_half_tracked, engine_combustion, control_remote, ar_gatling_gun],
-                       [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
-                       [ar_half_tracked, engine_combustion, control_remote, ar_selfpropelled_bomb]
-                     ]);
-
-repeat
- wait(0$1);
-until mc_vehicles[1] >= 4;
-
-{
-   f_ignore_area f_capture f_ignore_civ f_murder f_mines
-   f_repair f_heal f_spacetime f_attack_depot f_crawl
-}
-{MC_PrepareAttack(1, mc_vehicles[1], [ [96,38], [57,7], [55,72] ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-End; }
