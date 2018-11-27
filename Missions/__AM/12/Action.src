@@ -4,17 +4,20 @@ var i;
 begin
     TeleportExit(ruteleprt, 117, 131);
     TeleportExit(rutp, 84, 61);
-    CenterNowOnUnits(JMM);
-   // InGameOn;
+    CenterNowOnUnits(IsInUnit(JMM));
+    InGameOn;
 
    ComMoveXY(FilterAllUnits([f_side, 1]), 130, 102);
    AddComMoveXY(i, 114, 102);
 
     Say(JMM, 'D1-JMM-1');
-    Say(Donaldson, 'D1-Don-1');
-    Say(JMM, 'D1-JMM-2');
-    Say(Donaldson, 'D1-Don-2');
 
+    if IsOk(Donaldson) then
+    begin
+      Say(Donaldson, 'D1-Don-1');
+      Say(JMM, 'D1-JMM-2');
+      Say(Donaldson, 'D1-Don-2');
+    end;
     AddComMoveXY(FilterAllUnits([f_side, 1]), 104, 96);
 
 end;
@@ -23,8 +26,8 @@ end;
 Every 0$1 trigger SeeXY(1, 101, 92) do
 var i;
 begin
-    CenterOnXY(90, 70);
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D1-Sol1-2', '');
+    CenterOnXY(99, 89);
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff JMM), 'D1-Sol1-2', '');
     Say(JMM, 'D1-JMM-3');
     ChangeMissionObjectives('M1');
 
@@ -60,6 +63,7 @@ begin
 
             Say(JMM, 'D1a-JMM-2');
             wait(0$10);
+            CenterNowOnUnits(IsInUnit(JMM));
             Say(Donaldson, 'D1b-Don-1');
             Say(JMM, 'D1b-JMM-1');
             DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D1b-Sol1-1', '');
@@ -96,6 +100,7 @@ begin
             if dec = 3 then secondPass = 1;
 
             InGameOff;
+            ruAI = 1;
             exit;
 
                 
@@ -127,94 +132,410 @@ begin
 end;
 
 // Kurt
-Every 4$30 trigger secondPass = 2 do 
-var dec1, dec2;
+Every 4$30 trigger secondPass = 2 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) > 0 do
+var i, dec1, dec2, tmp, tmp2, crates, oil, siberite;
 begin
+
+    tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+    for i in tmp do crates = crates + GetResourceType(GetBase(i), 1);
+    for i in tmp do oil = oil + GetResourceType(GetBase(i), 2);
+    for i in tmp do siberite = siberite + GetResourceType(GetBase(i), 3);
+
     PrepareKurt;
-    DialogueOn;
+    ComMoveXY(KurtVeh, 144, 111);
+    wait(0$2);
 
-    Say(Kurt, 'D3-Kurt-1');
-    Say(JMM, 'D3-JMM-1');
-    Say(Kurt, 'D3-Kurt-2');
-    Say(JMM, 'D3-JMM-2');
-    Say(Kurt, 'D3-Kurt-4');
-    Say(JMM, 'D3-JMM-4');
-    Say(Kurt, 'D3-Kurt-5');
-    Say(Kurt, 'D3-Kurt-5a');
-    Say(Kurt, 'D3-Kurt-5b');
-    
-    dec1 = ShowQuery4;
-
-    if dec1 = 1 then
+    if kurtStatus > 0 then
     begin
-        Say(JMM, 'D3Ka-JMM-1');
-        Say(Kurt, 'D3Ka-Kurt-1');
-        warWithLegion = 1;
-    end;
-
-    if dec1 = 2 then
-    begin
-        Say(JMM, 'D3Kb-JMM-1');
-        Say(Kurt, 'D3Kb-Kurt-1');
-    end;
-
-    if dec1 = 3 then
-    begin
-        Say(JMM, 'D3Kc1-JMM-1');
-        Say(Kurt, 'D3Kc1-Kurt-1');
-        Say(JMM, 'D3Kc1-JMM-2');
-        Say(Kurt, 'D3Kc1-Kurt-2');
-        askSiberite = 1;
-        dec2 = ShowQuery7;
         
-        if dec2 = 1 then
-        begin
-            Say(JMM, 'D4a-JMM-1');
-            Say(Kurt, 'D4b-Kurt-1');
-            warWithLegion = 1;
-        end; 
+        DialogueOn;
+        ComExitVehicle(Kurt);
+        CenterNowOnUnits(Kurt);
 
-        if dec2 = 2 then
+        Say(Kurt, 'D3-Kurt-1');
+        Say(JMM, 'D3-JMM-1');
+        Say(Kurt, 'D3-Kurt-2');
+        Say(JMM, 'D3-JMM-2');
+        Say(Kurt, 'D3-Kurt-4');
+        Say(JMM, 'D3-JMM-4');
+        Say(Kurt, 'D3-Kurt-5');
+        Say(Kurt, 'D3-Kurt-5a');
+        Say(Kurt, 'D3-Kurt-5b');
+        
+        if crates >= 60 and siberite >= 60 then dec1 = SelectiveQuery('Q2K', [1, 2, 3, 4])
+        else dec1 = SelectiveQuery('Q2K', [3, 4]);
+
+        if dec1 = 1 then
         begin
-            Say(JMM, 'D4b-JMM-1');
-            Say(Kurt, 'D4b-Kurt-1');
+            Say(JMM, 'D3Ka-JMM-1');
+            Say(Kurt, 'D3Ka-Kurt-1');
             warWithLegion = 1;
         end;
 
-        if dec2 = 3 then
+        if dec1 = 2 then
         begin
-            Say(JMM, 'D4c-JMM-1');
-            Say(Kurt, 'D4c-Kurt-1');
-            Say(JMM, 'D4c-JMM-2');
-            Say(Kurt, 'D4c-Kurt-2');
-            fakeInfo = 1;
+            Say(JMM, 'D3Kb-JMM-1');
+            Say(Kurt, 'D3Kb-Kurt-1');
+
+            for i in tmp do
+            begin
+                tmp2 = GetResourceType(GetBase(tmp), 1);
+                if tmp2 >= 60 then
+                begin
+                    SetResourceType(GetBase(tmp), 1, tmp2 - 60);
+                    break;
+                end else begin
+                    SetResourceType(GetBase(tmp), 1, 0);
+                end;
+            end;
+
+            for i in tmp do
+            begin
+                tmp2 = GetResourceType(GetBase(tmp), 3);
+                if tmp2 >= 60 then
+                begin
+                    SetResourceType(GetBase(tmp), 3, tmp2 - 60);
+                    break;
+                end else begin
+                    SetResourceType(GetBase(tmp), 3, 0);
+                end;
+            end;
+
         end;
 
-    end;
+        if dec1 = 3 then
+        begin
+            Say(JMM, 'D3Kc1-JMM-1');
+            Say(Kurt, 'D3Kc1-Kurt-1');
+            Say(JMM, 'D3Kc1-JMM-2');
+            Say(Kurt, 'D3Kc1-Kurt-2');
+            askSiberite = 1;
+            
+            dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+            
+            if dec2 = 1 then
+            begin
+                Say(JMM, 'D4a-JMM-1');
+                Say(Kurt, 'D4b-Kurt-1');
+                warWithLegion = 1;
+            end; 
 
-    if dec1 = 4 then
+            if dec2 = 2 then
+            begin
+                Say(JMM, 'D4b-JMM-1');
+                Say(Kurt, 'D4b-Kurt-1');
+                warWithLegion = 1;
+            end;
+
+            if dec2 = 3 then
+            begin
+                Say(JMM, 'D4c-JMM-1');
+                Say(Kurt, 'D4c-Kurt-1');
+                Say(JMM, 'D4c-JMM-2');
+                Say(Kurt, 'D4c-Kurt-2');
+                fakeInfo = 1;
+            end;
+
+        end;
+
+        if dec1 = 4 then
+        begin
+            Say(JMM, 'D3Kd-JMM-1');
+
+            if crates >= 120 and siberite >= 120 then dec2 = SelectiveQuery('Q2aK', [1, 2, 3, 4])
+            else dec2 = SelectiveQuery('Q2K', [1, 4]);
+
+            if dec2 = 1 then
+            begin
+                Say(JMM, 'D5Ka-JMM-1');
+                Say(Kurt, 'D5Ka-Kurt-1');
+                warWithLegion = 1;
+            end;   
+
+            if dec2 = 2 then
+            begin
+                Say(JMM, 'D3Kb-JMM-1');
+                Say(Kurt, 'D3Kb-Kurt-1');
+            end;
+
+            if dec2 = 3 then
+            begin
+                Say(JMM, 'D3Ke-JMM-1');
+                Say(Kurt, 'D3Ke-Kurt-1');
+                PrepareLegionForPlayer;
+
+                for i in tmp do
+                begin
+                    tmp2 = GetResourceType(GetBase(tmp), 1);
+                    if tmp2 >= 120 then
+                    begin
+                        SetResourceType(GetBase(tmp), 1, tmp2 - 120);
+                        break;
+                    end else begin
+                        SetResourceType(GetBase(tmp), 1, 0);
+                    end;
+                end;
+
+                for i in tmp do
+                begin
+                    tmp2 = GetResourceType(GetBase(tmp), 3);
+                    if tmp2 >= 120 then
+                    begin
+                        SetResourceType(GetBase(tmp), 3, tmp2 - 120);
+                        break;
+                    end else begin
+                        SetResourceType(GetBase(tmp), 3, 0);
+                    end;
+                end;
+
+
+            end;
+
+            if dec2 = 4 then
+            begin
+                if dec1 = 3 then
+                begin
+                    Say(JMM, 'D3Kc1-JMM-1');
+                    Say(Kurt, 'D3Kc1-Kurt-1');
+                    Say(JMM, 'D3Kc1-JMM-2');
+                    Say(Kurt, 'D3Kc1-Kurt-2');
+                    askSiberite = 1;
+                    
+                    dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+                    
+                    if dec2 = 1 then
+                    begin
+                        Say(JMM, 'D4a-JMM-1');
+                        Say(Kurt, 'D4b-Kurt-1');
+                        warWithLegion = 1;
+                    end; 
+
+                    if dec2 = 2 then
+                    begin
+                        Say(JMM, 'D4b-JMM-1');
+                        Say(Kurt, 'D4b-Kurt-1');
+                        warWithLegion = 1;
+                    end;
+
+                    if dec2 = 3 then
+                    begin
+                        Say(JMM, 'D4c-JMM-1');
+                        Say(Kurt, 'D4c-Kurt-1');
+                        Say(JMM, 'D4c-JMM-2');
+                        Say(Kurt, 'D4c-Kurt-2');
+                        fakeInfo = 1;
+                    end;
+
+                end;
+            end;
+        end;
+
+        DialogueOff;
+        ComEnterUnit(Kurt, KurtVeh);
+        wait(0$1);
+        ComMoveXY(KurtVeh, 157, 188);
+        wait(0$3);
+        RemoveUnit(Kurt);
+        RemoveUnit(KurtVeh);
+
+    end else
     begin
-        Say(Kurt, 'D3Kd-JMM-1');
-        dec2 = ShowQuery8;
+             
+        DialogueOn;
+        ComExitVehicle(otherKurt);
+        CenterNowOnUnits(otherKurt);
 
-        if dec2 = 1 then
+        Say(otherKurt, 'D3-Kurt-1');
+        Say(JMM, 'D3-JMM-1');
+        Say(otherKurt, 'D3-Kurt-2');
+        Say(JMM, 'D3-JMM-2');
+        Say(otherKurt, 'D3-Kurt-4');
+        Say(JMM, 'D3-JMM-4');
+        Say(otherKurt, 'D3-Kurt-5');
+        Say(otherKurt, 'D3-Kurt-5a');
+        Say(otherKurt, 'D3-Kurt-5b');
+        
+        if crates >= 100 and siberite >= 100 then dec1 = SelectiveQuery('Q2', [1, 2, 3, 4])
+        else dec1 = SelectiveQuery('Q2', [3, 4]);
+
+        if dec1 = 1 then
         begin
-            Say(JMM, 'D5Ka-JMM-1');
-            Say(Kurt, 'D5Ka-Kurt-1');
+            Say(JMM, 'D3Ka-JMM-1');
+            Say(otherKurt, 'D3Ka-Kurt-1');
             warWithLegion = 1;
-        end;   
-
-        if dec2 = 2 then
-        begin
-            Say(JMM, 'D3Ke-JMM-1');
-            Say(Kurt, 'D3Ke-Kurt-1');
-            PrepareLegionForPlayer;
         end;
+
+        if dec1 = 2 then
+        begin
+            Say(JMM, 'D3Kb-JMM-1');
+            Say(otherKurt, 'D3Kb-Kurt-1');
+
+            for i in tmp do
+            begin
+                tmp2 = GetResourceType(GetBase(tmp), 1);
+                if tmp2 >= 100 then
+                begin
+                    SetResourceType(GetBase(tmp), 1, tmp2 - 100);
+                    break;
+                end else begin
+                    SetResourceType(GetBase(tmp), 1, 0);
+                end;
+            end;
+
+            for i in tmp do
+            begin
+                tmp2 = GetResourceType(GetBase(tmp), 3);
+                if tmp2 >= 100 then
+                begin
+                    SetResourceType(GetBase(tmp), 3, tmp2 - 100);
+                    break;
+                end else begin
+                    SetResourceType(GetBase(tmp), 3, 0);
+                end;
+            end;
+
+        end;
+
+        if dec1 = 3 then
+        begin
+            Say(JMM, 'D3Kc1-JMM-1');
+            Say(otherKurt, 'D3Kc1-Kurt-1');
+            Say(JMM, 'D3Kc1-JMM-2');
+            Say(otherKurt, 'D3Kc1-Kurt-2');
+            askSiberite = 1;
+            
+            dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+            
+            if dec2 = 1 then
+            begin
+                Say(JMM, 'D4a-JMM-1');
+                Say(otherKurt, 'D4b-Kurt-1');
+                warWithLegion = 1;
+            end; 
+
+            if dec2 = 2 then
+            begin
+                Say(JMM, 'D4b-JMM-1');
+                Say(otherKurt, 'D4b-Kurt-1');
+                warWithLegion = 1;
+            end;
+
+            if dec2 = 3 then
+            begin
+                Say(JMM, 'D4c-JMM-1');
+                Say(otherKurt, 'D4c-Kurt-1');
+                Say(JMM, 'D4c-JMM-2');
+                Say(otherKurt, 'D4c-Kurt-2');
+                fakeInfo = 1;
+            end;
+
+        end;
+
+        if dec1 = 4 then
+        begin
+            Say(JMM, 'D3Kd-JMM-1');
+
+            if crates >= 200 and siberite >= 200 then dec2 = SelectiveQuery('Q2a', [1, 2, 3, 4])
+            else dec2 = SelectiveQuery('Q2a', [1, 4]);
+
+            if dec2 = 1 then
+            begin
+                Say(JMM, 'D5Ka-JMM-1');
+                Say(otherKurt, 'D5Ka-Kurt-1');
+                warWithLegion = 1;
+            end;   
+
+            if dec2 = 2 then
+            begin
+                Say(JMM, 'D3Kb-JMM-1');
+                Say(otherKurt, 'D3Kb-Kurt-1');
+            end;
+
+            if dec2 = 3 then
+            begin
+                Say(JMM, 'D3Ke-JMM-1');
+                Say(otherKurt, 'D3Ke-Kurt-1');
+                PrepareLegionForPlayer;
+
+                for i in tmp do
+                begin
+                    tmp2 = GetResourceType(GetBase(tmp), 1);
+                    if tmp2 >= 200 then
+                    begin
+                        SetResourceType(GetBase(tmp), 1, tmp2 - 200);
+                        break;
+                    end else begin
+                        SetResourceType(GetBase(tmp), 1, 0);
+                    end;
+                end;
+
+                for i in tmp do
+                begin
+                    tmp2 = GetResourceType(GetBase(tmp), 3);
+                    if tmp2 >= 200 then
+                    begin
+                        SetResourceType(GetBase(tmp), 3, tmp2 - 200);
+                        break;
+                    end else begin
+                        SetResourceType(GetBase(tmp), 3, 0);
+                    end;
+                end;
+
+
+            end;
+
+            if dec2 = 4 then
+            begin
+                if dec1 = 3 then
+                begin
+                    Say(JMM, 'D3Kc1-JMM-1');
+                    Say(otherKurt, 'D3Kc1-Kurt-1');
+                    Say(JMM, 'D3Kc1-JMM-2');
+                    Say(otherKurt, 'D3Kc1-Kurt-2');
+                    askSiberite = 1;
+                    
+                    dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+                    
+                    if dec2 = 1 then
+                    begin
+                        Say(JMM, 'D4a-JMM-1');
+                        Say(otherKurt, 'D4b-Kurt-1');
+                        warWithLegion = 1;
+                    end; 
+
+                    if dec2 = 2 then
+                    begin
+                        Say(JMM, 'D4b-JMM-1');
+                        Say(otherKurt, 'D4b-Kurt-1');
+                        warWithLegion = 1;
+                    end;
+
+                    if dec2 = 3 then
+                    begin
+                        Say(JMM, 'D4c-JMM-1');
+                        Say(otherKurt, 'D4c-Kurt-1');
+                        Say(JMM, 'D4c-JMM-2');
+                        Say(otherKurt, 'D4c-Kurt-2');
+                        fakeInfo = 1;
+                    end;
+
+                end;
+            end;
+        end;
+
+        DialogueOff;
+        ComEnterUnit(otherKurt, KurtVeh);
+        wait(0$1);
+        ComMoveXY(KurtVeh, 157, 188);
+        wait(0$6);
+        RemoveUnit(otherKurt);
+        RemoveUnit(KurtVeh);
     end;
 
-    DialogueOff;
-    RemoveUnit(Kurt);
 end;
+
+// Spawn enemy Legion
+Every 0$10 trigger warWithLegion = 1 do PrepareAttackLegion;
 
 // Set side cargos
 Every 0$1 trigger IsPlaced(amCargo1) and not GetCargo(amCargo1, 3) do SetSide(amCargo1, 4);
@@ -373,17 +694,33 @@ end;
 Every 0$1 trigger IsDying(ruheadlab) do 
 var i,j, vehs;
 begin
+    ruAI = 0;
     vehs = FilterUnitsInArea(RuEastBase, [[f_side, 3], [f_type, unit_vehicle], [f_empty]]);
     DialogueOn;
     Say(JMM, 'D6-JMM-1');
     DialogueOff;
 
-    for i in vehs do
+    for i := 1 to RuScientists do
     begin
-        for j in RuScientists do 
-        begin
-            AddComEnterUnit(j, i);
-            AddComMoveToArea([j, i], [EscapeArea1, EscapeArea2][Rand(1,2)]);
+        for j := 1 to vehs do
+        begin 
+            ComEnterUnit(RuScientists[i], vehs[j]);
+            If IsOk(rutp) then
+            begin
+               if i mod 2 then AddComEnterUnit([RuScientists[i], vehs[j]], rutp)
+               else AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
+            end else begin AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
+            end;
         end;
     end; 
+
+end;
+
+// Remove sci from map
+Every 0$1 trigger ruAI = 0 do
+var i;
+begin
+    enable;
+    for i in FilterUnitsInArea(EscapeArea1, [[f_side, 3]]) do RemoveUnit(i);
+    for i in FilterUnitsInArea(EscapeArea2, [[f_side, 3]]) do RemoveUnit(i);
 end;

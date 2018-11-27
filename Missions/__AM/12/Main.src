@@ -12,22 +12,26 @@
     12_MainDepositFake_1 = 0  - Player didin't talked about localisation Siberite main deposit.
     12_MainDepositFake_1 = 1 - Player  talked about fake localisation  Siberite main deposit.
 
-    TODO:
-    - Arabian spawn for player.
-    - Russian attacks.
-    - Save characters. (Ktorego i tak nie zrobie bo nie mam 11 misi lol ;D, a kaj 9 misia?)
 
+    12_SciDed_1 = 0 - Enable ru rockets in am 14
+    12_SciDed_1 = 1 - DIsable ru rockets in am 14
 
     We pal gume stad gosciu
 
+    Powracam do prac nad ta misja po 3 tygodniowej nieobecnosci :(
+
 }
-Export JMM, Donaldson, Lisa, Cyrus, Denis, Frank, Cornell, Campell; // Heroes with JMM
-Export Brown, Gary, amCargo1, amCargo2; // First support
-Export Bobby, amCargo3, amCargo4, amCargo5; // Second support
+Export JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi; // Heroes with JMM
+Export others11; // Others from 11 mission
+Export amCargo1, amCargo2; // First support
+Export amCargo3, amCargo4, amCargo5; // Second support
 Export amCargo6, amCargo7; // Third support
 Export Powell; // Am commander
 Export Davidov; // Ru commander
 Export Kurt, otherKurt; // Ar heroes
+
+Export KurtVeh;
+Export kurtStatus; // 0 - die, 1 - friend,  2 - enemy
 
 Export secondPass;
 
@@ -41,6 +45,11 @@ Export RuScientists, sciCounter;
 Export RuSolMinLevel, RuSolMaxLevel;
 Export ruDestroyedBuildings;
 Export russianTanks, russianTimeLapsers;
+Export ruAI;
+
+Export arabianMines;
+
+Export mission_prefix;
 
 Export eventVar1;
 
@@ -61,6 +70,10 @@ begin
     russianTanks = [];
     russianTimeLapsers = [];
 
+    arabianMines = [];
+
+    kurtStatus = LoadVariable('06_KurtStatus_1', 0);
+
     secondPass = 0; // 0 - off,  2 - durring query you select option 1 or 2, 1 - option 3
 
     teleportExplored = 0; // 0 - no  explored, 1 - explored
@@ -69,13 +82,18 @@ begin
     warWithLegion = 0; // 0 - neutral, 1 - enemy
     fakeInfo = 0;
 
+    ruAI = 0;
+
     eventVar1 = 0; // block event
 
-    debugMode = 1; // 0 - players, 1 - developers
+    mission_prefix = '12_';
+
+    debugMode = 0; // 0 - players, 1 - developers
 
     PrepareDifficulty;
     
     PrepareVehicles;
+    PrepareAmericansRandom;
     PrepareAmericanHeroes;
 
     PrepareRussianCommander;

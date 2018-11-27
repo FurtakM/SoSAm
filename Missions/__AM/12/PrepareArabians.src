@@ -1,16 +1,35 @@
 // #teamKurt ;)
 Export function PrepareKurt;
 begin
-    uc_side = 8;
 
-    Kurt = PrepareUnit('Kurt', false);
-    PlaceUnitArea(Kurt, PlayerSpawn, false);
+   uc_side = 8;
+
+   vc_chassis = ar_medium_trike;
+   vc_engine = 1;
+   vc_control = 1;
+   vc_weapon = us_machine_gun;
+   KurtVeh = CreateVehicle;
+
+   if kurtStatus > 0 then
+   begin
+      Kurt = PrepareUnit('Kurt', false);
+      PlaceUnitArea(KurtVeh, PlayerSpawn, false);
+      PlaceHumanInUnit(Kurt, KurtVeh);
+   end else
+   begin
+      hc_name = '';
+      hc_gallery = '';
+
+      otherKurt = PrepareSoldier(sex_male, 10);
+      PlaceUnitArea(KurtVeh, PlayerSpawn, false);
+      PlaceHumanInUnit(otherKurt, KurtVeh);
+   end;
 end;
 
 Export function PrepareLegionForPlayer;
 var i, un;
 begin
-    for i = 1 to 6 do
+   for i = 1 to 6 do
    begin
 
       uc_side = 1;
@@ -18,11 +37,33 @@ begin
 
       hc_gallery = '';
       hc_name = '';
-      PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], 10);
+      if kurtStatus = 0 or kurtStatus = 2 then PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], Rand(2, 4))
+      else PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], Rand(6, 8));
 
       un = CreateHuman;
       PlaceUnitArea(un, PlayerSpawn, false);
 
    end;
 
+end;
+
+Export function PrepareAttackLegion;
+var i, un;
+begin
+   for i = 1 to 4 do
+   begin
+
+      uc_side = 1;
+      uc_nation = 2;
+
+      hc_gallery = '';
+      hc_name = '';
+      PrepareHuman(false, [1, 8][Rand(1, 2)], Rand(6, 8));
+
+      un = CreateHuman;
+      PlaceUnitArea(un, LegionEnemySpawn, false);
+
+   end;
+   SetAttitude(1, 8, att_enemy, true);
+   PlaceMines(MineField, 3);
 end;

@@ -2,23 +2,136 @@ Export function PrepareAmericanHeroes;
 begin
     uc_side = 1;
 
-    JMM = PrepareUnit('JMM', false);
-    Donaldson = PrepareUnit('Donaldson', false);
-    Lisa = PrepareUnit('Lisa', false);
-    Cyrus = PrepareUnit('Cyrus', false);
-    Denis = PrepareUnit('Denis', false);
-    Frank = PrepareUnit('Frank', false);
-    Cornell = PrepareUnit('Cornell', false);
+    others11 = CreateCharacterSet('11_others');
+    others11 = others11 ^ CreateCharacterSet('11c_others');
+
+
+    JMM = PrepareUnit('11_JMM', true);
+    SetClass(JMM, 1);
+    PlaceHumanInUnit(JMM, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+
+    if TestCharacters('11_Lisa') = true then
+    begin          
+        Lisa = PrepareUnit('11_Lisa', true);
+        SetClass(Lisa, 1);
+        PlaceUnitArea(Lisa, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Lisa') = true  then
+        begin
+            Lisa = PrepareUnit('10c_Lisa', true);
+            SetClass(Lisa, 1);
+            PlaceUnitArea(Lisa, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
+
+    if TestCharacters('11_Donaldson') = true then
+    begin          
+        Donaldson = PrepareUnit('11_Donaldson', true);
+        SetClass(Donaldson, 1);
+        PlaceUnitArea(Donaldson, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Donaldson') = true then
+        begin          
+            Donaldson = PrepareUnit('10c_Donaldson', true);
+            SetClass(Donaldson, 1);
+            PlaceUnitArea(Donaldson, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
+
+    if TestCharacters('11_Cyrus') = true then
+    begin          
+        Cyrus = PrepareUnit('11_Cyrus', true);
+        SetClass(Cyrus, 1);
+        PlaceUnitArea(Cyrus, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Cyrus') = true then
+        begin          
+            Cyrus = PrepareUnit('10c_Cyrus', true);
+            SetClass(Cyrus, 1);
+            PlaceUnitArea(Cyrus, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
+
+    if TestCharacters('11_Denis') = true then
+    begin          
+        Denis = PrepareUnit('11_Denis', true);
+        SetClass(Denis, 4);
+        PlaceUnitArea(Denis, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Denis') = true then
+        begin
+            Denis = PrepareUnit('10c_Denis', true);
+            SetClass(Denis, 4);
+            PlaceUnitArea(Denis, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
+
+    if TestCharacters('11_Frank') = true then
+    begin          
+        Frank = PrepareUnit('11_Frank', true);
+        SetClass(Frank, 1);
+        PlaceUnitArea(Frank, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Frank') = true then
+        begin
+            Frank = PrepareUnit('11_Frank', true);
+            SetClass(Frank, 1);
+            PlaceUnitArea(Frank, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
+
+    if TestCharacters('11_Cornell') = true then
+    begin          
+        Cornel = PrepareUnit('11_Cornell', true);
+        SetClass(Cornel, 1);
+        PlaceUnitArea(Cornel, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Cornell') = true then
+        begin
+            Cornel = PrepareUnit('10c_Cornell', true);
+            SetClass(Cornel, 1);
+            PlaceUnitArea(Cornel, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
 
     Powell = PrepareUnit('Powell', false);
+end;
 
-    PlaceUnitArea(JMM, PlayerSpawn, false);
-    PlaceUnitArea(Donaldson, PlayerSpawn, false);
-    PlaceUnitArea(Lisa, PlayerSpawn, false);
-    PlaceUnitArea(Cyrus, PlayerSpawn, false);
-    PlaceUnitArea(Denis, PlayerSpawn, false);
-    PlaceUnitArea(Frank, PlayerSpawn, false);
-    PlaceHumanInUnit(Cornell, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+Export function PrepareAmericansRandom;
+begin
+
+    PlaceUnitArea(others11[1], PlayerSpawn, false);
+    others11 := Delete(others11, 1);
 end;
 
 Export function PrepareVehicles;
@@ -56,13 +169,43 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
-    Brown = PrepareUnit('Brown', false);
-    Gary = PrepareUnit('Gary', false);
+    if TestCharacters('11_Brown') = true then
+    begin          
+        Brown = PrepareUnit('11_Brown', true);
+        SetClass(Brown, 2);
+        PlaceUnitArea(Brown, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Brown') = true then
+        begin
+            Brown = PrepareUnit('10c_Brown', true);
+            SetClass(Brown, 2);
+            PlaceUnitArea(Brown, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
 
-    PlaceUnitArea(Brown, PlayerSpawn, false);
-    PlaceUnitArea(Gary, PlayerSpawn, false);
-
-    SetClass(Brown, 2);
+    if TestCharacters('11_Gary') = true then
+    begin          
+        Gary = PrepareUnit('11_Gary', true);
+        SetClass(Gary, 2);
+        PlaceUnitArea(Gary, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Gary') = true then
+        begin
+            Brown = PrepareUnit('10c_Gary', true);
+            SetClass(Gary, 2);
+            PlaceUnitArea(Gary, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
 
     hc_gallery = '';
     hc_name = '';
@@ -70,13 +213,13 @@ begin
     vc_chassis = us_medium_tracked;
     vc_engine = 3;
     vc_control = 1;
-    vc_weapon = us_gatling_gun;
+    vc_weapon = us_crane;
     veh = CreateVehicle;
 
     PlaceUnitArea(veh, PlayerSpawn, false);
     SetDir(veh, 4);
 
-    PrepareHuman(false, 4, 10);
+    PrepareHuman(false, 3, rand(5, 8));
     un = CreateHuman;
     PlaceHumanInUnit(un, veh);
 
@@ -87,7 +230,7 @@ begin
     PlaceUnitArea(veh, PlayerSpawn, false);
     SetDir(veh, 4);
 
-    PrepareHuman(false, 4, 10);
+    PrepareHuman(false, 3, rand(5, 8));
     un = CreateHuman;
     PlaceHumanInUnit(un, veh);
 
@@ -111,24 +254,55 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
-    Bobby = PrepareUnit('Bobby', false);
-    Campell = PrepareUnit('Campell', false);
+    if TestCharacters('11_Bobby') = true then
+    begin          
+        Bobby = PrepareUnit('11_Bobby', true);
+        SetClass(Bobby, 3);
+        PlaceUnitArea(Bobby, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Bobby') = true then
+        begin
+            Bobby = PrepareUnit('10c_Bobby', true);
+            SetClass(Bobby, 3);
+            PlaceUnitArea(Bobby, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
 
-    PlaceUnitArea(Bobby, PlayerSpawn, false);
+    if TestCharacters('11_Houten') = true then
+    begin          
+        Houten = PrepareUnit('11_Houten', true);
+        SetClass(Houten, 1);
+        PlaceUnitArea(Houten, PlayerSpawn, false);
+    end else
+    begin
+        if TestCharacters('10c_Houten') = true then
+        begin
+            Houten = PrepareUnit('10c_Houten', true);
+            SetClass(Houten, 1);
+            PlaceUnitArea(Houten, PlayerSpawn, false);
+        end
+        else
+        begin
+            PrepareAmericansRandom;
+        end;
+    end;
 
     hc_gallery = '';
     hc_name = '';
 
     vc_chassis = us_medium_wheeled;
     vc_engine = 3;
-    vc_control = 1;
+    vc_control = 3;
     vc_weapon = us_light_gun;
     veh = CreateVehicle;
 
     PlaceUnitArea(veh, PlayerSpawn, false);
     SetDir(veh, 4);
-
-    PlaceHumanInUnit(Campell, veh);
 
     vc_control = 3;
     vc_weapon = us_cargo_bay;
@@ -152,14 +326,8 @@ Export function PowellSupport3;
 var veh, un;
 begin
     uc_side = 1;
-    uc_nation = 1;
 
-    hc_gallery = '';
-    hc_name = '';
-
-    PrepareHuman(false, 1, 10);
-    un = CreateHuman;
-    PlaceUnitArea(un, PlayerSpawn, false);
+    PrepareAmericansRandom;
 
     vc_chassis = us_medium_wheeled;
     vc_engine = 3;
