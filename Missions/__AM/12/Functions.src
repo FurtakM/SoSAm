@@ -3,16 +3,28 @@ var unit;
 begin
 
 if exist_mode then
-   unit := CreateCharacter(ident)
-  else
-   unit := NewCharacter(ident);
+unit := CreateCharacter(ident)
+else
+unit := NewCharacter(ident);
 
 result := unit;
 End;
 
+Export function EnchancedSaveCharacters(charactersList, ident);
+var i;
+begin
+    for i in charactersList do
+    begin
+         if IsOk(i) then SaveCharacters(i, ident);
+    end;
+end;
+
+
 Export function DialogRandom(characters, dialogMID, dialogFID);
 var i, rnd;
 begin
+characters := characters diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary, Denis, Gladstone, Cornel, Powell];
+
     rnd = rand(1, characters);  
 
     for i = 1 to characters do
@@ -86,67 +98,6 @@ begin
     end;
 end;
 
-Export function ShowQuery3;
-begin
-    case query('Q2') of
-        1: result = 1;
-        2: result = 2;
-        3: result = 3;
-        4: result = 4;
-    end;
-end;
-
-Export function ShowQuery4;
-begin
-    case query('Q2K') of
-        1: result = 1;
-        2: result = 2;
-        3: result = 3;
-        4: result = 4;
-    end;
-end;
-
-Export function ShowQuery5;
-begin
-    case query('Q2a') of
-        1: result = 1;
-        2: result = 2;
-        3: result = 3;
-        4: result = 4;
-    end;
-end;
-Export function ShowQuery6;
-begin
-    case query('Q2aK') of
-        1: result = 1;
-        2: result = 2;
-        3: result = 3;
-        4: result = 4;
-    end;
-end;
-Export function ShowQuery7;
-begin
-    case query('Q2b') of
-        1: result = 1;
-        2: result = 2;
-        3: result = 3;
-    end;
-end;
-Export function ShowQuery8;
-begin
-    case query('Q2c') of
-        1: result = 1;
-        2: result = 2;
-    end;
-end;
-Export function ShowQuery9;
-begin
-    case query('Q2cK') of
-        1: result = 1;
-        2: result = 2;
-    end;
-end;
-
 
 Export function RespawnInside(side, nation, build, skill, class, count);
 var i,l, un, tmp;
@@ -203,8 +154,8 @@ Export function HealUnitInBase(side, healArea, baseArea, build);
 var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal, tmp, rnd;
 begin
 
-  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 251]]);
-  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_ok]]);
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_lives, 251]]) diff RuScientists;
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 4], [f_ok]]) diff RuScientists;
   damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_lives, 750]]]);
   unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_lives, 1000]]]);
 
@@ -235,7 +186,9 @@ END;
 Export function AttackVehicles(side);
 var i, j, vehiclesOK, target1, target2;
 begin
-    if russianTanks >= [3, 4, 4][Difficulty] and russianTimeLapsers >= [3, 4, 4][Difficulty] then
+    if russianTanks >= [3, 4, 4][Difficulty] and russianTimeLapsers >= [1, 2, 3][Difficulty] then
+    begin
+
         repeat
             wait(0$1);
                 for j in russianTanks do
@@ -248,22 +201,77 @@ begin
                 end;
 
         until russianTanks = 0;
+    end;
 end;
 
 Export function TimeLapsersAI(side);
 var j, nearUnit;
 begin
-    if russianTanks >= [3, 4, 4][Difficulty] and russianTimeLapsers >= [3, 4, 4][Difficulty] then
+    if russianTanks >= [3, 4, 4][Difficulty] and russianTimeLapsers >= [1, 2, 3][Difficulty] then
     repeat
         wait(0$1);
-         display_strings = ['ok1'];
         if russianTimeLapsers > 0 then
             for j in russianTimeLapsers do
             begin
                 nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
-                display_strings = ['ok2', nearUnit];
                 ComMoveXY(j, GetX(nearUnit), GetY(nearUnit));
             end; 
 
     until russianTimeLapsers = 0;  
 end;
+
+
+Export Function IntBazooka(side);
+var ta, c, i, list, filter;
+begin
+
+    list   := FilterAllUnits([[f_side, side], [f_class, class_bazooker]]);
+    filter := FilterAllUnits([[f_enemy, side], [f_not, [f_type, unit_building]]]);
+
+    c := Rand(1, 3);
+
+    for i = 1 to list do
+    for ta in filter do
+        begin
+
+        if GetDistUnits(list[i], ta) <= 15 then
+            begin
+                Case c of
+                1: ComTimeShift(list[i], GetX(ta), GetY(ta));
+                2: ComSpaceShift(list[i], GetX(ta) + Rand(-1,1), GetY(ta) + Rand(-1,1));
+                3: ComAttackUnit(list[i], ta);
+                end;
+
+            end;
+        end;
+End;
+
+
+Export Function PlaceMines(area, n);
+var i, r, x;
+begin
+r := 100;
+x := 0;
+
+while(x < n) do
+for i = 1 to AreaToList(area, 0)[1] do
+    begin
+    if r > 50 then
+       begin
+       if not MineAtPos(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]) then
+          begin
+          PlaceMine(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i], 5, 0);
+
+          arabianMines := Insert(arabianMines, 1, [AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]]);
+
+          r := 0;
+          x := x + 1;
+          end
+           else
+            r := r + 35;
+       end
+        else
+         r := r + rand(10, 25);
+    end;
+
+End;

@@ -15,6 +15,7 @@ end;
 
 On EnterBuilding(building, human) Do
 begin
+    display_strings = [GetSide(human), building];
     if building = ruteleprt and GetSide(human) = 1 and eventVar1 = 0 then
     begin
         eventVar1 = 1;
@@ -38,11 +39,18 @@ begin
     if factory = ru_fact or factory = rufab2 then
         if GetSide(vehicle) = 3 then
         begin
-            if GetWeapon(vehicle) = 46 or GetWeapon(vehicle) = 45 or GetWeapon(vehicle) = 44 then 
+            if GetWeapon(vehicle) = 46 or GetWeapon(vehicle) = 45 or GetWeapon(vehicle) = 44 then
+            begin
                 russianTanks = russianTanks ^ vehicle;
+                ComEnterUnit(vehicle, ruteleprt);
+            end;
 
-            if GetWeapon(vehicle) = 49 then 
+            if GetWeapon(vehicle) = 49 then
+            begin
                 russianTimeLapsers = russianTimeLapsers ^ vehicle;
+                ComEnterUnit(vehicle, rutp);
+            end;
+
         end;
 end;
 
@@ -59,4 +67,9 @@ begin
             for i in russianTimeLapsers do
                 if i = unit then russianTimeLapsers = russianTimeLapsers diff [unit];
     end;
+end;
+
+On LeaveVehicle(vehicle, human) Do
+begin
+    if GetSide(human) = 3 and GetSide(ru_fact) = 3 and IsOk(ru_fact) then ComEnterUnit(human, ru_fact);
 end;
