@@ -161,7 +161,7 @@ begin
 
   if damageUnits > 0 and sci_list > 0 then ComMoveToArea(damageUnits, healArea);
 
-  if unitsToHeal > 0 and sci_list > 0 then ComExitBuilding(UnitsInside(build));
+  if unitsToHeal > 0 and sci_list > 0 then ComExitBuilding(UnitsInside(build) diff RuScientists);
 
   if unitsToHeal > 0 and sci_listOutside > 0 then ComHeal(sci_listOutside, unitsToHeal[1]);
 
@@ -171,6 +171,8 @@ begin
           rnd = rand(1, tmp);
           ComEnterUnit(UnitFilter(sci_listOutside, [f_not, [f_hastask]]), tmp[rnd]);
   end;
+
+  if FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 3], [f_lives, 751]]) > 0 and IsOk(ru_fact) and GetSide(ru_fact) = 3 then ComEnterUnit(FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 3], [f_lives, 751]]), ru_fact);
 
 END;
 
