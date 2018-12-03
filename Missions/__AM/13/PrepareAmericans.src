@@ -1,9 +1,82 @@
 Export function PrepareHeroes;
+var i, others, tmp;
 begin
+    tmp = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_depot], [f_btype, 1]]]);
+
     uc_side = 1;
 
-    JMM = PrepareUnit('JMM', false);
+    JMM := PrepareUnit('JMM', true);
+    Lisa := PrepareUnit('Lisa', true);
+    Donaldson := PrepareUnit('Donaldson', true);
+    Bobby := PrepareUnit('Bobby', true);
+    Cyrus := PrepareUnit('Cyrus', true);
+    Denis := PrepareUnit('Denis', true);
+    Brown := PrepareUnit('Brown', true);
+    Gladstone := PrepareUnit('Gladstone', true);
+    Houten := PrepareUnit('Houten', true);
+    Cornel := PrepareUnit('Cornel', true);
+    Gary := PrepareUnit('Gary', true);
+    Frank := PrepareUnit('Frank', true);
+    Kikuchi := PrepareUnit('Kikuchi', true);
+
     Powell = PrepareUnit('Powell', false);
 
-    PlaceUnitArea(JMM, JMMSpawn, false);
+    PlaceUnitXYR(JMM, GetX(tmp[1]), GetY(tmp[1]), 4, false);
+    SetBName(tmp[1], 'epsilon');
+
+    others12 = CreateCharacterSet('12_other_survivors');
+
+    others11 = CreateCharacterSet('11c_others');
+    others11 = others11 diff others12;
+
 end;
+
+Export Function PrepareEpsilonBase;
+var blist, i, b, un;
+begin
+
+SetResourceVisibility (113, 50, 1);
+SetResourceVisibility (104, 24, 1);
+
+blist := LoadVariable('10_EpsilonBase', []);
+
+if not blist then
+   exit;
+
+uc_side := 1;
+uc_nation := 1;
+
+for i in blist do
+    begin
+    bc_type := i[1];
+    bc_level := i[5];
+
+    if i[1] in [b_lab_half, b_lab_full] then
+       begin
+       bc_kind1 := i[7];
+       bc_kind2 := i[8];
+       end;
+
+    b := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]);
+
+    if GetBType(b) = b_bunker then
+       begin
+       PlaceWeaponTurret(b, i[7]);
+       end;
+
+    end;
+
+
+for i in FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_empty]]) do
+begin
+
+     hc_name = '';
+     hc_gallery = '';
+     PrepareHuman(false, 1, rand(5, 8));
+     un = CreateHuman;
+     PlaceHumanInUnit(un, i);
+
+end;
+
+
+End;
