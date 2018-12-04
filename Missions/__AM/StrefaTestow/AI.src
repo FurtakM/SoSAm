@@ -2,8 +2,8 @@ Every 0$1 do
 begin
 enable;
 //RepairVehicle(1, reparea, 26, 13);
-RepairVehicles(3, EnemyVehSpawn, 89, 7);
-AttackVehicles(3, EnemyVehSpawn, [213, 115, 96], [13, 14, 8]);
+//RepairVehicles(3, EnemyVehSpawn, 89, 7);
+//AttackVehicles(3, EnemyVehSpawn, [213, 115, 96], [13, 14, 8]);
 //CheckMechanicsStatus(3, EnemyVehSpawn);
 //RebuildBuildings(3, destroyedBuildings);
 //EnemyVehicleAttack(3, 1);
@@ -17,12 +17,12 @@ Every 5$1 do
 begin
 //RespawnAttackVehicle(EnemyVehSpawn, 3, 4, 10, 3, 3, 1, [42, 43, 43, 43, 43, 44], [], [], 1);
 //BuildingVehicleAndAttackEnemy(side, fabric, vehCount, targetSide, weaponTab, engine, control, chassis);
-BuildingVehicle(3, rufab, 4, [42], 1, 1, 23);
+//BuildingVehicle(3, rufab, 4, [42], 1, 1, 23);
 end;
 
 Every 0$1 do 
 begin
-    RespawnAttackVehicle(EnemyVehSpawn, 3, 5, 10, nation_russian, engine_siberite, control_manual, [44, 46], [], []);
+    //RespawnAttackVehicle(EnemyVehSpawn, 3, 5, 10, nation_russian, engine_siberite, control_manual, [44, 46], [], []);
 end;
 
 
@@ -48,3 +48,21 @@ begin
         p := p + 2;
     end;
 End;
+
+Every 0$1 trigger IsDying(labek) do
+var i, j, vehy, sci;
+begin
+
+
+     sci = [s1, s2, s3, s4, s5, s6];
+
+     for i in sci do
+     begin
+         display_strings = vehy;
+         vehy = FilterUnitsInArea(PojazdyArea, [[f_side, 3], [f_type, unit_vehicle], [f_empty]]);
+         AddComEnterUnit(i, vehy);
+         AddComMoveXY(i, 217, 35);
+         ComMoveXY(vehy, 217, 35);
+     end; 
+
+end;
