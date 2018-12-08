@@ -21,12 +21,12 @@ End;
 
 Export Function CanSayRand(side);
 begin
-result := FilterAllUnits([[f_side, side], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+result := FilterAllUnits([[f_side, side], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
 End;
 
 Export Function SayRand(sex, dial);
 begin
-result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
 
 if not result then
    exit;
@@ -37,7 +37,7 @@ End;
 
 Export Function SayRand2(sex, dial, filter);
 begin
-result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi]^filter;
+result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi]^filter;
 
 if not result then
    exit;
@@ -243,7 +243,7 @@ End;
 Export Function DangerAtRangeXY(side, x, y, range);
 var i, j, tmp, points, bpoints;
 begin
-result := [0, 0, 0, 0];
+result := [0, 0, 0, []];
 
 if not x or not y then
    exit;
@@ -360,8 +360,8 @@ for i in tmp do
     end;
 
 
-    for i = 1 to 3 do
-        result := Replace(result, i, result[i] + (points[i] * bpoints));
+    for j = 1 to 3 do
+        result := Replace(result, j, result[j] + (points[j] * bpoints));
     end;
 
 result := Replace(result, 4, tmp);
@@ -479,6 +479,9 @@ if buildings then
    for i = 1 to personel do
        begin
 
+       if i > 4 then
+          break;
+
        case i of
        1: f := UnitFilter(buildings, [[f_side, side], [f_or, [f_btype, b_bunker], [f_btype, b_armoury], [f_btype, b_barracks]]]);
        2: f := UnitFilter(buildings, [[f_side, side], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
@@ -528,6 +531,10 @@ if buildings then
 
     for i = 1 to personel do
         begin
+
+        if i > 4 then
+           break;
+
         x := personel[i];
 
         if x = -1 then
@@ -539,7 +546,6 @@ if buildings then
         result := result ^ un;
         end;
     end;
-
 End;
 
 Export Function GetTurretWeapon(tower);
@@ -1054,6 +1060,75 @@ End;
 
 
 
+Export Function PrepareNature;
+var i, animal, nat_area;
+begin
+
+     uc_side = 0;
+     uc_nation = 0;
+
+     nat_area := natureArea;
+
+     InitHc;
+
+     // birds
+     for i = 1 to 4 do
+     begin
+     hc_class = 18;
+     hc_gallery = '';
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+     // tigers
+     for i = 1 to 3 do
+     begin
+     hc_class = class_tiger;
+     hc_gallery = '';
+     hc_agressivity = Rand(-5, 5);
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+     // apeman
+     for i = 1 to 5 do
+     begin
+     hc_class = class_apeman;
+     hc_gallery = '';
+     hc_agressivity = rand(-2, 2);
+     hc_skills := [rand(1, 3), rand(1, 3), 0, 0];
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+
+     // enhidna
+     for i = 1 to 3 do
+     begin
+     hc_class = 13;
+     hc_gallery = '';
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, nat_area, false);
+     end;
+
+     // fish
+     for i = 1 to 7 do
+     begin
+     hc_class = 20;
+     hc_gallery = '';
+
+     animal := CreateHuman;
+     PlaceUnitArea(animal, waterArea, false);
+     end;
+
+End;
+
+
+
 
 // ATTACK
 {
@@ -1214,7 +1289,7 @@ repeat
 
        // check unit type
        // soldier
-       {if GetClass(group[i]) = 1 then
+       if GetClass(group[i]) = 1 then
           begin
 
           if WantPlant(group[i]) then
@@ -1242,7 +1317,7 @@ repeat
                 end;
              end;
 
-          end;}
+          end;
                 
        // kamikaze
        if GetClass(group[i]) = 17 then
@@ -1334,11 +1409,22 @@ repeat
                     begin
                     ComAttackUnit(group[i], tmp[j]);
                     bombed := Replace(bombed, bombed+1, tmp[j]);
+                    attacking := true;
                     break;
                     end;
               end;
 
-          attacking := true;
+          if not attacking and f_attack_depot then
+             begin
+             z := UnitFilter(tmp, [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
+
+             if z then
+                begin
+                ComAttackUnit(group[i], NearestUnitToUnit(z, group[i]));
+                attacking := true;
+                end;
+             end;
+             
 
           if GetLives(group[i]) < 500 then
              ComAttackUnit(group[i], tmp[1]);
@@ -1403,4 +1489,96 @@ until group = [];
 
 End;
 
+// base, defenders, enemy
+Export Function Defend(base, defenders, enemy);
+var i, j, un, tmp, mechs, e;
+begin
 
+if not defenders then
+   exit;
+
+mechs := UnitFilter(mc_bases[base], [f_class, 3]);
+
+if mechs then
+   for i in defenders do
+       if GetControl(i) = control_manual and not IsDrivenBy(i) then
+          begin
+          un := mechs[1];
+          ComExitBuilding(un);
+          AddComEnterUnit(un, i);
+          mechs := mechs diff un;
+          end;
+
+repeat
+ wait(0$1);
+ enemy := mc_scan[base];
+
+ for i in defenders do
+     begin
+     e := NearestUnitToUnit(enemy, i);
+
+     if not WantsToAttack(i) and IsOk(i) and GetDistUnits(i, e) < 30 then
+        ComAttackUnit(i, e)
+       else
+        if GetDistUnits(i, e) >= 30 and not IsInArea(i, mc_parking[base]) then
+           ComMoveToArea(i, mc_parking[base]);
+     end;
+until not enemy or not defenders;
+
+if not enemy and defenders then
+   repeat
+    wait(0$1);
+
+    for i in defenders do
+        begin
+        if not IsInArea(i, mc_parking[base]) then
+           ComMoveToArea(i, mc_parking[base])
+        else
+         if GetControl(i) = control_manual then
+            if IsDrivenBy(i) then
+               ComExitVehicle(IsDrivenBy(i));
+        end;
+   until UnitFilter(defenders, [f_inarea, mc_parking[base]]) = defenders or mc_scan[base];
+
+mc_defender := Replace(mc_defender, base, defenders);
+End;
+
+
+Export Function ScanBase(base_units);
+var i, t, tmp;
+begin
+if not base_units then
+   exit;
+
+result := false;
+
+tmp := UnitFilter(base_units, [f_type, unit_building]);
+
+if not tmp then
+   exit;
+
+for i in tmp do
+    begin
+    result := EnemyInRange(i, 18);
+
+    if result then
+       exit;
+    end;
+End;
+
+Export Function AllowSpecClass(unit);
+var side, nat, tech;
+begin
+result := false;
+side := GetSide(unit);
+nat := GetNation(unit);
+
+case nat of
+1: tech := tech_lassight;
+2: tech := tech_mortar;
+3: tech := tech_bazooka;
+end;
+
+if Researched(side, tech) then
+   result := [class_sniper, class_mortar, class_bazooker][nat];
+End;
