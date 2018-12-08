@@ -105,7 +105,7 @@ InGameOff; // game start now!
 
 ChangeMissionObjectives('M1');
 
-game_speed := 5;
+game_speed := 4;
 
 SaveForQuickRestart;
 
@@ -542,7 +542,7 @@ enable;
 // see sheik
 if not seen[1] then
    begin
-   tmp := FilterAllUnits([[f_side, 2], [f_or, [f_class, 11], [f_chassis, 15]]]);
+   tmp := FilterAllUnits([[f_side, 2], [f_or, [f_class, 11], [f_control, control_rider]]]);
 
    if tmp then
       for i in tmp do
@@ -561,6 +561,8 @@ if not seen[1] then
                 if not un then
                    SayRand(sex_female, 'D5a-FSol2-1');
                 DialogueOff;
+
+                break;
                 end;
              end;
    end;
@@ -594,8 +596,9 @@ if not seen[2] then
                    if not un2 then
                       SayRand2(sex_female, 'D5b-FSol2-1', un);
                    end;
-
                 DialogueOff;
+
+                break;
                 end;
              end;
    end;
@@ -624,6 +627,8 @@ if not seen[3] then
 
                 Say(JMM, 'D8-JMM-1');
                 DialogueOff;
+
+                break;
                 end;
              end;
    end;
@@ -650,6 +655,8 @@ if not seen[4] then
                 if not un then
                    SayRand(sex_female, 'D5a-FSol1-1');
                 DialogueOff;
+
+                break;
                 end;
              end;
    end;
@@ -678,6 +685,8 @@ if not seen[5] and seen[3] then
 
                 Say(JMM, 'D8a-JMM-1');
                 DialogueOff;
+
+                break;
                 end;
              end;
    end;
@@ -719,9 +728,15 @@ DialogueOff;
 End;
 
 // see artifact
-Every 0$1 trigger SeeXY(1, 10, 5) do
+Every 0$2 trigger SeeArea(1, artifact_area) >= 2 do
 var un;
 begin
+PlaceSeeing(10, 5, 1, -10);
+RemoveSeeing(10, 5, 1);
+
+CenterNowOnXY(10, 5);
+
+DialogueOn;
 un := SayRand(sex_male, 'D6-Sci1-1');
 
 if un then
@@ -730,6 +745,7 @@ if un then
    Say(un, 'D6-Sci1-2');
    Say(JMM, 'D6-JMM-2');
    end;
+DialogueOff;
 
 ChangeMissionObjectives('M3');
 End;
@@ -751,8 +767,14 @@ hc_face_number := 7;
 
 ar_mechanic := CreateHuman;
 
+InitHc;
+
 PrepareHuman(sex_male, 16, 2);
+hc_attr := [12, 12];
+hc_name := 'Livid';
 ar_mechanic_friend := CreateHuman;
+
+InitHc;
 
 repeat
  wait(0$1);
@@ -816,23 +838,27 @@ PlaceUnitArea(ar_mechanic, mechanic_spawn, false);
 PlaceUnitArea(ar_mechanic_friend, mechanic_spawn, false);
 
 ComMoveToArea([ar_mechanic, ar_mechanic_friend], parking_area);
-
-repeat
- wait(0$1);
-until GetDistUnits(ar_mechanic, cargo) < 6 and GetDistUnits(ar_mechanic_friend, cargo) < 7;
-
-ComEnterUnit(ar_mechanic, cargo);
+AddComEnterUnit(ar_mechanic, cargo);
 AddComMoveXY([ar_mechanic, ar_mechanic_friend], 209, 178);
 
-repeat
+while(true) do
+begin
  wait(0$1);
  if not HasTask(ar_mechanic) or not HasTask(ar_mechanic_friend) then
     AddComMoveXY([ar_mechanic, ar_mechanic_friend], 209, 178);
-until IsInArea(cargo, escape_area) and IsInUnit(ar_mechanic) and IsInArea(ar_mechanic_friend, escape_area);
 
-RemoveUnit(ar_mechanic);
-RemoveUnit(ar_mechanic_friend);
-RemoveUnit(cargo);
+ if IsInArea(ar_mechanic, escape_area) then
+    RemoveUnit(ar_mechanic);
+
+ if IsInArea(ar_mechanic_friend, escape_area) then
+    RemoveUnit(ar_mechanic_friend);
+
+ if IsInArea(cargo, escape_area) then
+    RemoveUnit(cargo);
+
+ if not IsLive(ar_mechanic) and not IsLive(ar_mechanic_friend) then
+    break;
+end;
 
 wait(0$2);
 
@@ -845,6 +871,8 @@ if Difficulty = 1 then
 
 for i in tmp do
     PlaceSeeing(i[1], i[2], 1, -9);
+
+CenterOnXY(129, 10);
 End;
 
 // Powell first warn

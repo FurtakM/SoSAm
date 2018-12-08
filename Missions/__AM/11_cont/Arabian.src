@@ -1,5 +1,5 @@
 Export ar_force_west, ar_force_south, ar_force_north, ar_force_east;
-Export ar_force_tmp, ar_vehicles_tmp, ar_kamikadze;
+Export ar_force_tmp, ar_vehicles_tmp, ar_kamikadze, ar_defenders_tmp;
 Export Saliba;
 
 Export Function PrepareArabian;
@@ -31,9 +31,9 @@ for i = 1 to 3 do
 
 ar_force_north := PrepareBase(ar_dep_n, 'dammam', skill, [10000, 1000, 300], [-1, -1, -1, 4]);
 ar_force_north := ar_force_north ^ PrepareBase(ar_dep_n2, '', skill, [100, 60, 0], [-1, 4, 0, 0]);
-ar_force_west := PrepareBase(ar_dep_w, 'jeddah', skill, [700, 300, 10], [-1, 5, 0, 2]);
+ar_force_west := PrepareBase(ar_dep_w, 'jeddah', skill, [700, 300, 10], [-1, 5, 3, 2]);
 ar_force_south := PrepareBase(ar_dep_s, 'riyadh', skill, [500, 60, 0], [4, 2, 3, 1]);
-ar_force_east := PrepareBase(ar_dep_e, '', skill, [500, 50, 0], [-1, 3, 1, 2]);
+ar_force_east := PrepareBase(ar_dep_e, '', skill, [500, 50, 0], [-1, 3, 3, 2]);
 
 mc_bases := [ar_force_north, ar_force_west, ar_force_east];
 
@@ -141,6 +141,23 @@ for i = 1 to 4 do
     PlaceUnitXYR(un, 124, 141, 6, false);
     end;
 
+
+ar_defenders_tmp := [ [], [], [] ];
+
+for d = 1 to [3, 3, 4][Difficulty] do
+for i = 1 to 3 do
+    begin
+    PrepareVehicle(ar_half_tracked,
+                   [engine_siberite, engine_solar][rand(1,2)],
+                   [control_manual, control_apeman][rand(1,2)],
+                   [ar_gatling_gun, ar_gun, ar_flame_thrower, ar_rocket_launcher][rand(1,4)],
+                   100);
+    un := CreateVehicle;
+    ar_defenders_tmp := Add(ar_defenders_tmp, [i, ar_defenders_tmp[i]+1], un);
+    SetDir(un, rand(0,5));
+    PlaceUnitArea(un, [parking_north, parking_west, parking_east][i], false);
+    end;
+
 InitHc;
 
 
@@ -210,7 +227,7 @@ var i, un, tmp, skill, coords, flags, w, list;
 begin
 skill := [5, 6, 7][Difficulty];
 coords := [];
-flags := [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+flags := [0, 0, 0, 0, 1, 0, 0, 0, 1, 0];
 
 MC_SetProduceList(1, [ [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
                        [ar_half_tracked, engine_combustion, control_remote, ar_gatling_gun],
@@ -228,23 +245,25 @@ InitUc;
 uc_side := 2;
 uc_nation := 2;
 
+tmp := [ [], [], [], [] ];
+
 // attack from North
-tmp := mc_vehicles[1] diff FilterAllUnits([f_weapon, ar_cargo_bay]);
+tmp := Replace(tmp, 1, mc_vehicles[1] diff FilterAllUnits([f_weapon, ar_cargo_bay]));
 
 for i = 1 to Difficulty do
     begin
     PrepareVehicle(ar_medium_trike, engine_siberite, control_apeman, ar_selfpropelled_bomb, 100);
-    tmp := Replace(tmp, tmp+1, CreateVehicle);
-    SetDir(tmp[tmp], 3);
-    PlaceUnitArea(tmp[tmp], north_attack_spawn, false);
-    ComMoveXY(tmp[tmp], 51, 10);
+    un := CreateVehicle;
+    tmp := Add(tmp, [1, tmp[1]+1], un);
+    SetDir(un, 3);
+    PlaceUnitArea(un, north_attack_spawn, false);
+    ComMoveXY(un, 51, 10);
     wait(0$2);
     end;
 
 coords := [ [51,24], [75,90] ];
-MC_PrepareAttack(1, tmp, coords, flags);
+MC_PrepareAttack(1, tmp[1], coords, flags);
 
-tmp := [];
 
 // attack from West
 // kamikaze
@@ -252,7 +271,7 @@ for i = 1 to [2,3,3][Difficulty] do
     begin
     PrepareHuman(false, 17, skill);
     un := CreateHuman;
-    tmp := Replace(tmp, tmp+1, un);
+    tmp := Add(tmp, [2, tmp[2]+1], un);
     PlaceUnitArea(un, west_attack_spawn, false);
     end;
 
@@ -261,63 +280,63 @@ for i = 1 to [3,4,4][Difficulty] do
     begin
     PrepareHuman(false, [1,8][rand(1,2)], skill);
     un := CreateHuman;
-    tmp := Replace(tmp, tmp+1, un);
+    tmp := Add(tmp, [2, tmp[2]+1], un);
     PlaceUnitArea(un, west_attack_spawn, false);
     end;
 
-coords := [ [51,24], [75,90] ];
-MC_PrepareAttack(1, tmp, coords, flags);
+coords := [ [67,112], [85,130] ];
+MC_PrepareAttack(2, tmp[2], coords, flags);
 
 
 // attack from South
-tmp := [];
 
 // kamikadze
 for i = 1 to [1,2,3][Difficulty] do
     begin
     PrepareHuman(false, 17, skill);
     un := CreateHuman;
-    tmp := Replace(tmp, tmp+1, un);
+    tmp := Add(tmp, [3, tmp[3]+1], un);
     PlaceUnitArea(un, south_attack_spawn, false);
     end;
 
 coords := [ [148,158], [148,158] ];
-MC_PrepareAttack(1, tmp, coords, flags);
+MC_PrepareAttack(3, tmp[3], coords, flags);
 
 // attack from East
-tmp := [];
 
 for i = 1 to [3, 4, 5][Difficulty] do
     begin
     PrepareVehicle(ar_half_tracked, engine_siberite, [control_manual, control_apeman][rand(1,2)], [ar_gun, ar_flame_thrower, ar_rocket_launcher][rand(1,3)], 100);
-    tmp := Replace(tmp, tmp+1, CreateVehicle);
-    SetDir(tmp[tmp], 5);
-    PlaceUnitArea(tmp[tmp], east_attack_spawn, false);
+    un := CreateVehicle;
+    tmp := Add(tmp, [4, tmp[4]+1], un);
+    SetDir(un, 5);
+    PlaceUnitArea(un, east_attack_spawn, false);
 
-    if GetControl(tmp[tmp]) = control_manual then
+    if GetControl(un) = control_manual then
        begin
        PrepareHuman(false, 3, skill);
-       PlaceHumanInUnit(CreateHuman, tmp[tmp]);
+       PlaceHumanInUnit(CreateHuman, un);
        end;
 
-    ComMoveXY(tmp[tmp], 179, 135);
+    ComMoveXY(un, 179, 135);
     wait(0$2);
     end;
 
 vc_chassis := 15;
-tmp := Replace(tmp, tmp+1, CreateVehicle);
-PlaceUnitArea(tmp[tmp], east_attack_spawn, false);
+tmp := Add(tmp, [4, tmp[4]+1], CreateVehicle);
+PlaceUnitArea(tmp[4][1], east_attack_spawn, false);
 
 PrepareHuman(false, class_desert_warior, skill);
-tmp := Replace(tmp, tmp+1, CreateHuman);
-PlaceHumanInUnit(tmp[tmp], tmp[tmp-1]);
+tmp := Add(tmp, [4, tmp[4]+1], CreateHuman);
+PlaceHumanInUnit(tmp[4][tmp[4]], tmp[4][tmp[4]-1]);
 
 coords := [ [148, 140] ];
-MC_PrepareAttack(1, tmp, coords, flags);
+MC_PrepareAttack(1, tmp[4], coords, flags);
 
 
 Wait(10$00);
 
+tmp := [];
 w := 1;
 
 repeat
