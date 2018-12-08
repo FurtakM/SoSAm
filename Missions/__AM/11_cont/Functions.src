@@ -10,6 +10,16 @@ if exist_mode then
 result := unit;
 End;
 
+Export Function _GetHexInfo(x, y);
+begin
+result := false;
+
+if not ValidHex(x, y) or not x or not y then
+   exit;
+
+result := GetHexInfo(x, y);
+End;
+
 Export Function PrepareVehicle(chassis, engine, control, weapon, fuel);
 begin
 vc_chassis := chassis;
@@ -549,7 +559,7 @@ if buildings then
 End;
 
 Export Function GetTurretWeapon(tower);
-var list, factories, base, i, j, x, y, nat, h, tmp, height, side, fac_list, weapon;
+var hex, list, factories, base, i, j, x, y, nat, h, tmp, height, side, fac_list, weapon;
 begin
 result := false;
 
@@ -561,6 +571,9 @@ side := GetSide(tower);
 
 x := GetX(tower);
 y := GetY(tower);
+
+if not x or not y then
+   exit;
 
 weapon := 0;
 fac_list := [];
@@ -608,10 +621,15 @@ if nat in [1,2] and (us_radar in list or ar_radar in list) and GetTech(tech_rada
    end;
 
 // rocket_launcher
-if not weapon and GetTech(tech_rocket, side) = state_researched and
+{if not weapon and GetTech(tech_rocket, side) = state_researched and
    (us_rocket_launcher in list or ar_rocket_launcher in list or ru_rocket_launcher in list) then
    begin
-   height := GetHexInfo(x, y)[2];
+   hex := _GetHexInfo(x, y);
+
+   if not hex then
+      exit;
+
+   height := hex[2];
    tmp := [0, 2, 3, 5];
 
    for i in tmp do
@@ -620,7 +638,12 @@ if not weapon and GetTech(tech_rocket, side) = state_researched and
 
        if ValidHex(j[1], j[2]) then
           begin
-          h := GetHexInfo(j[1], j[2])[2];
+          hex := _GetHexInfo(j[1], j[2]);
+
+          if not hex then
+             continue;
+
+          h := hex[2];
 
           if h+7 < height then
              begin
@@ -629,7 +652,7 @@ if not weapon and GetTech(tech_rocket, side) = state_researched and
              end;
           end;
        end;
-   end;
+   end;  }
 
 // group of weapons
 if not weapon then
@@ -698,7 +721,7 @@ if GetResourceType(pom, mat_cans) >= cost[1] and
 End;
 
 Export Function CanBeBuilded(bdepot, btype, x, y, d);
-var i, j, pom, cost, hexes, height, dist;
+var i, j, pom, cost, hexes, height, dist, hex;
 begin
 result := false;
 
@@ -737,7 +760,12 @@ if not hexes then
    exit;
    end;
 
-height := GetHexInfo(x, y)[2];
+hex := _GetHexInfo(x, y);
+
+if not hex then
+   exit;
+
+height := hex[2];
 
 for i = 1 to hexes do
     begin
@@ -745,7 +773,7 @@ for i = 1 to hexes do
     if not ValidHex(hexes[i][1], hexes[i][2]) then
        continue;
 
-    j := GetHexInfo(hexes[i][1], hexes[i][2]);
+    j := _GetHexInfo(hexes[i][1], hexes[i][2]);
 
     if j[1] or j[2] > height+2 or j[2] < height-2 or
        not j[3] in [0, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21] or
@@ -1382,7 +1410,7 @@ repeat
              begin
              attacking := true;
 
-             if GetHexInfo(GetX(group[i]), GetY(group[i]))[2] = GetHexInfo(GetX(tmp[1]), GetY(tmp[1]))[2] then
+             if _GetHexInfo(GetX(group[i]), GetY(group[i]))[2] = _GetHexInfo(GetX(tmp[1]), GetY(tmp[1]))[2] then
                 AttackHovercraft(group[i], tmp[1])
                else
                 ComAttackUnit(group[i], tmp[1]);
