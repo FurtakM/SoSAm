@@ -2,10 +2,66 @@ Export Function PrepareUnit(ident, exist_mode);
 var unit;
 begin
 
-    if exist_mode then
-    unit := CreateCharacter(ident)
-    else
-    unit := NewCharacter(ident);
+if exist_mode then
+   unit := CreateCharacter(mission_prefix_prev&ident)
+  else
+   unit := NewCharacter(ident);
 
-    result := unit;
+result := unit;
 End;
+
+Export function SaveCharactersAfterSelect(unit, unitString, selectedTab);
+begin
+   if unit in selectedTab then SaveCharacters(unit, '13c_'&unitString)
+   else SaveCharacters(unit, '13s_'&unitString);
+end;
+
+{
+   13s_IdentPostaci  - Glowna postac nie zostala wybrana na misje (13_cont).
+   13c_IdentPostaci - Glowna postac zostala wybrana na misje.
+   13c_others - Pozostale postacie wybrane na misje.
+   13s_others - Pozostale postacie nie wybrane na misje
+}
+
+Export function SelectAndSaveCharacters;
+var i, selected, tmp, othersSelect, othersInBase;
+begin
+
+     tmp = [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+     tmp = tmp ^ others11;
+     tmp = tmp ^ others12;
+
+     for i in tmp do if GetClass(i) = 8 then SetClass(i, rand(1, 4));
+
+     selected := CharacterSelection('1', 6, 6,
+      [sel_change_class, JMM, Stevens,
+      sel_not_hired,sel_changeable, sel_change_class]^tmp^
+      [sel_dont_change_class, sel_not_changeable, Powell],
+      [[class_soldier, 0], [class_engineer, 1], [class_mechanic, 0], [class_scientistic, 2], [class_sniper, 0, 2]]);
+
+      othersSelect := selected diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+
+      othersInBase = tmp diff selected;
+      othersInBase = othersInBase diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+
+      SaveCharacters(othersSelect, '13c_others');
+      SaveCharacters(othersInBase, '13s_others');
+      
+      //[Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+
+      SaveCharacters(JMM, '13c_JMM');
+      SaveCharacters(Stevens, '13c_Stevens');
+
+      SaveCharactersAfterSelect(Lisa, 'Lisa', selected);
+      SaveCharactersAfterSelect(Donaldson, 'Donaldson', selected);
+      SaveCharactersAfterSelect(Bobby, 'Bobby', selected);
+      SaveCharactersAfterSelect(Cyrus, 'Cyrus', selected);
+      SaveCharactersAfterSelect(Denis, 'Denis', selected);
+      SaveCharactersAfterSelect(Gladstone, 'Gladstone', selected);
+      SaveCharactersAfterSelect(Houten, 'Houten', selected);
+      SaveCharactersAfterSelect(Cornel, 'Cornel', selected);
+      SaveCharactersAfterSelect(Gary, 'Gary', selected);
+      SaveCharactersAfterSelect(Frank, 'Frank', selected);
+      SaveCharactersAfterSelect(Kikuchi, 'Kikuchi', selected);
+
+end;

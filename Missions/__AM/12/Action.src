@@ -137,6 +137,7 @@ var i, dec1, dec2, tmp, tmp2, crates, oil, siberite;
 begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+
     for i in tmp do crates = crates + GetResourceType(GetBase(i), 1);
     for i in tmp do oil = oil + GetResourceType(GetBase(i), 2);
     for i in tmp do siberite = siberite + GetResourceType(GetBase(i), 3);
@@ -147,10 +148,12 @@ begin
 
     if kurtStatus > 0 then
     begin
-        
-        DialogueOn;
+
         ComExitVehicle(Kurt);
         CenterNowOnUnits(Kurt);
+        wait(0$1);
+        DialogueOn;
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D3-Sol1-1', '');
 
         Say(Kurt, 'D3-Kurt-1');
         Say(JMM, 'D3-JMM-1');
@@ -179,25 +182,25 @@ begin
 
             for i in tmp do
             begin
-                tmp2 = GetResourceType(GetBase(tmp), 1);
+                tmp2 = GetResourceType(GetBase(i), 1);
                 if tmp2 >= 60 then
                 begin
-                    SetResourceType(GetBase(tmp), 1, tmp2 - 60);
+                    SetResourceType(GetBase(i), 1, tmp2 - 60);
                     break;
                 end else begin
-                    SetResourceType(GetBase(tmp), 1, 0);
+                    SetResourceType(GetBase(i), 1, 0);
                 end;
             end;
 
             for i in tmp do
             begin
-                tmp2 = GetResourceType(GetBase(tmp), 3);
+                tmp2 = GetResourceType(GetBase(i), 3);
                 if tmp2 >= 60 then
                 begin
-                    SetResourceType(GetBase(tmp), 3, tmp2 - 60);
+                    SetResourceType(GetBase(i), 3, tmp2 - 60);
                     break;
                 end else begin
-                    SetResourceType(GetBase(tmp), 3, 0);
+                    SetResourceType(GetBase(i), 3, 0);
                 end;
             end;
 
@@ -266,25 +269,25 @@ begin
 
                 for i in tmp do
                 begin
-                    tmp2 = GetResourceType(GetBase(tmp), 1);
+                    tmp2 = GetResourceType(GetBase(i), 1);
                     if tmp2 >= 120 then
                     begin
-                        SetResourceType(GetBase(tmp), 1, tmp2 - 120);
+                        SetResourceType(GetBase(i), 1, tmp2 - 120);
                         break;
                     end else begin
-                        SetResourceType(GetBase(tmp), 1, 0);
+                        SetResourceType(GetBase(i), 1, 0);
                     end;
                 end;
 
                 for i in tmp do
                 begin
-                    tmp2 = GetResourceType(GetBase(tmp), 3);
+                    tmp2 = GetResourceType(GetBase(i), 3);
                     if tmp2 >= 120 then
                     begin
-                        SetResourceType(GetBase(tmp), 3, tmp2 - 120);
+                        SetResourceType(GetBase(i), 3, tmp2 - 120);
                         break;
                     end else begin
-                        SetResourceType(GetBase(tmp), 3, 0);
+                        SetResourceType(GetBase(i), 3, 0);
                     end;
                 end;
 
@@ -333,17 +336,20 @@ begin
         DialogueOff;
         ComEnterUnit(Kurt, KurtVeh);
         wait(0$1);
-        ComMoveXY(KurtVeh, 157, 188);
+        ComMoveToArea(KurtVeh, PlayerSpawn);
         wait(0$3);
         RemoveUnit(Kurt);
         RemoveUnit(KurtVeh);
 
     end else
     begin
-             
-        DialogueOn;
+
         ComExitVehicle(otherKurt);
         CenterNowOnUnits(otherKurt);
+        wait(0$1);
+        DialogueOn;
+
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]] diff [JMM]), 'D3-Sol1-1', '');
 
         Say(otherKurt, 'D3-Kurt-1');
         Say(JMM, 'D3-JMM-1');
@@ -372,25 +378,25 @@ begin
 
             for i in tmp do
             begin
-                tmp2 = GetResourceType(GetBase(tmp), 1);
+                tmp2 = GetResourceType(GetBase(i), 1);
                 if tmp2 >= 100 then
                 begin
-                    SetResourceType(GetBase(tmp), 1, tmp2 - 100);
+                    SetResourceType(GetBase(i), 1, tmp2 - 100);
                     break;
                 end else begin
-                    SetResourceType(GetBase(tmp), 1, 0);
+                    SetResourceType(GetBase(i), 1, 0);
                 end;
             end;
 
             for i in tmp do
             begin
-                tmp2 = GetResourceType(GetBase(tmp), 3);
+                tmp2 = GetResourceType(GetBase(i), 3);
                 if tmp2 >= 100 then
                 begin
-                    SetResourceType(GetBase(tmp), 3, tmp2 - 100);
+                    SetResourceType(GetBase(i), 3, tmp2 - 100);
                     break;
                 end else begin
-                    SetResourceType(GetBase(tmp), 3, 0);
+                    SetResourceType(GetBase(i), 3, 0);
                 end;
             end;
 
@@ -459,25 +465,25 @@ begin
 
                 for i in tmp do
                 begin
-                    tmp2 = GetResourceType(GetBase(tmp), 1);
+                    tmp2 = GetResourceType(GetBase(i), 1);
                     if tmp2 >= 200 then
                     begin
-                        SetResourceType(GetBase(tmp), 1, tmp2 - 200);
+                        SetResourceType(GetBase(i), 1, tmp2 - 200);
                         break;
                     end else begin
-                        SetResourceType(GetBase(tmp), 1, 0);
+                        SetResourceType(GetBase(i), 1, 0);
                     end;
                 end;
 
                 for i in tmp do
                 begin
-                    tmp2 = GetResourceType(GetBase(tmp), 3);
+                    tmp2 = GetResourceType(GetBase(i), 3);
                     if tmp2 >= 200 then
                     begin
-                        SetResourceType(GetBase(tmp), 3, tmp2 - 200);
+                        SetResourceType(GetBase(i), 3, tmp2 - 200);
                         break;
                     end else begin
-                        SetResourceType(GetBase(tmp), 3, 0);
+                        SetResourceType(GetBase(i), 3, 0);
                     end;
                 end;
 
@@ -526,7 +532,7 @@ begin
         DialogueOff;
         ComEnterUnit(otherKurt, KurtVeh);
         wait(0$1);
-        ComMoveXY(KurtVeh, 157, 188);
+        ComMoveToArea(KurtVeh, PlayerSpawn);
         wait(0$6);
         RemoveUnit(otherKurt);
         RemoveUnit(KurtVeh);
@@ -538,13 +544,13 @@ end;
 Every 0$10 trigger warWithLegion = 1 do PrepareAttackLegion;
 
 // Set side cargos
-Every 0$1 trigger IsPlaced(amCargo1) and not GetCargo(amCargo1, 3) do SetSide(amCargo1, 4);
-Every 0$1 trigger IsPlaced(amCargo2) and not GetCargo(amCargo2, 1) and not GetCargo(amCargo2, 3) do SetSide(amCargo2, 4);
-Every 0$1 trigger IsPlaced(amCargo2) and not GetCargo(amCargo3, 1) do SetSide(amCargo3, 4);
-Every 0$1 trigger IsPlaced(amCargo3) and not GetCargo(amCargo4, 2) do SetSide(amCargo4, 4);
-Every 0$1 trigger IsPlaced(amCargo4) and not GetCargo(amCargo5, 1) and not GetCargo(amCargo5, 2)  do SetSide(amCargo5, 4);
-Every 0$1 trigger IsPlaced(amCargo5) and not GetCargo(amCargo6, 1) do SetSide(amCargo6, 4);
-Every 0$1 trigger IsPlaced(amCargo6) and not GetCargo(amCargo6, 2) do SetSide(amCargo7, 4);
+Every 0$1 trigger IsPlaced(amCargo1) and not GetCargo(amCargo1, 1) and not GetCargo(amCargo1, 2) and not GetCargo(amCargo1, 3) do SetSide(amCargo1, 4);
+Every 0$1 trigger IsPlaced(amCargo2) and not GetCargo(amCargo2, 1) and not GetCargo(amCargo2, 2) and not GetCargo(amCargo2, 3) do SetSide(amCargo2, 4);
+Every 0$1 trigger IsPlaced(amCargo3) and not GetCargo(amCargo3, 1) and not GetCargo(amCargo3, 2) and not GetCargo(amCargo3, 3) do SetSide(amCargo3, 4);
+Every 0$1 trigger IsPlaced(amCargo4) and not GetCargo(amCargo4, 1) and not GetCargo(amCargo4, 2) and not GetCargo(amCargo4, 3) do SetSide(amCargo4, 4);
+Every 0$1 trigger IsPlaced(amCargo5) and not GetCargo(amCargo5, 1) and not GetCargo(amCargo5, 2) and not GetCargo(amCargo5, 3) and not GetCargo(amCargo5, 2)  do SetSide(amCargo5, 4);
+Every 0$1 trigger IsPlaced(amCargo6) and not GetCargo(amCargo6, 1) and not GetCargo(amCargo6, 2) and not GetCargo(amCargo6, 3) do SetSide(amCargo6, 4);
+Every 0$1 trigger IsPlaced(amCargo7) and not GetCargo(amCargo7, 1) and not GetCargo(amCargo7, 2) and not GetCargo(amCargo7, 3) do SetSide(amCargo7, 4);
 
 // Remove cargo from map
 Every 0$1 do
@@ -606,10 +612,10 @@ begin
 end;
 
 // First tep
-Every 0$1 do
+Every 0$1 trigger vehicleTeleported = 1 do
 var i, vehicles;
 begin
-    vehicles = FilterUnitsInArea(OutsideArea1, [f_side, 3]);
+    vehicles = FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 250]]);
     enable;
 
     for i in vehicles do
@@ -618,10 +624,10 @@ begin
         begin
             Disable;
             DialogueOn;
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT1-Sol1-1', 'DT1-FSol1-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 'DT1-Sol1-1', 'DT1-FSol1-1');
             Say(JMM, 'DT1-JMM-1');
             DialogueOff;
-            exit;
+            break;
         end;
     end;
 
@@ -630,42 +636,42 @@ end;
 // Dialog after destroy tanks
 Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
 begin
-    vehicleTeleported = 3;
+    vehicleTeleported = 2;
     DialogueOn;
     Say(JMM, 'DT1a-JMM-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT1a-Sol1-1', 'DT1a-FSol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 'DT1a-Sol1-1', 'DT1a-FSol1-1');
     Say(JMM, 'DT1a-JMM-2');
     DialogueOff;
 end;
 
 // Second tp
-Every 0$1 do
+Every 0$1 trigger vehicleTeleported = 3 do
 var i, vehicles;
 begin
-    vehicles = FilterUnitsInArea(OutsideArea1, [f_side, 3]);
+    vehicles = FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 250]]);
     enable;
 
     for i in vehicles do
     begin
-        if See(1, i) and vehicleTeleported = 2 then
+        if See(1, i) and vehicleTeleported = 3 then
         begin
             Disable;
             DialogueOn;
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT2-Sol1-1', 'DT2-FSol1-1');
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 'DT2-Sol1-1', 'DT2-FSol1-1');
             DialogueOff;
-            exit;
+            break;
         end;
     end;
 
 end;
 
 // Dialog after destroy tanks
-Every 0$10 trigger vehicleTeleported = 2 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
+Every 0$10 trigger vehicleTeleported = 3 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
 begin
     vehicleTeleported = 4;
     DialogueOn;
     Say(JMM, 'DT2a-JMM-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT2a-Sol1-1', 'DT2a-FSol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 'DT2a-Sol1-1', 'DT2a-FSol1-1');
     Say(Donaldson, 'DT2a-Don-1');
     DialogueOff;
 end;
@@ -675,8 +681,8 @@ Every 0$1 trigger SeeXY(1, 36, 55) do
 begin
     DialogueOn;
     CenterOnXY(36, 55);
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]) diff [JMM], 'D5-JMM-1', '');
-    If warWithLegion = 1 then Say(Donaldson, 'D5-Don-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 'D5-Sol1-1', 'D5-FSol1-');
+    If warWithLegion = 1 and IsLive(Donaldson) then Say(Donaldson, 'D5-Don-1');
     DialogueOff;
 end;
 
@@ -688,6 +694,7 @@ begin
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], 'DT3-Sol1-1', 'DT3-FSol1-1');
     Say(JMM, 'DT3-JMM-1');
     DialogueOff;
+    ChangeMissionObjectives('M2');
 end;
 
 // Destroy lab
@@ -707,10 +714,12 @@ begin
             ComEnterUnit(RuScientists[i], vehs[j]);
             If IsOk(rutp) then
             begin
-               if i mod 2 then AddComEnterUnit([RuScientists[i], vehs[j]], rutp)
-               else AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
-            end else begin AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
-            end;
+
+               if j mod 2 then begin AddComEnterUnit([RuScientists[i], vehs[j]], rutp); AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
+               end else begin AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
+
+            end else begin AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
+        
         end;
     end; 
 
@@ -718,9 +727,24 @@ end;
 
 // Remove sci from map
 Every 0$1 trigger ruAI = 0 do
-var i;
+var i, j;
 begin
     enable;
-    for i in FilterUnitsInArea(EscapeArea1, [[f_side, 3]]) do RemoveUnit(i);
-    for i in FilterUnitsInArea(EscapeArea2, [[f_side, 3]]) do RemoveUnit(i);
+
+    for i in FilterUnitsInArea(EscapeArea1, [[f_side, 3]]) do
+    begin
+        for j in RuScientists do 
+            if j = i then RuScientists = RuScientists diff [i];
+
+        RemoveUnit(i);
+    end; 
+    
+    for i in FilterUnitsInArea(EscapeArea2, [[f_side, 3]]) do
+    begin
+
+        for j in RuScientists do 
+            if j = i then RuScientists = RuScientists diff [i];
+
+        RemoveUnit(i);
+    end; 
 end;

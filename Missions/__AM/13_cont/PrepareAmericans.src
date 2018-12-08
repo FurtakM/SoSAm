@@ -1,27 +1,50 @@
 Export function PrepareHeroes;
 begin
     uc_side = 1;
-    JMM = PrepareUnit('JMM', false);
-    Gary = PrepareUnit('Gary', false);
-    Frank = PrepareUnit('Frank', false);
-    Cornell = PrepareUnit('Cornell', false);
-    Lisa = PrepareUnit('Lisa', false);
-    Cyrus = PrepareUnit('Cyrus', false);
-    Woodruff = PrepareUnit('Woodruff', false);
-    Stevens = PrepareUnit('Stevens', false);
+
+    JMM = PrepareUnit('13c_JMM', true);
+    Stevens = PrepareUnit('13c_Stevens', true);
+    Lisa = PrepareUnit('13c_Lisa', true);
+    Donaldson = PrepareUnit('13c_Donaldson', true);
+    Bobby = PrepareUnit('13c_Bobby', true);
+    Cyrus = PrepareUnit('13c_Frank', true);
+    Denis = PrepareUnit('13c_Denis', true);
+    Brown = PrepareUnit('13c_Brown', true);
+    Gladstone = PrepareUnit('13c_Gladstone', true);
+    Houten = PrepareUnit('13c_Houten', true);
+    Cornel = PrepareUnit('13c_Cornel', true);
+    Gary = PrepareUnit('13c_Gary', true);
+    Frank = PrepareUnit('13c_Frank', true);
+    Kikuchi = PrepareUnit('13c_Kikuchi', true);
 
     Powell = PrepareUnit('Powell', false);
 
-    PlaceHumanInUnit(JMM, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[1]);
-    PlaceHumanInUnit(Gary, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[2]);
-    PlaceHumanInUnit(Frank, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[3]);
-    PlaceHumanInUnit(Cornell, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[4]);
-    PlaceHumanInUnit(Lisa, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[5]);
-    PlaceHumanInUnit(Cyrus, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[6]);
-    PlaceHumanInUnit(Woodruff, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[7]);
-    PlaceHumanInUnit(Stevens, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]])[8]);
+    PlaceHumanInUnit(JMM, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Stevens, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Lisa, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Donaldson, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Bobby, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Cyrus, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Denis, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Brown, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Gladstone, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Houten, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Cornel, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Gary, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Frank, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    PlaceHumanInUnit(Kikuchi, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
 
-    SetClass(Lisa, 2);
+end;
+
+Export function PrepareAmericansRandom;
+var i;
+begin
+
+    uc_side = 1;
+
+    others13 = CreateCharacterSet('13c_others');
+    
+    for i in others13 do PlaceHumanInUnit(i, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
 end;
 
 Export function SpawnVehicle;

@@ -13,25 +13,24 @@ begin
     end;
 end;
 
-On EnterBuilding(building, human) Do
+On UnitTeleported(building, human) Do
 begin
-    display_strings = [GetSide(human), building];
     if building = ruteleprt and GetSide(human) = 1 and eventVar1 = 0 then
     begin
         eventVar1 = 1;
         teleportExplored = 1;
+        ChangeMissionObjectives('M2a');
         wait(0$2);
         DialogueOn;
-        DialogRandom(FilterAllUnits([[f_side, 1] diff [JMM]]), 'DT3a-Sol1-1', 'DT3a-FSol1-1');
+        DialogRandom(FilterAllUnits([[f_side, 1]]), 'DT3a-Sol1-1', 'DT3a-FSol1-1');
         Say(JMM, 'DT3a-JMM-1');
         CenterNowOnUnits(human);
-        Say(JMM, 'DT3a-JMM-1a1');
+        Say(JMM, 'DT3a-JMM-1a');
         DialogueOff;
     end;
 
     if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 0 then vehicleTeleported = 1;
     if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 2 then vehicleTeleported = 3;
-    if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 3 then vehicleTeleported = 4;
 end;
 
 On VehicleConstructed(vehicle, factory) Do

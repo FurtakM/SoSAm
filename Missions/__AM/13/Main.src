@@ -1,8 +1,24 @@
 Export JMM, Powell;
+Export Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi; 
+Export Stevens; // New :D
+Export others12, others11;
+
+Export mission_prefix_prev;
 
 Starting
 begin
+
+    Resetfog;
+    RandomizeAll;
+
+    mission_prefix_prev = '12_';
+
+    PrepareEpsilonBase;
     PrepareHeroes;
+
+    CenterNowOnUnits(JMM);
+
+    DialogueOn;
     Say(JMM, 'D1-JMM-1');
     SayRadio(Powell, 'D1-Pow-1');
     SayRadio(Powell, 'D1-Pow-1a');
@@ -14,6 +30,8 @@ begin
     SayRadio(Powell, 'D1-Pow-3');
     Say(JMM, 'D1-JMM-4');
     SayRadio(Powell, 'D1-Pow-4');
+    DialogueOff;
 
+    SelectAndSaveCharacters;
     ChangeMap(13, '%_cont');
 end;
