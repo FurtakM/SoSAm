@@ -25,9 +25,32 @@ begin
         ComLinkTo(i, arDriver);
 end;
 
-Every 0$1 trigger FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_not, [f_weapon, 31]]]) = 0 do
+Every 0$1 trigger FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_control, 2]]) = 0 do
 begin
     enable;
     RemoveUnit(arControlTower);
     RemoveUnit(arDriver);
+end;
+
+
+Every 15$0 trigger sibDeposits > 0 do 
+var un, rnd;
+begin
+    enable;
+
+    rnd = 0;
+
+    uc_side = 2;
+    uc_nation = 2;
+    
+    hc_name = '';
+    hc_gallery = '';
+    PrepareHuman(false, 4, 10);
+
+    un = CreateHuman;
+    PlaceUnitArea(un, [ArabianSpawn1, ArabianSpawn2][Rand(1, 2)], false);
+
+    rnd = Rand(1, sibDeposits);
+
+    ComContaminate(un, sibDeposits[rnd][1], sibDeposits[rnd][2]);
 end;

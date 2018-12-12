@@ -53,4 +53,12 @@ begin
     SetClass([Titov, Lipshchin], 9);
 
     ComAgressiveMove(FilterAllUnits([[f_side, 7], [f_type, unit_vehicle]]), 107, 118);
+
+    repeat
+          wait(0$1);
+          ComMoveUnit(FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_weapon, 49]]), Masha);
+
+    until FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_weapon, 49]]) = 0 or IsDying(Masha);
+
+    ComAgressiveMove(FilterAllUnits([[f_side, 7], [f_type, unit_vehicle]]), 107, 118);
 end;

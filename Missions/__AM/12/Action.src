@@ -703,24 +703,22 @@ var i,j, vehs;
 begin
     ruAI = 0;
     vehs = FilterUnitsInArea(RuEastBase, [[f_side, 3], [f_type, unit_vehicle], [f_empty]]);
+
     DialogueOn;
     Say(JMM, 'D6-JMM-1');
     DialogueOff;
 
     for i := 1 to RuScientists do
     begin
-        for j := 1 to vehs do
-        begin 
-            ComEnterUnit(RuScientists[i], vehs[j]);
+            ComEnterUnit(RuScientists[i], vehs[1]);
             If IsOk(rutp) then
             begin
 
-               if j mod 2 then begin AddComEnterUnit([RuScientists[i], vehs[j]], rutp); AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
-               end else begin AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
+               if i mod 2 then begin AddComEnterUnit([RuScientists[i], vehs[i]], rutp); AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
+               end else begin AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
 
-            end else begin AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
-        
-        end;
+            end else begin AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
+
     end; 
 
 end;

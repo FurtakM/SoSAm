@@ -51,53 +51,32 @@ begin
         end;
     end;
 
-    if GetClass(unit) = 3 and GetSide(unit) = 3 and IsOK(ru_fact1) and GetSide(ru_fact1) = 3 then
-    begin
-        uc_side = 3;
-        uc_nation = 3;
-
-        hc_gallery := '';
-        hc_name := '';
-
-        PrepareMechanic(false, 10);
-        PlaceHumanInUnit(CreateHuman, ru_fact1);
-    end;
 end;
 
-On VehicleConstructed(vehicle, building) Do
-var i, un, crates;
+On VehicleConstructed(vehicle, factory) Do
 begin
+    if factory = ru_fact1 or factory = ru_fact2 then
+        if GetSide(vehicle) = 3 then
+        begin
+            if GetWeapon(vehicle) = 46 or GetWeapon(vehicle) = 45 or GetWeapon(vehicle) = 44 then russianTanks = russianTanks ^ vehicle;
 
-    if building = ru_fact1 and GetSide(building) = 3 and [GetWeapon(vehicle) = 42 OR GetWeapon(vehicle) = 43 OR GetWeapon(vehicle) = 44] then
-       russianTanks = russianTanks ^ vehicle;
+            if GetWeapon(vehicle) = 49 then russianTimeLapsers = russianTimeLapsers ^ vehicle;;
 
-    if building = ru_fact2 and GetSide(building) = 3 and [GetWeapon(vehicle) = 42 OR GetWeapon(vehicle) = 43 OR GetWeapon(vehicle) = 44] then
-        russianTanks = russianTanks ^ vehicle;
+        end;
+end;
 
-        
-    if GetSide(vehicle) = 1 and GetWeapon(vehicle) = 10 then
-        amLaserCounter = amLaserCounter + 1;
-
-end; 
 
 On UnitGoesToRed(unit) Do
-var i, tmpMeh;
+var i;
 begin
-    if GetSide(unit) = 3 and GetType(unit) = unit_vehicle and [GetWeapon(unit) = 42 OR GetWeapon(unit) = 43 OR GetWeapon(unit) = 44] then
+    if GetSide(unit) = 3 and GetType(unit) = unit_vehicle then
     begin
-        AddComConstruct(ru_fact1, GetChassis(unit), GetEngine(unit), GetControl(unit), GetWeapon(unit));
-        for i in russianDamageTanks do
-            if i = unit then russianDamageTanks = russianDamageTanks diff [unit];
+        if russianTanks > 0 then
+            for i in russianTanks do
+                if i = unit then russianTanks = russianTanks diff [unit];
 
-        tmpMeh = UnitsInside(unit);
-        ComExitVehicle(tmpMeh);
-        wait(0$01);
-        ComEnterUnit(tmpMeh, ru_fact1);
+        if russianTimeLapsers > 0 then
+            for i in russianTimeLapsers do
+                if i = unit then russianTimeLapsers = russianTimeLapsers diff [unit];
     end;
-end;
-
-On EnterBuilding(building, human) Do
-begin
-     if building = ru_fact1 and GetSide(human) = 3 then SetLives(human, 1000);
-     if building = ru_fact2 and GetSide(human) = 3 then SetLives(human, 1000);
 end;

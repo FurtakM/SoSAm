@@ -12,8 +12,9 @@ End;
 
 Export function DialogRandom(characters, dialogMID, dialogFID);
 var i, rnd;
-begin 
+begin
 
+    characters := characters diff [JMM, Stevens,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
     rnd = rand(1, characters);  
 
     for i = 1 to characters do
@@ -52,6 +53,16 @@ begin
             end;
 
 End;
+
+Export function EnchancedSaveCharacters(charactersList, ident);
+var i;
+begin
+    for i in charactersList do
+    begin
+         if IsOk(i) then SaveCharacters(i, ident);
+    end;
+end;
+
 
 Export function RepairVehicle(side, repairArea, repX, repY, targetSide);
 var i,j, vehicleOK_list, damageVehicle_list, vehicleNeedRepair_list, vehicleDontNeedRepair_list, mechanicInside_list, mechanicOutside_list, target1, target2;
@@ -441,5 +452,5 @@ begin
             end;
         end;
       end;
-    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_occupied], [f_not, 31]]) = 0;
+    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_occupied]]) diff FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_weapon, 31]]) = 0;
 END;

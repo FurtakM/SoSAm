@@ -3,8 +3,13 @@ begin
     if weapon = 8 and eventVar1 = 0 then
     begin
         eventVar1 = 1;
+
+        DialogueOn;
         Say(JMM, 'D6a-JMM-1');
         SayRadio(Powell, 'D6a-Pow-1');
+        DialogueOff;
+        wait(3$0);
+        PowellSupport;
     end;
 end;
 
@@ -13,10 +18,15 @@ begin
     if GetWeapon(vehicle) = 8 and eventVar2 = 0 then
     begin
         eventVar2 = 1;
+
+        DialogueOn;
         Say(JMM, 'D6b-JMM-1');
         SayRadio(Powell, 'D6b-Pow-1');
+        DialogueOff;
+
         SetAreaMapShow(TestArea, 1);
         SetAreaMapShow(RadarArea, 1);
+
         ChangeMissionObjectives('M3');
     end;
 end;
@@ -28,8 +38,14 @@ begin
         eventVar3 = 1;
 
         if FilterUnitsInArea(RadarArea, [[f_side, 1], [f_type, unit_vehicle], [f_weapon, 11]]) > 0 then
+        begin
             radarOnSpot = 1;
-            
+            ChangeMissionObjectives('M3a');
+        end else begin
+            ChangeMissionObjectives('M3b');
+        end;
+
+        DialogueOn;    
         Say(Stevens, 'D8-Huck-1');
         Say(JMM, 'D8-JMM-1');
         Say(Stevens, 'D8-Huck-2');
@@ -37,9 +53,12 @@ begin
         Say(Stevens, 'D8-Huck-3');
         Say(JMM, 'D8-JMM-3');
         Say(Stevens, 'D8-Huck-4');
+        DialogueOff;
+
         SetAreaMapShow(TestArea, 0);
         SetAreaMapShow(RadarArea, 0);
         SetAreaMapShow(SibRadiationArea, 1);
+
         ChangeMissionObjectives('M5');
     end;
 end;
@@ -51,10 +70,15 @@ begin
 end;
 
 On SibDepositContaminated(unit, x, y) Do
+var i;
 begin
     if GetNation(unit) = 2 then
     begin
         sibDestroyedCounter = sibDestroyedCounter + 1;
+
+        for i := 1 to sibDeposits do
+            if sibDeposits[i][1] = x and sibDeposits[i][2] = y then sibDeposits = sibDeposits diff sibDeposits[i][1] ^ sibDeposits[i][2];
+
         if eventVar5 = 0 then
         begin
             eventVar5 = 1;
@@ -74,5 +98,5 @@ end;
 
 On BuildingStarted(building, unit) Do
 begin
-    If GetSide(building) = 1 and GetBType(building) = 0 then SetBName(building, 'omega');
+    If GetSide(building) = 1 and GetBType(building) = 0 and FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, 0], [f_btype, 1]]]) > 0 then SetBName(building, 'omega');
 end;
