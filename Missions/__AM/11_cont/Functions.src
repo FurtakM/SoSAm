@@ -450,7 +450,7 @@ if mech then
 End;
 
 Export Function PrepareBase(base_dep, name, skill, sources, personel);
-var i, j, f, x, un, base, side, nation, buildings;
+var i, j, d, b, f, x, un, base, side, nation, buildings;
 begin
 result := [];
 
@@ -482,8 +482,10 @@ if buildings then
    if UnitFilter(buildings, [f_or, [f_btype, b_bunker], [f_btype, b_turret]]) then
       begin
       for i in UnitFilter(buildings, [f_or, [f_btype, b_bunker], [f_btype, b_turret]]) do
+          begin
           if not GetBWeapon(i) then
              PlaceWeaponTurret(i, GetTurretWeapon(i));
+          end;
       end;
 
    for i = 1 to personel do
@@ -563,7 +565,7 @@ var hex, list, factories, base, i, j, x, y, nat, h, tmp, height, side, fac_list,
 begin
 result := false;
 
-if not tower then
+if not tower or not GetBType(tower) in [b_bunker, b_turret] then
    exit;
 
 nat := GetNation(tower);
@@ -621,12 +623,12 @@ if nat in [1,2] and (us_radar in list or ar_radar in list) and GetTech(tech_rada
    end;
 
 // rocket_launcher
-{if not weapon and GetTech(tech_rocket, side) = state_researched and
+if not weapon and GetTech(tech_rocket, side) = state_researched and
    (us_rocket_launcher in list or ar_rocket_launcher in list or ru_rocket_launcher in list) then
    begin
    hex := _GetHexInfo(x, y);
 
-   if not hex then
+   if hex[1] then
       exit;
 
    height := hex[2];
@@ -640,7 +642,7 @@ if nat in [1,2] and (us_radar in list or ar_radar in list) and GetTech(tech_rada
           begin
           hex := _GetHexInfo(j[1], j[2]);
 
-          if not hex then
+          if hex[1] then
              continue;
 
           h := hex[2];
@@ -652,7 +654,7 @@ if nat in [1,2] and (us_radar in list or ar_radar in list) and GetTech(tech_rada
              end;
           end;
        end;
-   end;  }
+   end;  
 
 // group of weapons
 if not weapon then
@@ -731,12 +733,11 @@ if not bdepot or not btype or not d in [0, 1, 2, 3, 4, 5] or not ValidHex(x, y) 
 pom := GetBase(bdepot);
 cost := CostOfBuilding(btype, GetNation(bdepot));
 
-if GetResourceType(pom, mat_cans) >= cost[1] and
+if not (GetResourceType(pom, mat_cans) >= cost[1] and
    GetResourceType(pom, mat_oil) >= cost[2] and
-   GetResourceType(pom, mat_siberit) >= cost[3] then
-   result := true
-  else
+   GetResourceType(pom, mat_siberit) >= cost[3]) then
    exit;
+
 
 //    MAX_DISTANCE 28 (26 in vanilla)
 //    MAX_DISTANCE_BONUS 8
@@ -747,22 +748,16 @@ if GetBType(bdepot) = b_depot then
    dist := 36;
 
 if GetDistUnitXY(bdepot, x, y) > dist then
-   begin
-   result := false;
    exit;
-   end;
 
 hexes := GetBuildingHexes(btype, x, y, d, GetNation(bdepot), 0);
 
 if not hexes then
-   begin
-   result := false;
    exit;
-   end;
 
 hex := _GetHexInfo(x, y);
 
-if not hex then
+if hex[1] then
    exit;
 
 height := hex[2];
@@ -780,15 +775,14 @@ for i = 1 to hexes do
        j[4] or not j[5] or not j[6] in [1, 2, 7, 9, 10, 11] or
        HexInfo(hexes[i][1], hexes[i][2]) > 0 or
        IsEnvironment(hexes[i][1], hexes[i][2]) then
-       begin
-       result := false;
        exit;
-       end;
-   
+
     end;
 
 if DangerAtRangeXY(GetSide(bdepot), x, y, 20)[4] then
-   result := false;
+   exit;
+
+result := true;
 End;
 
 {
