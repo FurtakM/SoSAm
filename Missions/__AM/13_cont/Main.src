@@ -1,3 +1,24 @@
+{
+Map scripts: Nefarem
+
+ Ob's sturmt oder schneit,
+ Ob die Sonne uns lacht,
+ Der Tag gluhend heiss Oder eiskalt die Nacht.
+
+ Bestaubt sind die Gesichter,
+ Doch froh ist unser Sinn,
+ Ja unser Sinn;
+ Es braust unser Panzer Im Sturmwind dahin.
+
+  Global Variables:
+  13_BurlakStatus_1 = 0 - Burlak die
+  13_BurlakStatus_1 = 1 - Burlak escape
+
+  13_StevensStatus_1 = 0 - Stevens die
+  13_StevensStatus_1 = 1 - Stevens live
+
+}
+
 Export JMM, Stevens,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi; // Am heroes
 Export Powell; // Am commander
 Export others13; // Others selected
@@ -10,13 +31,17 @@ Export spawnBurlak, burlakStatus;
 Export radationResearched;
 Export radarOnSpot;
 
+Export sibDeposits;
 Export sibDestroyedCounter;
 
 Export arControlTower, arDriver;
 
+Export mission_prefix;
+
 Export eventVar1, eventVar2, eventVar3, eventVar4, eventVar5;
 
 Export debugMode;
+
 
 Starting
 begin
@@ -32,13 +57,17 @@ begin
 
     sibDestroyedCounter = 0; // how many Siberite deposit was destroyed
 
+    sibDeposits = [ [91, 111], [23, 37] ]; // location sib deposits in map
+
     eventVar1 = 0;
     eventVar2 = 0;
     eventVar3 = 0;
     eventVar4 = 0;
     eventVar5 = 0;
 
-    debugMode = 1;
+    mission_prefix = '13f_';
+
+    debugMode = 0;
     
     SpawnVehicle;
     PrepareHeroes;

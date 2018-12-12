@@ -8,8 +8,25 @@ begin
     PlaceHumanInUnit(JMM, JMMveh);
 
     uc_side = 4;
-    Joan = PrepareUnit('Joan', false);
-    PlaceUnitArea(Joan, JoanSpawn, false);
 
-    ComHold(Joan);
+    if TestCharacters('10c_Joan') = true then
+    begin
+        Joan = PrepareUnit('10c_Joan', false);
+        PlaceUnitArea(Joan, JoanSpawn, false);
+
+    end else
+    begin
+        if TestCharacters('13s_Lisa') = true then
+        begin
+            Lisa = PrepareUnit('13s_Lisa', false);
+            PlaceUnitArea(Lisa, JoanSpawn, false);
+        end else
+        begin
+            Connie = PrepareUnit('Connie', true);
+            PlaceUnitArea(Connie, JoanSpawn, false);
+        end;
+    end;
+        
+
+    ComHold([Joan, Lisa, Connie]);
 end;

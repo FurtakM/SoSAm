@@ -7,21 +7,26 @@ begin
         AddMedal('fastend', -1);
         AddMedal('fastend', -1);
     end;
+    
+    if fastEnd = 0 then
+    begin
+            
+        if IsOk(Joan) then
+            AddMedal('protect', 1)
+        else
+            AddMedal('protect', -1);
 
-    if IsOk(Joan) then 
-        AddMedal('protect', 1)
-    else
-        AddMedal('protect', -1);
+        if amLaserCounter >= 2 then 
+            AddMedal('double', 1)
+        else
+            AddMedal('double', -1);
 
-    if amLaserCounter >= 2 then 
-        AddMedal('double', 1)
-    else
-        AddMedal('double', -1);
-
-    if FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 then 
-        AddMedal('base', 1)
-    else
-        AddMedal('base', -1);
+        if FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 then 
+            AddMedal('base', 1)
+        else
+            AddMedal('base', -1);
+            
+    end;
 
     GiveMedals('Eliminate');
 
