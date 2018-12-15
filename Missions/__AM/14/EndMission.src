@@ -1,3 +1,32 @@
+Every 0$5 trigger IsInArea(IsInUnit(JMM), ExitArea) and fastEnd = 0 do
+begin
+    enable;
+
+    if GetDistUnits(IsInUnit(JMM), IsInUnit(Joan)) < 10 or GetDistUnits(IsInUnit(JMM), IsInUnit(Lisa)) < 10 or GetDistUnits(IsInUnit(JMM), IsInUnit(Connie)) < 10 then
+    begin
+
+        case Query('Q3b') of  1: FinishMission; end;
+
+    end else
+    begin
+        if JMMGirl = 1 then
+        begin
+            case Query('Q3bJ') of  1: FinishMission; end;
+        end else
+        begin
+            if JMMGirl = 2 then
+            begin
+                case Query('Q3bL') of  1: FinishMission; end;
+            end else
+            begin
+                case Query('Q3bX') of  1: FinishMission; end;
+            end;
+        end;   
+    end;
+
+end;
+
+
 Export function FinishMission;
 begin
 
@@ -11,7 +40,7 @@ begin
     if fastEnd = 0 then
     begin
             
-        if IsOk(Joan) then
+        if IsOk(Joan)  then
             AddMedal('protect', 1)
         else
             AddMedal('protect', -1);

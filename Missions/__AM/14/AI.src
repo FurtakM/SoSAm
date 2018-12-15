@@ -14,11 +14,12 @@ begin
     TimeLapsersAI(3);
 end;
 
-Every 5$0 + 7$0 trigger russianAI = 1 and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_ok], [f_not, [f_empty]]]) diff FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_weapon, ru_crane]]) do
+Every 5$0 + 7$0 trigger russianAI = 1 and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_ok], [f_control, 3]]) = 0 do
 begin
     enable;
-    if russianRocketsAvalaible = 0 then BuildingVehicle(3, ru_fact1, [3, 4, 4][Difficulty], [46, 45, 44], 3, [1, 3][Rand(1, 2)], 24)
-    else BuildingVehicle(3, ru_fact1, [3, 4, 4][Difficulty], [46, 45, 44, 47], 3, [1, 4][Rand(1, 2)], 24);
+
+    if russianRocketsAvalaible = 0 then BuildingVehicle(3, ru_fact1, [3, 4, 4][Difficulty], [46, 45, 44], 3, 3, 24)
+    else BuildingVehicle(3, ru_fact1, [3, 4, 4][Difficulty], [46, 45, 44, 47], 3, 3, 24);
 
     if russianTimeLapsers = 0 then BuildingVehicle(3, ru_fact2, [1, 2, 2][Difficulty], [49, 49], 3, 3, 24);
 end;

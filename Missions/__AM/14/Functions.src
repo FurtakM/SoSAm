@@ -4,7 +4,7 @@ begin
 
 if exist_mode then
 begin
-//   unit := CreateCharacter(mission_prefix_prev&ident);
+  unit := CreateCharacter(ident);
   end else
   begin
    unit := NewCharacter(ident);
@@ -69,6 +69,10 @@ begin
        SetTech(57, 3, state_disabled);
        SetTech(58, 3, state_disabled);
        SetTech(59, 3, state_disabled);
+
+       SetTech(51, 3, state_disabled);
+       SetTech(52, 3, state_disabled);
+       SetTech(53, 3, state_disabled);
      end;
 
      if difficulty = 2 then
@@ -76,6 +80,10 @@ begin
        SetTech(57, 3, state_enabled);
        SetTech(58, 3, state_disabled);
        SetTech(59, 3, state_disabled);
+
+       SetTech(51, 3, state_enabled);
+       SetTech(52, 3, state_disabled);
+       SetTech(53, 3, state_disabled);
      end;
 
      if difficulty = 3 then
@@ -83,6 +91,10 @@ begin
        SetTech(57, 3, state_enabled);
        SetTech(58, 3, state_enabled);
        SetTech(59, 3, state_disabled);
+
+       SetTech(51, 3, state_enabled);
+       SetTech(52, 3, state_enabled);
+       SetTech(53, 3, state_disabled);
      end;
 
 end;
@@ -203,7 +215,6 @@ Export function BuildingVehicle(side, fabric, vehCount, weaponTab, engine, contr
 var i;
 begin
 
-    if FilterAllUnits([[f_side, side], [f_type, unit_vehicle]]) diff FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_weapon, ru_crane]]) <= vehCount then
         for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
 
 END;
