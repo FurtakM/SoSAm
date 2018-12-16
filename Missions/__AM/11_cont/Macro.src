@@ -549,7 +549,7 @@ for i = 1 to mc_bases do
        continue;
 
     if mc_miners[i] then
-       for j = 1 to mc_miners[i] do
+       for j = mc_miners[i] downto 1 do
            begin
            if IsDead(mc_miners[i][j]) then
               begin
@@ -560,18 +560,13 @@ for i = 1 to mc_bases do
 
            if GetClass(mc_miners[i][j]) = 1 and not MineOfUnit(mc_miners[i][j]) and DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][j][1], mc_mines[i][j][2], 12)[4] = 0 then
               begin
+              k := rand(1, mc_mines[i]);
+
               if IsInUnit(mc_miners[i][j]) then
                  ComExitBuilding(mc_miners[i][j]);
 
-              wait(3);
-
-              k := rand(1, mc_mines[i]);
-
-              while (MineAtPos(mc_mines[i][k][1], mc_mines[i][k][2])) do
-               k := rand(1, mc_mines[i]);
-
               if not HasTask(mc_miners[i][j]) then
-                 ComPlaceRemoteCharge(mc_miners[i][j], mc_mines[i][k][1], mc_mines[i][k][2], 0);
+                 AddComPlaceRemoteCharge(mc_miners[i][j], mc_mines[i][k][1], mc_mines[i][k][2], 0);
               end;
            end;
 

@@ -179,7 +179,7 @@ enable;
 
 for i in ar_kamikadze do
     if See(1, i) then
-       ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_side, 1]), i));
+       ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 2]), i));
 End;
 
 
@@ -218,14 +218,6 @@ AddComMoveXY(cargo, 124, 7);
 End;
 
 
-
-// Escape!!
-Every 12$00 do   // TODO  + Zwierzta
-begin
-
-End;
-
-
 // ATTACKS
 // First attempt
 // Attacks from 3 side's
@@ -243,7 +235,7 @@ MC_SetProduceList(1, [ [ar_half_tracked, engine_combustion, control_remote, ar_r
                      ]);
                            
 // wait until jakes get rage
-wait([9$00, 8$00, 7$20][Difficulty]);
+wait([10$00, 9$00, 8$20][Difficulty]);
 
 
 InitHc;
@@ -252,7 +244,7 @@ InitUc;
 uc_side := 2;
 uc_nation := 2;
 
-tmp := [ [], [], [], [] ];
+tmp := [ [], [], [], [], [] ];
 
 // attack from North
 tmp := Replace(tmp, 1, mc_vehicles[1] diff FilterAllUnits([f_weapon, ar_cargo_bay]));
@@ -340,6 +332,37 @@ PlaceHumanInUnit(tmp[4][tmp[4]], tmp[4][tmp[4]-1]);
 coords := [ [148, 140] ];
 MC_PrepareAttack(1, tmp[4], coords, flags);
 
+if gensher_active then
+   begin
+   SayRadio(Gensher, 'D10-Diet-1');
+
+   for i = 1 to 2 do
+       begin
+       PrepareVehicle(ar_medium_trike, engine_siberite, control_apeman, ar_selfpropelled_bomb, 100);
+       un := CreateVehicle;
+       tmp := Add(tmp, [5, tmp[5]+1], un);
+       SetDir(un, 0);
+       PlaceUnitArea(un, gensher_attack, false);
+       ComMoveXY(un, 85, 152);
+       wait(0$2);
+       end;
+
+   for i = 1 to 3 do
+       begin
+       PrepareVehicle(ar_half_tracked, engine_siberite, control_apeman, [ar_gun, ar_rocket_launcher][rand(1,2)], 100);
+       un := CreateVehicle;
+       tmp := Add(tmp, [5, tmp[5]+1], un);
+       SetDir(un, 0);
+       PlaceUnitArea(un, gensher_attack, false);
+       ComMoveXY(un, 85, 152);
+       wait(0$2);
+       end;
+
+   coords := [ [97,143] ];
+
+   MC_PrepareAttack(1, tmp[5], coords, flags);
+   end;
+
 
 Wait(10$00);  
 
@@ -406,4 +429,50 @@ repeat
 
 until IsDead(ar_dep_n) or not UnitFilter(mc_bases[1], [f_btype, b_factory]);
 
+End;
+
+// Run
+Every 18$00 trigger ar_dep_e do
+var i, tmp, un, x;
+begin
+enable;
+
+wait(rand(0$1, 0$34));
+
+tmp := [];
+
+uc_side := 8;
+uc_nation := 2;
+
+InitHc;
+
+// first spawn on east
+for i = 1 to 3 do
+    begin
+    PrepareVehicle([ar_medium_trike, ar_half_tracked][rand(1,2)], engine_siberite, control_apeman, [ar_gun, ar_rocket_launcher][rand(1,2)], 100);
+    un := CreateVehicle;
+    SetDir(un, 4);
+    PlaceUnitArea(un, east_attack_spawn, false);
+    tmp := Replace(tmp, tmp+1, un);
+    end;
+
+for i = 1 to 4 do
+    begin
+    PrepareHuman(false, rand(1,4), 6);
+    un := CreateHuman;
+    PlaceUnitArea(un, east_attack_spawn, false);
+    tmp := Replace(tmp, tmp+1, un);
+    end;
+
+repeat
+ ComAgressiveMove(tmp, 210, 177);
+
+ x := FilterUnitsInArea(escape_area, [f_side, 8]);
+
+ if x then
+    for i in x do
+        RemoveUnit(i);
+
+ wait(0$3);
+until tmp;
 End;
