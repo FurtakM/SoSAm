@@ -1020,6 +1020,14 @@ begin
 result := See(your_side, unit);
 End;
 
+Export Function ReverseDir(unit);
+begin
+if not unit then
+   exit;
+
+result := [3, 4, 5, 0, 1, 2][GetDir(unit)+1];
+End;
+
 
 // hexes: [ [x1, y1], [x2, y2], ..]
 Export Function GetClosestHex(unit, hexes);
@@ -1184,7 +1192,7 @@ End;
     list => [ [ [base, group, path, flags] ] ]
 }
 Export Function Attack(list);
-var base, group, path, flags, i, j, k, x, z, tmp, tmp2, units_path,
+var base, group, path, flags, i, j, k, x, y, d, z, tmp, tmp2, units_path,
     f_ignore_area, f_capture, f_ignore_civ, 
     f_murder, f_mines, f_repair, f_heal, f_spacetime, f_attack_depot,
     f_crawl,
@@ -1331,8 +1339,13 @@ repeat
              begin
              if GetType(tmp[1]) = unit_building and not tmp[1] in mined then
                 begin
-                ComPlaceDelayedCharge(group[i], GetX(tmp[1]), GetY(tmp[1]), tmp[1]);
-                AddComWait(group[i], 0$2);
+                x := GetX(tmp[1]);
+                y := GetY(tmp[1]);
+                d := ReverseDir(group[i]);
+
+                ComPlaceDelayedCharge(group[i], x, y, tmp[1]);
+                AddComMoveXY(group[i], ShiftX(x, d, 7), ShiftY(y, d, 7));
+                SetTag(group[i], 71);
                 mined := Replace(mined, mined+1, tmp[1]);
                 attacking := true;
                 continue;
@@ -1484,6 +1497,15 @@ repeat
        // others..
        if IsOk(group[i]) and not attacking then
           begin
+
+          if GetTag(group[i]) = 71 then
+             begin
+             if HasTask(group[i]) then
+                continue
+               else
+                SetTag(group[i], 0);
+             end;
+
           k := 8;
           x := 0;
 
@@ -1603,4 +1625,24 @@ end;
 
 if Researched(side, tech) then
    result := [class_sniper, class_mortar, class_bazooker][nat];
+End;
+
+Export Function DetonateMines(side, mines);
+var i, tmp;
+begin
+if not mines then
+   exit;
+
+tmp := FilterAllUnits([f_enemy, side]);
+
+for i in mines do
+    begin
+
+    if not MineAtPos(i[1], i[2]) then
+       continue;
+
+    if HexInfo(i[1], i[2]) in tmp then
+       LaunchMineAtPos(i[1], i[2], side);
+    end;
+
 End;
