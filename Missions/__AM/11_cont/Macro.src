@@ -100,6 +100,20 @@ RaiseSailEvent(111); // mc_defense
 RaiseSailEvent(200); // mc_idle
 End;
 
+// mine triggering
+Every 10 trigger skirmish do
+var i;
+begin
+enable;
+
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    if mc_mines[i] and mc_miners[i] then
+       DetonateMines(GetSide(mc_miners[i][1]), mc_mines[i]); //CheckMinesInArea(mc_minefields[i], [[f_enemy, GetSide(mc_miners[i][1])], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]);
+End;
+
 
 {
   MC EVENT LIST
@@ -459,7 +473,7 @@ if not mc_bases then
 
        mc_empty_turret_list := Add(mc_empty_turret_list, [i, 1], x);
 
-       if not mc_empty_turret_list[i] or not mc_empty_turret_list[i][1] or not mc_empty_turret_list[i][1][1] then
+       if not mc_empty_turret_list[i] or not mc_empty_turret_list[i][1] then
           continue;
                      
        if UnitsInside(mc_empty_turret_list[i][1][1]) = 0 then
@@ -530,8 +544,6 @@ if not mc_bases then
 
 for i = 1 to mc_bases do
     begin
-    if mc_minefields[i] and mc_miners[i] then
-       CheckMinesInArea(mc_minefields[i], [[f_enemy, GetSide(mc_miners[i][1])], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]);
 
     if not mc_mines[i] or mc_mines[i] = mc_miners[i] then
        continue;
@@ -542,19 +554,24 @@ for i = 1 to mc_bases do
            if IsDead(mc_miners[i][j]) then
               begin
               tmp := mc_miners[i] diff mc_miners[i][j];
-              mc_miners := Replace(mc_miners, [i, mc_miners[i]+1], tmp);
+              mc_miners := Replace(mc_miners, i, tmp);
               continue;
               end;
 
-           if not MineOfUnit(mc_miners[i][j]) and DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][j][1], mc_mines[i][j][2], 12)[4] = 0 then
+           if GetClass(mc_miners[i][j]) = 1 and not MineOfUnit(mc_miners[i][j]) and DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][j][1], mc_mines[i][j][2], 12)[4] = 0 then
               begin
               if IsInUnit(mc_miners[i][j]) then
                  ComExitBuilding(mc_miners[i][j]);
 
               wait(3);
 
-              if not MineAtPos(mc_mines[i][j][1], mc_mines[i][j][2]) and not HasTask(mc_miners[i][j]) then
-                 ComPlaceRemoteCharge(mc_miners[i][j], mc_mines[i][j][1], mc_mines[i][j][2], 0);
+              k := rand(1, mc_mines[i]);
+
+              while (MineAtPos(mc_mines[i][k][1], mc_mines[i][k][2])) do
+               k := rand(1, mc_mines[i]);
+
+              if not HasTask(mc_miners[i][j]) then
+                 ComPlaceRemoteCharge(mc_miners[i][j], mc_mines[i][k][1], mc_mines[i][k][2], 0);
               end;
            end;
 
@@ -754,6 +771,18 @@ if not mc_bases then
 for i = 1 to mc_bases do
     begin
     mc_scan := Replace(mc_scan, i, ScanBase(mc_bases[i]));
+
+    if not mc_scan[i] then
+       begin
+       tmp := UnitFilter(mc_bases[i], [f_or, [f_class, 5], [f_class, 8], [f_class, 9]]);
+
+       if not tmp then
+          continue;
+
+       for j in tmp do
+           if IsInUnit(j) then
+              SetClass(j, 1);
+       end;
 
     if mc_scan[i] and mc_defender[i] then
        begin

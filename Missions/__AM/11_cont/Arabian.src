@@ -1,6 +1,6 @@
 Export ar_force_west, ar_force_south, ar_force_north, ar_force_east;
 Export ar_force_tmp, ar_vehicles_tmp, ar_kamikadze, ar_defenders_tmp;
-Export Saliba;
+Export Saliba, Gensher;
 
 Export Function PrepareArabian;
 var i, d, un, skill;
@@ -29,7 +29,7 @@ for i = 1 to 3 do
     PlaceHumanInUnit(CreateHuman, un);
     end;
 
-ar_force_north := PrepareBase(ar_dep_n, 'dammam', skill, [10000, 1000, 300], [-1, -1, -1, 4]);
+ar_force_north := PrepareBase(ar_dep_n, 'dammam', skill, [10000, 1000, 300], [-1, 5, -1, 4]);
 ar_force_north := ar_force_north ^ PrepareBase(ar_dep_n2, '', skill, [100, 60, 0], [-1, 4, 0, 0]);
 ar_force_west := PrepareBase(ar_dep_w, 'jeddah', skill, [700, 300, 10], [-1, 5, 3, 2]);
 ar_force_south := PrepareBase(ar_dep_s, 'riyadh', skill, [500, 60, 0], [4, 2, 3, 1]);
@@ -123,6 +123,13 @@ hc_skills = [0,0,0,0];
 Saliba = CreateHuman;
 PlaceHumanInUnit(Saliba, ar_dep_s);
 
+if gensher_active then
+   begin
+   Gensher = NewCharacter('Gensher');
+   PlaceHumanInUnit(Gensher, ar_dep_n);
+   end;
+
+InitHc;
 
 // prepare vehicles
 ar_vehicles_tmp := [];
@@ -234,7 +241,7 @@ MC_SetProduceList(1, [ [ar_half_tracked, engine_combustion, control_remote, ar_r
                        [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
                        [ar_half_tracked, engine_combustion, control_remote, ar_selfpropelled_bomb]
                      ]);
-
+                           
 // wait until jakes get rage
 wait([9$00, 8$00, 7$20][Difficulty]);
 
@@ -324,7 +331,7 @@ for i = 1 to [3, 4, 5][Difficulty] do
 
 vc_chassis := 15;
 tmp := Add(tmp, [4, tmp[4]+1], CreateVehicle);
-PlaceUnitArea(tmp[4][1], east_attack_spawn, false);
+PlaceUnitArea(tmp[4][tmp[4]], east_attack_spawn, false);
 
 PrepareHuman(false, class_desert_warior, skill);
 tmp := Add(tmp, [4, tmp[4]+1], CreateHuman);
@@ -334,7 +341,7 @@ coords := [ [148, 140] ];
 MC_PrepareAttack(1, tmp[4], coords, flags);
 
 
-Wait(10$00);
+Wait(10$00);  
 
 tmp := [];
 w := 1;
@@ -343,22 +350,35 @@ repeat
   tmp := [];
 
   if w mod 4 = 0 then
-     list := [ [ar_hovercraft, engine_combustion, control_remote, ar_gun],
-               [ar_hovercraft, engine_combustion, control_remote, ar_gun],
-               [ar_hovercraft, engine_combustion, control_remote, ar_gun],
-               [ar_hovercraft, engine_combustion, control_remote, ar_gun]
+     list := [ [ar_hovercraft, engine_combustion, control_remote, ar_double_machine_gun],
+               [ar_hovercraft, engine_combustion, control_remote, ar_double_machine_gun],
+               [ar_hovercraft, engine_combustion, control_remote, ar_double_machine_gun],
+               [ar_hovercraft, engine_combustion, control_remote, ar_double_machine_gun]
              ]
   else
   list := [ [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
             [ar_half_tracked, engine_combustion, control_remote, ar_gatling_gun],
             [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
-            [ar_half_tracked, engine_combustion, control_remote, ar_selfpropelled_bomb]
+            [ar_half_tracked, engine_combustion, control_remote, ar_selfpropelled_bomb],
+            [ar_hovercraft, engine_combustion, control_remote, ar_double_machine_gun]
           ];
 
   if w mod 3 = 0 then
      list := Add(list, [1, list[i]+1], [ar_half_tracked, engine_combustion, control_remote, [ar_gatling_gun, ar_rocket_launcher][rand(1,2)]]);
 
   MC_SetProduceList(1, list);
+
+  if GetSide(ar_dep_w) = 2 then
+     begin
+     list := [ [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+               [ar_half_tracked, engine_combustion, control_remote, ar_gun],
+               [ar_half_tracked, engine_combustion, control_remote, ar_gun]
+                ];
+
+     MC_SetProduceList(2, list);
+
+     wait(0$50);
+     end;
 
   repeat
    wait(0$1);
@@ -369,7 +389,7 @@ repeat
   tmp := UnitFilter(mc_vehicles[1], [f_not, [f_weapon, ar_cargo_bay]]);
 
   if Prob(100) < 50 then
-     coords := [ [51,24], [75,90] ]
+     coords := [ [55,7], [75,90] ]
   else
      coords := [ [128,94], [180,135] ];
 
@@ -378,9 +398,12 @@ repeat
 
   MC_PrepareAttack(1, tmp, coords, flags);
 
+  if mc_vehicles[2] then
+     MC_PrepareAttack(2, mc_vehicles[2], [ [73,115] ], flags);
+
   wait(rand(9$30, 12$30));
   w := w + 1;
 
-until IsDead(ar_dep_n);
+until IsDead(ar_dep_n) or not UnitFilter(mc_bases[1], [f_btype, b_factory]);
 
 End;

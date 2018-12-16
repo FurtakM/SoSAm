@@ -10,6 +10,16 @@ if exist_mode then
 result := unit;
 End;
 
+Export Function _GetHexInfo(x, y);
+begin
+result := false;
+
+if not ValidHex(x, y) or not x or not y then
+   exit;
+
+result := GetHexInfo(x, y);
+End;
+
 Export Function PrepareVehicle(chassis, engine, control, weapon, fuel);
 begin
 vc_chassis := chassis;
@@ -440,7 +450,7 @@ if mech then
 End;
 
 Export Function PrepareBase(base_dep, name, skill, sources, personel);
-var i, j, f, x, un, base, side, nation, buildings;
+var i, j, d, b, f, x, un, base, side, nation, buildings;
 begin
 result := [];
 
@@ -472,8 +482,10 @@ if buildings then
    if UnitFilter(buildings, [f_or, [f_btype, b_bunker], [f_btype, b_turret]]) then
       begin
       for i in UnitFilter(buildings, [f_or, [f_btype, b_bunker], [f_btype, b_turret]]) do
+          begin
           if not GetBWeapon(i) then
              PlaceWeaponTurret(i, GetTurretWeapon(i));
+          end;
       end;
 
    for i = 1 to personel do
@@ -549,11 +561,11 @@ if buildings then
 End;
 
 Export Function GetTurretWeapon(tower);
-var list, factories, base, i, j, x, y, nat, h, tmp, height, side, fac_list, weapon;
+var hex, list, factories, base, i, j, x, y, nat, h, tmp, height, side, fac_list, weapon;
 begin
 result := false;
 
-if not tower then
+if not tower or not GetBType(tower) in [b_bunker, b_turret] then
    exit;
 
 nat := GetNation(tower);
@@ -561,6 +573,9 @@ side := GetSide(tower);
 
 x := GetX(tower);
 y := GetY(tower);
+
+if not x or not y then
+   exit;
 
 weapon := 0;
 fac_list := [];
@@ -611,7 +626,12 @@ if nat in [1,2] and (us_radar in list or ar_radar in list) and GetTech(tech_rada
 if not weapon and GetTech(tech_rocket, side) = state_researched and
    (us_rocket_launcher in list or ar_rocket_launcher in list or ru_rocket_launcher in list) then
    begin
-   height := GetHexInfo(x, y)[2];
+   hex := _GetHexInfo(x, y);
+
+   if hex[1] then
+      exit;
+
+   height := hex[2];
    tmp := [0, 2, 3, 5];
 
    for i in tmp do
@@ -620,7 +640,12 @@ if not weapon and GetTech(tech_rocket, side) = state_researched and
 
        if ValidHex(j[1], j[2]) then
           begin
-          h := GetHexInfo(j[1], j[2])[2];
+          hex := _GetHexInfo(j[1], j[2]);
+
+          if hex[1] then
+             continue;
+
+          h := hex[2];
 
           if h+7 < height then
              begin
@@ -629,7 +654,7 @@ if not weapon and GetTech(tech_rocket, side) = state_researched and
              end;
           end;
        end;
-   end;
+   end;  
 
 // group of weapons
 if not weapon then
@@ -698,7 +723,7 @@ if GetResourceType(pom, mat_cans) >= cost[1] and
 End;
 
 Export Function CanBeBuilded(bdepot, btype, x, y, d);
-var i, j, pom, cost, hexes, height, dist;
+var i, j, pom, cost, hexes, height, dist, hex;
 begin
 result := false;
 
@@ -708,12 +733,11 @@ if not bdepot or not btype or not d in [0, 1, 2, 3, 4, 5] or not ValidHex(x, y) 
 pom := GetBase(bdepot);
 cost := CostOfBuilding(btype, GetNation(bdepot));
 
-if GetResourceType(pom, mat_cans) >= cost[1] and
+if not (GetResourceType(pom, mat_cans) >= cost[1] and
    GetResourceType(pom, mat_oil) >= cost[2] and
-   GetResourceType(pom, mat_siberit) >= cost[3] then
-   result := true
-  else
+   GetResourceType(pom, mat_siberit) >= cost[3]) then
    exit;
+
 
 //    MAX_DISTANCE 28 (26 in vanilla)
 //    MAX_DISTANCE_BONUS 8
@@ -724,20 +748,19 @@ if GetBType(bdepot) = b_depot then
    dist := 36;
 
 if GetDistUnitXY(bdepot, x, y) > dist then
-   begin
-   result := false;
    exit;
-   end;
 
 hexes := GetBuildingHexes(btype, x, y, d, GetNation(bdepot), 0);
 
 if not hexes then
-   begin
-   result := false;
    exit;
-   end;
 
-height := GetHexInfo(x, y)[2];
+hex := _GetHexInfo(x, y);
+
+if hex[1] then
+   exit;
+
+height := hex[2];
 
 for i = 1 to hexes do
     begin
@@ -745,22 +768,21 @@ for i = 1 to hexes do
     if not ValidHex(hexes[i][1], hexes[i][2]) then
        continue;
 
-    j := GetHexInfo(hexes[i][1], hexes[i][2]);
+    j := _GetHexInfo(hexes[i][1], hexes[i][2]);
 
     if j[1] or j[2] > height+2 or j[2] < height-2 or
        not j[3] in [0, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21] or
        j[4] or not j[5] or not j[6] in [1, 2, 7, 9, 10, 11] or
        HexInfo(hexes[i][1], hexes[i][2]) > 0 or
        IsEnvironment(hexes[i][1], hexes[i][2]) then
-       begin
-       result := false;
        exit;
-       end;
-   
+
     end;
 
 if DangerAtRangeXY(GetSide(bdepot), x, y, 20)[4] then
-   result := false;
+   exit;
+
+result := true;
 End;
 
 {
@@ -998,6 +1020,14 @@ begin
 result := See(your_side, unit);
 End;
 
+Export Function ReverseDir(unit);
+begin
+if not unit then
+   exit;
+
+result := [3, 4, 5, 0, 1, 2][GetDir(unit)+1];
+End;
+
 
 // hexes: [ [x1, y1], [x2, y2], ..]
 Export Function GetClosestHex(unit, hexes);
@@ -1162,7 +1192,7 @@ End;
     list => [ [ [base, group, path, flags] ] ]
 }
 Export Function Attack(list);
-var base, group, path, flags, i, j, k, x, z, tmp, tmp2, units_path,
+var base, group, path, flags, i, j, k, x, y, d, z, tmp, tmp2, units_path,
     f_ignore_area, f_capture, f_ignore_civ, 
     f_murder, f_mines, f_repair, f_heal, f_spacetime, f_attack_depot,
     f_crawl,
@@ -1309,8 +1339,13 @@ repeat
              begin
              if GetType(tmp[1]) = unit_building and not tmp[1] in mined then
                 begin
-                ComPlaceDelayedCharge(group[i], GetX(tmp[1]), GetY(tmp[1]), tmp[1]);
-                AddComWait(group[i], 0$2);
+                x := GetX(tmp[1]);
+                y := GetY(tmp[1]);
+                d := ReverseDir(group[i]);
+
+                ComPlaceDelayedCharge(group[i], x, y, tmp[1]);
+                AddComMoveXY(group[i], ShiftX(x, d, 7), ShiftY(y, d, 7));
+                SetTag(group[i], 71);
                 mined := Replace(mined, mined+1, tmp[1]);
                 attacking := true;
                 continue;
@@ -1382,7 +1417,7 @@ repeat
              begin
              attacking := true;
 
-             if GetHexInfo(GetX(group[i]), GetY(group[i]))[2] = GetHexInfo(GetX(tmp[1]), GetY(tmp[1]))[2] then
+             if _GetHexInfo(GetX(group[i]), GetY(group[i]))[2] = _GetHexInfo(GetX(tmp[1]), GetY(tmp[1]))[2] then
                 AttackHovercraft(group[i], tmp[1])
                else
                 ComAttackUnit(group[i], tmp[1]);
@@ -1462,6 +1497,15 @@ repeat
        // others..
        if IsOk(group[i]) and not attacking then
           begin
+
+          if GetTag(group[i]) = 71 then
+             begin
+             if HasTask(group[i]) then
+                continue
+               else
+                SetTag(group[i], 0);
+             end;
+
           k := 8;
           x := 0;
 
@@ -1581,4 +1625,24 @@ end;
 
 if Researched(side, tech) then
    result := [class_sniper, class_mortar, class_bazooker][nat];
+End;
+
+Export Function DetonateMines(side, mines);
+var i, tmp;
+begin
+if not mines then
+   exit;
+
+tmp := FilterAllUnits([f_enemy, side]);
+
+for i in mines do
+    begin
+
+    if not MineAtPos(i[1], i[2]) then
+       continue;
+
+    if HexInfo(i[1], i[2]) in tmp then
+       LaunchMineAtPos(i[1], i[2], side);
+    end;
+
 End;

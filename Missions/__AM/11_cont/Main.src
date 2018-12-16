@@ -14,22 +14,23 @@ if debug then
    FogOff(1);
 
 PrepareNature;
-PrepareAmerican;
+//PrepareAmerican;
 PrepareArabian;
 
-Action;
+//Action;
 
 RunMacro;
-// Debuger;
+Debuger;
 End;
 
 Export debug, game;
 Export mission_prefix, mission_prefix_prev;
 Export ar_run, base_captured, ar_patrol, us_scout, seen, kamikazed,
-       artifact_stolen, artifact_get, artifact_oncargo, game_time, powell_warn, loses_counter;
+       artifact_stolen, artifact_get, artifact_oncargo, game_time, powell_warn, loses_counter,
+       gensher_active;
 Function InitVariables;
 begin
-debug := false;
+debug := 1;
 game := true;
 mission_prefix := '11_';
 mission_prefix_prev := '10c_';
@@ -45,6 +46,7 @@ game_time := [90$00, 80$00, 75$00][Difficulty];
 powell_warn := false;
 loses_counter := 0;
 artifact_oncargo := false;
+gensher_active := LoadVariable('10_GensherEscape_1', debug);
 End;
 
 Function Debuger;
@@ -58,17 +60,10 @@ game_speed := 5;
 uc_side := 1;
 uc_nation := 1;
 
-vc_chassis := us_medium_wheeled;
-vc_control := control_computer;
-vc_engine := engine_combustion;
-vc_weapon := us_rocket_launcher;
-
-for i = 1 to 4 do
-    PlaceUnitXYR(CreateVehicle, 137, 91, 6, false);
-
 SetSide(ar_force_south, 1);
 End;
 
 
 // TODO
+// Dodatkowe jednostki atakujace gdy Gensher istnieje
 // Mechanizm uchodzcow
