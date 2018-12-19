@@ -549,6 +549,9 @@ for i = 1 to mc_bases do
        continue;
 
     if mc_miners[i] then
+       begin
+       k := 1;
+
        for j = mc_miners[i] downto 1 do
            begin
            if IsDead(mc_miners[i][j]) then
@@ -560,15 +563,20 @@ for i = 1 to mc_bases do
 
            if GetClass(mc_miners[i][j]) = 1 and not MineOfUnit(mc_miners[i][j]) and DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][j][1], mc_mines[i][j][2], 12)[4] = 0 then
               begin
-              k := rand(1, mc_mines[i]);
 
               if IsInUnit(mc_miners[i][j]) then
                  ComExitBuilding(mc_miners[i][j]);
 
               if not HasTask(mc_miners[i][j]) then
                  AddComPlaceRemoteCharge(mc_miners[i][j], mc_mines[i][k][1], mc_mines[i][k][2], 0);
+
+              k := k + 1;
+
+              if k > mc_mines[i] then
+                 k := 1;
               end;
            end;
+        end;
 
     tmp := UnitFilter(mc_bases[i], [f_or, [f_btype, b_armoury], [f_btype, b_barracks], [f_btype, b_bunker]]);
 
@@ -873,7 +881,7 @@ End;
 // Setter's
 // Delete previous minefield and get new mine pos
 Export Function MC_SetMinesField(base, amount, area); 
-var i, c, tmp, list, x, j;
+var i, tmp, list, x, j;
 begin
 if not mc_bases[base] then
    exit;
@@ -885,19 +893,7 @@ if not list then
    exit;
 
 for i = 1 to amount do
-    begin
-    c := rand(1, list[1]-i);
-    tmp := Replace(tmp, i, [list[1][c], list[2][c]]);
-
-    for j = 1 to 2 do
-        begin
-        x := Delete(list[j], c);
-        list := Replace(list, j, x);
-        end;
-
-    if not list then
-       break;
-    end;
+    tmp := Replace(tmp, i, [list[1][i], list[2][i]]);
 
 mc_mines := Replace(mc_mines, base, tmp);
 mc_minefields := Replace(mc_minefields, base, area);
