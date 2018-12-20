@@ -1,1 +1,20 @@
-//
+Export function  PrepareRussians;
+var i;
+begin
+    uc_side = 3;
+
+    Platonov = PrepareUnit('Platonov', false);
+    PlaceHumanInUnit(Platonov, RuDep2);
+
+    RespawnInside(3, 3, RuDep1, 10, 2, 5);
+    RespawnInside(3, 3, RuDep1, 10, 2, 6);
+    RespawnInside(3, 3, RusBarr1, 10, 9, 6);
+    RespawnInside(3, 3, RusBarr1, 10, 3, 3);
+    RespawnInside(3, 3, RusFact1, 10, 3, 6);
+    RespawnInside(3, 3, RusFact2, 10, 3, 6);
+    RespawnInside(3, 3, RusLab1, 10, 4, 3);
+    RespawnInside(3, 3, RusLab2, 10, 4, 3);
+
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_building], [f_btype, b_bunker], [f_empty]]) do RespawnInside(3, 3, i, 10, 1, 1);
+    
+end;

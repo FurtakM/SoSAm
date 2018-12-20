@@ -192,7 +192,7 @@ begin
     begin
 
         repeat
-            wait(0$1);
+            wait(0$3);
                 for j in russianTanks do
                 begin
                     target1 := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
@@ -209,11 +209,11 @@ end;
 Export function TimeLapsersAI(side);
 var j, nearUnit;
 begin
-    if russianTanks >= [3, 4, 4][Difficulty] and russianTimeLapsers >= [1, 2, 2][Difficulty] then
+    if russianTanks >= 1 and russianTimeLapsers >= [1, 2, 2][Difficulty] then
     repeat
-        wait(0$1);
+        wait(0$3);
         if russianTimeLapsers > 0 then
-            for j in russianTimeLapsers do
+            for j in UnitFilter(russianTimeLapsers, [f_not, [f_hastask]]) do
             begin
                 nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
                 ComMoveXY(j, GetX(nearUnit), GetY(nearUnit));
