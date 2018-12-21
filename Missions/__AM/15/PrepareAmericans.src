@@ -1,21 +1,67 @@
 Export function PrepareHeroes;
 begin
     uc_side = 1;
+    uc_nation = 1;
 
-    JMM = PrepareUnit('JMM', false);
-    Lisa = PrepareUnit('Lisa', false);
-    Gary = PrepareUnit('Gary', false);
-    Cornell = PrepareUnit('Cornell', false);
-    Frank = PrepareUnit('Frank', false);
+    if JMMVeh = [] then
+    begin
+        vc_engine = 3;
+        vc_control = 1;
+        vc_chassis = 5;
+        vc_weapon = 9;
+        NewJMMVeh = CreateVehicle;
+    end else
+    begin
+        vc_chassis = JMMVeh[1][1];
+        vc_engine = JMMVeh[2][1];
+        vc_control = JMMVeh[3][1];
+        vc_weapon = JMMVeh[4][1];
+        NewJMMVeh = CreateVehicle;
+    end;
 
+    if not JMMGirlVeh = [] then
+    begin
+        vc_chassis = JMMGirlVeh[1][1];
+        vc_engine = JMMGirlVeh[2][1];
+        vc_control = JMMGirlVeh[3][1];
+        vc_weapon = JMMGirlVeh[4][1];
+        NewJMMGirlVeh = CreateVehicle;
+    end; 
+
+    SetDir(NewJMMVeh, 0);
+    SetDir(NewJMMGirlVeh, 0);
+
+    PlaceUnitXY(NewJMMVeh, 99, 154, false);
+    If JMMGirlVeh then PlaceUnitXY(NewJMMGirlVeh, 98, 159, false); 
+
+                
+    JMM = PrepareUnit('14_JMM', true);
+    PlaceHumanInUnit(JMM, NewJMMVeh);
+
+    if not JMMGirlVeh = [] then
+    begin
+        if JMMGirl = 1 then
+        begin
+            Joan = PrepareUnit('14_Joan', true);
+            PlaceHumanInUnit(Joan, NewJMMGirlVeh);
+        end;
+
+        if JMMGirl = 2 then
+        begin
+            Lisa = PrepareUnit('14_Lisa', true);
+            PlaceHumanInUnit(Lisa, NewJMMGirlVeh);
+        end;
+
+        if JMMGirl = 3 then
+        begin
+            Connie = PrepareUnit('14_Connie', true);
+            PlaceHumanInUnit(Connie, NewJMMGirlVeh);
+        end;
+    end;
+
+    
     uc_side = 4;
     Powell = PrepareUnit('Powell', false);
-
-    PlaceUnitXYR(JMM, 101, 153, 5, false);
-    PlaceUnitXYR(Lisa, 101, 153, 5, false);
-    PlaceUnitXYR(Gary, 101, 153, 5, false);
-    PlaceUnitXYR(Cornell, 101, 153, 5, false);
-    PlaceUnitXYR(Frank, 101, 153, 5, false);
 
     PlaceUnitXYR(Powell, 47, 63, 5, false);
 end;

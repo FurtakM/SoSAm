@@ -10,6 +10,44 @@ begin
     result := unit;
 End;
 
+Export function DialogRandom(characters, dialogMID, dialogFID);
+var i, rnd;
+begin
+
+    characters := characters diff [JMM, Joan, Stevens,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell, Connie];
+    rnd = rand(1, characters);  
+
+    for i = 1 to characters do
+    begin
+
+        if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
+        if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
+
+    end;
+
+end;
+
+Export function RespawnInside(side, nation, build, skill, class, count);
+var i,l, un, tmp;
+begin
+
+   for i = 1 to count do
+   begin
+
+      uc_side = side;
+      uc_nation = nation;
+
+      hc_gallery = '';
+      hc_name = '';
+      PrepareHuman(false, class, skill);
+
+      un = CreateHuman;
+      PlaceHumanInUnit(un,build);
+
+   end;
+
+END;
+
 export function RespawnAttackVehicle(area, side, vehCount, mehskill, nation, vehEngine, vehControl, RUWeapons, ARWeapons, AMWeapon, targetSide);
 var i, j, un, veh, ruChassisTab, arChassisTab, amChassisTab, vehicleOK_list, target1, target2;
 begin

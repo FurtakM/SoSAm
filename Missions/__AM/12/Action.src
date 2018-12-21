@@ -101,6 +101,8 @@ begin
 
             InGameOff;
             ruAI = 1;
+            SetAttitude(1, 3, att_enemy, true);
+            SaveForQuickRestart;
             exit;
 
                 
@@ -132,7 +134,7 @@ begin
 end;
 
 // Kurt
-Every 4$30 trigger secondPass = 2 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) > 0 do
+Every 7$30 trigger secondPass = 2 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) > 0 do
 var i, dec1, dec2, tmp, tmp2, crates, oil, siberite;
 begin
 
@@ -145,6 +147,7 @@ begin
     PrepareKurt;
     ComMoveXY(KurtVeh, 144, 111);
     wait(0$2);
+    ChangeSideFog(8, 1);
 
     if kurtStatus > 0 then
     begin
@@ -530,6 +533,7 @@ begin
         end;
 
         DialogueOff;
+        ChangeSideFog(8, 8);
         ComEnterUnit(otherKurt, KurtVeh);
         wait(0$1);
         ComMoveToArea(KurtVeh, PlayerSpawn);

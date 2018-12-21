@@ -25,7 +25,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
@@ -44,7 +44,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
@@ -63,7 +63,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
@@ -82,7 +82,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
@@ -101,7 +101,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
@@ -120,17 +120,19 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
     Powell = PrepareUnit('Powell', false);
 end;
 
-Export function PrepareAmericansRandom;
+Export function PrepareAmericansRandom(area, veh, spawnMode);
 begin
 
-    PlaceUnitArea(others11[1], PlayerSpawn, false);
+    if spawnMode = 1 then PlaceUnitArea(others11[1], area, false)
+    else PlaceHumanInUnit(others11[1], veh);
+
     others11 := Delete(others11, 1);
 end;
 
@@ -184,7 +186,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
@@ -203,7 +205,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
@@ -216,33 +218,26 @@ begin
     vc_weapon = us_crane;
     veh = CreateVehicle;
 
-    PlaceUnitArea(veh, PlayerSpawn, false);
     SetDir(veh, 4);
+
+    PlaceUnitArea(veh, PlayerSpawn, false);
 
     PrepareHuman(false, 3, rand(5, 8));
     un = CreateHuman;
     PlaceHumanInUnit(un, veh);
 
-    vc_chassis = us_medium_wheeled;
-    vc_weapon = us_double_gun;
-    veh = CreateVehicle;
-
-    PlaceUnitArea(veh, PlayerSpawn, false);
-    SetDir(veh, 4);
-
-    PrepareHuman(false, 3, rand(5, 8));
-    un = CreateHuman;
-    PlaceHumanInUnit(un, veh);
 
     vc_control = 3;
     vc_weapon = us_cargo_bay;
     amCargo1 = CreateVehicle;
     amCargo2 = CreateVehicle;
 
-    PlaceUnitArea(amCargo1, PlayerSpawn, false);
-    PlaceUnitArea(amCargo2, PlayerSpawn, false);
     SetDir(amCargo1, 4);
     SetDir(amCargo2, 4);
+
+    PlaceUnitArea(amCargo1, PlayerSpawn, false);
+    PlaceUnitArea(amCargo2, PlayerSpawn, false);
+
     AddCargo(amCargo1, 3, 100);
     AddCargo(amCargo2, 1, 80);
     AddCargo(amCargo2, 3, 20);
@@ -254,22 +249,43 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
+    vc_chassis = us_medium_wheeled;
+    vc_engine = 3;
+    vc_control = 3;
+    vc_weapon = us_light_gun;
+    veh = CreateVehicle;
+
+    SetDir(veh, 4);
+
+    PlaceUnitArea(veh, PlayerSpawn, false);
+
+   vc_control = 1;
+   vc_chassis = us_medium_wheeled;
+   vc_weapon = us_double_gun;
+   veh = CreateVehicle;
+
+   SetDir(veh, 4);
+
+   PlaceUnitArea(veh, PlayerSpawn, false);
+   
+
+
     if TestCharacters('11_Bobby') = true then
     begin          
         Bobby = PrepareUnit('11_Bobby', true);
         SetClass(Bobby, 3);
-        PlaceUnitArea(Bobby, PlayerSpawn, false);
+        PlaceHumanInUnit(Bobby, veh);
     end else
     begin
         if TestCharacters('10c_Bobby') = true then
         begin
             Bobby = PrepareUnit('10c_Bobby', true);
             SetClass(Bobby, 3);
-            PlaceUnitArea(Bobby, PlayerSpawn, false);
+            PlaceHumanInUnit(Bobby, veh);
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(0, veh, 2);
         end;
     end;
 
@@ -288,34 +304,24 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom;
+            PrepareAmericansRandom(PlayerSpawn, 0, 1);
         end;
     end;
 
-    hc_gallery = '';
-    hc_name = '';
-
-    vc_chassis = us_medium_wheeled;
-    vc_engine = 3;
-    vc_control = 3;
-    vc_weapon = us_light_gun;
-    veh = CreateVehicle;
-
-    PlaceUnitArea(veh, PlayerSpawn, false);
-    SetDir(veh, 4);
 
     vc_control = 3;
     vc_weapon = us_cargo_bay;
     amCargo3 = CreateVehicle;
+    SetDir(amCargo3, 4);
     amCargo4 = CreateVehicle;
+    SetDir(amCargo4, 4);
     amCargo5 = CreateVehicle;
+    SetDir(amCargo5, 4);
 
     PlaceUnitArea(amCargo3, PlayerSpawn, false);
     PlaceUnitArea(amCargo4, PlayerSpawn, false);
     PlaceUnitArea(amCargo5, PlayerSpawn, false);
-    SetDir(amCargo3, 4);
-    SetDir(amCargo4, 4);
-    SetDir(amCargo5, 4);
+
     AddCargo(amCargo3, 1, 100);
     AddCargo(amCargo4, 2, 100);
     AddCargo(amCargo5, 1, 50);
@@ -328,7 +334,7 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
-    PrepareAmericansRandom;
+    PrepareAmericansRandom(PlayerSpawn, 0, 1);
 
     vc_chassis = us_medium_wheeled;
     vc_engine = 3;
@@ -337,10 +343,12 @@ begin
     amCargo6 = CreateVehicle;
     amCargo7 = CreateVehicle;
 
-    PlaceUnitArea(amCargo6, PlayerSpawn, false);
-    PlaceUnitArea(amCargo7, PlayerSpawn, false);
     SetDir(amCargo6, 4);
     SetDir(amCargo7, 4);
+
+    PlaceUnitArea(amCargo6, PlayerSpawn, false);
+    PlaceUnitArea(amCargo7, PlayerSpawn, false);
+
     AddCargo(amCargo6, 1, 100);
     AddCargo(amCargo7, 2, 100);
 end;

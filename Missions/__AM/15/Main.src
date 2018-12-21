@@ -1,4 +1,5 @@
-//
+// Map Scripts: Nefarem
+
 //  Lekcja Historii #1
 {
  Program Lend Lease dla Zwiazku Radzieckiego to nie byl transport zywnosci, surowcow, ciezarowek itp.
@@ -13,18 +14,72 @@ T-37 - lekki czolg plywajacy konstrukcji radzieckiej z okresu przed II wojna swi
 Koncept zaczerpniety ze zdobycznych wozow Kwantunskiej Armii Cesarstwa Japonii podczas bitwy pod Chalgingol.
 }
 
+// Lekcja Historii #3
+
+{
+Ruscy zalali Warszawe dorszem wylowionym na japonskich kutrach zdobytych na japonczykach pod Halyn-Gol. Dzieku temu wymylo szwabow az do Laby.
+}
+
+// Lekcja Historii #4
+
+{
+    
+Propaganda i dezinformacja . To Ukraina zbrojnie przejela Rosyjskie kutry 
+rybackie i aresztowała zaloge jednego z nich . Rosja zostala zmuszona 
+prowokacjami do interwencji . Szczytem glupoty jest zabranianie latania 
+nad swoim mostem . Obce okrety Rosja musi zatapiac . Chcecie wojny
+Pierwsi oczywiscie rusza nasi na tych starych skorupach , jak sie zacznie wojna to dadza dyla do Anglii a my zostaniemy jako mieso armatnie dla Rosjan i siekierowe dla ukraincow
+
+}
+
 // Lekcja Matematyki #1
 {
 Funkcja Lambda opiera sie na zdobycznych czolgach japonskich w trakcie bitwy pod Chalgingol.
 }
 
-Export JMM, Lisa, Gary, Cornell, Frank;
-Export Powell;
+Export JMM, Joan, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie; // Am heroes
+Export Powell; // Am commander
+Export others13; // Others
+Export NewJMMVeh, NewJMMGirlVeh;
+Export Platonov, Roth, Kurt; // Enemy commanders
+
+Export JMMVeh, JMMGirlVeh; // Vehs from mission 14
+Export JMMGirl, KappaStatus; // Am 14
+Export KhatamStatus; // Am 10
+
+Export debugMode;
 
 Starting
 begin
 
     Resetfog;
+    RandomizeAll;
+
+    JMMVeh = LoadVariable('14_JMMVeh_1', []);
+    JMMGirlVeh = LoadVariable('14_JMMGirlVeh_1', []);
+    JMMGirl = LoadVariable('14_JMMGirl_1', 3);
+    KappaStatus = LoadVariable('14_KappaStatus_1', 0);
+    KhatamStatus = LoadVariable('10_KhatamStatus_1', 0);
+
+
+    debugMode = 1; // 0 - players, 1 - devs
 
     PrepareHeroes;
+
+    PrepareLegion;
+    PrepareRussians;
+    PrepareAlliance;
+
+    SetBName(RuDep2, 'zhukov');
+end;
+
+Every 0$1 trigger debugMode = 1 do
+var i;
+begin
+    enable;
+    fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
 end;
