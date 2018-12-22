@@ -277,3 +277,19 @@ for i = 1 to AreaToList(area, 0)[1] do
     end;
 
 End;
+
+Export function DefendDepot(side, build);
+var i, j, tmpTab;
+begin
+     tmpTab = [];
+
+     if FilterAllUnits([[f_side, side], [f_btype, b_bunker]]) > 0 then
+     begin
+       for i in FilterAllUnits([[f_side, side], [f_btype, b_bunker]]) do
+       begin
+            for j in UnitsInside(i) do tmpTab = tmpTab ^ j;
+       end;
+     end;
+
+     ComAgressiveMove(tmpTab, GetX(build), GetY(build));
+end;
