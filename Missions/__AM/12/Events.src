@@ -22,15 +22,15 @@ begin
         ChangeMissionObjectives('M2a');
         wait(0$2);
         DialogueOn;
-        DialogRandom(FilterAllUnits([[f_side, 1]]), 'DT3a-Sol1-1', 'DT3a-FSol1-1');
+        DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 'DT3a-Sol1-1', 'DT3a-FSol1-1');
         Say(JMM, 'DT3a-JMM-1');
         CenterNowOnUnits(human);
         Say(JMM, 'DT3a-JMM-1a');
         DialogueOff;
     end;
 
-    if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 0 then vehicleTeleported = 1;
-    if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 2 then vehicleTeleported = 3;
+    if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 0 then begin wait(0$3); vehicleTeleported = 1; end;
+    if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 2 then begin wait(0$3); vehicleTeleported = 3; end;
 end;
 
 On VehicleConstructed(vehicle, factory) Do
@@ -70,5 +70,5 @@ end;
 
 On LeaveVehicle(vehicle, human) Do
 begin
-    if GetSide(human) = 3 and GetSide(ru_fact) = 3 and IsOk(ru_fact) then ComEnterUnit(human, ru_fact);
+    if GetSide(human) = 3 and GetClass(human) = 3 and GetSide(ru_fact) = 3 and IsOk(ru_fact) then ComEnterUnit(human, ru_fact);
 end;

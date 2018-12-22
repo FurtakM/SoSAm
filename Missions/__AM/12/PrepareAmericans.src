@@ -2,8 +2,7 @@ Export function PrepareAmericanHeroes;
 begin
     uc_side = 1;
 
-    others11 = CreateCharacterSet('11_others');
-    others11 = others11 ^ CreateCharacterSet('11c_others');
+    others11 =  CreateCharacterSet('11c_others');
 
 
     JMM = PrepareUnit('11_JMM', true);
@@ -25,7 +24,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
@@ -44,7 +43,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
@@ -63,7 +62,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
@@ -82,7 +81,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
@@ -101,7 +100,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
@@ -120,20 +119,71 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
     Powell = PrepareUnit('Powell', false);
 end;
 
-Export function PrepareAmericansRandom(area, veh, spawnMode);
+Export function PrepareAmericansRandom(area, veh, spawnMode, mech);
+var i, un, tmp, mecha, iter;
 begin
 
-    if spawnMode = 1 then PlaceUnitArea(others11[1], area, false)
-    else PlaceHumanInUnit(others11[1], veh);
+    if mech = 1 then
+    begin   
+        if others11 > 0 then
+        begin
+            
+            tmp = GetSkill(others11[i], 3);
 
-    others11 := Delete(others11, 1);
+            for i := 1 to others11 - 1 do
+            begin
+                if tmp < GetSkill(others11[i + 1], 3) then
+                begin
+                    tmp = GetSkill(others11[i + 1], 3);
+                    mecha = others11[i + 1];
+                    iter = i + 1;
+                end; 
+            end;
+
+            if spawnMode = 1 then PlaceUnitArea(mecha, area, false)
+            else PlaceHumanInUnit(mecha, veh);
+
+            others11 := others11 diff mecha;
+
+        end else
+        begin
+            hc_name = '';
+            hc_gallery = '';
+
+            PrepareMechanic(false, rand(7, 9));
+            un = CreateHuman;
+            PlaceHumanInUnit(un, veh);
+        end;
+        
+    end else
+    begin
+
+        if others11 > 0 then
+        begin
+            if spawnMode = 1 then PlaceUnitArea(others11[1], area, false)
+            else PlaceHumanInUnit(others11[1], veh);
+
+            others11 := Delete(others11, 1);
+        end else
+        begin
+            hc_name = '';
+            hc_gallery = '';
+
+            PrepareHuman(false, [1, 2, 3, 4][Rand(1,4)], rand(7, 9));
+            un = CreateHuman;
+            PlaceHumanInUnit(un, veh);
+        end;
+
+
+    end;
+
 end;
 
 Export function PrepareVehicles;
@@ -186,7 +236,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
@@ -205,12 +255,9 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
-
-    hc_gallery = '';
-    hc_name = '';
 
     vc_chassis = us_medium_tracked;
     vc_engine = 3;
@@ -221,11 +268,16 @@ begin
     SetDir(veh, 4);
 
     PlaceUnitArea(veh, PlayerSpawn, false);
+ 
+    PrepareAmericansRandom(PlayerSpawn, veh, 2, 1);
 
-    PrepareHuman(false, 3, rand(5, 8));
-    un = CreateHuman;
-    PlaceHumanInUnit(un, veh);
+    vc_weapon = 9;
+    veh = CreateVehicle;
 
+    SetDir(veh, 4);
+
+    PlaceUnitArea(veh, PlayerSpawn, false);
+    PrepareAmericansRandom(PlayerSpawn, veh, 2, 1);
 
     vc_control = 3;
     vc_weapon = us_cargo_bay;
@@ -285,7 +337,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(0, veh, 2);
+            PrepareAmericansRandom(0, veh, 2, 0);
         end;
     end;
 
@@ -304,7 +356,7 @@ begin
         end
         else
         begin
-            PrepareAmericansRandom(PlayerSpawn, 0, 1);
+            PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
         end;
     end;
 
@@ -323,9 +375,8 @@ begin
     PlaceUnitArea(amCargo5, PlayerSpawn, false);
 
     AddCargo(amCargo3, 1, 100);
-    AddCargo(amCargo4, 2, 100);
-    AddCargo(amCargo5, 1, 50);
-    AddCargo(amCargo5, 2, 50);
+    AddCargo(amCargo4, 1, 100);
+    AddCargo(amCargo5, 3, 100);
 end;
 
 Export function PowellSupport3;
@@ -334,7 +385,7 @@ begin
     uc_side = 1;
     uc_nation = 1;
 
-    PrepareAmericansRandom(PlayerSpawn, 0, 1);
+    PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
 
     vc_chassis = us_medium_wheeled;
     vc_engine = 3;
@@ -350,5 +401,5 @@ begin
     PlaceUnitArea(amCargo7, PlayerSpawn, false);
 
     AddCargo(amCargo6, 1, 100);
-    AddCargo(amCargo7, 2, 100);
+    AddCargo(amCargo7, 3, 100);
 end;

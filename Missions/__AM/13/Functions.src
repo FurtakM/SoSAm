@@ -3,9 +3,27 @@ var unit;
 begin
 
 if exist_mode then
-   unit := CreateCharacter(mission_prefix_prev&ident)
-  else
+begin
+   if TestCharacters(mission_prefix_prev&ident) = true then
+   begin
+     unit := CreateCharacter(mission_prefix_prev&ident);
+   end else
+   begin
+     if TestCharacters('11_'&ident) = true then
+     begin
+          unit := CreateCharacter('11_'&ident);
+     end else
+     begin
+       if TestCharacters('10c_'&ident) = true then unit := CreateCharacter('10c_'&ident)
+       else unit := CreateCharacter('10_'&ident);
+     end;
+  end;
+
+  end else
+  begin
+
    unit := NewCharacter(ident);
+  end;
 
 result := unit;
 End;
@@ -47,8 +65,6 @@ begin
       SaveCharacters(othersSelect, '13c_others');
       SaveCharacters(othersInBase, '13s_others');
       
-      //[Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
-
       SaveCharacters(JMM, '13c_JMM');
       SaveCharacters(Stevens, '13c_Stevens');
 
