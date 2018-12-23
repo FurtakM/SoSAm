@@ -681,7 +681,7 @@ begin
 end;
 
 // See bridge
-Every 0$1 trigger SeeXY(1, 36, 55) do 
+Every 0$1 trigger SeeXY(1, 45, 74) do
 begin
     DialogueOn;
     CenterOnXY(36, 55);
@@ -701,8 +701,8 @@ begin
     ChangeMissionObjectives('M2');
 end;
 
-// Destroy lab
-Every 0$1 trigger IsDying(ruheadlab) do 
+// Escape
+Every 0$1 trigger IsDying(ruheadlab) or FilterUnitsInArea(EscapeTriggerArea, [f_side, 1]) > 0 do
 var i,j, vehs;
 begin
     ruAI = 0;
@@ -714,11 +714,11 @@ begin
 
     for i := 1 to RuScientists do
     begin
-            ComEnterUnit(RuScientists[i], vehs[1]);
+            ComEnterUnit(UnitFilter(RuScientists[i], [f_not, [f_hastask]]), vehs[i]);
             If IsOk(rutp) then
             begin
 
-               if i mod 2 then begin AddComEnterUnit([RuScientists[i], vehs[i]], rutp); AddComMoveToArea([RuScientists[i], vehs[j]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
+               if i mod 2 then begin AddComEnterUnit([RuScientists[i], vehs[i]], rutp); AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
                end else begin AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
 
             end else begin AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
