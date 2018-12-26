@@ -65,19 +65,24 @@ end;
 
 On EnterBuilding(building, human) Do
 begin
-    if IsOk(AmSciSib) and human = AmSciSib and eventVar4 = 0 and GetLabKind(building, 1) = b_lab_siberium or GetLabKind(building, 2) = b_lab_siberium then
-        eventVar4 = 1;
+    if IsOk(AmSciSib) and human = AmSciSib and eventVar4 = 0 and eventVar3 = 1 then
+      if GetLabKind(building, 1) = b_lab_siberium or GetLabKind(building, 2) = b_lab_siberium then
+          eventVar4 = 1;
 end;
 
 On SibDepositContaminated(unit, x, y) Do //[ [91, 111],[23, 37] ]
-var i;
+var i, tmp;
 begin
     if GetNation(unit) = 2 then
     begin
         sibDestroyedCounter = sibDestroyedCounter + 1;
 
         for i := 1 to sibDeposits do
-            if sibDeposits[i][1] = x and sibDeposits[i][2] = y then begin sibDeposits = sibDeposits diff sibDeposits[i][1]; sibDeposits = sibDeposits diff sibDeposits[i][2]; end;
+            if sibDeposits[i][1] = x and sibDeposits[i][2] = y then
+            begin
+               sibDeposits = Delete(sibDeposits, [i][1]);
+               sibDeposits = Delete(sibDeposits, [i][2]);
+            end;
 
         if eventVar5 = 0 then
         begin
@@ -98,5 +103,5 @@ end;
 
 On BuildingStarted(building, unit) Do
 begin
-    If GetSide(building) = 1 and GetBType(building) = 0 and FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, 0], [f_btype, 1]]]) > 0 then SetBName(building, 'omega');
+    If GetSide(building) = 1 and GetBType(building) = 0 and FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, 0], [f_btype, 1]]]) = 0 then SetBName(building, 'omega');
 end;

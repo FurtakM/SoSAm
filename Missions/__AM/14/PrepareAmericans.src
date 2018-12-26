@@ -5,6 +5,7 @@ begin
 
     JMM = PrepareUnit('13f_JMM', true);
     PlaceHumanInUnit(JMM, JMMveh);
+    SetClass(JMM, 1);
 
     Powell = PrepareUnit('Powell', false);
 
@@ -35,4 +36,22 @@ begin
         
 
     ComHold([Joan, Lisa, Connie]);
+end;
+
+Export function PrepareRemoteVehs;
+var i, veh;
+begin
+
+     for i = 1 to 5 do
+     begin
+       vc_engine = 1;
+       vc_control = 2;
+       vc_weapon = [9, 5, 12, 4][Rand(1,4)];
+       vc_chassis = 2;
+
+       veh = CreateVehicle;
+       SetLives(veh, rand(500, 1000));
+       PlaceUnitArea(veh, AmRemoteVehSpawn, false);
+     end;
+
 end;
