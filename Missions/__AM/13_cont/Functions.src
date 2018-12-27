@@ -63,75 +63,9 @@ begin
     end;
 end;
 
-
-Export function RepairVehicle(side, repairArea, repX, repY, targetSide);
-var i,j, vehicleOK_list, damageVehicle_list, vehicleNeedRepair_list, vehicleDontNeedRepair_list, mechanicInside_list, mechanicOutside_list, target1, target2;
-begin
-    vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_control, 1], [f_lives, 660], [f_not, [f_empty]], [f_not, [f_weapon, 53]]]);
-    damageVehicle_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_lives, 660]]]);
-
-    vehicleNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_lives, 1000]]]);
-    vehicleDontNeedRepair_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_control, 1], [f_lives, 1000], [f_empty], [f_not, [f_weapon, 53]]]);
-
-    mechanicInside_list = [];
-    mechanicOutside_list = FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]);
-    
-    if damageVehicle_list > 0 then
-    begin
-        for i in damageVehicle_list do 
-        begin
-            ComMoveXY(i, repX, repY);
-        end;
-    end;
-
-    if vehicleNeedRepair_list > 0 then
-    begin
-        for i in vehicleNeedRepair_list  do
-        begin
-            mechanicInside_list = mechanicInside_list ^ UnitsInside(i);
-            for j in mechanicInside_list do
-            begin
-                ComExitVehicle(i);
-                wait(0$1);
-                ComRepairVehicle(i, j);
-            end;
-        end;
-    end;
-
-    if vehicleDontNeedRepair_list > 0 then
-    begin
-        ComEnterUnit(mechanicOutside_list[1], vehicleDontNeedRepair_list[1]);
-        SetFuel(vehicleDontNeedRepair_list[1], 100);
-    end;
-
-    if vehicleOK_list > 0 then
-    begin
-        for i in vehicleOK_list do
-        begin
-            target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-            target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
-
-            If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-            begin
-                ComAttackUnit(i, target1);
-            end
-            else
-            begin
-                ComAttackUnit(i, target2);
-            end;
-        end; 
-    end;
-
-    for i in not FilterUnitsInArea(repairArea, [[f_side, side], [f_class, 3]]) do ComMoveXY(i, repX, repY);
-
-end;
-
-
 Export function RespawnAttackInfantry(side, nation, soldierCount, sniperCount, bazookCount, mortalCount, medicCount, skil, spawnArea, healArea, targetSide);
 var i, j,  un, damageUnit_list, medic_list, soldiersOK_list, enemyUnits, und, target1, target2;
 begin
-
-    wait([1$0, 1$30, 2$0, 2$30, 3$0, 3$30, 4$0, 4$30][Rand(1, 8)]);
 
         for i = 1 to medicCount do
         begin
@@ -246,20 +180,8 @@ begin
 
             end;
 
-                            
-            for i in soldiersOK_list do
-            begin
-                    target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
-                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
 
-                    If GetDistUnits(i, target1)+8 < GetDistUnits(i, target2) then
-                    begin
-                    ComAttackUnit(i, target1);
-                    end else
-                    begin
-                    ComAttackUnit(i, target2);
-            end;
-        end; until soldiersOK_list = [];
+        until soldiersOK_list = [];
 
 END;
 
@@ -268,8 +190,6 @@ END;
 export function RespawnAttackVehicle(area, side, vehCount, mehskill, nation, vehEngine, vehControl, RUWeapons, ARWeapons, AMWeapon, targetSide);
 var i, j, un, veh, ruChassisTab, arChassisTab, amChassisTab, vehicleOK_list, target1, target2;
 begin
-
-  wait([1$0, 1$30, 2$0, 2$30, 3$0, 3$30, 4$0, 4$30][Rand(1, 8)]);
 
   amChassisTab = [];
   arChassisTab = [];
@@ -430,8 +350,8 @@ begin
   until i = vehCount;
 
     repeat
-        wait(0$1);
-        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 661]]);
+        wait(0$1);                                                                                  
+        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_or, [f_weapon, 25], [f_weapon, 26], [f_weapon, 27], [f_weapon, 28], [f_weapon, 29]]]);
 
         IF vehicleOK_list > 0 then
         begin
@@ -452,5 +372,33 @@ begin
             end;
         end;
       end;
-    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]) = 0 diff FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_weapon, 31]]) = 0;
+    until vehicleOK_list = 0;
+END;
+
+Export function AttackSelfBomb(side, targetSide);
+var i, veh, veh_List, target1, target2;
+begin
+
+veh_List = FilterAllUnits([[f_side, side], [f_weapon, 29]]);
+
+if veh_list = 0 then exit;
+
+if veh_list > 0 then
+begin
+
+ for i in veh_List do
+ begin
+   target1 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_lives, 250], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
+   ComAttackUnit(i, target1);
+
+   IF NOT HasTask(i) then
+   begin
+       wait(0$0.1);
+       target2 := NearestUnitToUnit(FilterAllUnits([[f_side, targetSide], [f_lives, 250]]), i);
+       ComAttackUnit(i, target2);
+   end;
+ end;
+
+end;
+
 END;

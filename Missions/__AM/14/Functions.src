@@ -179,10 +179,10 @@ Export function CollectCrates(side, cargoNation, enemyCratesArea);
 var clear_crates, cargo_list, crate_list;
 begin
     enable;
-    crate_list = GetListOfCratesInArea(cratesArea);
+    crate_list = GetListOfCratesInArea(enemyCratesArea);
     cargo_list = FilterAllUnits([[f_side, side], [f_weapon, cargoNation]]);
 
-    if cargo_list > 0 and GetListOfCratesInArea(cratesArea) and crate_list > 0 then
+    if cargo_list > 0 and GetListOfCratesInArea(enemyCratesArea) and crate_list > 0 then
     begin
         AddComCollect(cargo_list[1], crate_list[1], crate_list[2]);
         SetFuel(cargo_list[1], 100);
@@ -269,15 +269,15 @@ End;
 Export function TimeLapsersAI(side);
 var j, nearUnit;
 begin
-    if russianTanks >= [2, 3, 4][Difficulty] and russianTimeLapsers >= [1, 1, 2][Difficulty] then
+    if russianTanks >= 1 and russianTimeLapsers >= [1, 2, 2][Difficulty] then
     repeat
-        wait(0$1);
+        wait(0$3);
         if russianTimeLapsers > 0 then
-            for j in russianTimeLapsers do
+            for j in UnitFilter(russianTimeLapsers, [f_not, [f_hastask]]) do
             begin
-                nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side]]), j);
+                nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
                 ComMoveXY(j, GetX(nearUnit), GetY(nearUnit));
-            end; 
+            end;
 
-    until russianTimeLapsers = 0;  
+    until russianTimeLapsers = 0;
 end;
