@@ -295,7 +295,7 @@ begin
 end;
 
 Export Function PrepareNature;
-var i;
+var i, un;
 begin
 uc_side := 0;
 uc_nation := 0;
@@ -307,5 +307,48 @@ hc_class := class_fish;
 for i = 1 to 6 do
     PlaceUnitArea(CreateHuman, waterArea, false);
 
-// dodac wiecej zwierzat
+
+  for i = 1 to Difficulty + 2  do
+  begin
+
+  hc_sex= sex_male;
+  uc_side= 0;
+  uc_nation= nation_nature;
+  hc_class= class_tiger;
+  hc_skills= [RuSolMaxLevel, 0, 0, 0];
+  hc_agressivity= rand(-5,5)*Difficulty;
+
+  un = CreateHuman;
+  PlaceUnitArea(un, NatureArea, false);
+  end;
+
+  for i = 1 to rand(3, 4)  do
+  begin
+
+  hc_sex= sex_male;
+  uc_side= 0;
+  uc_nation= nation_nature;
+  hc_class= 18;
+  hc_skills= [0, 0, 0, 0];
+  hc_agressivity= 0;
+
+  un = CreateHuman;
+  PlaceUnitArea(un, NatureArea, false);
+  end;
+
+  for i = 1 to rand(1, 3)  do
+  begin
+
+    hc_sex= sex_male;
+    uc_side= 0;
+    uc_nation= nation_nature;
+    hc_class= class_apeman;
+    hc_skills= [rand(RuSolMinLevel, RuSolMaxLevel), rand(RuSolMinLevel, RuSolMaxLevel), rand(RuSolMinLevel, RuSolMaxLevel), rand(RuSolMinLevel, RuSolMaxLevel)];
+    hc_agressivity = rand(1, 20);
+
+    un = CreateHuman;
+    PlaceUnitArea(un, NatureArea, false);
+  end;
+
+
 End;
