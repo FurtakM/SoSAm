@@ -3,33 +3,45 @@ var dec1, options;
 begin
     InGameOn;
     ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 48, 68);
-    CenterNowOnUnits(NewJMMVeh);
-    Say(JMM, 'D1T-JMM-1');
-    CenterNowOnUnits(NewJMMVeh);
-    Say(Powell, 'D1T-Pow-1');
-    CenterNowOnUnits(NewJMMVeh);
-    Say(JMM, 'D1T-JMM-2');
-    CenterNowOnUnits(NewJMMVeh);
-    Say(Powell, 'D1T-Pow-2');
-    CenterNowOnUnits(NewJMMVeh);
-    Say(JMM, 'D1T-JMM-3');
-    CenterNowOnUnits(NewJMMVeh);
-    Say(Powell, 'D1T-Pow-3');
-    CenterNowOnUnits(NewJMMVeh);
-    if not JMMGirlVeh = [] then
+
+    if KappaStatus = 0 then
     begin
-        if JMMGirl = 1 then Say(Joan, 'D1T-Joan-3');
-        if JMMGirl = 2 then Say(Joan, 'D1T-Lisa-3');
-        if JMMGirl = 3 then Say(Joan, 'D1T-Con-3');
         CenterNowOnUnits(NewJMMVeh);
-        Say(Powell, 'D1T-Pow-4');
+        Say(JMM, 'D1T-JMM-1');
         CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1nT-JMM-1');
     end else
     begin
-        Say(JMM, 'D1T-JMM-4');
+
         CenterNowOnUnits(NewJMMVeh);
-        Say(Powell, 'D1T-Pow-5');
+        Say(JMM, 'D1T-JMM-1');
         CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-1');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(JMM, 'D1T-JMM-2');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-2');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(JMM, 'D1T-JMM-3');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-3');
+        CenterNowOnUnits(NewJMMVeh);
+        if not JMMGirlVeh = [] then
+        begin
+            if JMMGirl = 1 then Say(Joan, 'D1T-Joan-3');
+            if JMMGirl = 2 then Say(Lisa, 'D1T-Lisa-3');
+            if JMMGirl = 3 then Say(Connie, 'D1T-Con-3');
+            CenterNowOnUnits(NewJMMVeh);
+            Say(Powell, 'D1T-Pow-4');
+            CenterNowOnUnits(NewJMMVeh);
+        end else
+        begin
+            Say(JMM, 'D1T-JMM-4');
+            CenterNowOnUnits(NewJMMVeh);
+            Say(Powell, 'D1T-Pow-5');
+            CenterNowOnUnits(NewJMMVeh);
+        end;
+            
     end;
 
     repeat
@@ -45,7 +57,7 @@ begin
         wait(0$1);
         ComMoveUnit(JMM, Powell);
         CenterNowOnUnits(JMM);
-    until GetDistUnits(JMM, Powell) < 4;
+    until GetDistUnits(JMM, Powell) < 6;
 
     CenterNowOnUnits([JMM, Powell]);
     ComTurnUnit(JMM, Powell);
@@ -53,12 +65,15 @@ begin
 
     Say(JMM, 'D1-JMM-1');
     Say(Powell, 'D1-Pow-1');
+    RevealFogArea(1, RevealArea1);
+    RevealFogArea(1, RevealArea2);
+    RevealFogArea(1, RevealArea3);
     CenterOnXY(171, 81);
-    wait(0$2);
-    CenterOnXY(157, 49);
-    wait(0$2);
+    wait(0$4);
+    CenterOnXY(162, 36);
+    wait(0$4);
     CenterOnXY(75, 16);
-    wait(0$3);
+    wait(0$4);
     CenterNowOnUnits([Powell, JMM]);
     Say(JMM, 'D1-JMM-2');
     Say(Powell, 'D1-Pow-2');
