@@ -24,7 +24,25 @@ begin
     Powell = PrepareUnit('Powell', false);
 
     PlaceUnitXYR(JMM, GetX(tmp[1]), GetY(tmp[1]), 4, false);
+    PlaceUnitXYR(Stevens, GetX(tmp[1]), GetY(tmp[1]), 4, false);
+
+    PlaceUnitXYR(Lisa, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Donaldson, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Bobby, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Cyrus, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Denis, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Brown, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Gladstone, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Houten, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Cornel, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Gary, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Frank, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    PlaceUnitXYR(Kikuchi, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+
     SetBName(tmp[1], 'epsilon');
+    SetResourceType(GetBase(tmp[1]), 1, 3000);
+    SetResourceType(GetBase(tmp[1]), 2, 500);
+    SetResourceType(GetBase(tmp[1]), 3, 200);
 
     SetClass(JMM, 1);
 
@@ -32,6 +50,9 @@ begin
 
     others11 = CreateCharacterSet('11c_others');
     others11 = others11 diff others12;
+
+    for i in others11 do PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
+    for i in others12 do PlaceUnitXYR(i, GetX(tmp[1]), GetY(tmp[1]), 35,  false);
 
 end;
 
@@ -71,16 +92,29 @@ for i in blist do
     end;
 
 
-for i in FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_empty]]) do
+End;
+
+Export function PrepareRandoms;
+var i, un, tmp;
 begin
 
-     hc_name = '';
-     hc_gallery = '';
-     PrepareHuman(false, 1, rand(5, 8));
-     un = CreateHuman;
-     PlaceHumanInUnit(un, i);
+    if FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Stevens] < 6 then 
+    begin
+        tmp = FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_depot], [f_btype, 1]]]);
+
+        uc_side = 1;
+        uc_nation = 1;
+
+        for i = 1 to 6 do 
+        begin
+            hc_gallery = '';
+            hc_name = '';
+            PrepareHuman(false, [1, 2, 3, 4][Rand(1, 4)], rand(5, 8));
+
+            un = CreateHuman;
+            randomsEpsilon = randomsEpsilon ^ un;
+            PlaceUnitXYR(un, GetX(tmp[1]), GetY(tmp[1]), 15,  false);
+        end;
+    end;
 
 end;
-
-
-End;
