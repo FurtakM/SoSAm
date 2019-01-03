@@ -185,12 +185,13 @@ var i, points, sol, buns;
 begin
 points := [ [89, 34], [138, 63], [196, 84], [135, 52], [103, 39], [58, 30], [38, 51] ];
 
+
 InGameOn;
 
 if jmm_units then
    for i in jmm_units do
        begin
-       if GetDistUnits(i, JMM) < 10 then
+       if GetDistUnits(i, JMM) < 10 and not IsInUnit(i) then
           ComTurnUnit(i, JMM)
            else
             ComHold(i);
@@ -272,6 +273,13 @@ Say(JMM, 'D2-JMM-8');
 buns := FilterAllUnits([[f_side, 1], [f_btype, b_breastwork]]);
 
 ComEnterUnit(Lynch, buns[1]);
+
+
+if HexInfo(65, 101) then
+   ComMoveXY(HexInfo(65, 101), 75, 100);
+
+if HexInfo(66, 103) then
+   ComMoveXY(HexInfo(66, 103), 75, 100);
 
 sol := NearestUnitToUnit(UnitFilter(jmm_units, [f_class, 1]), JMM);
 
@@ -442,6 +450,9 @@ if (inarea1 and inarea2) or (dead1 and inarea2) or (dead2 and inarea1) then
 
       repeat
        wait(0$01);
+
+       if not HasTask(tmp[1]) then
+          ComMoveToArea(tmp, cyrusEscape);
 
        if IsInArea(tmp[1], cyrusEscape) then
           begin
@@ -626,7 +637,9 @@ repeat
 until cornel_counter = 0;
 
 SayRadio(Cornel, 'D3a-Corn-1');
-Say(JMM, 'D3a-JMM-1');
+
+if IsOk(Cornel) then
+   Say(JMM, 'D3a-JMM-1');
 
 end_mission_allowed := true;
 ChangeMissionObjectives('M2');

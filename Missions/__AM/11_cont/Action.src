@@ -775,7 +775,7 @@ InitHc;
 
 PrepareHuman(sex_male, 16, 2);
 hc_attr := [12, 12];
-hc_name := 'Livid';
+hc_name := '';
 ar_mechanic_friend := CreateHuman;
 
 InitHc;
@@ -789,7 +789,7 @@ wait(0$5);
 DialogueOn;
 InGameOn;
 
-un := UnitFilter(us_team diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi], [f_sex, sex_male])[1];
+un := UnitFilter(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]) diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi], [f_sex, sex_male])[1];
 
 if not un and Brown then
    un := Brown;
@@ -907,6 +907,7 @@ YouLost('JMM');
 
 // YOU WIN
 Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_btype, b_warehouse]]) = 0 and IsOk(JMM) do
+var tmp;
 begin
 DialogueOn;
 
@@ -936,11 +937,14 @@ if artifact_get then
 
 GiveMedals('MAIN');
 
+
+
 // save
-RewardPeople(FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]));
+tmp := FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]);
+RewardPeople(tmp);
 
 // [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
-SaveCharacters(us_team diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi], '11c_others');
+SaveCharacters(tmp diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi], '11c_others');
 
 SaveCharacters(JMM, mission_prefix&'JMM');
 

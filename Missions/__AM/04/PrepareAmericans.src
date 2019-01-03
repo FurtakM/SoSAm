@@ -19,8 +19,20 @@ begin
     if Lisa = false and Bobby = false and Cyrus = false then
     begin        
          tmp = CreateCharacterSet('03_others');
-         for i = 1 to tmp do RandomBeforeMission = tmp[Rand(1, tmp)];
-         
+
+         if tmp then
+            begin
+            RandomBeforeMission = tmp[1];
+            DeleteCharacters('03_others');
+
+            if tmp > 1 then
+               SaveCharacters(tmp diff tmp[1], '03_others');
+            end
+           else
+            begin
+            PrepareHuman(false, 1, 3);
+            RandomBeforeMission := CreateHuman;
+            end;
     end;
             
     uc_side = 4;
