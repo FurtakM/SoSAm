@@ -1,6 +1,5 @@
 Export JMM, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
        Gladstone, Houten, Powell, Cornel, Gary, Frank, Kikuchi;
-Export us_team;
 
 {
   W tym miejscu powinno wczytywaæ wszystkie postacie jakiekolwiek
@@ -106,6 +105,9 @@ tmp := tmp diff 0;
 tmp := tmp union CreateCharacterSet('10_lock');
 tmp := tmp union CreateCharacterSet('10c_lock');
 
+DeleteCharacters('10_lock');
+DeleteCharacters('10c_lock');
+
 for i in tmp do
     if GetClass(i) = class_mortar then
        SetClass(i, class_soldier);
@@ -134,8 +136,6 @@ others := tmp diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Hout
 
 if others then
    SaveCharacters(others, '11_others');
-
-us_team := tmp;
 
 vehs := [ [us_medium_tracked, engine_combustion, control_manual, us_gatling_gun],
           [us_medium_wheeled, engine_solar, control_manual, us_double_gun],
