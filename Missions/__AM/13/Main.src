@@ -1,12 +1,17 @@
 Export JMM, Powell;
 Export Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi; 
 Export Stevens; // New :D
-Export others12, others11;
+Export others12, others11, randomsEpsilon;
+Export yourVehicles, resources;
 
 Export mission_prefix_prev;
 
 Starting
 begin
+
+    yourVehicles = [];
+    resources = [];
+    randomsEpsilon = [];
 
     Resetfog;
     RandomizeAll;
@@ -17,6 +22,7 @@ begin
 
     PrepareEpsilonBase;
     PrepareHeroes;
+    PrepareRandoms;
 
     CenterNowOnUnits(JMM);
 
@@ -35,5 +41,39 @@ begin
     DialogueOff;
 
     SelectAndSaveCharacters;
+    InGameOff;
+    Query('Q1');
+    SetAreaMapShow(ExitArea, 1);
+end;
+
+Every 0$1 trigger FilterUnitsExceptArea(ExitArea, [[f_side, 1], [f_type, unit_human]]) = 0 and FilterUnitsInArea(ExitArea, [[f_side, 1], [f_type, unit_vehicle], [f_engine, 3], [f_control, 1]]) = 8 do
+var i, cargoType;
+begin
+
+    if FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) > 0 then
+    begin
+        for i in FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) do
+        begin
+            cargoType = GetCargoType(i);
+            if GetWeapon(i) = us_cargo_bay then
+            begin
+                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), cargoType, GetCargo(i, cargoType) ] ];
+            end else 
+            begin
+                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)] ];
+            end;
+        end;  
+
+        SaveVariable(yourVehicles, '13_VehiclesIn13_1');
+        
+    end;
+    SaveCargos;
     ChangeMap(13, '%_cont');
+end;
+
+Export function SaveCargos;
+var i;
+begin
+   for i in FilterUnitsInArea(ExitArea,[[f_side, 1], [f_weapon, us_cargo_bay]]) do resources = resources ^ [GetMultiCargo(i)];
+   SaveVariable(resources, '13_ResourcesInCargo13_1');
 end;

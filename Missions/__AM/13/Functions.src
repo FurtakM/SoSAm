@@ -48,6 +48,7 @@ begin
      tmp = [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
      tmp = tmp ^ others11;
      tmp = tmp ^ others12;
+     tmp = tmp ^ randomsEpsilon;
 
      for i in tmp do if GetClass(i) = 8 then SetClass(i, rand(1, 4));
 
@@ -80,4 +81,15 @@ begin
       SaveCharactersAfterSelect(Frank, 'Frank', selected);
       SaveCharactersAfterSelect(Kikuchi, 'Kikuchi', selected);
 
+      SetSide(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 4);
+      SetSide(selected, 1);
+      SetSide([JMM, Stevens], 1);
+
 end;
+
+
+Export Function GetMultiCargo(cargo_bay);
+var i;
+begin
+  result := [GetCargo(cargo_bay, mat_cans), GetCargo(cargo_bay, mat_oil),GetCargo(cargo_bay, mat_siberit)];
+End;

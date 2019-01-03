@@ -47,37 +47,45 @@ begin
     for i in others13 do PlaceHumanInUnit(i, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
 end;
 
-Export function SpawnVehicle;
-var i, veh;
+Export function PrepareVehicles;
+var i, j, veh, vehicles, cargoList;
 begin
+    vehicles = LoadVariable('13_VehiclesIn13_1', []);
+    resources = LoadVariable('13_ResourcesInCargo13_1', []);
+    cargoList = [];
 
     uc_side = 1;
-    uc_nation = 1;
 
-    for i = 1 to [3, 2, 1][Difficulty] do 
+    if vehicles > 0 then
     begin
-        vc_engine = 3;
-        vc_control = 1;
-        vc_weapon = 12;
-        vc_chassis = 3;
 
-        veh = CreateVehicle;
-        PlaceUnitArea(veh, PlayerSpawn, false);
-        SetDir(veh, 2);
-        AddCargo(veh, 1, 100);
-    end;
+        for i := 1 to vehicles do
+        begin
+            uc_nation = vehicles[i][1];
+            vc_chassis = vehicles[i][2];
+            vc_engine = vehicles[i][3];
+            vc_control = vehicles[i][4];
+            vc_weapon = vehicles[i][5];
+            vc_fuel_battery = 40;
 
-    for i = 1 to 8 - [3, 2, 1][Difficulty] do 
-    begin
-        vc_engine = 3;
-        vc_control = 1;
-        vc_weapon = [9, 5, 4, 7, 6][Rand(1, 5)];
-        if vc_weapon = 6 then vc_chassis = 4
-        else vc_chassis = 3;
+            veh = CreateVehicle;
+            SetDir(veh, 3);
+            PlaceUnitArea(veh, PlayerSpawn, false);
+        end;
 
-        veh = CreateVehicle;
-        PlaceUnitArea(veh, PlayerSpawn, false);
-        SetDir(veh, 1);
+        cargoList = FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_weapon, us_cargo_bay]]);
+
+        if cargoList > 0 then
+          for i = 1 to cargoList do
+          begin
+             if resources > 0 then
+             begin
+                   AddCargo(cargoList[i], 1, resources[i][1]);
+                   AddCargo(cargoList[i], 2, resources[i][2]);
+                   AddCargo(cargoList[i], 3, resources[i][3]);
+             end;
+          end;
+
     end;
 
 end;
