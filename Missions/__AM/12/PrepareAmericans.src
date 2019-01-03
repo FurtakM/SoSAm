@@ -2,7 +2,7 @@ Export function PrepareAmericanHeroes;
 begin
     uc_side = 1;
 
-    others11 =  CreateCharacterSet('11c_others');
+    others11 =  CreateCharacterSet('11_others');
 
 
     JMM = PrepareUnit('11_JMM', true);
@@ -16,16 +16,7 @@ begin
         PlaceUnitArea(Lisa, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Lisa') = true  then
-        begin
-            Lisa = PrepareUnit('10c_Lisa', true);
-            SetClass(Lisa, 1);
-            PlaceUnitArea(Lisa, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     if TestCharacters('11_Donaldson') = true then
@@ -35,16 +26,7 @@ begin
         PlaceUnitArea(Donaldson, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Donaldson') = true then
-        begin          
-            Donaldson = PrepareUnit('10c_Donaldson', true);
-            SetClass(Donaldson, 1);
-            PlaceUnitArea(Donaldson, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     if TestCharacters('11_Cyrus') = true then
@@ -54,16 +36,7 @@ begin
         PlaceUnitArea(Cyrus, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Cyrus') = true then
-        begin          
-            Cyrus = PrepareUnit('10c_Cyrus', true);
-            SetClass(Cyrus, 1);
-            PlaceUnitArea(Cyrus, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     if TestCharacters('11_Denis') = true then
@@ -73,16 +46,7 @@ begin
         PlaceUnitArea(Denis, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Denis') = true then
-        begin
-            Denis = PrepareUnit('10c_Denis', true);
-            SetClass(Denis, 4);
-            PlaceUnitArea(Denis, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     if TestCharacters('11_Frank') = true then
@@ -92,16 +56,7 @@ begin
         PlaceUnitArea(Frank, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Frank') = true then
-        begin
-            Frank = PrepareUnit('11_Frank', true);
-            SetClass(Frank, 1);
-            PlaceUnitArea(Frank, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     if TestCharacters('11_Cornell') = true then
@@ -111,46 +66,34 @@ begin
         PlaceUnitArea(Cornel, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Cornell') = true then
-        begin
-            Cornel = PrepareUnit('10c_Cornell', true);
-            SetClass(Cornel, 1);
-            PlaceUnitArea(Cornel, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     Powell = PrepareUnit('Powell', false);
 end;
 
 Export function PrepareAmericansRandom(area, veh, spawnMode, mech);
-var i, un, tmp, mecha, iter;
+var i, un, tmp, mecha;
 begin
 
     if mech = 1 then
     begin   
         if others11 > 0 then
         begin
-            
-            tmp = GetSkill(others11[i], 3);
 
             for i := 1 to others11 - 1 do
             begin
-                if tmp < GetSkill(others11[i + 1], 3) then
+                if GetSkill(others11[i], 3) < GetSkill(others11[i + 1], 3) then
                 begin
-                    tmp = GetSkill(others11[i + 1], 3);
                     mecha = others11[i + 1];
-                    iter = i + 1;
-                end; 
+                    SetClass(mecha, 3);
+                end;
             end;
 
             if spawnMode = 1 then PlaceUnitArea(mecha, area, false)
             else PlaceHumanInUnit(mecha, veh);
 
-            others11 := others11 diff mecha;
+            others11 = others11 diff mecha;
 
         end else
         begin
@@ -170,7 +113,7 @@ begin
             if spawnMode = 1 then PlaceUnitArea(others11[1], area, false)
             else PlaceHumanInUnit(others11[1], veh);
 
-            others11 := Delete(others11, 1);
+            others11 = Delete(others11, 1);
         end else
         begin
             hc_name = '';
@@ -228,16 +171,7 @@ begin
         PlaceUnitArea(Brown, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Brown') = true then
-        begin
-            Brown = PrepareUnit('10c_Brown', true);
-            SetClass(Brown, 2);
-            PlaceUnitArea(Brown, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     if TestCharacters('11_Gary') = true then
@@ -247,16 +181,7 @@ begin
         PlaceUnitArea(Gary, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Gary') = true then
-        begin
-            Brown = PrepareUnit('10c_Gary', true);
-            SetClass(Gary, 2);
-            PlaceUnitArea(Gary, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
     vc_chassis = us_medium_tracked;
@@ -329,16 +254,7 @@ begin
         PlaceHumanInUnit(Bobby, veh);
     end else
     begin
-        if TestCharacters('10c_Bobby') = true then
-        begin
-            Bobby = PrepareUnit('10c_Bobby', true);
-            SetClass(Bobby, 3);
-            PlaceHumanInUnit(Bobby, veh);
-        end
-        else
-        begin
             PrepareAmericansRandom(0, veh, 2, 0);
-        end;
     end;
 
     if TestCharacters('11_Houten') = true then
@@ -348,16 +264,7 @@ begin
         PlaceUnitArea(Houten, PlayerSpawn, false);
     end else
     begin
-        if TestCharacters('10c_Houten') = true then
-        begin
-            Houten = PrepareUnit('10c_Houten', true);
-            SetClass(Houten, 1);
-            PlaceUnitArea(Houten, PlayerSpawn, false);
-        end
-        else
-        begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
-        end;
     end;
 
 
