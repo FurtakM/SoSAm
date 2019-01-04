@@ -401,13 +401,15 @@ End;
 
 // Arabian arrive
 Every 0$1 trigger ar_can_arrive do
-var i, x, tmp, dep, time, no_oil_gain, first_warn, b;
+var i, x, tmp, dep, time, no_oil_gain, first_warn, b, have_crates;
 begin
 PrepareArabian;
 
 repeat
  wait(0$01);
 until ar_spawned;
+
+have_crates := true;
 
 // cinematics
 DialogueOn;
@@ -581,6 +583,7 @@ if player_want_mortar then
 
          if GetResourceType(GetBase(dep), mat_cans) < 50 then
             begin
+            have_crates := false;
             DialogueOn;
             Say(Vervecken, 'D9c-Ar1-1');
             Say(JMM, 'D9c-JMM-1');
@@ -604,8 +607,9 @@ if player_want_mortar then
             DialogueOff; 
             end;
 
-        end
-       else
+        end;
+
+     if have_crates then
         begin // build barracks
         RemoveEnvironmentArea(mortarArea);
 
