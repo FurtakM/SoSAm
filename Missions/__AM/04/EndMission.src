@@ -1,5 +1,5 @@
 Every 0$1 trigger IsDead(Stolypin) do
-var i;
+var i, p;
 begin
      AIEnable = 0;
      escapeAvalaible = 1;
@@ -23,9 +23,18 @@ begin
 
      CenterOnXY(124, 98);
 
+     p := 0$0;
+
+     repeat
+      wait(0$1);
+      p := p + 0$1;
+     until FilterAllUnits([[f_nation, 3], [f_type, unit_human], [f_lives, 250]]) = 0 or p >= 0$7;
+
+     FinishMission;
+
 end;
 
-Every 0$1 trigger FilterAllUnits([[f_nation, 3], [f_type, unit_human], [f_lives, 250]]) = 0 do FinishMission;
+
 
 Every 0$01 trigger escapeAvalaible = 1 do
 var i; 
