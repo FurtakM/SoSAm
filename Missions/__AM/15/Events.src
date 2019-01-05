@@ -1,1 +1,19 @@
-//
+On EnterVehicle(vehicle, human) Do
+begin
+    if vehicle = powellCargo and GetSide(human) = 4 then
+    begin
+        ComTransport(PowellCargo, PowellDepot, 1);
+        AddComMoveXY(PowellCargo, 68, 100);
+        AddComUnload(PowellCargo);
+        AddComMoveXY(PowellCargo, 43, 74);
+    end;
+end;
+
+On BuildingComplete(building) Do
+begin
+    if GetBType(building) = b_ext_gun and GetSide(building) = 4 then
+    begin
+        ComUpgrade(PowellDepot);
+        ComUpgradeLab(AmLab, b_lab_weapon);
+    end;
+end;
