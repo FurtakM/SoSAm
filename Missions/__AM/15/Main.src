@@ -48,6 +48,8 @@ Export others13; // Others
 Export NewJMMVeh, NewJMMGirlVeh;
 Export Platonov, Roth, Kurt; // Enemy commanders
 
+Export amUnitsSkillTab, amUnitsAttack;
+
 Export JMMVeh, JMMGirlVeh; // Vehs from mission 14
 Export JMMGirl, KappaStatus; // Am 14
 Export KhatamStatus; // Am 10
@@ -66,10 +68,14 @@ begin
     KappaStatus = LoadVariable('14_KappaStatus_1', 0);
     KhatamStatus = LoadVariable('10_KhatamStatus_1', 0);
 
+    amUnitsSkillTab = []; // [unitID][Skills/4]
+    amUnitsAttack = []; // 8 units who die durring attack legion base
 
     debugMode = 1; // 0 - players, 1 - devs
 
+
     PrepareHeroes;
+    PrepareHeroesFromEpsilon;
     PrepareRandoms;
 
     PrepareLegion;

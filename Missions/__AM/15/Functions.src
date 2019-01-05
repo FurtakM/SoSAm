@@ -10,6 +10,63 @@ begin
     result := unit;
 End;
 
+Export Function PrepareUnitEpsilon(ident);
+var unit;
+begin
+
+    if TestCharacters('13s_'&ident) = true then
+        unit = CreateCharacter('13s_'&ident);
+
+    result := unit;
+End;
+
+Export function TabLenght(tab);
+var i;
+begin
+     for i = 1 to tab do result = i;
+end;
+
+Export Function SortByDistanceXY(list, asc);
+var i, j, tmp;
+begin
+if not list then
+   exit;
+
+result := [];
+
+for i in list do
+    begin
+    tmp :=  ( (GetSkill(i, 1) + GetSkill(i, 2) + GetSkill(i, 3) + GetSkill(i, 4))  div 4);
+
+    if not result then
+       result := [[i, tmp]]
+     else
+      begin
+       if result[result][2] < tmp then
+          result := Insert(result, result+1, [i, tmp])
+       else
+       for j = 1 to result do
+           begin
+           if tmp < result[j][2] then
+              begin
+              result := Insert(result, j, [i, tmp]);
+              break;
+              end;
+           end;
+      end;
+    end;
+
+if result and not asc then
+   begin
+   tmp := result;
+
+   for i = tmp downto 1 do
+       result := Replace(result, tmp - i + 1, tmp[i]);
+   end;
+End;
+
+
+
 Export function DialogRandom(characters, dialogMID, dialogFID);
 var i, rnd;
 begin

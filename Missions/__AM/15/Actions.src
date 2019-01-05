@@ -1,5 +1,5 @@
 Every 1 do
-var dec1, options;
+var dec1, options, people;
 begin
     InGameOn;
     ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 48, 68);
@@ -51,6 +51,7 @@ begin
     until GetDistUnits(NewJMMVeh, Powell) < 15;
 
     ComExitVehicle(JMM);
+    ComExitVehicle(UnitsInside(NewJMMGirlVeh));
     wait(0$1);
 
     repeat
@@ -100,7 +101,73 @@ begin
         ResolveQuery(dec1+4, options);
     end;
 
+    if not JMMGirlVeh = [] then
+    begin
+        repeat
+            wait(0$1);
+            if JMMGirl = 1 then ComMoveUnit(JMM, Joan);
+            if JMMGirl = 2 then ComMoveUnit(JMM, Lisa);
+            if JMMGirl = 3 then ComMoveUnit(JMM, Connie);
+        until GetDistUnits(JMM, Joan) < 6 or GetDistUnits(JMM, Lisa) < 6 or GetDistUnits(JMM, Connie) < 6;
+    end;
+
+    case JMMGirl of
+        1:begin
+            ComTurnUnit(JMM, Joan);
+            ComTurnUnit(Joan, JMM);
+            Say(Joan, 'D3W-Joan-1');
+        end;
+
+        2:begin
+            ComTurnUnit(JMM, Lisa);
+            ComTurnUnit(Lisa, JMM);
+            Say(Lisa, 'D3W-Lisa-1');
+        end;
+
+        3:begin
+            ComTurnUnit(JMM, Connie);
+            ComTurnUnit(Connie, JMM);
+            Say(Connie, 'D3W-Con-1');
+        end;
+    end;
+
+    Say(JMM, 'D3W-JMM-1');
+
+    people = 0;
+
+    if Lisa and people < 5 then begin people = people + 1; ComMoveXY(Lisa, 65, 98); end;
+    if Donaldson and people < 5 then begin people = people + 1; ComMoveXY(Donaldson, 65, 98); end;
+    if Bobby and people < 5 then begin people = people + 1; ComMoveXY(Bobby, 65, 98); end;
+    if Cyrus and people < 5 then begin people = people + 1; ComMoveXY(Cyrus, 65, 98); end;
+    if Denis and people < 5 then begin people = people + 1; ComMoveXY(Denis, 65, 98); end;
+    if Brown and people < 5 then begin people = people + 1; ComMoveXY(Brown, 65, 98); end;
+    if Gladstone and people < 5 then begin people = people + 1; ComMoveXY(Gladstone, 65, 98); end;
+    if Houten and people < 5 then begin people = people + 1; ComMoveXY(Houten, 65, 98); end;
+    if Cornel and people < 5 then begin people = people + 1; ComMoveXY(Cornel, 65, 98); end;
+    if Gary and people < 5 then begin people = people + 1; ComMoveXY(Gary, 65, 98); end;
+    if Frank and people < 5 then begin people = people + 1; ComMoveXY(Frank, 65, 98); end;
+    if Kikuchi and people < 5 then begin people = people + 1; ComMoveXY(Kikuchi, 65, 98); end;
+
+    repeat
+        wait(0$1);
+        CenterNowOnUnits(JMM);
+        ComMoveXY([JMM, Joan, Lisa, Connie], 68, 100);
+    until IsInArea(JMM, PowellHillArea);
+
+    wait(0$2);
+    ComTurnUnit(FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM], JMM);
+    Say(Lisa, 'D3nW-Lisa-1');
+    Say(Cyrus, 'D3nW-Cyrus-1');
+    Say(Bobby, 'D3nW-Bobby-1');
+    Say(Gary, 'D3nW-Gary-1');
+    Say(Donaldson, 'D3nW-Don-1');
+    Say(Cornel, 'D3nW-Corn-1');
+    Say(Frank, 'D3nW-Frank-1');
+    Say(JMM, 'D3nW-JMM-1');
+    Say(JMM, 'D3nW-JMM-1a');
+
     InGameOff;
+    ChangeMissionObjectives('M1');
 
 end;
 
@@ -154,4 +221,10 @@ Function ResolveQuery(question, list_of_q);
           Say(Powell, 'D2Com-Pow-2');
         end;
    end;
+ end;
+
+ Every 0$1 trigger FilterUnitsInArea(PowellHillArea, [f_side, 4]) do
+ begin
+    enable;
+    SetSide(FilterUnitsInArea(PowellHillArea, [f_side, 4]), 1);
  end;
