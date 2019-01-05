@@ -66,14 +66,100 @@ begin
     PlaceUnitXYR(Powell, 47, 63, 5, false);
 end;
 
+Export function PrepareHeroesFromEpsilon;
+begin
+    Lisa = PrepareUnitEpsilon('Lisa');
+    Donaldson = PrepareUnitEpsilon('Donaldson');
+    Bobby = PrepareUnitEpsilon('Bobby');
+    Cyrus = PrepareUnitEpsilon('Cyrus');
+    Denis = PrepareUnitEpsilon('Denis');
+    Brown = PrepareUnitEpsilon('Brown');
+    Gladstone = PrepareUnitEpsilon('Gladstone');
+    Houten = PrepareUnitEpsilon('Houten');
+    Cornel = PrepareUnitEpsilon('Cornel');
+    Gary = PrepareUnitEpsilon('Gary');
+    Frank = PrepareUnitEpsilon('Frank');
+    Kikuchi = PrepareUnitEpsilon('Kikuchi');
+
+    PlaceUnitArea(Lisa, PowellBaseSpawn, false);
+    PlaceUnitArea(Donaldson, PowellBaseSpawn, false);
+    PlaceUnitArea(Bobby, PowellBaseSpawn, false);
+    PlaceUnitArea(Cyrus, PowellBaseSpawn, false);
+    PlaceUnitArea(Denis, PowellBaseSpawn, false);
+    PlaceUnitArea(Brown, PowellBaseSpawn, false);
+    PlaceUnitArea(Gladstone, PowellBaseSpawn, false);
+    PlaceUnitArea(Houten, PowellBaseSpawn, false);
+    PlaceUnitArea(Cornel, PowellBaseSpawn, false);
+    PlaceUnitArea(Gary, PowellBaseSpawn, false);
+    PlaceUnitArea(Frank, PowellBaseSpawn, false);
+    PlaceUnitArea(Kikuchi, PowellBaseSpawn, false);
+end;
 
 Export function PrepareRandoms;
-var i;
+var i, un, tmp, heroLenght;
 begin
     uc_side = 4;
     uc_nation = 1;
 
     others13 = CreateCharacterSet('13s_others');
 
-    for i in others13 do PlaceUnitArea(i, PowellBaseSpawn,  false);
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
+    heroLenght = TabLenght(tmp);
+  
+    if others13 >= 8 then
+    begin
+        for i = 1 to 8 do 
+        begin
+            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            others13 = Delete(others13, 1);
+        end; 
+    end else
+    begin
+        for i = 1 to others13 do 
+        begin
+            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            others13 = Delete(others13, 1);
+        end; 
+    end;
+
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
+    heroLenght = TabLenght(tmp);
+
+    if others13 >= heroLenght then
+    begin
+        for i = 1 to heroLenght do 
+        begin
+            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            others13 = Delete(others13, 1);
+        end; 
+    end else
+    begin
+        for i = 1 to others13 do 
+        begin
+            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            others13 = Delete(others13, 1);
+        end; 
+    end;
+
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
+    heroLenght = TabLenght(tmp);
+
+    if heroLenght < 19 then
+        for i = 1 to 19 - heroLenght do 
+        begin
+
+            hc_gallery = '';
+            hc_name = '';
+            PrepareHuman(false, rand(1,4), rand(6, 8));
+
+            un = CreateHuman;
+
+            PlaceUnitArea(un, PowellBaseSpawn,  false);
+        end; 
+
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
+    amUnitsSkillTab = SortByDistanceXY(tmp, true);
+    
+    amUnitsAttack = amUnitsAttack ^ [ [amUnitsSkillTab[1][1]], [amUnitsSkillTab[2][1]], [amUnitsSkillTab[3][1]], [amUnitsSkillTab[4][1]], [amUnitsSkillTab[5][1]], [amUnitsSkillTab[6][1]], [amUnitsSkillTab[7][1]], [amUnitsSkillTab[8][1]] ];
+    display_strings = amUnitsAttack;
 end;
