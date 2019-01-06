@@ -14,12 +14,12 @@ Todo
 - Am08  100% []
 - Am09  100%
 - Am10  100%
-- Am11  1% []
-- Am12  80% []
-- Am13  90% []
-- Am14  70% []
-- Am15  0% []
-- Am16  0% []
+- Am11  100% []
+- Am12  100% []
+- Am13  100% []
+- Am14  100% []
+- Am15  10% []
+- Am16  1% []
 - Am17  0% []
 - Am18  0% []
 - Am19  0% []
@@ -28,12 +28,12 @@ Todo
 # Zadania
 Serpent: 
 ```
-Dokończenie misji 11.
+Dokończenie misji 16.
 ```
 
 Nefarem: 
 ```
-Dokończenie misji 10, 11..
+Dokończenie misji 15.
 
 ```
 
