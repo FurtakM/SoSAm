@@ -152,15 +152,14 @@ others4 := CreateCharacterSet('othersGamma');
 others := CreateCharacterSet('06_other_survivors');
 
 others := others union others4;
-//others := others diff others_delta;
+others := others diff others_delta;
 team := team ^ others;
 
-if team < 10 then
+if team <= 12 then
    repeat
-    wait(0$01);
     PrepareHuman(false, rand(1,4), 5);
     team := team ^ CreateHuman;
-   until team < 10;
+   until team > 12;
 
 for i in others do
     begin
