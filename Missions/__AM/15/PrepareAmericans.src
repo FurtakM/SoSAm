@@ -110,14 +110,14 @@ begin
     begin
         for i = 1 to 8 do 
         begin
-            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            PlaceUnitArea(others13[1], PowellBaseSpawn,  false);
             others13 = Delete(others13, 1);
         end; 
     end else
     begin
         for i = 1 to others13 do 
         begin
-            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            PlaceUnitArea(others13[1], PowellBaseSpawn,  false);
             others13 = Delete(others13, 1);
         end; 
     end;
@@ -129,14 +129,14 @@ begin
     begin
         for i = 1 to heroLenght do 
         begin
-            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            PlaceUnitArea(others13[1], PowellBaseSpawn,  false);
             others13 = Delete(others13, 1);
         end; 
     end else
     begin
         for i = 1 to others13 do 
         begin
-            PlaceUnitArea(others13[i], PowellBaseSpawn,  false);
+            PlaceUnitArea(others13[1], PowellBaseSpawn,  false);
             others13 = Delete(others13, 1);
         end; 
     end;
@@ -157,9 +157,10 @@ begin
             PlaceUnitArea(un, PowellBaseSpawn,  false);
         end; 
 
-    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
-    amUnitsSkillTab = SortByDistanceXY(tmp, true);
-    
-    amUnitsAttack = amUnitsAttack ^ [ [amUnitsSkillTab[1][1]], [amUnitsSkillTab[2][1]], [amUnitsSkillTab[3][1]], [amUnitsSkillTab[4][1]], [amUnitsSkillTab[5][1]], [amUnitsSkillTab[6][1]], [amUnitsSkillTab[7][1]], [amUnitsSkillTab[8][1]] ];
-    display_strings = amUnitsAttack;
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell, JMM, Joan, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie];
+    amUnitsSkillTab = SortBySkill(tmp, true);
+
+    for i = 1 to 8 do amUnitsAttack = amUnitsAttack ^  amUnitsSkillTab[i][1];
+
+    SetClass(amUnitsAttack, 1);
 end;

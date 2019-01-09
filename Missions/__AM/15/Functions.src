@@ -26,7 +26,7 @@ begin
      for i = 1 to tab do result = i;
 end;
 
-Export Function SortByDistanceXY(list, asc);
+Export Function SortBySkill(list, asc);
 var i, j, tmp;
 begin
 if not list then
@@ -64,6 +64,33 @@ if result and not asc then
        result := Replace(result, tmp - i + 1, tmp[i]);
    end;
 End;
+
+Export function PrepareDifficulty;
+begin
+    if difficulty = 1 then
+    begin
+        SetTech(tech_Weap1, 6, state_researched);
+        SetTech(tech_Comp1, 6, state_researched);
+    end;
+
+    if difficulty = 2 then
+    begin
+        SetTech(tech_Weap1, 6, state_researched);
+        SetTech(tech_Comp1, 6, state_researched);
+        SetTech(tech_Weap2, 6, state_researched);
+        SetTech(tech_Comp2, 6, state_researched);
+    end;
+
+    if difficulty = 3 then
+    begin
+        SetTech(tech_Weap1, 6, state_researched);
+        SetTech(tech_Comp1, 6, state_researched);
+        SetTech(tech_Weap2, 6, state_researched);
+        SetTech(tech_Comp2, 6, state_researched);
+        SetTech(tech_Weap3, 6, state_researched);
+        SetTech(tech_Comp3, 6, state_researched);
+    end;
+end;
 
 
 
@@ -234,13 +261,13 @@ begin
 
                 IF RUWeapons[j] = 42 or RUWeapons[j] = 43 or RUWeapons[j] = 44 or RUWeapons[j] = 45 or RUWeapons[j] = 49 then
                 begin
-                    ruChassisTab = [21, 22, 23, 24];
+                    ruChassisTab = [24];
                     vc_chassis = ruChassisTab[Rand(1, ruChassisTab)];
                 end;
 
                 IF RUWeapons[j] = 46 or RUWeapons[j] = 47 then
                 begin
-                    ruChassisTab = [23, 24];
+                    ruChassisTab = [24];
                     vc_chassis = ruChassisTab[Rand(1, ruChassisTab)];
                 end;
 
@@ -271,7 +298,7 @@ begin
 
     repeat
         wait(0$1);
-        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 661]]);
+        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250]]);
 
         IF vehicleOK_list > 0 then
         begin
@@ -292,5 +319,37 @@ begin
             end;
         end;
       end;
-    until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_occupied], [f_not, 31]]) = 0;
+    until vehicleOK_list = [];
+END;
+
+
+
+// AI
+
+Export function ResAllTechs(side, lab, nation);
+var i, tech, cout;
+begin
+
+For i = 1 to 72 do
+If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true then AddComResearch(lab, i);
+
+end;
+
+
+Export function RepairBuilding(side, building, area);
+var buildings_list, i,engineerOkInside, engineerOkOutside, j;
+begin
+
+
+  engineerOkInside = UnitsInside(building);
+  engineerOkOutside = FilterUnitsInArea(area,[[f_side, side], [f_class, 2], [f_lives, 750], [f_not, [f_inside]]]);
+  buildings_list = FilterUnitsInArea(area,[[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+  if not buildings_list and not FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 250]]) then exit;
+
+  if buildings_list > 0 and engineerOkInside then ComExitBuilding(UnitFilter(engineerOkInside, [f_class, 2]));
+
+  if buildings_list > 0  and engineerOkOutside > 0 then ComRepairBuilding(engineerOkOutside, buildings_list[1]);
+
+  if buildings_list = 0 and engineerOkOutside > 0 then ComEnterUnit(engineerOkOutside, building);
 END;

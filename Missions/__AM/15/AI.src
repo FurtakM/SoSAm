@@ -1,7 +1,16 @@
+// Powell base
 Every 0$1 trigger powellBuildBase = 1 do 
-var powellPeople;
+var i, powellPeople;
 begin 
-    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
+    for i = 1 to 4 do
+    begin
+        AddComEnterUnit(amUnitsAttack[i], AmFact);
+        AddComChangeProfession(amUnitsAttack[i], 3);
+    end;
+
+    wait(0$1);
+
+    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_not, [f_hastask]]]) diff [Powell];
 
     ComEnterUnit(powellPeople[1], PowellCargo);
 
@@ -9,11 +18,30 @@ begin
     SetClass(powellPeople[3], 2);
 
     SetResourceVisibility(30, 49, 4);
+
+    AddComUpgradeLab(AmLab, b_lab_weapon);
+    AddComUpgradeLab(AmLab, b_lab_siberium);
+
     ComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_siberite_mine, 30, 49, 1);
     AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_bunker, 55, 56, 4);
     AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_bunker, 63, 71, 4);
     AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_siberite_power, 40, 72, 4); 
-    AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_solar_power, 42, 72, 4); 
-    AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_ext_siberium, 38, 54, 1);
+    AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_solar_power, 45, 73, 4);
+    AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_ext_rocket, 37, 50, 2);
     AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_ext_gun, 41, 51, 3);
+    AddComBuild(FilterAllUnits([[f_side, 4], [f_class, 2]]), b_ext_siberium, 38, 54, 1);
+end;
+
+Every 1 trigger IsInArea(PowellCargo, CargoParking) do
+begin
+  ComExitVehicle(UnitsInside(PowellCargo));
+  ComUpgrade(PowellDepot);
+end;
+
+
+// Legion
+Every 0$1 do 
+begin
+    enable;
+    RepairBuilding(8, ArDep1, LegionBaseArea);
 end;

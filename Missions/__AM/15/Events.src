@@ -5,15 +5,95 @@ begin
         ComTransport(PowellCargo, PowellDepot, 1);
         AddComMoveXY(PowellCargo, 68, 100);
         AddComUnload(PowellCargo);
-        AddComMoveXY(PowellCargo, 43, 74);
+        AddComMoveXY(PowellCargo, 41, 61);
     end;
 end;
 
-On BuildingComplete(building) Do
+On UpgradeComplete(building) Do
+var i, powellPeople;
 begin
-    if GetBType(building) = b_ext_gun and GetSide(building) = 4 then
+    
+    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_not, [f_hastask]]]) diff [Powell];
+    
+    if GetSide(building) = 4 then
+        if FilterAllUnits([[f_side, 4], [f_btype, b_lab_full]]) = 1 then
+        begin
+            for i = 1 to 3 do
+            begin
+                AddComEnterUnit(UnitFilter(powellPeople[i], [f_not, [f_class, 2]]), building);
+                AddComChangeProfession(powellPeople[i], 4);
+            end; 
+            ResAllTechs(4, building, 1);
+            AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+            AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+            AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+            AddComConstruct(AmFact, us_morphling, engine_siberite, control_manual, 6);
+        end;
+
+end;
+
+On BuildingComplete(building) Do
+var powellPeople;
+begin
+    if GetSide(building) = 4 and GetBType(building) = b_ext_gun then
     begin
-        ComUpgrade(PowellDepot);
-        ComUpgradeLab(AmLab, b_lab_weapon);
+
+        powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_not, [f_hastask]]]) diff [Powell];
+
+        PlaceWeaponTurret(FilterAllUnits([[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[1], us_heavy_gun);
+        PlaceWeaponTurret(FilterAllUnits([[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[2], us_double_gun); 
+        ComEnterUnit(powellPeople[1], FilterAllUnits([[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[1]);
+        ComEnterUnit(powellPeople[2], FilterAllUnits([[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[2]);
+    end;
+end;
+
+On EnterBuilding(building, human) Do
+begin
+
+end;
+
+On VehicleConstructed(vehicle, building) Do
+begin
+    if vehicle = powellVeh then ComExitVehicle(UnitsInside(vehicle));
+
+    if GetSide(vehicle) = 4 and powellAttacks = 2 and GetWeapon(vehicle) = us_heavy_gun then
+    begin
+         ComExitBuilding(amUnitsAttack[5]);
+         wait(0$1);
+         AddComEnterUnit(amUnitsAttack[5], AmFact);
+         AddComChangeProfession(amUnitsAttack[5], 3);
+    end;
+
+    if GetSide(vehicle) = 4 and powellAttacks = 2 and GetWeapon(vehicle) = us_light_gun then
+        powellVeh = vehicle;
+
+end;
+
+On LeaveVehicle(vehicle, human) Do
+begin
+    if GetSide(vehicle) = 4 and  powellAttacks = 1  then
+    begin
+        ComEnterUnit(human, AmFact);
+        if GetSex(human) = sex_male and blockEvent1 = 0 then 
+        begin
+            blockEvent1 = 1;
+            startAttacks = 1;
+            Say(human, 'D4a-Sol1-1');
+            Say(Powell, 'D4a-Pow-1');
+            Say(human, 'D4a-Sol1-2');
+            Say(Powell, 'D4a-Pow-2');
+        end;
+    end;
+
+end;
+
+
+On UnitDestroyed(unit) Do
+var i;
+begin
+    if GetSide(unit) = 4 and GetType(unit) = unit_human then
+    begin
+        for i in amUnitsAttack do 
+            if i = unit then amUnitsAttack = amUnitsAttack diff [unit];
     end;
 end;
