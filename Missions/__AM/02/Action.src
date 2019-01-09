@@ -387,6 +387,9 @@ begin
 
      wait([0$13, 0$12, 0$9][Difficulty]);
 
+    ComExitBuilding(FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_class, 3]]));
+    wait(0$1);
+
     repeat
     wait(0$1);
 
@@ -443,6 +446,8 @@ begin
      temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby];
      temp2 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_female]]) diff [Lisa];
 
+     DialogueOn;
+
      if NOT IsInUnit(JMM) then Say(JMM, 'DX2a-JMM-1');
 
      IF IsInUnit(Bobby) = tmp[1] then Say(Bobby, 'DX2a-Bobby-1');
@@ -455,6 +460,8 @@ begin
      IF IsInUnit(JMM) = tmp[1] then Say(JMM, 'DX2b-JMM-1');
 
      if NOT IsInUnit(JMM) then Say(JMM, 'DX2a-JMM-2');
+
+     DialogueOff;
 
 end;
 
@@ -475,7 +482,6 @@ Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND FilterUnitsInArea(
 var temp, i;
 begin
 
-    temp = FilterAllUnits([[f_side, 1],[f_nation, 1], [f_class, 2]]) diff [JMM];
 
     DialogueOn;
     Say(JMM, 'D3a-JMM-1');
@@ -494,9 +500,15 @@ begin
      wait(0$1);
     until FilterUnitsInArea(NorthBase, [[f_side, 1], [f_class, 2]]);
 
+    repeat
+       temp = FilterAllUnits([[f_side, 1], [f_nation, 1], [f_class, 2], [f_ok], [f_outside]]) diff [JMM];
+       wait(0$1);
+    until temp > 0;
+
     wait(0$5);
-    InGameOn;
+
     PrepareRussianHeroes;
+    InGameOn;
     CenterNowOnUnits(Mikhail);
     ComTurnUnit([JMM, temp[1]], Mikhail);
     ComTurnUnit(Mikhail, temp[1]);

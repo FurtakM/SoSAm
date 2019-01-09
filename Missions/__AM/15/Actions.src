@@ -51,8 +51,7 @@ begin
     until GetDistUnits(NewJMMVeh, Powell) < 15;
 
     ComExitVehicle(JMM);
-    ComExitVehicle(UnitsInside(NewJMMGirlVeh));
-    wait(0$1);
+
 
     repeat
         wait(0$1);
@@ -103,6 +102,8 @@ begin
 
     if not JMMGirlVeh = [] then
     begin
+        ComExitVehicle(UnitsInside(NewJMMGirlVeh));
+        wait(0$1);
         repeat
             wait(0$1);
             if JMMGirl = 1 then ComMoveUnit(JMM, Joan);
@@ -246,3 +247,122 @@ Function ResolveQuery(question, list_of_q);
     enable;
     SetSide(FilterUnitsInArea(PowellHillArea, [[f_side, 4], [f_type, unit_human]]), 1);
  end;
+
+// First Powell attack - disable ru attacks
+Every 0$1 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) = 4 and startAttacks = 1 do startAttacks = 0;
+
+// First Powell attack - attack
+Every 0$1 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) = 4 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_lives, 250]]) = 0 and startAttacks = 0 and powellAttacks = 0 do
+var i;
+begin
+    powellAttacks = 1;
+    
+    InGameOn;
+    CenterNowOnUnits(Powell);
+    ComTurnXY(POwell, 47, 60);
+    Say(Powell, 'D4-Pow-1');
+    for i = 1 to amUnitsAttack do if GetSex(amUnitsAttack[i]) = sex_male then begin Say(amUnitsAttack[i], 'D4-Sol1-1'); break; end;
+    Say(Powell, 'D4-Pow-2');
+    InGameOff;
+
+    ComAgressiveMove(FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]), 59, 21);
+
+end; 
+
+// First Powell attack - block attack troops
+Every 0$1 trigger powellAttacks = 1  do
+var i;
+begin 
+    enable;
+    for i = 1 to amUnitsAttack do DoNotAttack(8, amUnitsAttack[i]);
+end;
+
+// Second Powell attack - build new vehs
+Every 2$0 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) = 0 and powellAttacks = 1 do
+begin
+    powellAttacks = 2;
+
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+    AddComConstruct(AmFact, us_morphling, engine_siberite, control_manual, 6);
+    powellVeh = AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, 3);
+end;
+
+// Second Powell attack - disable ru attacks
+Every 0$30 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and startAttacks = 1 do startAttacks = 0;
+
+// First Powell attack - block attack troops
+Every 0$1 trigger powellAttacks = 3  do
+var i;
+begin
+    enable;
+    for i = 1 to amUnitsAttack do NormalAttack(8, amUnitsAttack[i]);
+end;
+
+// Second Powell attack - attack
+Every 1$15 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_lives, 250]]) = 0 and startAttacks = 0 and powellAttacks = 2 do
+var i, sold, powellPeople;
+begin
+    powellAttacks = 3;
+
+    InGameOn;
+    CenterNowOnUnits(Powell);
+    ComMoveXY(Powell, 45, 64);
+    AddComTurnXY(POwell, 46, 66);
+
+    for i = 5 to 8 do
+    begin
+        ComExitBuilding(amUnitsAttack[i]);
+        ComExitVehicle(amUnitsAttack[i]);
+        wait(0$1);
+        AddComEnterUnit(amUnitsAttack[i], AmArm);
+        AddComChangeProfession(amUnitsAttack[i], 1);
+        AddComExitBuilding(amUnitsAttack[i]);
+        wait(0$1);
+        AddComMoveXY(amUnitsAttack[i], 45 + i, 67);
+        AddComTurnUnit(amUnitsAttack[i], Powell);
+    end;
+
+    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_not, [f_hastask]]]) diff [Powell];
+    ComEnterUnit(powellPeople, AmArm);
+    AddComChangeProfession(powellPeople, 1);
+
+    Say(Powell, 'D5-Pow-1');
+    for i = 1 to amUnitsAttack do if GetSex(amUnitsAttack[i]) = sex_male then begin Say(amUnitsAttack[i], 'D5-Sol2-1'); break; end;
+    Say(Powell, 'D5-Pow-2');
+    for i = 1 to amUnitsAttack do if GetSex(amUnitsAttack[i]) = sex_male then begin Say(amUnitsAttack[i], 'D5-Sol2-2'); break; end;
+    Say(Powell, 'D5-Pow-3');
+
+    ComAgressiveMove(FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]), 59, 21);
+    ComAgressiveMove(amUnitsAttack, 59, 21);
+
+    CenterOnXY(61, 35);
+
+    wait(0$15);
+    Say(Powell, 'D5a-Pow-1');
+    Say(Powell, 'D5a-Pow-1a');
+    wait(0$2);
+    Say(Powell, 'D5a-Pow-1b');
+    wait(0$3);
+    Say(Powell, 'D5a-Pow-1c');
+    wait(0$1);
+    Say(Powell, 'D5a-Pow-1d');
+
+    repeat
+        wait(0$1);
+        ComAgressiveMove(FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]), 59, 21);
+        ComAgressiveMove(amUnitsAttack, 59, 21);
+    until amUnitsAttack = [];
+
+    CenterNowOnUnits(Powell);
+
+    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
+
+    for i in powellPeople do if GetSex(i) = sex_male then sold = i;
+
+    Say(sold, 'D6-Sol3-1');
+    Say(Powell, 'D6-Pow-1');
+
+    InGameOff;
+end;

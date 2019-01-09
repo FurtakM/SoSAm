@@ -1,6 +1,7 @@
-Every 0$30  do
+Every 0$01  do
 begin
-    enable;
+    repeat
+    wait(0$30);
 
     if cratesSpawned < 6 then
     begin
@@ -15,13 +16,13 @@ begin
       cratesSpawned = cratesSpawned + 1;
     end;
 
-    if cratesSpawned >= 12 and cratesSpawned < 15 then
+    if cratesSpawned >= 12 then
     begin
       wait(1$30);
       CreateCratesArea(rand(3,5), CratesArea, true);
       cratesSpawned = cratesSpawned + 1;
     end;
 
-    if cratesSpawned >= 15 then Disable;
 
+    until cratesSpawned >= 15;
 end;

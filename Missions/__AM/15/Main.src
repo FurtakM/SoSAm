@@ -50,11 +50,17 @@ Export Platonov, Roth, Kurt; // Enemy commanders
 
 Export amUnitsSkillTab, amUnitsAttack, amUnitsForJMM;
 Export powellBuildBase;
+Export powellAttacks;
 Export startAttacks;
+Export powellVeh;
 
 Export JMMVeh, JMMGirlVeh; // Vehs from mission 14
 Export JMMGirl, KappaStatus; // Am 14
 Export KhatamStatus; // Am 10
+
+Export missionStage; 
+
+Export blockEvent1;
 
 Export debugMode;
 
@@ -76,6 +82,11 @@ begin
 
     startAttacks = 0; // magenta ru attacks on/off
     powellBuildBase = 0; // 0 - off, 1 - start
+    powellAttacks = 0;
+
+    missionStage = 0; // 0 - prologue, 1 - after Powell death, 2 - Joan or Sewi, 3 - Stevens,  4 - Roth, 5 - ru behs, 6 - Ru rocket, 7 - Arabian 8 - End game
+
+    blockEvent1 = 0; // Leave veh
 
     debugMode = 1; // 0 - players, 1 - devs
 
@@ -87,6 +98,8 @@ begin
     PrepareLegion;
     PrepareRussians;
     PrepareAlliance;
+
+    PrepareDifficulty;
 
     SetBName(RuDep2, 'zhukov');
 end;
@@ -101,3 +114,9 @@ begin
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
 end;
+
+Every 0$1 do
+begin
+    enable;
+    display_strings = others13;
+end;    
