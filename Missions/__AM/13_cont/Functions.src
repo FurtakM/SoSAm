@@ -27,6 +27,59 @@ begin
 
 end;
 
+Export function PrepareDifficulty;
+begin
+     SetTech(5, 8, state_researched);
+
+     if difficulty = 1 then
+     begin
+       SetTech(66, 8, state_researched);
+       SetTech(67, 8, state_disabled);
+       SetTech(68, 8, state_disabled);
+
+       SetTech(51, 8, state_researched);
+       SetTech(52, 8, state_disabled);
+       SetTech(53, 8, state_disabled);
+
+       SetTech(60, 8, state_researched);
+       SetTech(61, 8, state_disabled);
+       SetTech(62, 8, state_disabled);
+     end;
+
+     if difficulty = 2 then
+     begin
+       SetTech(66, 8, state_researched);
+       SetTech(67, 8, state_researched);
+       SetTech(68, 8, state_disabled);
+
+       SetTech(51, 8, state_researched);
+       SetTech(52, 8, state_researched);
+       SetTech(53, 8, state_researched);
+
+       SetTech(60, 8, state_researched);
+       SetTech(61, 8, state_researched);
+       SetTech(62, 8, state_disabled);
+
+     end;
+
+     if difficulty = 3 then
+     begin
+       SetTech(66, 8, state_researched);
+       SetTech(67, 8, state_researched);
+       SetTech(68, 8, state_disabled);
+
+       SetTech(51, 8, state_researched);
+       SetTech(52, 8, state_researched);
+       SetTech(53, 8, state_researched);
+
+       SetTech(60, 8, state_researched);
+       SetTech(61, 8, state_researched);
+       SetTech(62, 8, state_disabled);
+
+     end;
+
+end;
+
 Export Function IntBazooka(side, targetSide);
 var ta, c, i, list, filter;
 begin
@@ -195,8 +248,8 @@ begin
   arChassisTab = [];
   ruChassisTab = [];
 
-  repeat
-
+  for i = 1 to vehCount do
+  begin
   wait(0$01);
 
   IF nation = 1 then
@@ -206,7 +259,6 @@ begin
             uc_nation = nation;
 
             vc_engine = vehengine;
-            vc_control = vehcontrol[Rand(1, vehcontrol)];
             vc_weapon = AMWeapon[Rand(1, AMWeapon)];
 
             for j = 1 to AMWeapon do
@@ -258,7 +310,8 @@ begin
             uc_nation = nation;
 
             vc_engine = vehengine;
-            vc_control = vehcontrol[Rand(1, vehcontrol)];
+            if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_control, control_remote], [f_ok]]) <= 8 then vc_control = vehcontrol[Rand(1, vehcontrol)]
+            else vc_control = control_apeman;
             vc_weapon = ARWeapons[Rand(1, ARWeapons)];
 
             for j = 1 to ARWeapons do
@@ -314,13 +367,13 @@ begin
 
                 IF RUWeapons[j] = 42 or RUWeapons[j] = 43 or RUWeapons[j] = 44 or RUWeapons[j] = 45 or RUWeapons[j] = 49 then
                 begin
-                    ruChassisTab = [21, 22, 23, 24];
+                    ruChassisTab = [24];
                     vc_chassis = ruChassisTab[Rand(1, ruChassisTab)];
                 end;
 
                 IF RUWeapons[j] = 46 or RUWeapons[j] = 47 then
                 begin
-                    ruChassisTab = [23, 24];
+                    ruChassisTab = [24];
                     vc_chassis = ruChassisTab[Rand(1, ruChassisTab)];
                 end;
 
@@ -332,7 +385,8 @@ begin
 
             IF vc_control = 1 then
             begin
-
+                if uc_side = 8 then uc_nation = 2
+                else uc_nation = nation;
                 hc_gallery = '';
                 hc_name = '';
                 PrepareHuman(false, 3, mehskill);
@@ -342,16 +396,13 @@ begin
 
             end;
 
-
-            i = i + 1;
-
     end;
 
-  until i = vehCount;
+  end;
 
     repeat
-        wait(0$1);                                                                                  
-        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_or, [f_weapon, 25], [f_weapon, 26], [f_weapon, 27], [f_weapon, 28], [f_weapon, 29]]]);
+        wait(0$1);                                                                                                                                     
+        vehicleOK_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 250], [f_or, [f_weapon, 25], [f_weapon, 26], [f_weapon, 27], [f_weapon, 28], [f_weapon, 29], [f_weapon, 46], [f_weapon, 44], [f_weapon, 45], [f_weapon, 47]]]);
 
         IF vehicleOK_list > 0 then
         begin
