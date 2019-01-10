@@ -25,6 +25,13 @@ begin
         ComLinkTo(i, arDriver);
 end;
 
+Every 0$5 trigger FilterAllUnits([[f_side, 8], [f_control, 2], [f_not, [f_linked]]]) > 0 and FilterAllUnits([[f_side, 8], [f_weapon, 31]]) > 0 do
+var i;
+begin
+    enable;
+      for i in FilterAllUnits([[f_side, 8], [f_control, 2], [f_not, [f_linked]]]) do ComLinkTo(i, arDriver);
+end;
+
 Every 0$1 trigger FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_control, 2]]) = 0 do
 begin
     enable;
