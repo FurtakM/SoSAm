@@ -31,6 +31,7 @@ begin
 
     if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 0 then begin wait(0$3); vehicleTeleported = 1; end;
     if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 and vehicleTeleported = 2 then begin wait(0$3); vehicleTeleported = 3; end;
+    if building = ruteleprt and GetType(human) = unit_vehicle and GetSide(human) = 3 then tpCounter = tpCounter + 1;
 end;
 
 On VehicleConstructed(vehicle, factory) Do
@@ -41,7 +42,8 @@ begin
             if GetWeapon(vehicle) = 46 or GetWeapon(vehicle) = 45 or GetWeapon(vehicle) = 44 then
             begin
                 russianTanks = russianTanks ^ vehicle;
-                ComEnterUnit(vehicle, ruteleprt);
+                if attackTactic = 1 or attackTactic = 0 then ComEnterUnit(vehicle, ruteleprt);
+                if attackTactic = 2 then ComMoveXY(vehicle, 88, 69);
             end;
 
             if GetWeapon(vehicle) = 49 then
@@ -71,4 +73,21 @@ end;
 On LeaveVehicle(vehicle, human) Do
 begin
     if GetSide(human) = 3 and GetClass(human) = 3 and GetSide(ru_fact) = 3 and IsOk(ru_fact) then ComEnterUnit(human, ru_fact);
+end;
+
+On EnterVehicle(vehicle, human) Do
+var i, rnd;
+begin
+     if GetSide(human) = 3 and GetClass(human) = 4 then
+        for i in RuScientists do
+            if i = human then
+               if IsOk(rutp) then
+               begin
+                  rnd = rand(1, 2);
+                  if rnd = 1 then ComEnterUnit(vehicle, rutp);
+                  AddComMoveToArea(vehicle, [EscapeArea1, EscapeArea2][Rand(1,2)]);
+               end else
+               begin
+                  ComMoveToArea(vehicle, [EscapeArea1, EscapeArea2][Rand(1,2)])
+               end;
 end;

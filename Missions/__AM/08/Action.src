@@ -116,9 +116,10 @@ begin
     begin
         Say(Joan, 'D3a-Joan-1');
         Say(JMM, 'D3a-JMM-1');
-    end else if LoadVariable('06_JoanStatus_1', 0) = 1 then
+    end else 
     begin
-
+     if LoadVariable('06_JoanStatus_1', 0) = 1 then
+     begin
         Say(JMM, 'D3b-JMM-1');
 
         if gammaCommander = 1 then
@@ -142,8 +143,8 @@ begin
         if UnitFilter(others_gamma, [f_sex, 1]) or (gammaCommander = 1 and IsOk(Donaldson)) or (gammaCommander = 2 and IsOk(Brown)) or (gammaCommander = 3 and IsOk(Houten)) then
            Say(JMM, 'D3b-JMM-2');
 
-        if IsOK(Lisa) then
-           Say(Lisa, 'D3b-Lisa-2');
+        if IsOK(Lisa) then Say(Lisa, 'D3b-Lisa-2');
+     end;
     end;
 
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Khatam, Joan, Denis], 'DCa-Sol1-1', 'DCa-Sol1-1');

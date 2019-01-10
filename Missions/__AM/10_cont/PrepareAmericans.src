@@ -128,7 +128,7 @@ begin
     Joan = PrepareUnit('08_Joan', true);
     if TestCharacters('08_Khatam') then Khatam = PrepareUnit('08_Khatam', true)
     else if TestCharacters('03_Khatam') then Khatam = PrepareUnit('03_Khatam', true);
-    Gladstone = PrepareUnit('Gladstone', true);
+    Gladstone = PrepareUnit('08_Gladstone', true);
     DeltaDoctor = PrepareUnit('DeltaDoctor', true);
     if TestCharacters('08_Frank') = 1 then Kikuchi = PrepareUnit('Yamoko', true);
 
@@ -168,17 +168,17 @@ begin
         tmp = FilterAllUnits([[f_side, 4], [f_class, 2]]) diff [Simms, Khatam, Denis, Gladstone, DeltaDoctor, Joan];
 
         if not tmp then
-           begin
-           if Denis then
-              SetClass(Denis, 2);
-           exit;
-           end;
+        begin
+             if Denis then SetClass(Denis, 2)
+             else SetClass(DeltaDoctor, 2);
+        end else
+        begin
+             SetClass(tmp[1], 2);
+        end;
 
-        SetClass(tmp[1], 2);
     end;
 
     for i in ape09 do PlaceUnitArea(i, CathyTeamSpawn, false);
-
 
     uc_side = 1;
 
