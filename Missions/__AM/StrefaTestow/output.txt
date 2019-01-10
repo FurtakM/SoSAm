@@ -1,447 +1,360 @@
 // export destroyedBuildings ; export cargoTest ; export vehicleDriverTab ; export arabianMines ; export JMM ; starting var i ; begin Resetfog ;
-   0: NOP4
+   0: CALL_OW 335
 // RandomizeAll ;
-   4: NOP4
+   4: CALL_OW 11
 // destroyedBuildings = [ ] ;
-   8: NOP4
+   8: LD_ADDR_EXP 1
   12: PUSH
   13: EMPTY
   14: ST_TO_ADDR
 // cargoTest = [ ] ;
-  15: NOP4
+  15: LD_ADDR_EXP 2
   19: PUSH
   20: EMPTY
   21: ST_TO_ADDR
 // arabianMines = [ ] ;
-  22: NOP4
+  22: LD_ADDR_EXP 4
   26: PUSH
   27: EMPTY
   28: ST_TO_ADDR
 // end ;
   29: END
-// export d ; every 0 0$01 do var un , un2 ;
-  30: GO 32
-  32: DISABLE
-  33: LD_INT 0
-  35: PPUSH
-  36: PPUSH
-// begin uc_side := 1 ;
-  37: LD_ADDR_OWVAR 20
-  41: PUSH
-  42: LD_INT 1
-  44: ST_TO_ADDR
-// uc_nation := 2 ;
-  45: LD_ADDR_OWVAR 21
-  49: PUSH
-  50: LD_INT 2
-  52: ST_TO_ADDR
-// hc_class := 1 ;
-  53: LD_ADDR_OWVAR 28
+// export function ReverseNumber ( number ) ; var i ; begin
+  30: LD_INT 0
+  32: PPUSH
+  33: PPUSH
+// result :=  ;
+  34: LD_ADDR_VAR 0 2
+  38: PUSH
+  39: LD_STRING 
+  41: ST_TO_ADDR
+// while ( number ) do
+  42: LD_VAR 0 1
+  46: IFFALSE 84
+// begin result := result & ( number mod 10 ) ;
+  48: LD_ADDR_VAR 0 2
+  52: PUSH
+  53: LD_VAR 0 2
   57: PUSH
-  58: LD_INT 1
-  60: ST_TO_ADDR
+  58: LD_VAR 0 1
+  62: PUSH
+  63: LD_INT 10
+  65: MOD
+  66: STR
+  67: ST_TO_ADDR
+// number := number div 10 ;
+  68: LD_ADDR_VAR 0 1
+  72: PUSH
+  73: LD_VAR 0 1
+  77: PUSH
+  78: LD_INT 10
+  80: DIV
+  81: ST_TO_ADDR
+// end ;
+  82: GO 42
+// end ;
+  84: LD_VAR 0 2
+  88: RET
+// export d ; every 0 0$01 do var un , un2 ;
+  89: GO 91
+  91: DISABLE
+  92: LD_INT 0
+  94: PPUSH
+  95: PPUSH
+// begin uc_side := 1 ;
+  96: LD_ADDR_OWVAR 20
+ 100: PUSH
+ 101: LD_INT 1
+ 103: ST_TO_ADDR
+// uc_nation := 2 ;
+ 104: LD_ADDR_OWVAR 21
+ 108: PUSH
+ 109: LD_INT 2
+ 111: ST_TO_ADDR
+// hc_class := 1 ;
+ 112: LD_ADDR_OWVAR 28
+ 116: PUSH
+ 117: LD_INT 1
+ 119: ST_TO_ADDR
 // hc_gallery :=  ;
-  61: LD_ADDR_OWVAR 33
-  65: PUSH
-  66: LD_STRING 
-  68: ST_TO_ADDR
+ 120: LD_ADDR_OWVAR 33
+ 124: PUSH
+ 125: LD_STRING 
+ 127: ST_TO_ADDR
 // un := CreateHuman ;
-  69: NOP4
-  73: PUSH
-  74: NOP4
-  78: ST_TO_ADDR
+ 128: LD_ADDR_VAR 0 1
+ 132: PUSH
+ 133: CALL_OW 44
+ 137: ST_TO_ADDR
 // d := CreateHuman ;
-  79: NOP4
-  83: PUSH
-  84: NOP4
-  88: ST_TO_ADDR
+ 138: LD_ADDR_EXP 6
+ 142: PUSH
+ 143: CALL_OW 44
+ 147: ST_TO_ADDR
 // PlaceUnitXY ( un , 192 , 25 , false ) ;
-  89: NOP4
-  93: PPUSH
-  94: LD_INT 192
-  96: PPUSH
-  97: LD_INT 25
-  99: PPUSH
- 100: LD_INT 0
- 102: PPUSH
- 103: NOP4
+ 148: LD_VAR 0 1
+ 152: PPUSH
+ 153: LD_INT 192
+ 155: PPUSH
+ 156: LD_INT 25
+ 158: PPUSH
+ 159: LD_INT 0
+ 161: PPUSH
+ 162: CALL_OW 48
 // PlaceUnitXY ( d , 190 , 25 , false ) ;
- 107: NOP4
- 111: PPUSH
- 112: LD_INT 190
- 114: PPUSH
- 115: LD_INT 25
- 117: PPUSH
- 118: LD_INT 0
- 120: PPUSH
- 121: NOP4
+ 166: LD_EXP 6
+ 170: PPUSH
+ 171: LD_INT 190
+ 173: PPUSH
+ 174: LD_INT 25
+ 176: PPUSH
+ 177: LD_INT 0
+ 179: PPUSH
+ 180: CALL_OW 48
 // end ;
- 125: PPOPN 2
- 127: END
-// every 0 0$01 do
- 128: GO 130
- 130: DISABLE
-// begin enable ;
- 131: ENABLE
-// display_strings := WantPlant ( d ) ;
- 132: LD_ADDR_OWVAR 47
- 136: PUSH
- 137: NOP4
- 141: PPUSH
- 142: NOP4
- 146: ST_TO_ADDR
-// end ;
- 147: END
+ 184: PPOPN 2
+ 186: END
 // export function WantPlant ( unit ) ; var task ; begin
- 148: LD_INT 0
- 150: PPUSH
- 151: PPUSH
+ 187: LD_INT 0
+ 189: PPUSH
+ 190: PPUSH
 // result := false ;
- 152: NOP4
- 156: PUSH
- 157: LD_INT 0
- 159: ST_TO_ADDR
+ 191: LD_ADDR_VAR 0 2
+ 195: PUSH
+ 196: LD_INT 0
+ 198: ST_TO_ADDR
 // task := GetTaskList ( unit ) ;
- 160: NOP4
- 164: PUSH
- 165: NOP4
- 169: PPUSH
- 170: NOP4
- 174: ST_TO_ADDR
-// if task then
- 175: NOP4
- 179: IFFALSE 207
-// if task [ 1 ] [ 1 ] = p then
- 181: NOP4
- 185: PUSH
- 186: LD_INT 1
- 188: ARRAY
- 189: PUSH
- 190: LD_INT 1
- 192: ARRAY
- 193: PUSH
- 194: LD_STRING p
- 196: EQUAL
- 197: IFFALSE 207
-// result := true ;
- 199: NOP4
+ 199: LD_ADDR_VAR 0 3
  203: PUSH
- 204: LD_INT 1
- 206: ST_TO_ADDR
+ 204: LD_VAR 0 1
+ 208: PPUSH
+ 209: CALL_OW 437
+ 213: ST_TO_ADDR
+// if task then
+ 214: LD_VAR 0 3
+ 218: IFFALSE 246
+// if task [ 1 ] [ 1 ] = p then
+ 220: LD_VAR 0 3
+ 224: PUSH
+ 225: LD_INT 1
+ 227: ARRAY
+ 228: PUSH
+ 229: LD_INT 1
+ 231: ARRAY
+ 232: PUSH
+ 233: LD_STRING p
+ 235: EQUAL
+ 236: IFFALSE 246
+// result := true ;
+ 238: LD_ADDR_VAR 0 2
+ 242: PUSH
+ 243: LD_INT 1
+ 245: ST_TO_ADDR
 // end ;
- 207: LD_VAR 0 2
- 211: RET
+ 246: LD_VAR 0 2
+ 250: RET
 // export function RemoveResourcesFromArea ( area , materials ) ; var amount , i , tmp ; begin
- 212: LD_INT 0
- 214: PPUSH
- 215: PPUSH
- 216: PPUSH
- 217: PPUSH
-// for i = 1 to 3 do
- 218: NOP4
- 222: PUSH
- 223: DOUBLE
- 224: LD_INT 1
- 226: DEC
- 227: ST_TO_ADDR
- 228: LD_INT 3
- 230: PUSH
- 231: FOR_TO
- 232: IFFALSE 262
-// amount := amount + GetResourceArea ( area , i ) ;
- 234: NOP4
- 238: PUSH
- 239: NOP4
- 243: PUSH
- 244: NOP4
- 248: PPUSH
- 249: NOP4
+ 251: LD_INT 0
  253: PPUSH
- 254: NOP4
- 258: PLUS
- 259: ST_TO_ADDR
- 260: GO 231
- 262: POP
- 263: POP
-// if amount < materials then
- 264: NOP4
- 268: PUSH
- 269: NOP4
- 273: LESS
- 274: IFFALSE 278
-// exit ;
- 276: GO 312
+ 254: PPUSH
+ 255: PPUSH
+ 256: PPUSH
 // for i = 1 to 3 do
- 278: NOP4
+ 257: LD_ADDR_VAR 0 5
+ 261: PUSH
+ 262: DOUBLE
+ 263: LD_INT 1
+ 265: DEC
+ 266: ST_TO_ADDR
+ 267: LD_INT 3
+ 269: PUSH
+ 270: FOR_TO
+ 271: IFFALSE 301
+// amount := amount + GetResourceArea ( area , i ) ;
+ 273: LD_ADDR_VAR 0 4
+ 277: PUSH
+ 278: LD_VAR 0 4
  282: PUSH
- 283: DOUBLE
- 284: LD_INT 1
- 286: DEC
- 287: ST_TO_ADDR
- 288: LD_INT 3
- 290: PUSH
- 291: FOR_TO
- 292: IFFALSE 310
+ 283: LD_VAR 0 1
+ 287: PPUSH
+ 288: LD_VAR 0 5
+ 292: PPUSH
+ 293: CALL_OW 287
+ 297: PLUS
+ 298: ST_TO_ADDR
+ 299: GO 270
+ 301: POP
+ 302: POP
+// if amount < materials then
+ 303: LD_VAR 0 4
+ 307: PUSH
+ 308: LD_VAR 0 2
+ 312: LESS
+ 313: IFFALSE 317
+// exit ;
+ 315: GO 351
+// for i = 1 to 3 do
+ 317: LD_ADDR_VAR 0 5
+ 321: PUSH
+ 322: DOUBLE
+ 323: LD_INT 1
+ 325: DEC
+ 326: ST_TO_ADDR
+ 327: LD_INT 3
+ 329: PUSH
+ 330: FOR_TO
+ 331: IFFALSE 349
 // EraseResourceArea ( area , i ) ;
- 294: NOP4
- 298: PPUSH
- 299: NOP4
- 303: PPUSH
- 304: NOP4
- 308: GO 291
- 310: POP
- 311: POP
-// end ; end_of_file
- 312: LD_VAR 0 3
- 316: RET
-// every 0 0$1 do
- 317: GO 319
- 319: DISABLE
-// begin enable ;
- 320: ENABLE
-// end ;
- 321: END
-// every 5 5$1 do
- 322: GO 324
- 324: DISABLE
-// begin end ;
- 325: END
-// every 0 0$1 do
- 326: GO 328
- 328: DISABLE
-// begin end ;
- 329: END
-// every 0 0$01 trigger arabianMines do var i , p ;
- 330: NOP4
- 334: IFFALSE 537
- 336: GO 338
- 338: DISABLE
- 339: LD_INT 0
- 341: PPUSH
+ 333: LD_VAR 0 1
+ 337: PPUSH
+ 338: LD_VAR 0 5
  342: PPUSH
+ 343: CALL_OW 286
+ 347: GO 330
+ 349: POP
+ 350: POP
+// end ; end_of_file
+ 351: LD_VAR 0 3
+ 355: RET
+// every 0 0$1 do
+ 356: GO 358
+ 358: DISABLE
 // begin enable ;
- 343: ENABLE
+ 359: ENABLE
+// end ;
+ 360: END
+// every 5 5$1 do
+ 361: GO 363
+ 363: DISABLE
+// begin end ;
+ 364: END
+// every 0 0$1 do
+ 365: GO 367
+ 367: DISABLE
+// begin end ;
+ 368: END
+// every 0 0$01 trigger arabianMines do var i , p ;
+ 369: LD_EXP 4
+ 373: IFFALSE 576
+ 375: GO 377
+ 377: DISABLE
+ 378: LD_INT 0
+ 380: PPUSH
+ 381: PPUSH
+// begin enable ;
+ 382: ENABLE
 // p := 1 ;
- 344: NOP4
- 348: PUSH
- 349: LD_INT 1
- 351: ST_TO_ADDR
+ 383: LD_ADDR_VAR 0 2
+ 387: PUSH
+ 388: LD_INT 1
+ 390: ST_TO_ADDR
 // for i = 1 to arabianMines / 2 do
- 352: NOP4
- 356: PUSH
- 357: DOUBLE
- 358: LD_INT 1
- 360: DEC
- 361: ST_TO_ADDR
- 362: NOP4
- 366: PUSH
- 367: LD_INT 2
- 369: DIVREAL
- 370: PUSH
- 371: FOR_TO
- 372: IFFALSE 535
+ 391: LD_ADDR_VAR 0 1
+ 395: PUSH
+ 396: DOUBLE
+ 397: LD_INT 1
+ 399: DEC
+ 400: ST_TO_ADDR
+ 401: LD_EXP 4
+ 405: PUSH
+ 406: LD_INT 2
+ 408: DIVREAL
+ 409: PUSH
+ 410: FOR_TO
+ 411: IFFALSE 574
 // begin if FilterAllUnits ( [ [ f_enemy , 2 ] , [ f_distxy , arabianMines [ p ] , arabianMines [ p + 1 ] , 2 ] ] ) then
- 374: LD_INT 81
- 376: PUSH
- 377: LD_INT 2
- 379: PUSH
- 380: EMPTY
- 381: LIST
- 382: LIST
- 383: PUSH
- 384: LD_INT 92
- 386: PUSH
- 387: NOP4
- 391: PUSH
- 392: NOP4
- 396: ARRAY
- 397: PUSH
- 398: NOP4
- 402: PUSH
- 403: NOP4
- 407: PUSH
- 408: LD_INT 1
- 410: PLUS
- 411: ARRAY
- 412: PUSH
- 413: LD_INT 2
+ 413: LD_INT 81
  415: PUSH
- 416: EMPTY
- 417: LIST
- 418: LIST
- 419: LIST
+ 416: LD_INT 2
+ 418: PUSH
+ 419: EMPTY
  420: LIST
- 421: PUSH
- 422: EMPTY
- 423: LIST
- 424: LIST
- 425: PPUSH
- 426: NOP4
- 430: IFFALSE 519
-// begin LaunchMineAtPos ( arabianMines [ p ] , arabianMines [ p + 1 ] , 2 ) ;
- 432: NOP4
+ 421: LIST
+ 422: PUSH
+ 423: LD_INT 92
+ 425: PUSH
+ 426: LD_EXP 4
+ 430: PUSH
+ 431: LD_VAR 0 2
+ 435: ARRAY
  436: PUSH
- 437: NOP4
- 441: ARRAY
- 442: PPUSH
- 443: NOP4
- 447: PUSH
- 448: NOP4
- 452: PUSH
- 453: LD_INT 1
- 455: PLUS
- 456: ARRAY
- 457: PPUSH
- 458: LD_INT 2
- 460: PPUSH
- 461: NOP4
-// arabianMines := Delete ( arabianMines , p ) ;
- 465: NOP4
- 469: PUSH
- 470: NOP4
- 474: PPUSH
- 475: NOP4
- 479: PPUSH
- 480: NOP4
- 484: ST_TO_ADDR
-// arabianMines := Delete ( arabianMines , p ) ;
- 485: NOP4
- 489: PUSH
- 490: NOP4
- 494: PPUSH
- 495: NOP4
+ 437: LD_EXP 4
+ 441: PUSH
+ 442: LD_VAR 0 2
+ 446: PUSH
+ 447: LD_INT 1
+ 449: PLUS
+ 450: ARRAY
+ 451: PUSH
+ 452: LD_INT 2
+ 454: PUSH
+ 455: EMPTY
+ 456: LIST
+ 457: LIST
+ 458: LIST
+ 459: LIST
+ 460: PUSH
+ 461: EMPTY
+ 462: LIST
+ 463: LIST
+ 464: PPUSH
+ 465: CALL_OW 69
+ 469: IFFALSE 558
+// begin LaunchMineAtPos ( arabianMines [ p ] , arabianMines [ p + 1 ] , 2 ) ;
+ 471: LD_EXP 4
+ 475: PUSH
+ 476: LD_VAR 0 2
+ 480: ARRAY
+ 481: PPUSH
+ 482: LD_EXP 4
+ 486: PUSH
+ 487: LD_VAR 0 2
+ 491: PUSH
+ 492: LD_INT 1
+ 494: PLUS
+ 495: ARRAY
+ 496: PPUSH
+ 497: LD_INT 2
  499: PPUSH
- 500: NOP4
- 504: ST_TO_ADDR
-// p := p - 2 ;
- 505: NOP4
- 509: PUSH
- 510: NOP4
- 514: PUSH
- 515: LD_INT 2
- 517: MINUS
- 518: ST_TO_ADDR
-// end ; p := p + 2 ;
- 519: NOP4
- 523: PUSH
- 524: NOP4
+ 500: CALL_OW 456
+// arabianMines := Delete ( arabianMines , p ) ;
+ 504: LD_ADDR_EXP 4
+ 508: PUSH
+ 509: LD_EXP 4
+ 513: PPUSH
+ 514: LD_VAR 0 2
+ 518: PPUSH
+ 519: CALL_OW 3
+ 523: ST_TO_ADDR
+// arabianMines := Delete ( arabianMines , p ) ;
+ 524: LD_ADDR_EXP 4
  528: PUSH
- 529: LD_INT 2
- 531: PLUS
- 532: ST_TO_ADDR
+ 529: LD_EXP 4
+ 533: PPUSH
+ 534: LD_VAR 0 2
+ 538: PPUSH
+ 539: CALL_OW 3
+ 543: ST_TO_ADDR
+// p := p - 2 ;
+ 544: LD_ADDR_VAR 0 2
+ 548: PUSH
+ 549: LD_VAR 0 2
+ 553: PUSH
+ 554: LD_INT 2
+ 556: MINUS
+ 557: ST_TO_ADDR
+// end ; p := p + 2 ;
+ 558: LD_ADDR_VAR 0 2
+ 562: PUSH
+ 563: LD_VAR 0 2
+ 567: PUSH
+ 568: LD_INT 2
+ 570: PLUS
+ 571: ST_TO_ADDR
 // end ;
- 533: GO 371
- 535: POP
- 536: POP
+ 572: GO 410
+ 574: POP
+ 575: POP
 // end ;
- 537: PPOPN 2
- 539: END
-// every 0 0$1 trigger IsDying ( labek ) do var i , j , vehy , sci ;
- 540: NOP4
- 544: PPUSH
- 545: NOP4
- 549: IFFALSE 720
- 551: GO 553
- 553: DISABLE
- 554: LD_INT 0
- 556: PPUSH
- 557: PPUSH
- 558: PPUSH
- 559: PPUSH
-// begin sci = [ s1 , s2 , s3 , s4 , s5 , s6 ] ;
- 560: NOP4
- 564: PUSH
- 565: NOP4
- 569: PUSH
- 570: NOP4
- 574: PUSH
- 575: NOP4
- 579: PUSH
- 580: NOP4
- 584: PUSH
- 585: NOP4
- 589: PUSH
- 590: NOP4
- 594: PUSH
- 595: EMPTY
- 596: LIST
- 597: LIST
- 598: LIST
- 599: LIST
- 600: LIST
- 601: LIST
- 602: ST_TO_ADDR
-// for i in sci do
- 603: NOP4
- 607: PUSH
- 608: NOP4
- 612: PUSH
- 613: FOR_IN
- 614: IFFALSE 718
-// begin display_strings = vehy ;
- 616: LD_ADDR_OWVAR 47
- 620: PUSH
- 621: NOP4
- 625: ST_TO_ADDR
-// vehy = FilterUnitsInArea ( PojazdyArea , [ [ f_side , 3 ] , [ f_type , unit_vehicle ] , [ f_empty ] ] ) ;
- 626: NOP4
- 630: PUSH
- 631: NOP4
- 635: PPUSH
- 636: LD_INT 22
- 638: PUSH
- 639: LD_INT 3
- 641: PUSH
- 642: EMPTY
- 643: LIST
- 644: LIST
- 645: PUSH
- 646: LD_INT 21
- 648: PUSH
- 649: LD_INT 2
- 651: PUSH
- 652: EMPTY
- 653: LIST
- 654: LIST
- 655: PUSH
- 656: LD_INT 58
- 658: PUSH
- 659: EMPTY
- 660: LIST
- 661: PUSH
- 662: EMPTY
- 663: LIST
- 664: LIST
- 665: LIST
- 666: PPUSH
- 667: NOP4
- 671: ST_TO_ADDR
-// AddComEnterUnit ( i , vehy ) ;
- 672: NOP4
- 676: PPUSH
- 677: NOP4
- 681: PPUSH
- 682: NOP4
-// AddComMoveXY ( i , 217 , 35 ) ;
- 686: NOP4
- 690: PPUSH
- 691: LD_INT 217
- 693: PPUSH
- 694: LD_INT 35
- 696: PPUSH
- 697: NOP4
-// ComMoveXY ( vehy , 217 , 35 ) ;
- 701: NOP4
- 705: PPUSH
- 706: LD_INT 217
- 708: PPUSH
- 709: LD_INT 35
- 711: PPUSH
- 712: NOP4
-// end ;
- 716: GO 613
- 718: POP
- 719: POP
-// end ;
- 720: PPOPN 4
- 722: END
+ 576: PPOPN 2
+ 578: END
