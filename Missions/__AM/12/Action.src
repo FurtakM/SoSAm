@@ -620,7 +620,7 @@ begin
 
     for i in vehicles do
     begin
-        if See(1, i) and vehicleTeleported = 1 then
+        if See(1, i) and vehicleTeleported = 1 and tpCounter <= 4 then
         begin
             Disable;
             DialogueOn;
@@ -634,7 +634,7 @@ begin
 end;
 
 // Dialog after destroy tanks
-Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
+Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 and tpCounter <= [3, 3, 4][Difficulty] and tpCounter > 5 do
 begin
     vehicleTeleported = 2;
     DialogueOn;
@@ -645,7 +645,7 @@ begin
 end;
 
 // Second tp
-Every 0$1 trigger vehicleTeleported = 3 do
+Every 0$1 trigger vehicleTeleported = 3 and tpCounter > 4  do
 var i, vehicles;
 begin
     vehicles = FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 250]]);
@@ -666,7 +666,7 @@ begin
 end;
 
 // Dialog after destroy tanks
-Every 0$10 trigger vehicleTeleported = 3 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do
+Every 0$10 trigger vehicleTeleported = 3 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 and tpCounter = [6, 6, 8][Difficulty] do
 begin
     vehicleTeleported = 4;
     DialogueOn;
@@ -704,22 +704,17 @@ begin
     ruAI = 0;
     vehs = FilterUnitsInArea(RuEastBase, [[f_side, 3], [f_type, unit_vehicle], [f_empty]]);
 
+    ComExitBuilding(RuScientists);
+    wait(0$1);
+
     DialogueOn;
     Say(JMM, 'D6-JMM-1');
     DialogueOff;
 
-    for i := 1 to RuScientists do
-    begin
-            ComEnterUnit(UnitFilter(RuScientists[i], [f_not, [f_hastask]]), vehs[i]);
-            If IsOk(rutp) then
-            begin
+    if vehs > 0 then
+       for i := 1 to RuScientists do ComEnterUnit(UnitFilter(RuScientists[i], [f_not, [f_hastask]]), vehs[i])
+    else ComMoveToArea(RuScientists, [EscapeArea1, EscapeArea2][Rand(1,2)]);
 
-               if i mod 2 then begin AddComEnterUnit([RuScientists[i], vehs[i]], rutp); AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]);
-               end else begin AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
-
-            end else begin AddComMoveToArea([RuScientists[i], vehs[i]], [EscapeArea1, EscapeArea2][Rand(1,2)]); end;
-
-    end; 
 
 end;
 

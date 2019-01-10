@@ -1,4 +1,5 @@
-Every 1 do 
+Every 1 do
+var others;
 begin
     InGameOn;
 
@@ -58,9 +59,15 @@ begin
     Say(Powell, 'D1-Pow-7');
     Say(JMM, 'D1-JMM-8');
 
+    others = FilterUnitsInArea(CoreHeroes, [[f_side, 1], [f_type, unit_human]]);
+    others = others ^ FilterUnitsInArea(AddHeroes, [[f_side, 1], [f_type, unit_human]]);
+    others = others diff [JMM, Powell, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Houten, Gary];
+
     SaveCharacters(JMM, '10_JMM');
-    SaveCharacters(FilterUnitsInArea(AddHeroes, [[f_side, 1], [f_type, unit_human]]) diff [JMM, Powell, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Houten, Gary], 'OthersIn10');
+    SaveCharacters(others, 'OthersIn10');
     SaveCharacters(others08, '10_lock');
+    DeleteCharacters('08_others');
+    SaveCharacters(others, '08_others');
 
     ChangeMap(10, '%_cont');
 end;

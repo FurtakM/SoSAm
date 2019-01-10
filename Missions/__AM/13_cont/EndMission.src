@@ -63,3 +63,28 @@ begin
 
     YouWin;
 end;
+
+
+
+Export function SaveOmegaBase;
+var omegaBase, buildings, i;
+begin
+    omegaBase = [];
+    buildings = FilterAllUnits([[f_side, 1], [f_nation, 1], [f_type, unit_building], [f_ok]]);
+
+    for i in buildings do
+    begin
+        if GetBType(i) in [b_lab, b_lab_half, b_lab_full] then
+            omegaBase = omegaBase ^ [ [GetBType(i), GetX(i), GetY(i) ,GetDir(i) ,GetBLevel(i), GetNation(i), GetLabKind(i,1), GetLabKind(i,2) ] ]
+        else
+        if GetBType(i) = b_bunker then
+            omegaBase = omegaBase ^ [ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i), GetBWeapon(i)] ]
+        else
+        if GetBType(i) = b_factory then
+            omegaBase = Insert(omegaBase, 1, [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i)])
+        else
+           omegaBase = omegaBase ^ [ [GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetNation(i)] ];
+    end;
+
+    SaveVariable(omegaBase,'13_OmegaBase');
+end;
