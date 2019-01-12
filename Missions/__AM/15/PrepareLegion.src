@@ -1,6 +1,6 @@
 // #TeamKurt ;)
 Export function PrepareLegion;
-var i;
+var i, arControler;
 begin
 
     uc_side = 8;
@@ -18,5 +18,9 @@ begin
     for i in FilterAllUnits([[f_side, 8], [f_type, unit_building], [f_btype, b_bunker], [f_empty]]) do RespawnInside(8, 2, i, 10, 1, 1);
 
     RespawnInside(8, 2, ArControl, 10, 3, 1);
+
+    arControler = UnitsInside(ArControl);
+    AddComLinkTo(ArBomb1, arControler[1]);
+    AddComLinkTo(ArBomb2, arControler[1]);
 
 end;
