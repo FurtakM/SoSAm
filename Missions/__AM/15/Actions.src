@@ -1,8 +1,10 @@
+// Start mission
+
 Every 1 do
 var i, dec1, options, people;
 begin
     InGameOn;
-    ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 48, 68);
+    ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 60, 75);
 
     if KappaStatus = 0 then
     begin
@@ -46,9 +48,9 @@ begin
 
     repeat
         wait(0$1);
-        ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 48, 68);
+        ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 60, 75);
         CenterNowOnUnits(NewJMMVeh);
-    until GetDistUnits(NewJMMVeh, Powell) < 15;
+    until GetDistUnits(NewJMMVeh, Powell) < 25;
 
     ComExitVehicle(JMM);
 
@@ -242,6 +244,7 @@ Function ResolveQuery(question, list_of_q);
    end;
  end;
 
+// Give player soldiers
  Every 0$1 trigger FilterUnitsInArea(PowellHillArea, [[f_side, 4], [f_type, unit_human]]) do
  begin
     enable;
@@ -282,9 +285,9 @@ Every 2$0 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [
 begin
     powellAttacks = 2;
 
-    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
-    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
-    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [5, 7][Rand(1, 2)]);
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [5, 7][Rand(1, 2)]);
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [5, 7][Rand(1, 2)]);
     AddComConstruct(AmFact, us_morphling, engine_siberite, control_manual, 6);
     powellVeh = AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, 3);
 end;
@@ -292,21 +295,18 @@ end;
 // Second Powell attack - disable ru attacks
 Every 0$30 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and startAttacks = 1 do startAttacks = 0;
 
-// First Powell attack - block attack troops
-Every 0$1 trigger powellAttacks = 3  do
-var i;
-begin
-    enable;
-    for i = 1 to amUnitsAttack do NormalAttack(8, amUnitsAttack[i]);
-end;
 
 // Second Powell attack - attack
 Every 1$15 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_lives, 250]]) = 0 and startAttacks = 0 and powellAttacks = 2 do
-var i, sold, powellPeople;
+var i, sold, powellPeople, arControler;
 begin
     powellAttacks = 3;
+    for i = 1 to amUnitsAttack do NormalAttack(8, amUnitsAttack[i]);
 
-    InGameOn;
+    wait(0$5);
+
+    //Video(true);
+
     CenterNowOnUnits(Powell);
     ComMoveXY(Powell, 45, 64);
     AddComTurnXY(POwell, 46, 66);
@@ -364,5 +364,176 @@ begin
     Say(sold, 'D6-Sol3-1');
     Say(Powell, 'D6-Pow-1');
 
-    InGameOff;
+
+
+    ComMoveToArea([ArBomb1, ArBomb2], PowellBaseNearArea);
+end;
+
+// Arrive legion bomb
+Every 0$1 trigger powellAttacks = 3 and FilterUnitsInArea(PowellBaseNearArea, [[f_side, 8], [f_type, unit_vehicle]]) = 2 do
+var i, tmp;
+begin
+    ChangeSideFog(8, 1);
+    SetAttitude(4, 8, att_friend, true);
+
+    for i in UnitsInside(AmArm) do
+        if GetSex(i) = sex_male then
+        begin
+            tmp = i;
+            break;
+        end;
+            
+
+    ComExitBuilding(UnitsInside(AmArm));
+    Say(tmp, 'D6-Sol3-2');
+    ComAttackUnit([ArBomb1, ArBomb2], AmFact);
+    SetAttitude(4, 8, att_enemy, true);
+    ChangeSideFog(8, 8);
+    Say(Powell, 'D6-Pow-2');
+end;
+
+// Destroy Powell's fab
+Every 0$1 trigger IsDead(AmFact) do
+var i, tmp;
+begin
+
+    for i in FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside]]) diff [Powell] do
+    if GetSex(i) = sex_male then
+    begin
+        tmp = i;
+        break;
+    end;
+
+    Say(Powell, 'D6a-Pow-1');
+    Say(tmp, 'D6a-Sol3-1');
+    ComTurnUnit(Powell, tmp);
+    Say(Powell, 'D6a-Pow-2');
+    Say(tmp, 'D6a-Sol3-2');
+    Say(Powell, 'D6a-Pow-3');
+    ComEnterUnit(Powell, powellVeh);
+
+    repeat
+        wait(0$1);
+        ComEnterUnit(Powell, powellVeh);        
+    until IsInUnit(Powell);
+
+    wait(0$1);
+    AddComMoveXY(powellVeh, 77, 64);
+    AddComMoveXY(powellVeh, 91, 61);
+    AddComMoveXY(powellVeh, 74, 25);
+
+    centerPowell = 1;
+
+    wait(0$15);
+    Say(Powell, 'D6b-Pow-1');
+end;
+
+// Powell in legion base
+Every 0$1 trigger IsInArea(powellVeh, DestroyPowellVeh) and powellAttacks = 3 do 
+begin
+    SetLives(PowellVeh, 250);
+    DialogueOn;
+    Say(Powell, 'D6b-Pow-1a');
+    DialogueOff;
+    ComEnterUnit(Powell, PowBomb);
+    wait(0$1);
+    ComEnterUnit(Powell, PowBomb);
+end;
+
+// Powell bomb
+Every 0$01 trigger FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb]]) do
+begin
+    SetAttitude(8, 4, att_friend, true);
+    ComMoveXY(PowBomb, 80, 19);
+    AddComMoveXY(PowBomb, 74, 15);
+    AddComMoveXY(PowBomb, 72, 19);
+    AddComMoveXY(PowBomb, 78, 24);
+    AddComMoveXY(PowBomb, 77, 20);
+    AddComMoveXY(PowBomb, 78, 15);
+
+    Say(Powell, 'D6b-Pow-1b');
+    Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[1],'D6b-ArSol1-1');
+    Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[1],'D6b-ArSol2-1');
+
+    wait(0$3);
+    Say(Powell, 'D6b-Pow-2');
+    
+    repeat
+        wait(0$1);
+    until GetDistUnitXY(PowBomb, 78, 15) < 2;
+
+    wait(0$1);
+    DialogueOn;
+    Say(Powell, 'D6b-Pow-2a');
+    DialogueOff;
+    centerPowell = 0;
+    ComAttackUnit(PowBomb, ArRuFact);
+end;
+
+// Boom boom :D
+Every 0$3 trigger IsDead(ArRuFact) and powellAttacks = 3 do
+var i, tmp, tmp1, tmp2;
+begin
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_sex, 1]]);
+
+    CenterOnXY(49, 66);
+    Say(tmp[1], 'D6c-Sol3-1');
+    Say(JMM, 'D6c-JMM-1');
+    If IsOk(Cyrus) then Say(Cyrus, 'D6c-Cyrus-1');
+    if IsOk(Bobby) then Say(Bobby, 'D6c-Bobby-1');
+    if IsOk(Cornel) then Say(Cornel, 'D6c-Corn-1');
+    Say(tmp[2], 'D6c-Sol1-1');
+    if IsOk(Lisa) then Say(Lisa, 'D6c-Lisa-1');
+    if IsOk(Gary) then Say(Gary, 'D6c-Gary-1');
+    if IsOK(Donaldson) then Say(Donaldson, 'D6c-Don-1');
+    Say(tmp[3], 'D6c-Sol2-1');
+
+    ComExitBuilding(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComExitBuilding(FilterAllUnits([[f_side, 4], [f_type, unit_human]]));
+
+    wait(0$1);
+
+    tmp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM];
+    tmp2 = FilterAllUnits([[f_side, 4], [f_type, unit_human]]);
+
+    for i := 1 to tmp2 do
+    begin
+        ComMoveXY(tmp2[i], 43 + i, 65);
+        AddComTurnUnit(tmp2[i], JMM);
+    end;
+
+    for i := 1 to tmp1 do
+    begin
+        ComMoveXY(tmp1[i], 43 + i, 64);
+        AddComTurnUnit(tmp1[i], JMM);
+    end;
+
+    ComMoveXY(JMM, 48, 68);
+    AddComTurnXY(JMM, 47, 65);
+
+    repeat
+        wait(0$1);
+    until GetDistUnitXY(JMM, 48, 68) < 2;
+
+    wait(0$2);
+    Say(tmp[2], 'D6c-Sol3-2');
+    Say(JMM, 'D6c-JMM-2');
+
+    Video(false);
+    centerPowell = 0;
+
+    SetSide(FilterAllUnits([f_side, 4]), 1);
+    ChangeMissionObjectives('M2');
+
+end;
+
+Every 0$1 trigger centerPowell = 1 do 
+begin
+    enable;
+
+    SetLives([Powell, PowBomb], 1000);
+    if not IsInArea(powellVeh, DestroyPowellVeh) then SetLives(powellVeh, 1000);
+    if not IsInUnit(Powell) then CenterNowOnUnits(Powell)
+    else CenterNowOnUnits(IsInUnit(Powell));
+
 end;

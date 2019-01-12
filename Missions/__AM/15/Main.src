@@ -52,7 +52,7 @@ Export amUnitsSkillTab, amUnitsAttack, amUnitsForJMM;
 Export powellBuildBase;
 Export powellAttacks;
 Export startAttacks;
-Export powellVeh;
+Export powellVeh, centerPowell;
 
 Export JMMVeh, JMMGirlVeh; // Vehs from mission 14
 Export JMMGirl, KappaStatus; // Am 14
@@ -83,6 +83,7 @@ begin
     startAttacks = 0; // magenta ru attacks on/off
     powellBuildBase = 0; // 0 - off, 1 - start
     powellAttacks = 0;
+    centerPowell = 0;
 
     missionStage = 0; // 0 - prologue, 1 - after Powell death, 2 - Joan or Sewi, 3 - Stevens,  4 - Roth, 5 - ru behs, 6 - Ru rocket, 7 - Arabian 8 - End game
 
@@ -117,6 +118,6 @@ end;
 
 Every 0$1 do
 begin
-    enable;
-    display_strings = others13;
-end;    
+enable;
+display_strings = [powellAttacks, GetSide(PowBomb)];
+end;
