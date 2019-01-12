@@ -181,7 +181,7 @@ End;
 
 // West Base
 Every 0$01 trigger GetDistUnits(JMM, Lynch) < 10 do
-var i, points, sol, buns;
+var i, points, sol, buns, tmp;
 begin
 points := [ [89, 34], [138, 63], [196, 84], [135, 52], [103, 39], [58, 30], [38, 51] ];
 
@@ -281,6 +281,11 @@ if HexInfo(65, 101) then
 if HexInfo(66, 103) then
    ComMoveXY(HexInfo(66, 103), 75, 100);
 
+tmp := FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_dist, JMM, 7]]);
+
+if tmp then
+   ComMoveXY(tmp, 75, 100);
+
 sol := NearestUnitToUnit(UnitFilter(jmm_units, [f_class, 1]), JMM);
 
 if sol then
@@ -292,17 +297,22 @@ Wait(0$0.3);
 ComMoveXY(JMM, 65, 101);
 AddComTurnXY(JMM, 63, 100);
 
+tmp := 0$0;
+
 repeat
  wait(0$01);
-until IsAt(JMM, 65, 101);
+ tmp := tmp + 0$1;
+until IsAt(JMM, 65, 101) or tmp > 0$5;
 
 Say(JMM, 'D2a-JMM-1');
 
 ComMoveXY(Walker, 66, 103);
 
+tmp := 0$0;
+
 repeat
  wait(0$01);
-until IsAt(Walker, 66, 103);
+until IsAt(Walker, 66, 103) or tmp > 0$5;
 
 ComTurnUnit(Walker, JMM);
 

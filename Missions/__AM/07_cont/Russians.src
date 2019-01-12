@@ -278,13 +278,24 @@ ComHeal(doc, tmp[1]);
 End;
 
 Every 0$01 trigger FilterAllUnits([[f_side, 3], [f_class, 3]]) and FilterAllUnits([[f_side, 3], [f_type, unit_vehicle]]) do
-var i, tmp, areas, area;
+var i, tmp, attacking, areas, area;
 begin
 enable;
 
 tmp := FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_not, [f_empty]]]);
 areas := [sectorAlpha, sectorBeta, sectorDelta, mainBaseArea];
 area := 0;
+attacking := false;
+
+for i in tmp do
+    if GetDistUnits(i, NearestUnitToUnit(FilterAllUnits([f_side, 1]), i)) < 10 then
+       begin
+       ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_side, 1]), i));
+       attacking := true;
+       end;
+
+if attacking then
+   exit;
 
 for i in areas do
     if FilterUnitsInArea(i, [f_side, 1]) then
@@ -300,6 +311,9 @@ if area then
        if GetFuel(i) < 33 then
           SetFuel(i, 33);
 
+       if GetDistUnits(i, NearestUnitToUnit(FilterAllUnits([f_side, 1]), i)) < 10 then
+          ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_side, 1]), i))
+       else
        if not IsInArea(i, area) then
           ComMoveToArea(i, area);
        end;
