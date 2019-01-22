@@ -26,6 +26,17 @@ begin
               ResAllTechs(4, building, 1);
         end;
 
+
+    if GetSide(building) = 8 then
+    begin
+        if FilterAllUnits([[f_side, 8], [f_btype, b_factory], [f_nation, 3]]) = 1 and GetNation(building) = 3 then
+        begin
+            ComBuild(Kozlov, b_ext_siberium, 74, 12, 3);
+            AddComEnterUnit(Kozlov, FilterAllUnits([[f_side, 4], [f_btype, b_factory], [f_nation, 3]])[1]);
+            ComConstruct(FilterAllUnits([[f_side, 4], [f_btype, b_factory], [f_nation, 3]])[1], ru_heavy_tracked, 3, 3, ru_siberium_rocket);
+        end;
+    end;
+
 end;
 
 On BuildingComplete(building) Do
@@ -41,11 +52,21 @@ begin
         ComEnterUnit(powellPeople[1], FilterAllUnits([[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[1]);
         ComEnterUnit(powellPeople[2], FilterAllUnits([[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[2]);
     end;
+
+    if GetSide(building) = 8 then
+    begin
+        if GetBType(building) = b_workshop then ComUpgrade(building);
+    end;
 end;
 
 On EnterBuilding(building, human) Do
 begin
 
+end;
+
+On BehemothConstructed(vehicle) Do
+begin
+    if GetSide(vehicle) = 6 then ruBehs = ruBehs ^ vehicle;
 end;
 
 On VehicleConstructed(vehicle, building) Do
@@ -64,6 +85,21 @@ begin
     begin
         powellVeh = vehicle;
         ComMoveXY(vehicle, 49, 74);
+    end;
+
+    if GetSide(vehicle) = 8 and GetNation(vehicle) = 2 and GetType(vehicle) = unit_vehicle then
+    begin
+        legionVehicles = legionVehicles ^ vehicle;
+        ComLinkTo(vehicle, arControler[1]);
+    end;
+
+    if GetSide(vehicle) = 3 and GetNation(vehicle) = 3 and GetType(vehicle) = unit_vehicle then
+        RussianVehicles = RussianVehicles ^ vehicle;
+
+    if GetSide(vehicle) = 7  and GetType(vehicle) = unit_vehicle then
+    begin
+        AllianceVehicles = AllianceVehicles ^ vehicle;
+        if GetControl(vehicle) = 2 then ComLinkTo(vehicle, allianceControler[rand(1, 3)]);
     end;
 
 end;
@@ -95,4 +131,23 @@ begin
         for i in amUnitsAttack do 
             if i = unit then amUnitsAttack = amUnitsAttack diff [unit];
     end;
+
+    if GetSide(unit) = 8 and GetType(unit) = unit_vehicle and GetNation(unit) = 2 then
+    begin
+        for i in legionVehicles do 
+            if i = unit then legionVehicles = legionVehicles diff [unit];
+    end;
+
+    if GetSide(unit) = 3 and GetType(unit) = unit_vehicle  then
+    begin
+        for i in RussianVehicles do
+            if i = unit then RussianVehicles = RussianVehicles diff [unit];
+    end;
+
+    if GetSide(unit) = 7 and GetType(unit) = unit_vehicle  then
+    begin
+        for i in AllianceVehicles do
+            if i = unit then AllianceVehicles = AllianceVehicles diff [unit];
+    end;
+
 end;

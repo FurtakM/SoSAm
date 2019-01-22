@@ -311,9 +311,11 @@ var i;
 begin
     InGameOn;
     SetLives(Jerry, 250);
+    SetLives(Brian, 750);
     SetAttitude(3, 4, att_enemy, true);
     CenterOnUnits([Brian, Jerry]);
     for i in FilterUnitsInArea(RussiansWaterSpawn, [f_side, 3]) do ComFree(i);
+    for i in FilterUnitsInArea(RussiansWaterSpawn, [f_side, 3]) do AddComAttackUnit(i, Brian);
     for i in FilterAllUnits([f_side, 4]) do ComFree(i);
 
     wait(0$1);
@@ -716,7 +718,7 @@ begin
         SetSide(Mikhail, 6);
         ComExitBuilding(Mikhail);
         wait(0$1);
-        AddComMoveXY(Mikhail, GetX(Mikhail) + 2, GetY(Mikhail) + 2);
+        ComMoveXY(Mikhail, GetX(Mikhail) + 2, GetY(Mikhail) + 2);
         AddComMoveXY(Mikhail, GetX(Mikhail) + 1, GetY(Mikhail) + 2);
         AddComMoveXY(Mikhail, GetX(Mikhail) + 2, GetY(Mikhail));
 
@@ -747,13 +749,7 @@ begin
 
      repeat
        wait(0$1);
-       IF GetDistUnits(Mikhail, dep1) < GetDistUnits(Mikhail, dep2) then
-       begin
-          ComEnterUnit(Mikhail, dep1);
-       end else
-       begin
-          ComEnterUnit(Mikhail, dep2);
-       end;
+       ComEnterUnit(Mikhail, dep1);
      until IsInUnit(Mikhail);
 
      InGameOff;

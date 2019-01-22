@@ -37,7 +37,12 @@ begin
             
     uc_side = 4;
     Donaldson = PrepareUnit('Donaldson', false);
-    Frank = PrepareUnit('03_Frank', true);
+
+    if TestCharacters('03_Frank') = true then
+    begin
+       Frank = PrepareUnit('03_Frank', true);
+       if Frank = 0 then Frank = PrepareUnit('Frank', false);
+    end;
 
     PlaceHumanInUnit(JMM, amvj);
 
