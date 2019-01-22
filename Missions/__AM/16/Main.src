@@ -44,19 +44,42 @@ Funkcja Lambda opiera sie na zdobycznych czolgach japonskich w trakcie bitwy pod
 
 Export JMM, Joan, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie; // Am heroes
 Export Powell; // Am commander
-Export others13; // Others
+Export others13, others13Omega; // Others
+Export heroesFromOmega, Baker; // Mission 13 heroes
 Export NewJMMVeh, NewJMMGirlVeh;
-Export Platonov, Roth, Kurt; // Enemy commanders
+Export Platonov, Yakotich, Roth, Burlak, Kurt, Omar, Heike; // Enemy commanders
+Export Vsevolod, sewiVeh; // Sewi
+Export Kozlov;  // Kozlov
+Export Kovalyuk; // Kowaliuk
+
+Export LegionFriend, LegionFriendStatus;
+Export legionVehicles;
+Export arControler;
+
+Export ruVehicles;
+Export ruBehMehs, ruBehs;
+Export behemothStatus;
+Export russianVehicles;
+
+Export allianceVehicles;
+Export allianceControler;
 
 Export amUnitsSkillTab, amUnitsAttack, amUnitsForJMM;
 Export powellBuildBase;
 Export powellAttacks;
 Export startAttacks;
-Export powellVeh, centerPowell;
+Export powellVeh, centerPowell, powBomb;
 
+Export BurlakStatus, StevensStatus; // Am 13
 Export JMMVeh, JMMGirlVeh; // Vehs from mission 14
-Export JMMGirl, KappaStatus; // Am 14
+Export JMMGirl, KappaStatus, JMMGirlStatus; // Am 14
 Export KhatamStatus; // Am 10
+
+Export LegionAI, AllianceAI, RussianAI;
+Export LegionTarget, AllianceTarget, RussianTarget;
+Export russianEscape, allianceEscape;
+
+Export timerStatus, timeAction;
 
 Export missionStage; 
 
@@ -73,8 +96,11 @@ begin
     JMMVeh = LoadVariable('14_JMMVeh_1', []);
     JMMGirlVeh = LoadVariable('14_JMMGirlVeh_1', []);
     JMMGirl = LoadVariable('14_JMMGirl_1', 3);
+    JMMGirlStatus = LoadVariable('14_JMMGirlStatus_1', 0);
     KappaStatus = LoadVariable('14_KappaStatus_1', 0);
     KhatamStatus = LoadVariable('10_KhatamStatus_1', 0);
+    BurlakStatus = LoadVariable('13_BurlakStatus_1', 0);
+    StevensStatus = LoadVariable('13_StevensStatus_1', 0);
 
     amUnitsSkillTab = []; // [unitID][Skills/4]
     amUnitsAttack = []; // 8 units who die durring attack legion base
@@ -85,7 +111,26 @@ begin
     powellAttacks = 0;
     centerPowell = 0;
 
-    missionStage = 0; // 0 - prologue, 1 - after Powell death, 2 - Joan or Sewi, 3 - Stevens,  4 - Roth, 5 - ru behs, 6 - Ru rocket, 7 - Arabian 8 - End game
+    LegionFriendStatus = 0; // 0 - die, 1 - in american
+    
+    legionVehicles = [];
+    russianVehicles = [];
+    allianceVehicles = [];
+
+    ruVehicles = [];
+    ruBehMehs = []; // Tab with ru mehs to build behemoth
+    ruBehs = []; // Russian behemoths
+
+    missionStage = 0; // 0 - prologue, 1 - after Powell death, 2 - Joan or Sewi, 3 - Stevens,  4 - Roth, 5 - ru behs, 6 - Ru rocket,7 - Arabian 8 - End game
+
+    behemothStatus = 0; // 0 - no detect, 1 - detected before finish
+
+    LegionAI = 1;
+    AllianceAI = 1;
+    RussianAI = 1;
+
+    timerStatus = 0; // 0 - off, 1 - on
+    timeAction = 0$00; // time
 
     blockEvent1 = 0; // Leave veh
 
@@ -114,10 +159,4 @@ begin
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
     for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
-end;
-
-Every 0$1 do
-begin
-enable;
-display_strings = [powellAttacks, GetSide(PowBomb)];
 end;

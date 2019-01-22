@@ -51,9 +51,9 @@ Every 0$1 trigger FilterUnitsExceptArea(ExitArea, [[f_side, 1], [f_type, unit_hu
 var i, cargoType;
 begin
 
-    if FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) > 0 then
+    if FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0 then
     begin
-        for i in FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_not, [f_empty]]]) do
+        for i in FilterUnitsInArea(ExitArea, [[f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) do
         begin
             cargoType = GetCargoType(i);
             if GetWeapon(i) = us_cargo_bay then
@@ -75,6 +75,6 @@ end;
 Export function SaveCargos;
 var i;
 begin
-   for i in FilterUnitsInArea(ExitArea,[[f_side, 1], [f_weapon, us_cargo_bay]]) do resources = resources ^ [GetMultiCargo(i)];
+   for i in FilterUnitsInArea(ExitArea,[[f_side, 1], [f_control, 1], [f_weapon, us_cargo_bay]]) do resources = resources ^ [GetMultiCargo(i)];
    SaveVariable(resources, '13_ResourcesInCargo13_1');
 end;

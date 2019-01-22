@@ -20,6 +20,19 @@ begin
     result := unit;
 End;
 
+Export Function PrepareUnitOmega(ident);
+var unit;
+begin
+
+    if TestCharacters('13f_'&ident) = true then
+    begin
+        unit = CreateCharacter('13f_'&ident);
+        heroesFromOmega = heroesFromOmega ^ unit;
+    end;    
+
+    result := unit;
+End;
+
 Export function TabLenght(tab);
 var i;
 begin
@@ -37,6 +50,23 @@ begin
         ingame_video=false;
         interface_hidden=false;
     end;
+end;
+
+Export function DialogRandom(characters, dialogMID, dialogFID);
+var i, rnd;
+begin
+
+    characters := characters diff [JMM, Stevens, Baker,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
+    rnd = rand(1, characters);  
+
+    for i = 1 to characters do
+    begin
+
+        if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
+        if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
+
+    end;
+
 end;
 
 Export Function SortBySkill(list, asc);
@@ -105,24 +135,6 @@ begin
     end;
 end;
 
-
-
-Export function DialogRandom(characters, dialogMID, dialogFID);
-var i, rnd;
-begin
-
-    characters := characters diff [JMM, Joan, Stevens,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell, Connie];
-    rnd = rand(1, characters);  
-
-    for i = 1 to characters do
-    begin
-
-        if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
-        if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
-
-    end;
-
-end;
 
 Export function RespawnInside(side, nation, build, skill, class, count);
 var i,l, un, tmp;
@@ -354,8 +366,8 @@ var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
 
-  engineerOkInside = UnitsInside(building);
-  engineerOkOutside = FilterUnitsInArea(area,[[f_side, side], [f_class, 2], [f_lives, 750], [f_not, [f_inside]]]);
+  engineerOkInside = UnitFilter(UnitsInside(building), [f_class, 2]);
+  engineerOkOutside = FilterUnitsInArea(area,[[f_side, side], [f_class, 2], [f_lives, 750], [f_not, [f_inside]]]) diff [Kozlov];
   buildings_list = FilterUnitsInArea(area,[[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
   if not buildings_list and not FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 250]]) then exit;
@@ -366,3 +378,133 @@ begin
 
   if buildings_list = 0 and engineerOkOutside > 0 then ComEnterUnit(engineerOkOutside, building);
 END;
+
+Export function HealUnitInBase(side, healArea, baseArea, build);
+var sci_list, sci_listOutside,  i, j, damageUnits, unitsToHeal, tmp, rnd;
+begin
+
+  sci_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_nation ,2], [f_lives, 251]]) diff [Kozlov];
+  sci_listOutside = FilterUnitsInArea(baseArea, [[f_side, side], [f_nation, 2], [f_class, 4], [f_ok]]) diff [Kozlov];
+  damageUnits = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 750]]]);
+  unitsToHeal = FilterUnitsInArea(healArea,[[f_side, side], [f_type, unit_human], [f_not, [f_class, 3]], [f_not, [f_lives, 1000]]]);
+
+  if not damageUnits and not unitsToHeal and not sci_list then exit;
+
+  if damageUnits > 0 and sci_list > 0 then ComMoveToArea(damageUnits, healArea);
+
+  if unitsToHeal > 0 and sci_list > 0 then ComExitBuilding(sci_list);
+
+  if unitsToHeal > 0 and sci_listOutside > 0 then ComHeal(sci_listOutside, unitsToHeal[1]);
+
+  if damageUnits = 0 and unitsToHeal = 0 and sci_listOutside > 0 then
+  begin
+          tmp = FilterAllUnits([[f_side, side], [f_type, unit_building], [f_btype, b_lab_full]]);
+          rnd = rand(1, tmp);
+          ComEnterUnit(UnitFilter(sci_listOutside, [f_not, [f_hastask]]), tmp[rnd]);
+  end;
+
+END;
+
+Export function DefendDepot(side, build);
+var i, j, tmpTab;
+begin
+     tmpTab = [];
+
+     if FilterAllUnits([[f_side, side], [f_btype, b_bunker]]) > 0 then
+     begin
+       for i in FilterAllUnits([[f_side, side], [f_btype, b_bunker]]) do
+       begin
+            for j in UnitsInside(i) do tmpTab = tmpTab ^ j;
+       end;
+     end;
+
+     ComAgressiveMove(tmpTab, GetX(build), GetY(build));
+end;
+
+Export function AttackNearBuildings(side, enemySide);
+var i, j, turretsList, enemyBuildings;
+begin
+    turretsList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 31], [f_btype, 32], [f_btype, 33], [f_btype, 4], [f_btype, 5]]]);
+    enemyBuildings = FilterAllUnits([[f_side, enemySide], [f_type, unit_building], [f_empty]]);
+
+    if turretsList > 0 and enemyBuildings > 0 then
+    begin
+        for i in turretsList do
+        begin
+            for j in enemyBuildings do
+            begin
+                if GetDistUnits(i, j) < 20 then
+                begin
+                    ComAttackUnit(i, j);
+                end;
+            end;
+        end;
+    end;
+
+END;
+
+Export function BuildingVehicle(side, fabric, vehCount, weaponTab, engine, control, chassis);
+var i;
+begin
+
+        for i = 1 to vehCount do AddComConstruct(fabric, chassis, engine, control, weaponTab[Rand(1, weaponTab)]);
+
+END;
+
+Export function AttackVehicles(enemySide, vehTab);
+var i, j, vehiclesOK, target1, target2;
+begin
+    repeat
+        wait(0$1);
+            for j in vehTab do
+            begin
+                target1 := NearestUnitToUnit(FilterAllUnits([f_side, enemySide]), j);
+                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, enemySide], [f_btype, b_bunker], [f_occupied]]]), j);
+
+                If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                else ComAttackUnit(j, target2);
+            end;
+
+    until vehTab = 0;
+end;
+
+Export Function IntBazooka(side);
+var ta, c, i, list, filter;
+begin
+
+    list   := FilterAllUnits([[f_side, side], [f_class, class_bazooker]]);
+    filter := FilterAllUnits([[f_enemy, side], [f_not, [f_type, unit_building]]]);
+
+    c := Rand(1, 3);
+
+    for i = 1 to list do
+    for ta in filter do
+        begin
+
+        if GetDistUnits(list[i], ta) <= 15 then
+            begin
+                Case c of
+                1: ComTimeShift(list[i], GetX(ta), GetY(ta));
+                2: ComSpaceShift(list[i], GetX(ta) + Rand(-1,1), GetY(ta) + Rand(-1,1));
+                3: ComAttackUnit(list[i], ta);
+                end;
+
+            end;
+        end;
+End;
+
+{Export function TimeLapsersAI(side);
+var j, nearUnit;
+begin
+    if russianTanks >= 1 and russianTimeLapsers >= [1, 2, 2][Difficulty] then
+    repeat
+        wait(0$3);
+        if russianTimeLapsers > 0 then
+            for j in UnitFilter(russianTimeLapsers, [f_not, [f_hastask]]) do
+            begin
+                nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
+                ComMoveXY(j, GetX(nearUnit), GetY(nearUnit));
+            end;
+
+    until russianTimeLapsers = 0;
+end;}

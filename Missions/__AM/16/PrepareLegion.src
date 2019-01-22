@@ -1,12 +1,13 @@
 // #TeamKurt ;)
 Export function PrepareLegion;
-var i, arControler;
+var i;
 begin
 
     uc_side = 8;
+    uc_nation = 2;
 
     Kurt = PrepareUnit('Kurt', false);
-    PlaceHumanInUnit(Kurt, ArDep1);
+    Kozlov = PrepareUnit('Kozlov', false);
 
     RespawnInside(8, 2, ArDep1, 10, 2, 4);
     RespawnInside(8, 2, ArDep2, 10, 2, 2);
@@ -14,6 +15,7 @@ begin
     RespawnInside(8, 2, ArBar1, 10, 8, 1);
     RespawnInside(8, 2, ArBar2, 10, 1, 1);
     RespawnInside(8, 2, ArFact, 10, 3, 4);
+    RespawnInside(8, 2, ArLab1, 10, 4, 2);
 
     for i in FilterAllUnits([[f_side, 8], [f_type, unit_building], [f_btype, b_bunker], [f_empty]]) do RespawnInside(8, 2, i, 10, 1, 1);
 
@@ -22,5 +24,11 @@ begin
     arControler = UnitsInside(ArControl);
     AddComLinkTo(ArBomb1, arControler[1]);
     AddComLinkTo(ArBomb2, arControler[1]);
+
+    hc_name = 'Ali Hadarach';
+    hc_gallery = '';
+
+    PrepareMechanic(sex_male, 8);
+    LegionFriend = CreateHuman;
 
 end;

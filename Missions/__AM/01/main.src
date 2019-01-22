@@ -207,8 +207,6 @@ begin
     AddMusic('');}
     commovexy(joan,getx(sik),gety(sik));
     wait(0$1);
-    say(sik,'DXAttack-Sik-1');
-    dialogueoff;
     setattitude(am,oth,att_enemy,true);
     comattackunit(others^[off,off2],john);
     joanok=false;
@@ -424,14 +422,16 @@ on enterbuilding(b,un) do
 
 On Contact(side1, side2) do
 begin
-    if side1 = 1 and side2 = 4 then
+    if side1 = 1 and side2 = 4 and killhim = false then
     begin
+      wait(0$1);
       music_class=1;
+      DialogueOn;
       say(sik,'DXAttack-Sik-1');
       dialogueoff;
+      killhim=true;
       setattitude(am,oth,att_enemy,true);
       comattackunit(others^[off,off2],john);
-      killhim=true;
     end;
 
 end;
