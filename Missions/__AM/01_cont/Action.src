@@ -1,6 +1,9 @@
 Export Function Action;
+var i;
 begin
-// game start here
+for i in FilterAllUnits([[f_side, 3], [f_class, 1]]) do
+    ComHold(i);
+    
 InGameOn;
 CenterOnXY(79, 76);
 
@@ -98,7 +101,14 @@ wait_points := 10;
 if Difficulty > 1 then
    begin
    ComAgressiveMove(russian_troops_1, 78, 95);
+   AddComWait(russian_troops_1, 0$05);
    wait_points := wait_points + 15;
+
+   if Difficulty > 2 then
+      begin
+      AddComAgressiveMove(russian_troops_1, 65, 79);
+      wait_points := wait_points + 5;
+      end;
    end;
 
 repeat

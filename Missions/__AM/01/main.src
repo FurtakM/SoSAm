@@ -384,7 +384,8 @@ begin
       comenterunit(lucy,eon);
       wait(0$3);
       say(off,'DXReady-Off-5');
-      ComMoveXY(john,75,34);
+      ComMoveXY(john,76,34);
+      AddComTurnXY(john, 76, 33);
       wait(0$4);
       //dialogueon;
       say(john,'DQrQuit#2-JMM-1');
@@ -435,3 +436,13 @@ begin
     end;
 
 end;
+
+On EnterVehicle(veh, unit) do
+begin
+if unit = john then
+   begin
+   say(joan,'DXComments-Joan-1');
+   ComExitVehicle(john);
+   SetSide(veh, 4);
+   end;
+End;
