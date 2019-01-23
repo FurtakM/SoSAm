@@ -89,10 +89,18 @@ begin
     ComMoveXY([engi1,engi2],45,36);
     ComExitVehicle(truckdriver);
     AddComMoveXY(truckdriver,40,33);
-    AddComRepairVehicle(truckdriver,truck);
-    Wait(0$15);
-    SetLives(truck,1000);
+
+    repeat
+     wait(0$1);
+     ComRepairVehicle(truckdriver,truck);
+    until GetLives(truck) = 1000;
+
     ComEnterUnit([engi1,engi2],depot2);
+
+    repeat
+     wait(0$1);
+    until not IsDrivenBy(truck);
+
     ComEnterUnit(truckdriver,truck);
     AddComMoveXY(truckdriver,74,52);
     AddComMoveXY(truckdriver,90,58);
