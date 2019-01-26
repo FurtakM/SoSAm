@@ -1,0 +1,83 @@
+//
+// RespawnAttackVehicle(area, side, vehCount, mehskill, nation, vehEngine, vehControl, RUWeapons, ARWeapons, AMWeapon, targetSide);
+// RespawnAttackInfantry(side, nation, soldierCount, sniperCount, bazookCount, mortalCount, medicCount, skil, spawnArea, healArea, targetSide);
+
+// Atak 1
+Every 10$0  do 
+begin
+    RespawnAttackVehicle(RussianAttackSpawn, 3, [10, 11, 12][Difficulty] + rand(5, 10), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
+end;
+
+Every 10$0 do 
+begin
+    ruAttacksCounter = 1;
+    RespawnAttackInfantry(3, 3, [6, 7, 8], 0, [5, 5, 6][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
+end;
+
+// Atak 2
+Every 20$0 do 
+begin
+    RespawnAttackVehicle(RussianAttackSpawn, 3, [11, 11, 12][Difficulty] + rand(5, 10), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
+end;
+
+Every 20$0 do 
+begin
+    ruAttacksCounter = 2;
+    RespawnAttackInfantry(3, 3, [6, 7, 8][Difficulty], 0, [6, 7, 7][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
+end;
+
+// Atak 3 - Burlak ded
+Every 35$0 trigger BurlakStatus = 1 do
+begin
+    RespawnAttackVehicle(RussianAttackSpawn, 3, [13, 14, 15][Difficulty] + rand(5, 10), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
+end;
+
+Every 35$0 trigger BurlakStatus = 1 do
+begin
+    ruAttacksCounter = 3;
+    RespawnAttackInfantry(3, 3, [6, 7, 8][Difficulty], 0, [7, 8, 9][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
+end;
+
+// Atak 3 - Burlak alive
+Every 45$0 trigger ruAttacksCounter = 2 and BurlakStatus = 0 do
+begin
+    RespawnAttackVehicle(RussianAttackSpawn, 3, [13, 14, 15][Difficulty] + rand(5, 10), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
+end;
+
+Every 45$0 trigger ruAttacksCounter = 2 and BurlakStatus = 0 do
+begin
+    ruAttacksCounter = 3;
+    RespawnAttackInfantry(3, 3, [6, 7, 8][Difficulty], 0, [7, 8, 9][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
+end;
+
+// Alliance attack
+Every 35$0 trigger BurlakStatus = 0 do
+begin
+    RespawnAttackVehicle(RussianAttackSpawn, 7, [6, 7, 7][Difficulty] + rand(2, 4), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
+end;
+
+Every 35$0 trigger BurlakStatus = 0  do
+begin
+    RespawnAttackVehicle(RussianAttackSpawn, 7, [6, 7, 7][Difficulty] + rand(2, 4), 10, 3, 3, [3,3], [], [], [10, 9, 7, 6], 1);
+end;
+
+Every 35$0 trigger BurlakStatus = 0 do
+begin
+    uc_side = 7;
+    uc_nation = 1;
+
+    vc_engine = 3;
+    vc_control = 1;
+    vc_chassis = 24;
+    vc_weapon = 46;
+    burlakVeh = CreateVehicle;
+    PlaceUnitArea(burlakVeh, RussianAttackSpawn, false);
+
+    Burlak = PrepareUnit('Burlak', false);
+    PlaceHumanInUnit(Burlak, burlakVeh);
+
+    SetMark(burlakVeh, 1);
+
+    ComAgressiveMove([Burlak, BurlakVeh], 117, 39);
+end;
+

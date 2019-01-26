@@ -1,0 +1,109 @@
+Export function PrepareOmegaTeam;
+var i, omegaVeh, sum, veh, mecha, avalaibleVehs, randBuild;
+begin
+     uc_side = 1;
+     uc_nation = 1;
+     omegaVeh = [];
+
+     Powell = PrepareUnit('Powell', false);
+
+    if TestCharacters('13s_Lisa') = false then Lisa = PrepareUnitOmega('Lisa');
+    if TestCharacters('13s_Donaldson') = false then Donaldson = PrepareUnitOmega('Donaldson');
+    if TestCharacters('13s_Bobby') = false then Bobby = PrepareUnitOmega('Bobby');
+    if TestCharacters('13s_Cyrus') = false then Cyrus = PrepareUnitOmega('Cyrus');
+    if TestCharacters('13s_Denis') = false then Denis = PrepareUnitOmega('Denis');
+    if TestCharacters('13s_Brown') = false then Brown = PrepareUnitOmega('Brown');
+    if TestCharacters('13s_Gladstone') = false then Gladstone = PrepareUnitOmega('Gladstone');
+    if TestCharacters('13s_Houten') = false then Houten = PrepareUnitOmega('Houten');
+    if TestCharacters('13s_Cornel') = false then Cornell = PrepareUnitOmega('Cornell');
+    if TestCharacters('13s_Gary') = false then Gary = PrepareUnitOmega('Gary');
+    if TestCharacters('13s_Frank') = false then Frank = PrepareUnitOmega('Frank');
+    if TestCharacters('13s_Kikuchi') = false then Kikuchi = PrepareUnitOmega('Kikuchi');
+
+    if StevensStatus = 1 then
+    begin
+        Stevens = PrepareUnitOmega('Stevens');
+        PlaceUnitArea(Stevens, StevensSpawn, false);
+        ComTurnXY(Stevens, 125, 16);
+        SetClass(Stevens, 4);
+    end else
+    begin  
+        hc_name = 'Baker Smith';
+        hc_gallery = '';
+
+        PrepareScientist(sex_male, 10);
+        Baker = CreateHuman;
+        PlaceUnitArea(Baker, StevensSpawn, false);
+        ComTurnXY(Baker, 125, 16);
+    end;
+
+    Gordon = NewCharacter('Gordon');
+    PlaceUnitArea(Gordon, GordonSpawn, false);
+    ComTurnXY(Gordon, 125, 16);
+
+    hc_name = 'Peter McClain';
+    hc_gallery = '';
+
+    PrepareScientist(sex_male, 10);
+    Peter = CreateHuman;
+    PlaceUnitArea(Peter, PeterSpawn, false);
+    ComTurnXY(Peter, 125, 16);
+
+    if TestCharacters('10c_DeltaDoctor') = true then
+    begin
+         DeltaDoctor = PrepareUnit('10c_DeltaDoctor', true);
+         PlaceUnitArea(DeltaDoctor, DeltaSciSpawn, false);
+         ComTurnXY(DeltaDoctor, 125, 16);
+         SetClass(DeltaDoctor, 4);
+    end;
+
+    others13Omega = CreateCharacterSet('13_other_survivors');
+
+    for i in omegaHeroes do
+    begin
+        if FilterAllUnits([[f_side, 1], [f_btype, b_bunker], [f_empty]]) > 0 then
+        begin
+            PlaceHumanInUnit(i, FilterAllUnits([[f_side, 1], [f_btype, b_bunker], [f_empty]])[1]);
+            SetClass(i, 1);
+        end else
+        begin 
+           PlaceUnitArea(i, [AmericanSpawn1, AmericanSpawn2][Rand(1, 2)], false);
+        end;
+    end;
+
+    if others13Omega >= 2 then
+    begin  
+        for i := 1 to others13Omega - 1 do
+        begin
+            if GetSkill(others13Omega[i], 3) < GetSkill(others13Omega[i + 1], 3) then
+            begin
+                mecha = others13Omega[i + 1];
+                SetClass(mecha, 3);
+                PlaceHumanInUnit(mecha, AmControlTow);
+                others13Omega = others13Omega diff mecha;
+
+                for i in FilterUnitsInArea(AmericanBaseArea, [[f_side, 1], [f_type, unit_vehicle], [f_not, [f_linked]]]) do ComLinkTo(i, mecha);
+            end;
+        end;
+    end;
+
+    if others13Omega > 0 then
+    begin
+        for i = 1 to others13Omega do 
+        begin
+            randBuild = [AmLab1, AmLab2, AmLab3, AmFab1, AmFab2, AmBar1, AmBar2][Rand(1, 7)];
+
+            if FilterAllUnits([[f_side, 1], [f_btype, b_bunker], [f_empty]]) > 0 then
+            begin
+                PlaceHumanInUnit(others13Omega[i], FilterAllUnits([[f_side, 1], [f_btype, b_bunker], [f_empty]])[1]);
+                SetClass(others13Omega[i], 1);
+            end else
+            begin
+                PlaceHumanInUnit(others13Omega[i], randBuild);
+                if GetBType(IsInUnit(others13Omega[i])) = b_factory then SetClass(others13Omega[i], 3);
+                if GetBType(IsInUnit(others13Omega[i])) = 4 then SetClass(others13Omega[i], 1);
+                if GetBType(IsInUnit(others13Omega[i])) = b_lab_full then SetClass(others13Omega[i], 1);
+            end;
+        end;
+    end;
+end;
