@@ -1,0 +1,27 @@
+On Contact(side1, side2) Do
+begin
+   if side1 = 1 and side2 = 4 then YouLost('sojusz');
+end;
+
+On BuildingCaptured(building, side, human) Do
+begin
+   if side = 4 then SetSide(building, 4);
+end;
+
+On UnitDestroyed(unit) Do
+var i;
+begin
+   if GetSide(unit) = 1 and GetType(unit) = unit_human then
+   begin
+       unitLost = unitLost + 1;
+      if unit = DeltaDoctor or unit = Gordon or unit = Peter then amSciStatus = 0;
+   end;
+end;
+
+On SiberiteRocketExploded(unit, x, y) Do
+var i;
+begin
+    if siberiteRocketStatus = 0 then
+      for i in FilterAllUnits([[f_side, 3]]) do
+         If GetDistUnitXY(i, x, y) < 25 then siberiteRocketStatus = 1;
+end;

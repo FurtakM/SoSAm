@@ -1,0 +1,79 @@
+Every 0$1 trigger FilterUnitsExceptArea(EscapeArea, [[f_side, 1], [f_type, unit_human]]) = 0 and FilterUnitsInArea(EscapeArea, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_engine, 3]]) = allUnitsLengh and EscapeAvalaible = 1 do
+var i, cargoType, yourVehicles;
+begin
+  
+    if FilterUnitsInArea(EscapeArea, [[f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0 then
+    begin
+        for i in FilterUnitsInArea(EscapeArea, [[f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) do
+        begin
+            cargoType = GetCargoType(i);
+            if GetWeapon(i) = us_cargo_bay then
+            begin
+                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i), cargoType, GetCargo(i, cargoType) ] ];
+            end else
+            begin
+                yourVehicles = yourVehicles ^ [ [GetNation(i), GetChassis(i), GetEngine(i), GetControl(i), GetWeapon(i)] ];
+            end;
+        end;
+
+        SaveVariable(yourVehicles, '15_Vehicles_1');
+
+    end;
+    SaveCargos;
+
+    if siberiteRocketStatus = 1 then AddMedal('med1', 1)
+    else AddMedal('med1', -1);
+
+    if unitLost > 3  and unitLost < 5 then
+    begin
+       AddMedal('med2', 2)
+    end else
+    begin
+       if unitLost > 5 then AddMedal('med2', -1)
+       else AddMedal('med2', 1);
+   end;
+
+   if amSciStatus = 1 then AddMedal('med3', 1)
+   else AddMedal('med3', -1);
+
+   GiveMedals('MAIN');
+
+   RewardPeople(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]));
+
+    EnchancedSaveCharacters(Brown, mission_prefix&'Brown');
+    EnchancedSaveCharacters(Donaldson, mission_prefix&'Donaldson');
+    EnchancedSaveCharacters(Bobby, mission_prefix&'Bobby');
+    EnchancedSaveCharacters(Cyrus, mission_prefix&'Cyrus');
+    EnchancedSaveCharacters(Lisa, mission_prefix&'Lisa');
+    EnchancedSaveCharacters(Frank, mission_prefix&'Frank');
+    EnchancedSaveCharacters(Kikuchi, mission_prefix&'Kikuchi');
+    EnchancedSaveCharacters(Houten, mission_prefix&'Houten');
+    EnchancedSaveCharacters(Gary, mission_prefix&'Gary');
+    EnchancedSaveCharacters(Cornell, mission_prefix&'Cornell');
+    EnchancedSaveCharacters(Denis, mission_prefix&'Denis');
+    EnchancedSaveCharacters(Gladstone, mission_prefix&'Gladstone');
+    EnchancedSaveCharacters(Stevens, mission_prefix&'Stevens');
+    EnchancedSaveCharacters(Baker, mission_prefix&'Baker');
+    EnchancedSaveCharacters(Gordon, mission_prefix&'Gordon');
+    EnchancedSaveCharacters(Peter, mission_prefix&'Peter');
+
+
+    SaveCharacters(FilterAllUnits([[f_ok],[f_side, 1],[f_type,unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]) diff [Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Denis, Houten, Gary, Cornell, Stevens, Baker, Gordon, Peter],'14_other_survivors');
+
+
+    YouWin;
+end;
+
+Export function SaveCargos;
+var i;
+begin
+   for i in FilterUnitsInArea(EscapeArea,[[f_side, 1], [f_control, 1], [f_weapon, us_cargo_bay]]) do resources = resources ^ [GetMultiCargo(i)];
+   SaveVariable(resources, '15_ResourcesInCargo_1');
+end;
+
+Export Function GetMultiCargo(cargo_bay);
+var i;
+begin
+  result := [GetCargo(cargo_bay, mat_cans), GetCargo(cargo_bay, mat_oil),GetCargo(cargo_bay, mat_siberit)];
+End;
+
