@@ -68,7 +68,6 @@ begin
     end;
 
 end;
-
 Export Function SortBySkill(list, asc);
 var i, j, tmp;
 begin
@@ -79,13 +78,13 @@ result := [];
 
 for i in list do
     begin
-    tmp :=  ( (GetSkill(i, 1) + GetSkill(i, 2) + GetSkill(i, 3) + GetSkill(i, 4))  div 4);
+    tmp := ((GetSkill(i, 1) + GetSkill(i, 2) + GetSkill(i, 3) + GetSkill(i, 4)) div 4);
 
     if not result then
        result := [[i, tmp]]
      else
       begin
-       if result[result][2] < tmp then
+       if result[result][2] <= tmp then
           result := Insert(result, result+1, [i, tmp])
        else
        for j = 1 to result do
