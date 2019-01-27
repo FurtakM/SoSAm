@@ -25,7 +25,7 @@ Ruscy zalali Warszawe dorszem wylowionym na japonskich kutrach zdobytych na japo
 {
     
 Propaganda i dezinformacja . To Ukraina zbrojnie przejela Rosyjskie kutry 
-rybackie i aresztowal‚a zaloge jednego z nich . Rosja zostala zmuszona
+rybackie i aresztowala zaloge jednego z nich . Rosja zostala zmuszona
 prowokacjami do interwencji . Szczytem glupoty jest zabranianie latania 
 nad swoim mostem . Obce okrety Rosja musi zatapiac . Chcecie wojny
 Pierwsi oczywiscie rusza nasi na tych starych skorupach , jak sie zacznie wojna to dadza dyla do Anglii a my zostaniemy jako mieso armatnie dla Rosjan i siekierowe dla ukraincow
@@ -50,7 +50,7 @@ Export NewJMMVeh, NewJMMGirlVeh;
 Export Platonov, Yakotich, Roth, Burlak, Kurt, Omar, Heike; // Enemy commanders
 Export Vsevolod, sewiVeh; // Sewi
 Export Kozlov;  // Kozlov
-Export Kovalyuk; // Kowaliuk
+Export Kovalyuk, Oblukov, Bystrov, Fadeev, Gleb, Petrosyan, Petrovova, Kuzmov, Mikhail, Furmanov, Belkov; // Enemy heroes
 
 Export LegionFriend, LegionFriendStatus;
 Export legionVehicles;
@@ -67,6 +67,8 @@ Export allianceControler;
 Export amUnitsSkillTab, amUnitsAttack, amUnitsForJMM;
 Export powellBuildBase;
 Export powellAttacks;
+Export powellUnloadCargo;
+Export powellWarm;
 Export startAttacks;
 Export powellVeh, centerPowell, powBomb;
 
@@ -79,7 +81,12 @@ Export LegionAI, AllianceAI, RussianAI;
 Export LegionTarget, AllianceTarget, RussianTarget;
 Export russianEscape, allianceEscape;
 
+Export legionDestroyedBuilds, russianDestroyedBuilds, allianceDestroyedBuilds;
+
 Export timerStatus, timeAction;
+
+Export unitLost;
+Export legionRocket;
 
 Export missionStage; 
 
@@ -108,14 +115,20 @@ begin
 
     startAttacks = 0; // magenta ru attacks on/off
     powellBuildBase = 0; // 0 - off, 1 - start
+    powellUnloadCargo = 0;
     powellAttacks = 0;
     centerPowell = 0;
+    powellWarm = 0;
 
     LegionFriendStatus = 0; // 0 - die, 1 - in american
     
     legionVehicles = [];
     russianVehicles = [];
     allianceVehicles = [];
+
+    legionDestroyedBuilds = [];
+    russianDestroyedBuilds = [];
+    allianceDestroyedBuilds = [];
 
     ruVehicles = [];
     ruBehMehs = []; // Tab with ru mehs to build behemoth
@@ -124,6 +137,8 @@ begin
     missionStage = 0; // 0 - prologue, 1 - after Powell death, 2 - Joan or Sewi, 3 - Stevens,  4 - Roth, 5 - ru behs, 6 - Ru rocket,7 - Arabian 8 - End game
 
     behemothStatus = 0; // 0 - no detect, 1 - detected before finish
+
+    unitLost = 0;
 
     LegionAI = 1;
     AllianceAI = 1;
