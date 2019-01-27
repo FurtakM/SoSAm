@@ -8,7 +8,7 @@ if FilterAllUnits([[f_side, 8], [f_type, unit_human]]) > 1 then RussianTarget = 
 else RussianTarget = 1;
 
 if FilterAllUnits([[f_side, 8], [f_type, unit_human]]) > 1 then AllianceTarget = [1, 3, 8][Rand(1, 3)]
-else RussianTarget = [1, 3][Rand(1, 2)];
+else AllianceTarget = [1, 3][Rand(1, 2)];
 
 end;
 
@@ -55,7 +55,7 @@ AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 
 AddComConstruct(AmFact, us_morphling, engine_siberite, control_manual, 6);
 end;
 
-Every 1 trigger IsInArea(PowellCargo, CargoParking) do
+Every 1 trigger IsInArea(PowellCargo, CargoParking) and powellUnloadCargo = 1 do
 begin
   ComExitVehicle(UnitsInside(PowellCargo));
   ComUpgrade(PowellDepot);
@@ -66,9 +66,10 @@ end;
 Every 0$1 trigger legionAI = 1 do 
 begin
     enable;
-    RepairBuilding(8, ArDep2, LegionBaseArea);
+    RepairAndRebuildBase(8, ArDep2, LegionBaseArea, legionDestroyedBuilds);
     HealUnitInBase(8, LegionHealArea, LegionBaseArea, [ArLab1]);
     AttackNearBuildings(8, 1);
+    EnterBunkerOrBarrack(8, LegionBaseArea);
 end;
 
 //Every 0$1 trigger legionAI = 1 and [IsDead(ArDep2) or IsDying(ArDep2) or GetSide(ArDep2) = 1] and [IsDead(ArDep2) or  IsDying(ArDep1) or GetSide(ArDep1) = 1] do DefendDepot(8, ArDep2);
@@ -82,40 +83,51 @@ end;
 Every 0$1 trigger legionAI = 1 and missionStage >=1 and LegionVehicles = [5, 6, 7][Difficulty] do 
 begin
     enable;
-    AttackVehicles(LegionTarget, LegionVehicles);
+    AttackVehicles(LegionTarget, 1);
+end;
+
+// Magenta ru
+Every 0$1 do
+begin
+enable;
+TimeLapsersAI(6, 1);
 end;
 
 // Russian
 Every 0$1 trigger RussianAI = 1 do 
 begin
     enable;
-    RepairBuilding(3, RuDep1, RussianBaseArea);
+    RepairAndRebuildBase(3, RuDep1, RussianBaseArea, russianDestroyedBuilds);
     HealUnitInBase(3, RussianHealArea, RussianBaseArea, [RusLab1, RusLab2]);
     AttackNearBuildings(3, 1);
+    TimeLapsersAI(3, RussianTarget);
+    EnterBunkerOrBarrack(3, RussianBaseArea);
 end;
 
 Every 3$0 trigger RussianAI = 1 and missionStage >= 3 and RussianVehicles = [] and IsOk(RusFact2) and GetSide(RusFact2) = 3 and IsOk(RusFact1) and GetSide(RusFact1) = 3 do
 begin
     enable;
-    BuildingVehicle(3, RusFact1, [3, 4, 5][Difficulty], [45, 46, 47, 49], 3, 3, 24);
-    BuildingVehicle(3, RusFact2, [3, 4, 5][Difficulty], [45, 46, 47, 49], 3, 3, 24);
+    BuildingVehicle(3, RusFact1, [4, 5, 6][Difficulty], [45, 46, 47, 49], 3, 3, 24);
+    BuildingVehicle(3, RusFact2, [4, 5, 6][Difficulty], [45, 46, 47, 49], 3, 3, 24);
 end;
 
-Every 0$1 trigger RussianAI = 1 and missionStage >=3 and RussianVehicles = [6, 8, 10][Difficulty] do
+Every 0$1 trigger RussianAI = 1 and missionStage >=3 and RussianVehicles = [8, 10, 12][Difficulty] do
 begin
     enable;
-    ComEnterUnit(FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_not, [f_hastask]]]), [rutp1, rutp2][Rand(1, 2)]);
+    ComEnterUnit(FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_not, [f_weapon, 48]], [f_not, [f_hastask]]]), [rutp1, rutp2][Rand(1, 2)]);
     wait(0$20);
-    AttackVehicles(RussianTarget, UnitFilter(RussianVehicles, [f_or, [f_weapon, 45], [f_weapon, 46], [f_weapon, 47]]));
+    AttackVehicles(RussianTarget, 2);
 end;
 
 // Alliance
 Every 0$1 trigger AllianceAI = 1 do 
 begin
     enable;
-    RepairBuilding(8, AllDep, AllianceBaseArea);
-    HealUnitInBase(8, AllianceHealArea, AllianceBaseArea, [AllLabA, AllLabR1, AllLabR2]);
-    AttackNearBuildings(8, 1);
+    RepairAndRebuildBase(7, AllDep, AllianceBaseArea, allianceDestroyedBuilds);
+    HealUnitInBase(7, AllianceHealArea, AllianceBaseArea, [AllLabA, AllLabR1, AllLabR2]);
+    AttackNearBuildings(7, 1);
+    TimeLapsersAI(7, AllianceTarget);
+    EnterBunkerOrBarrack(7, AllianceBaseArea);
 end;
 
 Every 3$0 trigger AllianceAI = 1 and missionStage >= 4 and AllianceVehicles = [] and IsOk(Allfab1) and GetSide(Allfab1) = 7 and IsOk(Allfab2) and GetSide(Allfab2) = 7 do
@@ -129,9 +141,24 @@ Every 0$1 trigger AllianceAI = 1 and missionStage >=4 and AllianceVehicles = [5,
 var i;
 begin
     for i in AllianceVehicles do TeleportUnit(i, 117, 112, 10, True);
-    AttackVehicles(AllianceTarget, AllianceVehicles);
+    AttackVehicles(AllianceTarget, 3);
     enable;
 end;
+
+Every 3$0 trigger AllianceAI = 1 and missionStage >=4 do
+var tmp;
+begin
+     enable;
+
+     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_siberite_mine], [f_btype, b_siberite_power], [f_btype, 21]]]);
+     tmp = tmp ^ FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_engine, 3]]);
+
+     if tmp = [] then exit;
+
+     if tmp > 0 then SetLives(tmp[Rand(1, tmp)], 0);
+
+end;
+
 
 // Remote vehs legion and alliance
 Every 0$1 trigger LegionAI = 1 and FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_not, [f_linked]]]) > 0 do

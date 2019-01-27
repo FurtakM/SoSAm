@@ -63,7 +63,8 @@ begin
     uc_side = 4;
     Powell = PrepareUnit('Powell', false);
 
-    PlaceUnitXYR(Powell, 47, 63, 5, false);
+    PlaceUnitXYR(Powell, 42, 62, 5, false);
+    ComTurnXY(Powell, 43, 63);
 end;
 
 Export function PrepareHeroesFromEpsilon;
@@ -252,6 +253,10 @@ begin
             vc_engine = vehicles[i][3];
             vc_control = vehicles[i][4];
             vc_weapon = vehicles[i][5];
+
+            if vc_weapon = 8 then vc_weapon = 9
+            else vc_weapon = vehicles[i][5];
+
             vc_fuel_battery = 40;
 
             veh = CreateVehicle;

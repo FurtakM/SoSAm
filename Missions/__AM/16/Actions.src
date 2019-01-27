@@ -63,7 +63,6 @@ begin
 
     ComExitVehicle(JMM);
 
-
     repeat
         wait(0$1);
         ComMoveUnit(JMM, Powell);
@@ -130,22 +129,23 @@ begin
             ComTurnUnit(JMM, Joan);
             ComTurnUnit(Joan, JMM);
             Say(Joan, 'D3W-Joan-1');
+            Say(JMM, 'D3W-JMM-1');
         end;
 
         2:begin
             ComTurnUnit(JMM, Lisa);
             ComTurnUnit(Lisa, JMM);
             Say(Lisa, 'D3W-Lisa-1');
+            Say(JMM, 'D3W-JMM-1');
         end;
 
         3:begin
             ComTurnUnit(JMM, Connie);
             ComTurnUnit(Connie, JMM);
             Say(Connie, 'D3W-Con-1');
+            Say(JMM, 'D3W-JMM-1');
         end;
     end;
-
-    Say(JMM, 'D3W-JMM-1');
 
     people = 0;
 
@@ -278,7 +278,36 @@ begin
 
     ComAgressiveMove(FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]), 59, 21);
 
-end; 
+end;
+
+// Powells warmings
+Every 0$01 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) do
+begin
+    enable;
+
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]), 70, 104);
+    if powellWarm = 0 then begin Say(Powell, 'DBack1-Pow-1'); powellWarm = powellWarm + 1; end;
+    if powellWarm = 1 then begin Say(Powell, 'DBack2-Pow-1'); powellWarm = powellWarm + 1; end;
+    if powellWarm = 2 then begin Say(Powell, 'DBack3-Pow-1'); YouLost('Dismissed'); end;
+    InGameOff;
+    wait(0$6);
+end;
+
+Every 0$01 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) do
+begin
+    enable;
+
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]), 71, 63);
+    if powellWarm = 0 then begin Say(Powell, 'DBack1-Pow-1'); powellWarm = powellWarm + 1; end;
+    if powellWarm = 1 then begin Say(Powell, 'DBack2-Pow-1'); powellWarm = powellWarm + 1; end;
+    if powellWarm = 2 then begin Say(Powell, 'DBack3-Pow-1'); YouLost('Dismissed'); end;
+    InGameOff;
+    wait(0$6);
+end;
 
 // First Powell attack - block attack troops
 Every 0$1 trigger powellAttacks = 1  do
@@ -328,7 +357,7 @@ begin
         AddComChangeProfession(amUnitsAttack[i], 1);
         AddComExitBuilding(amUnitsAttack[i]);
         wait(0$1);
-        AddComMoveXY(amUnitsAttack[i], 45 + i, 67);
+        AddComMoveXY(amUnitsAttack[i], 43 + i, 66);
         AddComTurnUnit(amUnitsAttack[i], Powell);
     end;
 
@@ -462,9 +491,8 @@ begin
 
     Say(Powell, 'D6b-Pow-1b');
     Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[1],'D6b-ArSol1-1');
-    Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[1],'D6b-ArSol2-1');
+    Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[2],'D6b-ArSol2-1');
 
-    wait(0$3);
     Say(Powell, 'D6b-Pow-2');
     
     repeat
@@ -483,7 +511,7 @@ end;
 Every 0$3 trigger IsDead(ArRuFact) and powellAttacks = 3 do
 var i, tmp, tmp1, tmp2;
 begin
-    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_sex, 1]]);
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human],[f_sex, 1]]);
 
     CenterOnXY(49, 66);
     Say(tmp[1], 'D6c-Sol3-1');
@@ -507,13 +535,13 @@ begin
 
     for i := 1 to tmp2 do
     begin
-        ComMoveXY(tmp2[i], 43 + i, 65);
+        ComMoveXY(tmp2[i], 41 + i, 63);
         AddComTurnUnit(tmp2[i], JMM);
     end;
 
     for i := 1 to tmp1 do
     begin
-        ComMoveXY(tmp1[i], 43 + i, 64);
+        ComMoveXY(tmp1[i], 41 + i, 64);
         AddComTurnUnit(tmp1[i], JMM);
     end;
 
@@ -525,7 +553,7 @@ begin
     until GetDistUnitXY(JMM, 48, 68) < 2;
 
     wait(0$2);
-    Say(tmp[2], 'D6c-Sol3-2');
+    Say(tmp[1], 'D6c-Sol3-2');
     Say(JMM, 'D6c-JMM-2');
 
     Video(false);
@@ -574,6 +602,7 @@ begin
     PlaceUnitArea(Kozlov, KozlovSpawn, false);
     SetClass(Kozlov, 2);
     ComBuild(Kozlov, b_workshop, 78, 12, 3);
+    ChangeMissionObjectives('Mlegion');
 end; 
 
 // Legion surrender
@@ -593,8 +622,65 @@ begin
     Say(JMM, 'D13-JMM-4');
     DialogueOff;
 
-    SetSide(FilterAllUnits([f_side, 8]), 1);
+    SetSide(FilterAllUnits([[f_side, 8], [f_ok]]), 1);
+    SetLives(FilterAllUnits([[f_side, 8], [f_not, [f_lives, 250]]]), 0);
+    ChangeMissionObjectives('MlegionOut');
+
+    SetAttitude(8, 1, att_friend, true);
+
+    PlaceUnitArea(LegionFriend, LegFriendSpawn, false);
+    wait(0$1);
+    ComMoveUnit(LegionFriend, JMM);
 end;
+
+Every 0$1 trigger See(1, LegionFriend) do
+var dec;
+begin
+
+     CenterNowOnUnits(LegionFriend);
+     DialogueOn;
+     Say(JMM, 'D14-JMM-1');
+     Say(LegionFriend, 'D14-Friend-1');
+     Say(JMM, 'D14-JMM-2');
+     Say(LegionFriend, 'D14-Friend-2');
+     Say(JMM, 'D14-JMM-3');
+     Say(LegionFriend, 'D14-Friend-3');
+     DialogueOff;
+
+     dec = Query('Q14');
+
+     if dec = 1 then
+     begin
+       DialogueOn;
+       Say(JMM, 'D14a-JMM-1');
+       DialogueOff;
+       SetSide(LegionFriend, 1);
+     end;
+
+     if dec = 2 then
+     begin
+       DialogueOn;
+       Say(JMM, 'D14b-JMM-1');
+       DialogueOff;
+       ComMoveToArea(LegionFriend, FriendEscapeArea);
+     end;
+
+     if dec = 3 then
+     begin
+       DialogueOn;
+       Say(JMM, 'D14c-JMM-1');
+       Say(LegionFriend, 'D14c-Friend-1');
+       Say(JMM, 'D14c-JMM-2');
+       DialogueOff;
+       SetAttitude(8, 1, att_enemy, true);
+       ComMoveToArea(LegionFriend, FriendEscapeArea);
+     end;
+
+end;
+
+// Remove legoion friend from map
+Every 0$1 trigger IsInArea(LegionFriend, FriendEscapeArea) and GetSide(LegionFriend) = 8 do RemoveUnit(LegionFriend);
+
 
 // Kappa support or attack
 Every 0$1 trigger timeAction >= 15$02 do
@@ -677,7 +763,7 @@ begin
     end;
 
     DialogueOff;
-    SetTech(1, tech_SibFiss, state_enabled);
+    SetTech(tech_SibFiss, 1, state_enabled);
 end;
 
 // Roth and start Alliance attack
@@ -726,6 +812,30 @@ begin
 
 end;
 
+// Alliance surrender
+Every 0$1 trigger FilterAllUnits([[f_side, 7], [f_type, unit_human]]) <= [20, 18, 15][Difficulty] do
+begin
+     AllianceAI = 0;
+     AllianceEscape = 1;
+     SetAttitude(7, 1, att_friend, true);
+     DialogueOn;
+     Say(JMM, 'DAb-JMM-1');
+     DialogueOff;
+     ComExitBuilding(FilterAllUnits([[f_side, 7], [f_type, unit_human]]));
+     wait(0$1);
+     ComMoveToArea(FilterAllUnits([[f_side, 7], [f_type, unit_human]]), AllianceEscapeArea);
+end;
+
+// Remove Alliance units
+Every 0$1 trigger AllianceEscape = 1 and FilterUnitsInArea(AllianceEscapeArea, [[f_side, 7], [f_type, unit_human]]) do
+var i;
+begin
+enable;
+     for i in FilterUnitsInArea(AllianceEscapeArea, [[f_side, 7], [f_type, unit_human]]) do
+         RemoveUnit(i);
+end;
+
+
 // Ru behemoth
 Every 0$1 trigger timeAction >= 45$02 do 
 begin
@@ -773,7 +883,7 @@ begin
         DialogueOff;
         wait(0$15);
         Say(Platonov, 'D18-Pla-1');
-        SiberiteExplosion(GetX(JMM), GetY(JMM));
+        ComAttackPlace(rurocket, GetX(JMM), GetY(JMM));
     end;
 
     if dec = 4 then
@@ -851,7 +961,7 @@ begin
 
     wait(0$30);
     Say(Platonov, 'D18-Pla-1');
-    SiberiteExplosion(GetX(JMM), GetY(JMM));
+    ComAttackPlace(rurocket, GetX(JMM), GetY(JMM));
 end;
 
 // Traitor detected
@@ -886,13 +996,13 @@ begin
         Say(JMM, 'D16b-JMM-1');
         wait(0$15);
         Say(Platonov, 'D18-Pla-1');
-        SiberiteExplosion(GetX(JMM), GetY(JMM));
+        ComAttackPlace(rurocket, GetX(JMM), GetY(JMM));
     end;
 
 end;
 
 // See behemoth
-Every 0$1 trigger missionStage >= 5 do 
+Every 0$3 trigger missionStage >= 5 do
 var i;
 begin
     enable;
@@ -905,10 +1015,8 @@ begin
             DialogueOn;
             Say(JMM, 'D17a-JMM-1');
             DialogueOff;
-            behemothStatus = 0;
+            behemothStatus = 1;
             ChangeMissionObjectives('M4a');
-            wait(0$2);
-            Say(Platonov, 'D18-Pla-1');
         end;
     end;
 
@@ -920,8 +1028,10 @@ begin
             DialogueOn;
             Say(JMM, 'D17b-JMM-1');
             DialogueOff;
-            behemothStatus = 1;
+            behemothStatus = 0;
             ChangeMissionObjectives('M4b');
+            wait(0$2);
+            Say(Platonov, 'D18-Pla-1');
         end;
     end;
 end;
@@ -966,9 +1076,20 @@ begin
     wait(0$3);
 
     arabianArmy = FilterAllUnits([[f_side, 2], [f_type, unit_human]]) diff FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 4]]);
+    arabianArmy = arabianArmy ^ FilterAllUnits([[f_side, 2], [f_type, unit_vehicle]]);
 
     ComAgressiveMove(arabianArmy, 178, 66);
+    wait(0$4);
     ComContaminate(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 4]]), 177, 69);
+end;
+
+// Remove Ru units
+Every 0$1 trigger russianEscape = 1 and FilterUnitsInArea(RussianEscapeArea, [[f_side, 3], [f_type, unit_human]]) do
+var i;
+begin
+enable;
+     for i in FilterUnitsInArea(RussianEscapeArea, [[f_side, 3], [f_type, unit_human]]) do
+         RemoveUnit(i);
 end;
 
 Function LaunchMines;
@@ -1004,31 +1125,4 @@ begin
     Say(JMM, 'D19a-JMM-1');
     Say(Heike, 'D19a-Hke-1');
     DialogueOff;
-end;
-
-// Koniec gry :)
-Every 0$1 trigger missionStage = 7 and FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 and FilterAllUnits([[f_side, 2], [f_type, unit_vehicle], [f_ok]]) = 0 do
-begin
-    DialogueOn;
-    CenterNowOnUnits(JMM);
-    Say(JMM, 'D20-JMM-1');
-    if IsOK(Joan) then Say(Joan, 'D20-Joan-1');
-    if IsOk(Lisa) then Say(Lisa, 'D20-Lisa-1');
-    if IsOk(Donaldson) then Say(Donaldson, 'D20-Don-1');
-    if IsOK(Cornel) then Say(Cornel, 'D20-Corn-1');
-    if IsOk(Denis) then Say(Denis, 'D20-Den-1');
-    if IsOk(Bobby) then Say(Bobby, 'D20-Bobby-1');
-    if IsOk(Gladstone) then Say(Gladstone, 'D20-Glad-1');
-    if IsOk(Cyrus) then Say(Cyrus, 'D20-Cyrus-1');
-    if IsOk(Stevens) then Say(Stevens, 'D20-Huck-1');
-    if IsOk(Brown) then Say(Brown, 'D20-Brown-1');
-    if IsOk(Gary) then Say(Gary, 'D20-Gary-1');
-    if IsOk(Connie) then Say(Connie, 'D20-Con-1');
-    if IsOk(Kurt) then Say(Kurt, 'D20-Kurt-1');
-    if IsOk(Kikuchi) then Say(Kikuchi, 'D20-Yam-1');
-    if IsOk(Frank) then Say(Frank, 'D20-Frank-1');
-    DialogueOff;
-
-    GiveMedals('MAIN');
-    YouWin;
 end;

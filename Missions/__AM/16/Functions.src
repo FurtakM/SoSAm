@@ -360,22 +360,24 @@ If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true th
 end;
 
 
-Export function RepairBuilding(side, building, area);
+Export function RepairAndRebuildBase(side, building, area, destroyedBuildings);
 var buildings_list, i,engineerOkInside, engineerOkOutside, j;
 begin
 
-
-  engineerOkInside = UnitFilter(UnitsInside(building), [f_class, 2]);
+  engineerOkInside = UnitsInside(building) diff [Kozlov];
   engineerOkOutside = FilterUnitsInArea(area,[[f_side, side], [f_class, 2], [f_lives, 750], [f_not, [f_inside]]]) diff [Kozlov];
   buildings_list = FilterUnitsInArea(area,[[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
 
   if not buildings_list and not FilterAllUnits([[f_side, side], [f_class, 2], [f_lives, 250]]) then exit;
 
-  if buildings_list > 0 and engineerOkInside then ComExitBuilding(UnitFilter(engineerOkInside, [f_class, 2]));
+  if buildings_list > 0 and engineerOkInside then ComExitBuilding(engineerOkInside);
 
   if buildings_list > 0  and engineerOkOutside > 0 then ComRepairBuilding(engineerOkOutside, buildings_list[1]);
 
-  if buildings_list = 0 and engineerOkOutside > 0 then ComEnterUnit(engineerOkOutside, building);
+  if buildings_list = 0 and destroyedBuildings = 0 and engineerOkOutside > 0 then ComEnterUnit(engineerOkOutside, building);
+
+  if engineerOkOutside > 0 and buildings_list = 0 and destroyedBuildings > 0  then ComBuild(engineerOkOutside, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
+
 END;
 
 Export function HealUnitInBase(side, healArea, baseArea, build);
@@ -420,6 +422,33 @@ begin
      ComAgressiveMove(tmpTab, GetX(build), GetY(build));
 end;
 
+Export function EnterBunkerOrBarrack(side, area);
+var i,j, soldiers_list, turretList, temp, barrackList, insideUnits;
+begin
+
+    soldiers_list = FilterUnitsInArea(area, [[f_side, side], [f_outside], [f_lives, 700],  [f_not, [f_hastask]], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]]);
+    turretList = FilterUnitsInArea(area, [[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
+    barrackList = FilterUnitsInArea(area, [[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
+
+    if barrackList > 0 then
+    begin
+        if turretList = 0 then
+        begin
+            if soldiers_list > 0 then ComEnterUnit(soldiers_list, barrackList[Rand(1, barrackList)]);
+        end else
+        begin
+            for i in barrackList do
+            begin
+                insideUnits = UnitsInside(i);
+                if insideUnits > 0 then ComEnterUnit(insideUnits[1], turretList[1]);
+                if soldiers_list > 0 then ComEnterUnit(soldiers_list[1], turretList[1]);
+            end;
+        end;
+
+    end;
+
+end;
+
 Export function AttackNearBuildings(side, enemySide);
 var i, j, turretsList, enemyBuildings;
 begin
@@ -450,21 +479,59 @@ begin
 
 END;
 
-Export function AttackVehicles(enemySide, vehTab);
+Export function AttackVehicles(enemySide, oponent);
 var i, j, vehiclesOK, target1, target2;
 begin
-    repeat
-        wait(0$1);
-            for j in vehTab do
-            begin
-                target1 := NearestUnitToUnit(FilterAllUnits([f_side, enemySide]), j);
-                target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, enemySide], [f_btype, b_bunker], [f_occupied]]]), j);
 
-                If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
-                else ComAttackUnit(j, target2);
-            end;
+    if oponent = 1 then
+    begin
+        repeat
+            wait(0$1);
+                for j in legionVehicles do
+                begin
+                    target1 := NearestUnitToUnit(FilterAllUnits([f_side, enemySide]), j);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, enemySide], [f_btype, b_bunker], [f_occupied]]]), j);
 
-    until vehTab = 0;
+                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                    else ComAttackUnit(j, target2);
+                end;
+
+        until legionVehicles = [];
+    end;
+
+    if oponent = 2 then
+    begin
+        repeat
+            wait(0$1);
+                for j in russianVehicles do
+                begin
+                    target1 := NearestUnitToUnit(FilterAllUnits([f_side, enemySide]), j);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, enemySide], [f_btype, b_bunker], [f_occupied]]]), j);
+
+                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                    else ComAttackUnit(j, target2);
+                end;
+
+        until russianVehicles = [];
+    end;
+
+    if oponent = 3 then
+    begin
+        repeat
+            wait(0$1);
+                for j in allianceVehicles do
+                begin
+                    target1 := NearestUnitToUnit(FilterAllUnits([f_side, enemySide]), j);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, enemySide], [f_btype, b_bunker], [f_occupied]]]), j);
+
+                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                    else ComAttackUnit(j, target2);
+                end;
+
+        until allianceVehicles = [];
+    end;
+
+
 end;
 
 Export Function IntBazooka(side);
@@ -492,18 +559,21 @@ begin
         end;
 End;
 
-{Export function TimeLapsersAI(side);
-var j, nearUnit;
+Export function TimeLapsersAI(side, enemy);
+var j, nearUnit, vehs;
 begin
-    if russianTanks >= 1 and russianTimeLapsers >= [1, 2, 2][Difficulty] then
-    repeat
-        wait(0$3);
-        if russianTimeLapsers > 0 then
-            for j in UnitFilter(russianTimeLapsers, [f_not, [f_hastask]]) do
-            begin
-                nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1]]), j);
-                ComMoveXY(j, GetX(nearUnit), GetY(nearUnit));
-            end;
+    if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_weapon, 49]]) = 0 then exit;
 
-    until russianTimeLapsers = 0;
-end;}
+    if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_weapon, 49]]) > 0 then
+    repeat
+        vehs = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_weapon, 49]]);
+        wait(0$3);
+
+        for j in UnitFilter(vehs, [f_not, [f_hastask]]) do
+        begin
+            nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, enemy], [f_or, [f_type, unit_human], [f_not, [f_empty]]]]), j);
+            ComMoveXY(j, GetX(nearUnit), GetY(nearUnit));
+        end;
+
+    until vehs = 0;
+end;

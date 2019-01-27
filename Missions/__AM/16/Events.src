@@ -5,7 +5,10 @@ begin
         ComTransport(PowellCargo, PowellDepot, 1);
         AddComMoveXY(PowellCargo, 68, 100);
         AddComUnload(PowellCargo);
-        AddComMoveXY(PowellCargo, 41, 61);
+        AddComMoveXY(PowellCargo, 48, 69);
+        AddComMoveXY(PowellCargo, 39, 61);
+        wait(0$10);
+        powellUnloadCargo = 1;
     end;
 end;
 
@@ -29,11 +32,14 @@ begin
 
     if GetSide(building) = 8 then
     begin
-        if FilterAllUnits([[f_side, 8], [f_btype, b_workshop], [f_nation, 3]]) = 1 and GetNation(building) = 3 then
+        if GetNation(building) = 3 then
         begin
-            ComBuild(Kozlov, b_ext_siberium, 74, 12, 3);
-            AddComEnterUnit(Kozlov, FilterAllUnits([[f_side, 4], [f_btype, b_factory], [f_nation, 3]])[1]);
-            ComConstruct(FilterAllUnits([[f_side, 4], [f_btype, b_factory], [f_nation, 3]])[1], ru_heavy_tracked, 3, 3, ru_siberium_rocket);
+            AddComMoveXY(Kozlov, 73, 16);
+            AddComBuild(Kozlov, b_ext_siberium, 74, 12, 1);
+            wait(0$2);
+            AddComEnterUnit(Kozlov, FilterAllUnits([[f_side, 8], [f_btype, b_factory], [f_nation, 3]])[1]);
+            AddComChangeProfession(Kozlov, 3);
+            AddComConstruct(FilterAllUnits([[f_side, 8], [f_btype, b_factory], [f_nation, 3]])[1], ru_heavy_tracked, 3, 3, ru_siberium_rocket);
         end;
     end;
 
@@ -57,6 +63,44 @@ begin
     begin
         if GetBType(building) = b_workshop then ComUpgrade(building);
     end;
+
+
+    if GetSide(building) = 3 then
+    begin
+        russianDestroyedBuilds := Delete( russianDestroyedBuilds, 1);
+        russianDestroyedBuilds := Delete( russianDestroyedBuilds, 1);
+        russianDestroyedBuilds := Delete( russianDestroyedBuilds, 1);
+        russianDestroyedBuilds := Delete( russianDestroyedBuilds, 1); 
+    end;
+
+    if GetSide(building) = 8 then
+    begin
+        legionDestroyedBuilds := Delete( legionDestroyedBuilds, 1);
+        legionDestroyedBuilds := Delete( legionDestroyedBuilds, 1);
+        legionDestroyedBuilds := Delete( legionDestroyedBuilds, 1);
+        legionDestroyedBuilds := Delete( legionDestroyedBuilds, 1); 
+    end;
+
+    if GetSide(building) = 7 then
+    begin
+        allianceDestroyedBuilds := Delete( allianceDestroyedBuilds, 1);
+        allianceDestroyedBuilds := Delete( allianceDestroyedBuilds, 1);
+        allianceDestroyedBuilds := Delete( allianceDestroyedBuilds, 1);
+        allianceDestroyedBuilds := Delete( allianceDestroyedBuilds, 1); 
+    end;
+
+    if GetSide(building) = 3 then
+    begin
+       if GetBType(building) = b_bunker or GetBType(building) = b_turret then
+        AddComPlaceWeapon(building, [46, 47, 45][Rand(1, 3)]);
+    end;
+
+    if GetSide(building) = 8 and GetBType(building) = b_bunker then
+    begin
+        AddComPlaceWeapon(building, [28, 27][Rand(1, 2)]);
+    end;
+
+
 end;
 
 On EnterBuilding(building, human) Do
@@ -70,8 +114,11 @@ begin
 end;
 
 On VehicleConstructed(vehicle, building) Do
+var legionBomb;
 begin
     if vehicle = powellVeh then ComExitVehicle(UnitsInside(vehicle));
+
+    if GetSide(vehicle) = 4 then AddComMoveXY(vehicle, 58, 63);
 
     if GetSide(vehicle) = 4 and powellAttacks = 2 and GetWeapon(vehicle) = us_heavy_gun then
     begin
@@ -91,6 +138,34 @@ begin
     begin
         legionVehicles = legionVehicles ^ vehicle;
         ComLinkTo(vehicle, arControler[1]);
+    end;
+
+    if GetSide(vehicle) = 8 and GetNation(vehicle) = 3 then
+    begin
+        ChangeMissionObjectives('MlegionDel');
+        legionBomb = rand(1, 2);
+        legionRocket = vehicle;
+        DialogueOn;
+
+        if legionBomb = 1 then
+        begin
+            if Kurt then Say(Kurt, 'D12-Kurt-1')
+            else Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[2], 'D12-Kurt-1');
+            DialogueOff;
+            wait(0$3);
+            AddComAttackPlace(legionRocket, GetX(JMM), GetY(JMM));
+        end;
+
+        if legionBomb = 2 then
+        begin
+            if Kurt then Say(Kurt, 'D12a-Kurt-1')
+            else Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[2], 'D12a-Kurt-11');
+            SayRadio(Roth, 'D12a-Roth-1');
+            DialogueOff;
+            ComAttackUnit(legionRocket, RuDep2);
+        end;
+       
+
     end;
 
     if GetSide(vehicle) = 3 and GetNation(vehicle) = 3 and GetType(vehicle) = unit_vehicle then
@@ -126,6 +201,9 @@ end;
 On UnitDestroyed(unit) Do
 var i;
 begin
+
+     if GetSide(unit) = 1 and GetType(unit) = unit_human then unitLost = unitLost + 1;
+
     if GetSide(unit) = 4 and GetType(unit) = unit_human then
     begin
         for i in amUnitsAttack do 
@@ -150,4 +228,145 @@ begin
             if i = unit then AllianceVehicles = AllianceVehicles diff [unit];
     end;
 
+    if GetSide(unit) = 3 and GetType(unit) = unit_building then
+    begin
+        
+        if GetBType(unit) = 31 or  GetBType(unit) = 32 or  GetBType(unit) = 36 or  GetBType(unit) = 0 or  GetBType(unit) = 24 or  GetBType(unit) = 17 or  GetBType(unit) = 25 or  GetBType(unit) = 19 or  GetBType(unit) = 20 or  GetBType(unit) = 18 or  GetBType(unit) = 21 or  GetBType(unit) = 23 or  GetBType(unit) = 16  or  GetBType(unit) = 6 or  GetBType(unit) = 29 or  GetBType(unit) = 26 or  GetBType(unit) = 30 or  GetBType(unit) = 28 or  GetBType(unit) = 27 or  GetBType(unit) = 33 or  GetBType(unit) = 2 or GetBType(unit) = 4 then
+        begin
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetBType(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetX(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetY(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 1  then
+        begin
+            russianDestroyedBuilds = russianDestroyedBuilds ^  0;
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetX(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetY(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 3  then
+        begin
+            russianDestroyedBuilds = russianDestroyedBuilds ^  2;
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetX(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetY(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 5  then
+        begin
+            russianDestroyedBuilds = russianDestroyedBuilds ^  4;
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetX(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetY(unit);
+            russianDestroyedBuilds = russianDestroyedBuilds ^  GetDir(unit);
+        end;
+    end;
+
+    if GetSide(unit) = 8 and GetType(unit) = unit_building and GetNation(unit) = 2 then
+    begin
+        
+        if GetBType(unit) = 31 or  GetBType(unit) = 32 or  GetBType(unit) = 36 or  GetBType(unit) = 0 or  GetBType(unit) = 24 or  GetBType(unit) = 17 or  GetBType(unit) = 25 or  GetBType(unit) = 19 or  GetBType(unit) = 20 or  GetBType(unit) = 18 or  GetBType(unit) = 21 or  GetBType(unit) = 23 or  GetBType(unit) = 16  or  GetBType(unit) = 6 or  GetBType(unit) = 29 or  GetBType(unit) = 26 or  GetBType(unit) = 30 or  GetBType(unit) = 28 or  GetBType(unit) = 27 or  GetBType(unit) = 33 or  GetBType(unit) = 2 or GetBType(unit) = 4 then
+        begin
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetBType(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetX(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetY(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 1  then
+        begin
+            legionDestroyedBuilds = legionDestroyedBuilds ^  0;
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetX(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetY(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 3  then
+        begin
+            legionDestroyedBuilds = legionDestroyedBuilds ^  2;
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetX(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetY(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 5  then
+        begin
+            legionDestroyedBuilds = legionDestroyedBuilds ^  4;
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetX(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetY(unit);
+            legionDestroyedBuilds = legionDestroyedBuilds ^  GetDir(unit);
+        end;
+    end;
+
+    if GetSide(unit) = 7 and GetType(unit) = unit_building then
+    begin
+        
+        if GetBType(unit) = 31 or  GetBType(unit) = 32 or  GetBType(unit) = 36 or  GetBType(unit) = 0 or  GetBType(unit) = 24 or  GetBType(unit) = 17 or  GetBType(unit) = 25 or  GetBType(unit) = 19 or  GetBType(unit) = 20 or  GetBType(unit) = 18 or  GetBType(unit) = 21 or  GetBType(unit) = 23 or  GetBType(unit) = 16  or  GetBType(unit) = 6 or  GetBType(unit) = 29 or  GetBType(unit) = 26 or  GetBType(unit) = 30 or  GetBType(unit) = 28 or  GetBType(unit) = 27 or  GetBType(unit) = 33 or  GetBType(unit) = 2 or GetBType(unit) = 4 then
+        begin
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetBType(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetX(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetY(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 1  then
+        begin
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  0;
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetX(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetY(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 3  then
+        begin
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  2;
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetX(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetY(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetDir(unit);
+        end;
+
+        if GetBType(unit) = 5  then
+        begin
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  4;
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetX(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetY(unit);
+            allianceDestroyedBuilds = allianceDestroyedBuilds ^  GetDir(unit);
+        end;
+    end;
+
+end;
+
+On UnitKamikazed(unit) Do
+var i;
+begin
+    if GetSide(unit) = 8 and GetType(unit) = unit_vehicle and GetNation(unit) = 2 then
+    begin
+        for i in legionVehicles do
+            if i = unit then legionVehicles = legionVehicles diff [unit];
+    end;
+end;
+
+On SiberiteRocketExploded(unit, x, y) Do
+begin
+    if InArea(x, y, SiberiteMainDeposit) then
+    begin
+         if GetSide(unit) = 1 then
+         begin
+          wait(0$6);
+          YouLost('Motherlode2');
+         end;
+
+         if GetSide(unit) = 8 then
+         begin
+          wait(0$6);
+          YouLost('Motherlode1');
+         end;
+    end;
+end;
+
+On SibDepositContaminated(unit, x, y) Do
+begin
+  if GetSide(unit) = 2 then YouLost('Motherlode3');
 end;
