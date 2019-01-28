@@ -19,342 +19,583 @@
   28: ST_TO_ADDR
 // end ;
   29: END
-// export function ReverseNumber ( number ) ; var i ; begin
+// export function SortBySkill ( list , asc ) ; var i , j , tmp ; begin
   30: LD_INT 0
   32: PPUSH
   33: PPUSH
-// result :=  ;
-  34: LD_ADDR_VAR 0 2
-  38: PUSH
-  39: LD_STRING 
-  41: ST_TO_ADDR
-// while ( number ) do
-  42: LD_VAR 0 1
-  46: IFFALSE 84
-// begin result := result & ( number mod 10 ) ;
-  48: LD_ADDR_VAR 0 2
-  52: PUSH
-  53: LD_VAR 0 2
-  57: PUSH
-  58: LD_VAR 0 1
-  62: PUSH
-  63: LD_INT 10
-  65: MOD
-  66: STR
-  67: ST_TO_ADDR
-// number := number div 10 ;
-  68: LD_ADDR_VAR 0 1
-  72: PUSH
-  73: LD_VAR 0 1
-  77: PUSH
-  78: LD_INT 10
-  80: DIV
-  81: ST_TO_ADDR
-// end ;
-  82: GO 42
-// end ;
-  84: LD_VAR 0 2
-  88: RET
-// export d ; every 0 0$01 do var un , un2 ;
-  89: GO 91
-  91: DISABLE
-  92: LD_INT 0
-  94: PPUSH
-  95: PPUSH
-// begin uc_side := 1 ;
-  96: LD_ADDR_OWVAR 20
- 100: PUSH
- 101: LD_INT 1
- 103: ST_TO_ADDR
-// uc_nation := 2 ;
- 104: LD_ADDR_OWVAR 21
- 108: PUSH
- 109: LD_INT 2
- 111: ST_TO_ADDR
-// hc_class := 1 ;
- 112: LD_ADDR_OWVAR 28
- 116: PUSH
- 117: LD_INT 1
- 119: ST_TO_ADDR
-// hc_gallery :=  ;
- 120: LD_ADDR_OWVAR 33
- 124: PUSH
- 125: LD_STRING 
- 127: ST_TO_ADDR
-// un := CreateHuman ;
- 128: LD_ADDR_VAR 0 1
- 132: PUSH
- 133: CALL_OW 44
- 137: ST_TO_ADDR
-// d := CreateHuman ;
- 138: LD_ADDR_EXP 6
- 142: PUSH
- 143: CALL_OW 44
- 147: ST_TO_ADDR
-// PlaceUnitXY ( un , 192 , 25 , false ) ;
- 148: LD_VAR 0 1
- 152: PPUSH
- 153: LD_INT 192
- 155: PPUSH
- 156: LD_INT 25
- 158: PPUSH
- 159: LD_INT 0
- 161: PPUSH
- 162: CALL_OW 48
-// PlaceUnitXY ( d , 190 , 25 , false ) ;
- 166: LD_EXP 6
- 170: PPUSH
- 171: LD_INT 190
- 173: PPUSH
- 174: LD_INT 25
- 176: PPUSH
- 177: LD_INT 0
- 179: PPUSH
- 180: CALL_OW 48
-// end ;
- 184: PPOPN 2
- 186: END
-// export function WantPlant ( unit ) ; var task ; begin
- 187: LD_INT 0
- 189: PPUSH
- 190: PPUSH
-// result := false ;
- 191: LD_ADDR_VAR 0 2
- 195: PUSH
- 196: LD_INT 0
- 198: ST_TO_ADDR
-// task := GetTaskList ( unit ) ;
- 199: LD_ADDR_VAR 0 3
- 203: PUSH
- 204: LD_VAR 0 1
- 208: PPUSH
- 209: CALL_OW 437
- 213: ST_TO_ADDR
-// if task then
- 214: LD_VAR 0 3
- 218: IFFALSE 246
-// if task [ 1 ] [ 1 ] = p then
- 220: LD_VAR 0 3
- 224: PUSH
- 225: LD_INT 1
- 227: ARRAY
- 228: PUSH
- 229: LD_INT 1
- 231: ARRAY
- 232: PUSH
- 233: LD_STRING p
- 235: EQUAL
- 236: IFFALSE 246
-// result := true ;
- 238: LD_ADDR_VAR 0 2
- 242: PUSH
- 243: LD_INT 1
- 245: ST_TO_ADDR
-// end ;
- 246: LD_VAR 0 2
- 250: RET
-// export function RemoveResourcesFromArea ( area , materials ) ; var amount , i , tmp ; begin
- 251: LD_INT 0
- 253: PPUSH
- 254: PPUSH
- 255: PPUSH
- 256: PPUSH
-// for i = 1 to 3 do
- 257: LD_ADDR_VAR 0 5
- 261: PUSH
- 262: DOUBLE
- 263: LD_INT 1
- 265: DEC
- 266: ST_TO_ADDR
- 267: LD_INT 3
- 269: PUSH
- 270: FOR_TO
- 271: IFFALSE 301
-// amount := amount + GetResourceArea ( area , i ) ;
- 273: LD_ADDR_VAR 0 4
- 277: PUSH
- 278: LD_VAR 0 4
- 282: PUSH
- 283: LD_VAR 0 1
- 287: PPUSH
- 288: LD_VAR 0 5
- 292: PPUSH
- 293: CALL_OW 287
- 297: PLUS
- 298: ST_TO_ADDR
- 299: GO 270
- 301: POP
- 302: POP
-// if amount < materials then
- 303: LD_VAR 0 4
- 307: PUSH
- 308: LD_VAR 0 2
- 312: LESS
- 313: IFFALSE 317
+  34: PPUSH
+  35: PPUSH
+// if not list then
+  36: LD_VAR 0 1
+  40: NOT
+  41: IFFALSE 45
 // exit ;
- 315: GO 351
-// for i = 1 to 3 do
- 317: LD_ADDR_VAR 0 5
- 321: PUSH
- 322: DOUBLE
- 323: LD_INT 1
- 325: DEC
- 326: ST_TO_ADDR
- 327: LD_INT 3
- 329: PUSH
- 330: FOR_TO
- 331: IFFALSE 349
-// EraseResourceArea ( area , i ) ;
- 333: LD_VAR 0 1
- 337: PPUSH
- 338: LD_VAR 0 5
- 342: PPUSH
- 343: CALL_OW 286
- 347: GO 330
- 349: POP
- 350: POP
-// end ; end_of_file
- 351: LD_VAR 0 3
- 355: RET
+  43: GO 392
+// result := [ ] ;
+  45: LD_ADDR_VAR 0 3
+  49: PUSH
+  50: EMPTY
+  51: ST_TO_ADDR
+// for i in list do
+  52: LD_ADDR_VAR 0 4
+  56: PUSH
+  57: LD_VAR 0 1
+  61: PUSH
+  62: FOR_IN
+  63: IFFALSE 304
+// begin tmp := ( ( GetSkill ( i , 1 ) + GetSkill ( i , 2 ) + GetSkill ( i , 3 ) + GetSkill ( i , 4 ) ) div 4 ) ;
+  65: LD_ADDR_VAR 0 6
+  69: PUSH
+  70: LD_VAR 0 4
+  74: PPUSH
+  75: LD_INT 1
+  77: PPUSH
+  78: CALL_OW 259
+  82: PUSH
+  83: LD_VAR 0 4
+  87: PPUSH
+  88: LD_INT 2
+  90: PPUSH
+  91: CALL_OW 259
+  95: PLUS
+  96: PUSH
+  97: LD_VAR 0 4
+ 101: PPUSH
+ 102: LD_INT 3
+ 104: PPUSH
+ 105: CALL_OW 259
+ 109: PLUS
+ 110: PUSH
+ 111: LD_VAR 0 4
+ 115: PPUSH
+ 116: LD_INT 4
+ 118: PPUSH
+ 119: CALL_OW 259
+ 123: PLUS
+ 124: PUSH
+ 125: LD_INT 4
+ 127: DIV
+ 128: ST_TO_ADDR
+// if not result then
+ 129: LD_VAR 0 3
+ 133: NOT
+ 134: IFFALSE 160
+// result := [ [ i , tmp ] ] else
+ 136: LD_ADDR_VAR 0 3
+ 140: PUSH
+ 141: LD_VAR 0 4
+ 145: PUSH
+ 146: LD_VAR 0 6
+ 150: PUSH
+ 151: EMPTY
+ 152: LIST
+ 153: LIST
+ 154: PUSH
+ 155: EMPTY
+ 156: LIST
+ 157: ST_TO_ADDR
+ 158: GO 302
+// begin if result [ result ] [ 2 ] <= tmp then
+ 160: LD_VAR 0 3
+ 164: PUSH
+ 165: LD_VAR 0 3
+ 169: ARRAY
+ 170: PUSH
+ 171: LD_INT 2
+ 173: ARRAY
+ 174: PUSH
+ 175: LD_VAR 0 6
+ 179: LESSEQUAL
+ 180: IFFALSE 222
+// result := Insert ( result , result + 1 , [ i , tmp ] ) else
+ 182: LD_ADDR_VAR 0 3
+ 186: PUSH
+ 187: LD_VAR 0 3
+ 191: PPUSH
+ 192: LD_VAR 0 3
+ 196: PUSH
+ 197: LD_INT 1
+ 199: PLUS
+ 200: PPUSH
+ 201: LD_VAR 0 4
+ 205: PUSH
+ 206: LD_VAR 0 6
+ 210: PUSH
+ 211: EMPTY
+ 212: LIST
+ 213: LIST
+ 214: PPUSH
+ 215: CALL_OW 2
+ 219: ST_TO_ADDR
+ 220: GO 302
+// for j = 1 to result do
+ 222: LD_ADDR_VAR 0 5
+ 226: PUSH
+ 227: DOUBLE
+ 228: LD_INT 1
+ 230: DEC
+ 231: ST_TO_ADDR
+ 232: LD_VAR 0 3
+ 236: PUSH
+ 237: FOR_TO
+ 238: IFFALSE 300
+// begin if tmp < result [ j ] [ 2 ] then
+ 240: LD_VAR 0 6
+ 244: PUSH
+ 245: LD_VAR 0 3
+ 249: PUSH
+ 250: LD_VAR 0 5
+ 254: ARRAY
+ 255: PUSH
+ 256: LD_INT 2
+ 258: ARRAY
+ 259: LESS
+ 260: IFFALSE 298
+// begin result := Insert ( result , j , [ i , tmp ] ) ;
+ 262: LD_ADDR_VAR 0 3
+ 266: PUSH
+ 267: LD_VAR 0 3
+ 271: PPUSH
+ 272: LD_VAR 0 5
+ 276: PPUSH
+ 277: LD_VAR 0 4
+ 281: PUSH
+ 282: LD_VAR 0 6
+ 286: PUSH
+ 287: EMPTY
+ 288: LIST
+ 289: LIST
+ 290: PPUSH
+ 291: CALL_OW 2
+ 295: ST_TO_ADDR
+// break ;
+ 296: GO 300
+// end ; end ;
+ 298: GO 237
+ 300: POP
+ 301: POP
+// end ; end ;
+ 302: GO 62
+ 304: POP
+ 305: POP
+// if result and not asc then
+ 306: LD_VAR 0 3
+ 310: PUSH
+ 311: LD_VAR 0 2
+ 315: NOT
+ 316: AND
+ 317: IFFALSE 392
+// begin tmp := result ;
+ 319: LD_ADDR_VAR 0 6
+ 323: PUSH
+ 324: LD_VAR 0 3
+ 328: ST_TO_ADDR
+// for i = tmp downto 1 do
+ 329: LD_ADDR_VAR 0 4
+ 333: PUSH
+ 334: DOUBLE
+ 335: LD_VAR 0 6
+ 339: INC
+ 340: ST_TO_ADDR
+ 341: LD_INT 1
+ 343: PUSH
+ 344: FOR_DOWNTO
+ 345: IFFALSE 390
+// result := Replace ( result , tmp - i + 1 , tmp [ i ] ) ;
+ 347: LD_ADDR_VAR 0 3
+ 351: PUSH
+ 352: LD_VAR 0 3
+ 356: PPUSH
+ 357: LD_VAR 0 6
+ 361: PUSH
+ 362: LD_VAR 0 4
+ 366: MINUS
+ 367: PUSH
+ 368: LD_INT 1
+ 370: PLUS
+ 371: PPUSH
+ 372: LD_VAR 0 6
+ 376: PUSH
+ 377: LD_VAR 0 4
+ 381: ARRAY
+ 382: PPUSH
+ 383: CALL_OW 1
+ 387: ST_TO_ADDR
+ 388: GO 344
+ 390: POP
+ 391: POP
+// end ; end ;
+ 392: LD_VAR 0 3
+ 396: RET
 // every 0 0$1 do
- 356: GO 358
- 358: DISABLE
-// begin enable ;
- 359: ENABLE
-// end ;
- 360: END
-// every 5 5$1 do
- 361: GO 363
- 363: DISABLE
-// begin end ;
- 364: END
-// every 0 0$1 do
- 365: GO 367
- 367: DISABLE
-// begin end ;
- 368: END
-// every 0 0$01 trigger arabianMines do var i , p ;
- 369: LD_EXP 4
- 373: IFFALSE 576
- 375: GO 377
- 377: DISABLE
- 378: LD_INT 0
- 380: PPUSH
- 381: PPUSH
-// begin enable ;
- 382: ENABLE
-// p := 1 ;
- 383: LD_ADDR_VAR 0 2
- 387: PUSH
- 388: LD_INT 1
- 390: ST_TO_ADDR
-// for i = 1 to arabianMines / 2 do
- 391: LD_ADDR_VAR 0 1
- 395: PUSH
- 396: DOUBLE
- 397: LD_INT 1
- 399: DEC
- 400: ST_TO_ADDR
- 401: LD_EXP 4
- 405: PUSH
- 406: LD_INT 2
- 408: DIVREAL
- 409: PUSH
- 410: FOR_TO
- 411: IFFALSE 574
-// begin if FilterAllUnits ( [ [ f_enemy , 2 ] , [ f_distxy , arabianMines [ p ] , arabianMines [ p + 1 ] , 2 ] ] ) then
- 413: LD_INT 81
- 415: PUSH
- 416: LD_INT 2
- 418: PUSH
- 419: EMPTY
- 420: LIST
- 421: LIST
- 422: PUSH
- 423: LD_INT 92
- 425: PUSH
- 426: LD_EXP 4
- 430: PUSH
- 431: LD_VAR 0 2
- 435: ARRAY
- 436: PUSH
- 437: LD_EXP 4
- 441: PUSH
- 442: LD_VAR 0 2
- 446: PUSH
- 447: LD_INT 1
- 449: PLUS
- 450: ARRAY
+ 397: GO 399
+ 399: DISABLE
+// display_strings := SortBySkill ( FilterAllUnits ( [ [ f_side , 1 ] , [ f_type , unit_human ] ] ) , true ) ;
+ 400: LD_ADDR_OWVAR 47
+ 404: PUSH
+ 405: LD_INT 22
+ 407: PUSH
+ 408: LD_INT 1
+ 410: PUSH
+ 411: EMPTY
+ 412: LIST
+ 413: LIST
+ 414: PUSH
+ 415: LD_INT 21
+ 417: PUSH
+ 418: LD_INT 1
+ 420: PUSH
+ 421: EMPTY
+ 422: LIST
+ 423: LIST
+ 424: PUSH
+ 425: EMPTY
+ 426: LIST
+ 427: LIST
+ 428: PPUSH
+ 429: CALL_OW 69
+ 433: PPUSH
+ 434: LD_INT 1
+ 436: PPUSH
+ 437: CALL 30 0 2
+ 441: ST_TO_ADDR
+ 442: END
+// export function ReverseNumber ( number ) ; var i ; begin
+ 443: LD_INT 0
+ 445: PPUSH
+ 446: PPUSH
+// result :=  ;
+ 447: LD_ADDR_VAR 0 2
  451: PUSH
- 452: LD_INT 2
- 454: PUSH
- 455: EMPTY
- 456: LIST
- 457: LIST
- 458: LIST
- 459: LIST
- 460: PUSH
- 461: EMPTY
- 462: LIST
- 463: LIST
- 464: PPUSH
- 465: CALL_OW 69
- 469: IFFALSE 558
-// begin LaunchMineAtPos ( arabianMines [ p ] , arabianMines [ p + 1 ] , 2 ) ;
- 471: LD_EXP 4
+ 452: LD_STRING 
+ 454: ST_TO_ADDR
+// while ( number ) do
+ 455: LD_VAR 0 1
+ 459: IFFALSE 497
+// begin result := result & ( number mod 10 ) ;
+ 461: LD_ADDR_VAR 0 2
+ 465: PUSH
+ 466: LD_VAR 0 2
+ 470: PUSH
+ 471: LD_VAR 0 1
  475: PUSH
- 476: LD_VAR 0 2
- 480: ARRAY
- 481: PPUSH
- 482: LD_EXP 4
- 486: PUSH
- 487: LD_VAR 0 2
- 491: PUSH
- 492: LD_INT 1
- 494: PLUS
- 495: ARRAY
- 496: PPUSH
- 497: LD_INT 2
- 499: PPUSH
- 500: CALL_OW 456
+ 476: LD_INT 10
+ 478: MOD
+ 479: STR
+ 480: ST_TO_ADDR
+// number := number div 10 ;
+ 481: LD_ADDR_VAR 0 1
+ 485: PUSH
+ 486: LD_VAR 0 1
+ 490: PUSH
+ 491: LD_INT 10
+ 493: DIV
+ 494: ST_TO_ADDR
+// end ;
+ 495: GO 455
+// end ;
+ 497: LD_VAR 0 2
+ 501: RET
+// export d ; every 0 0$01 do var un , un2 ;
+ 502: GO 504
+ 504: DISABLE
+ 505: LD_INT 0
+ 507: PPUSH
+ 508: PPUSH
+// begin uc_side := 1 ;
+ 509: LD_ADDR_OWVAR 20
+ 513: PUSH
+ 514: LD_INT 1
+ 516: ST_TO_ADDR
+// uc_nation := 2 ;
+ 517: LD_ADDR_OWVAR 21
+ 521: PUSH
+ 522: LD_INT 2
+ 524: ST_TO_ADDR
+// hc_class := 1 ;
+ 525: LD_ADDR_OWVAR 28
+ 529: PUSH
+ 530: LD_INT 1
+ 532: ST_TO_ADDR
+// hc_gallery :=  ;
+ 533: LD_ADDR_OWVAR 33
+ 537: PUSH
+ 538: LD_STRING 
+ 540: ST_TO_ADDR
+// un := CreateHuman ;
+ 541: LD_ADDR_VAR 0 1
+ 545: PUSH
+ 546: CALL_OW 44
+ 550: ST_TO_ADDR
+// d := CreateHuman ;
+ 551: LD_ADDR_EXP 6
+ 555: PUSH
+ 556: CALL_OW 44
+ 560: ST_TO_ADDR
+// PlaceUnitXY ( un , 192 , 25 , false ) ;
+ 561: LD_VAR 0 1
+ 565: PPUSH
+ 566: LD_INT 192
+ 568: PPUSH
+ 569: LD_INT 25
+ 571: PPUSH
+ 572: LD_INT 0
+ 574: PPUSH
+ 575: CALL_OW 48
+// PlaceUnitXY ( d , 190 , 25 , false ) ;
+ 579: LD_EXP 6
+ 583: PPUSH
+ 584: LD_INT 190
+ 586: PPUSH
+ 587: LD_INT 25
+ 589: PPUSH
+ 590: LD_INT 0
+ 592: PPUSH
+ 593: CALL_OW 48
+// end ;
+ 597: PPOPN 2
+ 599: END
+// export function WantPlant ( unit ) ; var task ; begin
+ 600: LD_INT 0
+ 602: PPUSH
+ 603: PPUSH
+// result := false ;
+ 604: LD_ADDR_VAR 0 2
+ 608: PUSH
+ 609: LD_INT 0
+ 611: ST_TO_ADDR
+// task := GetTaskList ( unit ) ;
+ 612: LD_ADDR_VAR 0 3
+ 616: PUSH
+ 617: LD_VAR 0 1
+ 621: PPUSH
+ 622: CALL_OW 437
+ 626: ST_TO_ADDR
+// if task then
+ 627: LD_VAR 0 3
+ 631: IFFALSE 659
+// if task [ 1 ] [ 1 ] = p then
+ 633: LD_VAR 0 3
+ 637: PUSH
+ 638: LD_INT 1
+ 640: ARRAY
+ 641: PUSH
+ 642: LD_INT 1
+ 644: ARRAY
+ 645: PUSH
+ 646: LD_STRING p
+ 648: EQUAL
+ 649: IFFALSE 659
+// result := true ;
+ 651: LD_ADDR_VAR 0 2
+ 655: PUSH
+ 656: LD_INT 1
+ 658: ST_TO_ADDR
+// end ;
+ 659: LD_VAR 0 2
+ 663: RET
+// export function RemoveResourcesFromArea ( area , materials ) ; var amount , i , tmp ; begin
+ 664: LD_INT 0
+ 666: PPUSH
+ 667: PPUSH
+ 668: PPUSH
+ 669: PPUSH
+// for i = 1 to 3 do
+ 670: LD_ADDR_VAR 0 5
+ 674: PUSH
+ 675: DOUBLE
+ 676: LD_INT 1
+ 678: DEC
+ 679: ST_TO_ADDR
+ 680: LD_INT 3
+ 682: PUSH
+ 683: FOR_TO
+ 684: IFFALSE 714
+// amount := amount + GetResourceArea ( area , i ) ;
+ 686: LD_ADDR_VAR 0 4
+ 690: PUSH
+ 691: LD_VAR 0 4
+ 695: PUSH
+ 696: LD_VAR 0 1
+ 700: PPUSH
+ 701: LD_VAR 0 5
+ 705: PPUSH
+ 706: CALL_OW 287
+ 710: PLUS
+ 711: ST_TO_ADDR
+ 712: GO 683
+ 714: POP
+ 715: POP
+// if amount < materials then
+ 716: LD_VAR 0 4
+ 720: PUSH
+ 721: LD_VAR 0 2
+ 725: LESS
+ 726: IFFALSE 730
+// exit ;
+ 728: GO 764
+// for i = 1 to 3 do
+ 730: LD_ADDR_VAR 0 5
+ 734: PUSH
+ 735: DOUBLE
+ 736: LD_INT 1
+ 738: DEC
+ 739: ST_TO_ADDR
+ 740: LD_INT 3
+ 742: PUSH
+ 743: FOR_TO
+ 744: IFFALSE 762
+// EraseResourceArea ( area , i ) ;
+ 746: LD_VAR 0 1
+ 750: PPUSH
+ 751: LD_VAR 0 5
+ 755: PPUSH
+ 756: CALL_OW 286
+ 760: GO 743
+ 762: POP
+ 763: POP
+// end ; end_of_file
+ 764: LD_VAR 0 3
+ 768: RET
+// every 0 0$1 do
+ 769: GO 771
+ 771: DISABLE
+// begin enable ;
+ 772: ENABLE
+// end ;
+ 773: END
+// every 5 5$1 do
+ 774: GO 776
+ 776: DISABLE
+// begin end ;
+ 777: END
+// every 0 0$1 do
+ 778: GO 780
+ 780: DISABLE
+// begin end ;
+ 781: END
+// every 0 0$01 trigger arabianMines do var i , p ;
+ 782: LD_EXP 4
+ 786: IFFALSE 989
+ 788: GO 790
+ 790: DISABLE
+ 791: LD_INT 0
+ 793: PPUSH
+ 794: PPUSH
+// begin enable ;
+ 795: ENABLE
+// p := 1 ;
+ 796: LD_ADDR_VAR 0 2
+ 800: PUSH
+ 801: LD_INT 1
+ 803: ST_TO_ADDR
+// for i = 1 to arabianMines / 2 do
+ 804: LD_ADDR_VAR 0 1
+ 808: PUSH
+ 809: DOUBLE
+ 810: LD_INT 1
+ 812: DEC
+ 813: ST_TO_ADDR
+ 814: LD_EXP 4
+ 818: PUSH
+ 819: LD_INT 2
+ 821: DIVREAL
+ 822: PUSH
+ 823: FOR_TO
+ 824: IFFALSE 987
+// begin if FilterAllUnits ( [ [ f_enemy , 2 ] , [ f_distxy , arabianMines [ p ] , arabianMines [ p + 1 ] , 2 ] ] ) then
+ 826: LD_INT 81
+ 828: PUSH
+ 829: LD_INT 2
+ 831: PUSH
+ 832: EMPTY
+ 833: LIST
+ 834: LIST
+ 835: PUSH
+ 836: LD_INT 92
+ 838: PUSH
+ 839: LD_EXP 4
+ 843: PUSH
+ 844: LD_VAR 0 2
+ 848: ARRAY
+ 849: PUSH
+ 850: LD_EXP 4
+ 854: PUSH
+ 855: LD_VAR 0 2
+ 859: PUSH
+ 860: LD_INT 1
+ 862: PLUS
+ 863: ARRAY
+ 864: PUSH
+ 865: LD_INT 2
+ 867: PUSH
+ 868: EMPTY
+ 869: LIST
+ 870: LIST
+ 871: LIST
+ 872: LIST
+ 873: PUSH
+ 874: EMPTY
+ 875: LIST
+ 876: LIST
+ 877: PPUSH
+ 878: CALL_OW 69
+ 882: IFFALSE 971
+// begin LaunchMineAtPos ( arabianMines [ p ] , arabianMines [ p + 1 ] , 2 ) ;
+ 884: LD_EXP 4
+ 888: PUSH
+ 889: LD_VAR 0 2
+ 893: ARRAY
+ 894: PPUSH
+ 895: LD_EXP 4
+ 899: PUSH
+ 900: LD_VAR 0 2
+ 904: PUSH
+ 905: LD_INT 1
+ 907: PLUS
+ 908: ARRAY
+ 909: PPUSH
+ 910: LD_INT 2
+ 912: PPUSH
+ 913: CALL_OW 456
 // arabianMines := Delete ( arabianMines , p ) ;
- 504: LD_ADDR_EXP 4
- 508: PUSH
- 509: LD_EXP 4
- 513: PPUSH
- 514: LD_VAR 0 2
- 518: PPUSH
- 519: CALL_OW 3
- 523: ST_TO_ADDR
+ 917: LD_ADDR_EXP 4
+ 921: PUSH
+ 922: LD_EXP 4
+ 926: PPUSH
+ 927: LD_VAR 0 2
+ 931: PPUSH
+ 932: CALL_OW 3
+ 936: ST_TO_ADDR
 // arabianMines := Delete ( arabianMines , p ) ;
- 524: LD_ADDR_EXP 4
- 528: PUSH
- 529: LD_EXP 4
- 533: PPUSH
- 534: LD_VAR 0 2
- 538: PPUSH
- 539: CALL_OW 3
- 543: ST_TO_ADDR
+ 937: LD_ADDR_EXP 4
+ 941: PUSH
+ 942: LD_EXP 4
+ 946: PPUSH
+ 947: LD_VAR 0 2
+ 951: PPUSH
+ 952: CALL_OW 3
+ 956: ST_TO_ADDR
 // p := p - 2 ;
- 544: LD_ADDR_VAR 0 2
- 548: PUSH
- 549: LD_VAR 0 2
- 553: PUSH
- 554: LD_INT 2
- 556: MINUS
- 557: ST_TO_ADDR
+ 957: LD_ADDR_VAR 0 2
+ 961: PUSH
+ 962: LD_VAR 0 2
+ 966: PUSH
+ 967: LD_INT 2
+ 969: MINUS
+ 970: ST_TO_ADDR
 // end ; p := p + 2 ;
- 558: LD_ADDR_VAR 0 2
- 562: PUSH
- 563: LD_VAR 0 2
- 567: PUSH
- 568: LD_INT 2
- 570: PLUS
- 571: ST_TO_ADDR
+ 971: LD_ADDR_VAR 0 2
+ 975: PUSH
+ 976: LD_VAR 0 2
+ 980: PUSH
+ 981: LD_INT 2
+ 983: PLUS
+ 984: ST_TO_ADDR
 // end ;
- 572: GO 410
- 574: POP
- 575: POP
+ 985: GO 823
+ 987: POP
+ 988: POP
 // end ;
- 576: PPOPN 2
- 578: END
+ 989: PPOPN 2
+ 991: END

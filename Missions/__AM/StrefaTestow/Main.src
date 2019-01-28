@@ -24,9 +24,51 @@ begin
     cargoTest = [];
     arabianMines = [];
 
-    //PlaceMines(MineField1, 10);
+
 
 end;
+
+Export Function SortBySkill(list, asc);
+var i, j, tmp;
+begin
+if not list then
+   exit;
+
+result := [];
+
+for i in list do
+    begin
+    tmp := ((GetSkill(i, 1) + GetSkill(i, 2) + GetSkill(i, 3) + GetSkill(i, 4)) div 4);
+
+    if not result then
+       result := [[i, tmp]]
+     else
+      begin
+       if result[result][2] <= tmp then
+          result := Insert(result, result+1, [i, tmp])
+       else
+       for j = 1 to result do
+           begin
+           if tmp < result[j][2] then
+              begin
+              result := Insert(result, j, [i, tmp]);
+              break;
+              end;
+           end;
+      end;
+    end;
+
+if result and not asc then
+   begin
+   tmp := result;
+
+   for i = tmp downto 1 do
+       result := Replace(result, tmp - i + 1, tmp[i]);
+   end;
+End;
+
+Every 0$1 do
+display_strings := SortBySkill(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), true);
 
 Export Function ReverseNumber(number);
 var i;
