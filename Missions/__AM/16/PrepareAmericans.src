@@ -216,13 +216,13 @@ begin
 end;
 
 Export function PrepareOmegaTeam;
-var i, omegaVeh, sum, veh, avalaibleVehs, vehicles;
+var i, omegaVeh, sum, veh, avalaibleVehs, vehicles, resources, cargoList;
 begin
      uc_side = 1;
      uc_nation = 1;
      omegaVeh = [];
 
-    if TestCharacters('13_Lisa') = false then Lisa = PrepareUnitOmega('Lisa');
+    if TestCharacters('13s_Lisa') = false then Lisa = PrepareUnitOmega('Lisa');
     if TestCharacters('13s_Donaldson') = false then Donaldson = PrepareUnitOmega('Donaldson');
     if TestCharacters('13s_Bobby') = false then Bobby = PrepareUnitOmega('Bobby');
     if TestCharacters('13s_Cyrus') = false then Cyrus = PrepareUnitOmega('Cyrus');
@@ -230,7 +230,7 @@ begin
     if TestCharacters('13s_Brown') = false then Brown = PrepareUnitOmega('Brown');
     if TestCharacters('13s_Gladstone') = false then Gladstone = PrepareUnitOmega('Gladstone');
     if TestCharacters('13s_Houten') = false then Houten = PrepareUnitOmega('Houten');
-    if TestCharacters('13s_Cornel') = false then Cornel = PrepareUnitOmega('Cornel');
+    if TestCharacters('13s_Cornell') = false then Cornel = PrepareUnitOmega('Cornell');
     if TestCharacters('13s_Gary') = false then Gary = PrepareUnitOmega('Gary');
     if TestCharacters('13s_Frank') = false then Frank = PrepareUnitOmega('Frank');
     if TestCharacters('13s_Kikuchi') = false then Kikuchi = PrepareUnitOmega('Kikuchi');
@@ -244,6 +244,7 @@ begin
 
     others13Omega = CreateCharacterSet('15_other_survivors');
     vehicles = LoadVariable('15_Vehicles_1', []);
+    resources = LoadVariable('15_ResourcesInCargo_1', []);
 
 
         for i := 1 to vehicles do
@@ -266,6 +267,19 @@ begin
             PlaceUnitArea(veh, OmegaSpawn, false);
 
         end;
+
+        cargoList = FilterUnitsInArea(OmegaSpawn, [[f_side, 1], [f_type, unit_vehicle], [f_weapon, us_cargo_bay], [f_control, 1], [f_engine, 3]]);
+
+        if cargoList > 0 then
+          for i = 1 to cargoList do
+          begin
+             if resources > 0 then
+             begin
+                   AddCargo(cargoList[i], 1, resources[i][1]);
+                   AddCargo(cargoList[i], 2, resources[i][2]);
+                   AddCargo(cargoList[i], 3, resources[i][3]);
+             end;
+          end;
 
     for i := 1 to heroesFromOmega do
     begin

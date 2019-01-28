@@ -24,9 +24,9 @@ Export Function PrepareUnitOmega(ident);
 var unit;
 begin
 
-    if TestCharacters('13f_'&ident) = true then
+    if TestCharacters('15_'&ident) = true then
     begin
-        unit = CreateCharacter('13f_'&ident);
+        unit = CreateCharacter('15_'&ident);
         heroesFromOmega = heroesFromOmega ^ unit;
     end;    
 
@@ -56,7 +56,7 @@ Export function DialogRandom(characters, dialogMID, dialogFID);
 var i, rnd;
 begin
 
-    characters := characters diff [JMM, Stevens, Baker,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
+    characters := characters diff [JMM, Stevens, Baker, Gordon, Peter,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
     rnd = rand(1, characters);  
 
     for i = 1 to characters do
@@ -426,7 +426,7 @@ Export function EnterBunkerOrBarrack(side, area);
 var i,j, soldiers_list, turretList, temp, barrackList, insideUnits;
 begin
 
-    soldiers_list = FilterUnitsInArea(area, [[f_side, side], [f_outside], [f_lives, 700],  [f_not, [f_hastask]], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]]);
+    soldiers_list = FilterUnitsInArea(area, [[f_side, side], [f_outside], [f_lives, 700],  [f_not, [f_hastask]], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]]) diff [Platonov, Yakotich];
     turretList = FilterUnitsInArea(area, [[f_side, side], [f_btype, b_bunker], [f_empty], [f_lives, 251]]);
     barrackList = FilterUnitsInArea(area, [[f_side, side], [f_or, [f_btype, 4], [f_btype, 5]], [f_lives, 251]]);
 
