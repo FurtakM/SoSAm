@@ -59,7 +59,7 @@ begin
         wait(0$1);
         ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 60, 75);
         CenterNowOnUnits(NewJMMVeh);
-    until GetDistUnits(NewJMMVeh, Powell) < 20;
+    until GetDistUnits(NewJMMVeh, Powell) < 20 or not HasTask(NewJMMVeh);
 
     ComExitVehicle(JMM);
 
@@ -511,7 +511,7 @@ end;
 Every 0$3 trigger IsDead(ArRuFact) and powellAttacks = 3 do
 var i, tmp, tmp1, tmp2;
 begin
-    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human],[f_sex, 1]]);
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human],[f_sex, 1]]) diff [JMM, Stevens, Baker, Gordon, Peter,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
 
     CenterOnXY(49, 66);
     Say(tmp[1], 'D6c-Sol3-1');
@@ -573,6 +573,8 @@ begin
     enable;
 
     SetLives([Powell, PowBomb], 1000);
+    if FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]]) > 0 then SetLives(FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]])[1], 1000);
+    if FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]]) > 0 then SetLives(FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]])[1], 1000);
     if not IsInArea(powellVeh, DestroyPowellVeh) then SetLives(powellVeh, 1000);
     if not IsInUnit(Powell) then CenterNowOnUnits(Powell)
     else CenterNowOnUnits(IsInUnit(Powell));
@@ -922,6 +924,7 @@ end;
 
 // Confirm Am rocket - traitor
 Every 1$0 trigger missionStage = 6 and IsOK(LegionFriend) and GetSide(LegionFriend) = 1 do
+var rocketTarget;
 begin
     DialogueOn;
 
@@ -945,6 +948,14 @@ begin
                 DialogRandom(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]), 'D16a-Sol1-1', 'D5-FSol1-1');
             end;
         end;
+
+         wait(0$30);
+         Say(Platonov, 'D18-Pla-1');
+         rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 1], [f_or, [f_btype, 0], [f_btype, 1]]]);
+         if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 2], [f_or, [f_btype, 0], [f_btype, 1]]]);
+         if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1], [f_ok]]);
+
+         ComAttackPlace(rurocket, GetX(rocketTarget[1]), GetY(rocketTarget[1]));
     end;
 
     Say(JMM, 'D16a-JMM-1a');
@@ -958,10 +969,6 @@ begin
     DialogueOn;
     Say(JMM, 'D16a-JMM-1');
     DialogueOff;
-
-    wait(0$30);
-    Say(Platonov, 'D18-Pla-1');
-    ComAttackPlace(rurocket, GetX(JMM), GetY(JMM));
 end;
 
 // Traitor detected
@@ -984,7 +991,8 @@ begin
 end;
 
 // Confirm Am rocket - normal
-Every 5$0 trigger missionStage = 6 and not GetSide(LegionFriend) do 
+Every 5$0 trigger missionStage = 6 and not GetSide(LegionFriend) = 1 do
+var rocketTarget;
 begin
 
     if FilterAllUnits([[f_side, 1], [f_or, [f_weapon, us_siberium_rocket], [f_bweapon, us_siberium_rocket]]]) > 0  then
@@ -996,7 +1004,12 @@ begin
         Say(JMM, 'D16b-JMM-1');
         wait(0$15);
         Say(Platonov, 'D18-Pla-1');
-        ComAttackPlace(rurocket, GetX(JMM), GetY(JMM));
+
+        rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 1], [f_or, [f_btype, 0], [f_btype, 1]]]);
+        if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 2], [f_or, [f_btype, 0], [f_btype, 1]]]);
+        if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1], [f_ok]]);
+
+        ComAttackPlace(rurocket, GetX(rocketTarget[1]), GetY(rocketTarget[1]));
     end;
 
 end;
@@ -1037,7 +1050,7 @@ begin
 end;
    
 // Arabian attack
-Every 0$1 trigger IsDead(Platonov) and IsDead(Yakotich) do
+Every 1 trigger IsDead(Platonov) and IsDead(Yakotich) and FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_ok]]) < [7, 8, 9][Difficulty] do
 var i, tmp, arabianArmy;
 begin
 
@@ -1046,11 +1059,20 @@ begin
 
     SetAttitude(1, 3, att_friend, true);
 
-    for i in FilterAllUnits([[f_side, 3], [f_type, unit_human]]) do
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_lives, 900]]) do
     if GetSex(i) = sex_male then
     begin
         tmp = i;
         break;
+    end;
+
+    if tmp = 0 then
+    begin
+         hc_name = '';
+         hc_gallery = '';
+
+         PrepareSoldier(sex_male, 10);
+         tmp = CreateHuman;
     end;
 
     DialogueOn;
@@ -1066,6 +1088,9 @@ begin
 
     missionStage = 7;
 
+    PlaceSeeing(157, 8, 1, -8);
+    CenterOnXY(157, 8);
+
     DialogueOn;
     CenterNowOnUnits(Heike);
     Say(JMM, 'D19-JMM-1');
@@ -1079,7 +1104,7 @@ begin
     arabianArmy = arabianArmy ^ FilterAllUnits([[f_side, 2], [f_type, unit_vehicle]]);
 
     ComAgressiveMove(arabianArmy, 178, 66);
-    wait(0$4);
+    wait(0$10);
     ComContaminate(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 4]]), 177, 69);
 end;
 

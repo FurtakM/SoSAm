@@ -11,7 +11,7 @@ end;
 Every 10$0 do 
 begin
     ruAttacksCounter = 1;
-    RespawnAttackInfantry(3, 3, [6, 7, 8], 0, [5, 5, 6][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
+    RespawnAttackInfantry(3, 3, [2, 3, 4][Difficulty], 0, [5, 5, 6][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
 end;
 
 // Atak 2
@@ -23,7 +23,7 @@ end;
 Every 20$0 do 
 begin
     ruAttacksCounter = 2;
-    RespawnAttackInfantry(3, 3, [6, 7, 8][Difficulty], 0, [6, 7, 7][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
+    RespawnAttackInfantry(3, 3, [2, 3, 4][Difficulty], 0, [6, 7, 7][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
 end;
 
 // Atak 3 - Burlak ded
@@ -35,7 +35,7 @@ end;
 Every 35$0 trigger BurlakStatus = 1 do
 begin
     ruAttacksCounter = 3;
-    RespawnAttackInfantry(3, 3, [6, 7, 8][Difficulty], 0, [7, 8, 9][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
+    RespawnAttackInfantry(3, 3, [2, 3, 4][Difficulty], 0, [7, 8, 9][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
 end;
 
 // Atak 3 - Burlak alive
@@ -81,3 +81,9 @@ begin
     ComAgressiveMove([Burlak, BurlakVeh], 117, 39);
 end;
 
+// Loop attack
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_vehicle]]) = 0 and escapeAvalaible = 1 do
+begin
+    RespawnAttackVehicle(RussianAttackSpawn, 3, [8, 9, 9][Difficulty] + rand(2, 4), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
+    enable;
+end;
