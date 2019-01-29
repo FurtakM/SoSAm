@@ -27,41 +27,41 @@ begin
 end;
 
 // Atak 3 - Burlak ded
-Every 35$0 trigger BurlakStatus = 1 do
+Every 30$0 trigger BurlakStatus = 1 do
 begin
     RespawnAttackVehicle(RussianAttackSpawn, 3, [13, 14, 15][Difficulty] + rand(5, 10), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
 end;
 
-Every 35$0 trigger BurlakStatus = 1 do
+Every 30$0 trigger BurlakStatus = 1 do
 begin
     ruAttacksCounter = 3;
     RespawnAttackInfantry(3, 3, [2, 3, 4][Difficulty], 0, [7, 8, 9][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
 end;
 
 // Atak 3 - Burlak alive
-Every 45$0 trigger ruAttacksCounter = 2 and BurlakStatus = 0 do
+Every 40$0 trigger ruAttacksCounter = 2 and BurlakStatus = 0 do
 begin
     RespawnAttackVehicle(RussianAttackSpawn, 3, [13, 14, 15][Difficulty] + rand(5, 10), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
 end;
 
-Every 45$0 trigger ruAttacksCounter = 2 and BurlakStatus = 0 do
+Every 40$0 trigger ruAttacksCounter = 2 and BurlakStatus = 0 do
 begin
     ruAttacksCounter = 3;
     RespawnAttackInfantry(3, 3, [6, 7, 8][Difficulty], 0, [7, 8, 9][Difficulty], 0, 0, [6, 7, 8][Difficulty], RussianAttackSpawn, RussianAttackSpawn, 1);
 end;
 
 // Alliance attack
-Every 35$0 trigger BurlakStatus = 0 do
+Every 30$0 trigger BurlakStatus = 0 do
 begin
     RespawnAttackVehicle(RussianAttackSpawn, 7, [6, 7, 7][Difficulty] + rand(2, 4), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
 end;
 
-Every 35$0 trigger BurlakStatus = 0  do
+Every 30$0 trigger BurlakStatus = 0  do
 begin
     RespawnAttackVehicle(RussianAttackSpawn, 7, [6, 7, 7][Difficulty] + rand(2, 4), 10, 3, 3, [3,3], [], [], [10, 9, 7, 6], 1);
 end;
 
-Every 35$0 trigger BurlakStatus = 0 do
+Every 30$0 trigger BurlakStatus = 0 do
 begin
     uc_side = 7;
     uc_nation = 1;
@@ -82,8 +82,8 @@ begin
 end;
 
 // Loop attack
-Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_vehicle]]) = 0 and escapeAvalaible = 1 do
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_vehicle]]) = 0 and escapeAvalaible = 1 and IsDead(amsiblab) do
 begin
-    RespawnAttackVehicle(RussianAttackSpawn, 3, [8, 9, 9][Difficulty] + rand(2, 4), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
+    RespawnAttackVehicle(RussianSpawn2, 3, [8, 9, 9][Difficulty] + rand(2, 4), 10, 3, 3, [3,3], [44, 45, 46, 47, 49], [], [], 1);
     enable;
 end;

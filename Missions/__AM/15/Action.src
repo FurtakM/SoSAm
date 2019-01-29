@@ -30,10 +30,47 @@ begin
     else ChangeMissionObjectives('C1baker');
 end;
 
-// Escape
-Every 0$20 trigger ruAttacksCounter = 3 and FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 do
+Every 0$1 trigger EscapeAvalaible = 1 do
 begin
-    DialogueOn;
+enable;
+allUnitsLengh = TabLenght(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_ok]]));
+end;
+
+Every 0$10 trigger ruAttacksCounter = 3 and FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do EscapeAvalaible = 1;
+
+// Teleport russian units near am siberite lab
+
+Every 0$1 trigger EscapeAvalaible = 1 do
+var i;
+begin
+
+     InGameOn;
+     SetAttitude(3, 1, att_friend, true);
+     CenterNowOnUnits(amsiblab);
+     PrepareRussianTPUNits;
+     ChangeSideFog(3, 1);
+
+     wait(0$5);
+
+     for i in russianTPUnits do TeleportUnit(i, 128, 19, 4, true);
+     wait(0$1);
+     ComTurnUnit(russianTPUnits, amsiblab);
+     SetSide(amsiblab, 3);
+     ComEnterUnit(UnitFilter(russianTPUnits, [f_class, 4]), amsiblab);
+
+     wait(0$2);
+
+     If IsOK(Peter) then Say(Peter, 'D2-Pet-1')
+     else DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]), 'D2-Pet-1', '');
+
+     ComExitBuilding(UnitsInside(amsiblab));
+
+     wait(0$2);
+
+     for i in FilterUnitsInArea(LabHill, [[f_type, unit_building]]) do AddComAttackUnit(russianTPUnits, i);
+
+    If IsOK(Stevens) then Say(Stevens, 'D2-Stev-1')
+    else Say(Baker, 'D2-Stev-1');
 
     if IsOk(Peter) then
     begin
@@ -68,16 +105,28 @@ begin
         end;
     end;
 
-    DialogueOff;
-    ChangeMissionObjectives('C2');
-    
+
+    repeat
+    wait(0$1);
+    until IsDying(amsiblab);
+
+    for i in russianTPUnits do TeleportUnit(i, 185, 175, 4, true);
+    wait(0$2);
+    for i in russianTPUnits do RemoveUnit(i);
+
+    SetAttitude(3, 1, att_enemy, true);
+    ChangeSideFog(3, 3);
+
     escapeAvalaible = 1;
+    SetLives(amsiblab, 0);
+
+    InGameOff;
+
+    ChangeMissionObjectives('C2');
+
     SetAreaMapShow(EscapeArea, 1);
 
 end;
 
-Every 0$1 trigger EscapeAvalaible = 1 do
-begin
-enable;
-allUnitsLengh = TabLenght(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_ok]]));
-end;
+
+
