@@ -46,6 +46,7 @@ begin
 
      InGameOn;
      SetAttitude(3, 1, att_friend, true);
+     PlaceSeeing(126, 17, 1, -8);
      CenterNowOnUnits(amsiblab);
      PrepareRussianTPUNits;
      ChangeSideFog(3, 1);
@@ -58,16 +59,11 @@ begin
      SetSide(amsiblab, 3);
      ComEnterUnit(UnitFilter(russianTPUnits, [f_class, 4]), amsiblab);
 
+     for i in FilterUnitsInArea(LabHill, [[f_type, unit_building]]) diff [amsiblab] do AddComAttackUnit(russianTPUnits, i);
      wait(0$2);
 
      If IsOK(Peter) then Say(Peter, 'D2-Pet-1')
      else DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]), 'D2-Pet-1', '');
-
-     ComExitBuilding(UnitsInside(amsiblab));
-
-     wait(0$2);
-
-     for i in FilterUnitsInArea(LabHill, [[f_type, unit_building]]) do AddComAttackUnit(russianTPUnits, i);
 
     If IsOK(Stevens) then Say(Stevens, 'D2-Stev-1')
     else Say(Baker, 'D2-Stev-1');
@@ -106,19 +102,23 @@ begin
     end;
 
 
-    repeat
-    wait(0$1);
-    until IsDying(amsiblab);
+    ComExitBuilding(UnitsInside(amsiblab));
+
+    wait(0$2);
 
     for i in russianTPUnits do TeleportUnit(i, 185, 175, 4, true);
     wait(0$2);
+
+    SetLives(amsiblab, 0);
+    wait(0$2);
+
     for i in russianTPUnits do RemoveUnit(i);
 
     SetAttitude(3, 1, att_enemy, true);
     ChangeSideFog(3, 3);
 
     escapeAvalaible = 1;
-    SetLives(amsiblab, 0);
+    
 
     InGameOff;
 
