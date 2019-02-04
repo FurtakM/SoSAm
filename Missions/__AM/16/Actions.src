@@ -281,32 +281,61 @@ begin
 end;
 
 // Powells warmings
-Every 0$01 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) do
+Every 1 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
 begin
-    enable;
-
     InGameOn;
     ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
     ComMoveXY(FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]), 70, 104);
     if powellWarm = 0 then begin Say(Powell, 'DBack1-Pow-1'); powellWarm = powellWarm + 1; end;
-    if powellWarm = 1 then begin Say(Powell, 'DBack2-Pow-1'); powellWarm = powellWarm + 1; end;
-    if powellWarm = 2 then begin Say(Powell, 'DBack3-Pow-1'); YouLost('Dismissed'); end;
     InGameOff;
-    wait(0$6);
 end;
 
-Every 0$01 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) do
+Every 1 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
 begin
-    enable;
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]), 70, 104);
+    if powellWarm = 1 then begin Say(Powell, 'DBack2-Pow-1'); powellWarm = powellWarm + 1; end;
+    InGameOff;
+end;
+
+Every 1 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
+begin
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]), 70, 104);
+    if powellWarm = 2 then begin Say(Powell, 'DBack3-Pow-1'); YouLost('Dismissed'); end;
+    InGameOff;
+end;
+
+Every 1 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
+begin
 
     InGameOn;
     ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
     ComMoveXY(FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]), 71, 63);
     if powellWarm = 0 then begin Say(Powell, 'DBack1-Pow-1'); powellWarm = powellWarm + 1; end;
+    InGameOff;
+end;
+
+Every 1 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
+begin
+
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]), 71, 63);
     if powellWarm = 1 then begin Say(Powell, 'DBack2-Pow-1'); powellWarm = powellWarm + 1; end;
+    InGameOff;
+end;
+
+Every 1 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
+begin
+
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]), 71, 63);
     if powellWarm = 2 then begin Say(Powell, 'DBack3-Pow-1'); YouLost('Dismissed'); end;
     InGameOff;
-    wait(0$6);
 end;
 
 // First Powell attack - block attack troops
@@ -487,6 +516,10 @@ begin
     AddComMoveXY(PowBomb, 72, 19);
     AddComMoveXY(PowBomb, 78, 24);
     AddComMoveXY(PowBomb, 77, 20);
+    AddComMoveXY(PowBomb, 74, 15);
+    AddComMoveXY(PowBomb, 72, 19);
+    AddComMoveXY(PowBomb, 78, 24);
+    AddComMoveXY(PowBomb, 77, 20);
     AddComMoveXY(PowBomb, 78, 15);
 
     Say(Powell, 'D6b-Pow-1b');
@@ -535,22 +568,22 @@ begin
 
     for i := 1 to tmp2 do
     begin
-        ComMoveXY(tmp2[i], 41 + i, 63);
+        ComMoveXY(tmp2[i], 43 + i, 64);
         AddComTurnUnit(tmp2[i], JMM);
     end;
 
     for i := 1 to tmp1 do
     begin
-        ComMoveXY(tmp1[i], 41 + i, 64);
+        ComMoveXY(tmp1[i], 43 + i, 65);
         AddComTurnUnit(tmp1[i], JMM);
     end;
 
-    ComMoveXY(JMM, 48, 68);
-    AddComTurnXY(JMM, 47, 65);
 
     repeat
         wait(0$1);
+        ComMoveXY(JMM, 48, 68);
     until GetDistUnitXY(JMM, 48, 68) < 2;
+    AddComTurnXY(JMM, 47, 65);
 
     wait(0$2);
     Say(tmp[1], 'D6c-Sol3-2');
