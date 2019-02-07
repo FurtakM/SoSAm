@@ -112,13 +112,18 @@ RemoveSeeing(111, 135, 1);
 SaveForQuickRestart;
 
 ar_run := true;
+
+wait(0$45);
+
+if GetSide(ar_dep_s) = 2 then
+   SetSide(ar_dep_s, 1);
 End;
 
 // ar run to south
 Every 0$2 trigger ar_run do
 var i, tmp, k;
 begin
-tmp := ar_force_tmp ^ UnitFilter(ar_force_south, [f_type, unit_human]);
+tmp := ar_force_tmp ^ UnitFilter(ar_force_south, [f_or, [f_type, unit_vehicle], [f_type, unit_human]]);
 
 SetSide(tmp, 5);
 
@@ -205,6 +210,10 @@ End;
 Every 0$2 trigger GetSide(ar_dep_s) = 1 or IsDead(ar_dep_s) do
 var i, points;
 begin
+
+for i in UnitFilter(ar_force_south, [f_type, unit_building]) do
+    SetSide(i, 1);
+
 points := [ [46,41], [50,25], [57,75], [75,89], [51,45], [95,95], [84,77], [101,76], [118,81], [139,97], [129,114], [154,111] ];
 base_captured := true;
 
@@ -397,9 +406,9 @@ if IsOk(Frank) then
         SetSide(Frank, 1);
         end;
 
-   end
-else
-if IsOk(Kikuchi) then
+   end;
+
+if IsOk(Kikuchi) and not Frank then
    begin
    DialogueOn;
 
@@ -423,6 +432,9 @@ if IsOk(Kikuchi) then
 
    DialogueOff;
    end;
+
+   if Frank then
+      exit;
 
    if us_scout in [-1, 0] then
       exit;
@@ -574,6 +586,7 @@ if not seen[1] then
 // see kamikaze
 if not seen[2] then
    begin
+   can_kamikazed := true;
    tmp := FilterAllUnits([[f_side, 2], [f_class, 17]]);
 
    if tmp then
@@ -600,8 +613,8 @@ if not seen[2] then
                    if not un2 then
                       SayRand2(sex_female, 'D5b-FSol2-1', un);
                    end;
-                DialogueOff;
 
+                DialogueOff;
                 break;
                 end;
              end;
@@ -658,8 +671,8 @@ if not seen[4] then
 
                 if not un then
                    SayRand(sex_female, 'D5a-FSol1-1');
-                DialogueOff;
 
+                DialogueOff;
                 break;
                 end;
              end;
@@ -688,8 +701,8 @@ if not seen[5] and seen[3] then
                    SayRand(sex_female, 'D8a-FSol2-1');
 
                 Say(JMM, 'D8a-JMM-1');
-                DialogueOff;
 
+                DialogueOff; 
                 break;
                 end;
              end;
@@ -700,7 +713,7 @@ if seen[1] and seen[2] and seen[3] and seen[4] and seen[5] then
 End;
 
 // see kamikazed
-Every 0$1 trigger kamikazed do
+Every 0$1 trigger can_kamikazed and kamikazed do
 var un;
 begin
 DialogueOn;
@@ -886,7 +899,7 @@ powell_warn := true;
 
 DialogueOn;
 SayRadio(Powell, 'D9-Pow-1');
-dwait(0$0.3);
+dwait(0$0.3); 
 DialogueOff;
 End;
 
@@ -940,7 +953,7 @@ GiveMedals('MAIN');
 
 
 // save
-tmp := FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]);
+tmp := FilterAllUnits([[f_placed], [f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]);
 RewardPeople(tmp);
 
 // [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];

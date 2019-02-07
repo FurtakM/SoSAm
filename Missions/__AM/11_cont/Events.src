@@ -185,3 +185,34 @@ if GetType(unit) = unit_vehicle then
 if not kamikazed then
    kamikazed := unit;
 End;
+
+On VehicleCaptured(new, old, side, capturing_unit) do
+var i, tmp;
+begin
+if side <> 2 then
+   exit;
+
+for i = 1 to mc_vehicles do
+    if old in mc_vehicles[i] or new in mc_vehicles[i] then
+       begin
+       tmp := mc_vehicles[i] diff old;
+       tmp := tmp diff new;
+       mc_vehicles := Replace(mc_vehicles, i, tmp);
+       break;
+       end;
+End;
+
+On BuildingCaptured(building, side, capturning_unit) do
+var i, tmp;
+begin
+if side <> 2 then
+   exit;
+
+for i = 1 to mc_bases do
+    if building in mc_bases[i] then
+       begin
+       tmp := mc_bases[i] diff building;
+       mc_bases := Replace(mc_bases, i, tmp);
+       break;
+       end;
+End;

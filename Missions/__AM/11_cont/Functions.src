@@ -31,12 +31,12 @@ End;
 
 Export Function CanSayRand(side);
 begin
-result := FilterAllUnits([[f_side, side], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+result := FilterAllUnits([[f_placed], [f_side, side], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
 End;
 
 Export Function SayRand(sex, dial);
 begin
-result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+result := FilterAllUnits([[f_placed], [f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
 
 if not result then
    exit;
@@ -511,7 +511,17 @@ if buildings then
 
           for j in f do
               repeat
-               PrepareHuman(false, i, skill);
+
+              if GetBType(j) = b_barracks then
+                 begin
+                 if UnitsInside(j) < 3 then
+                    PrepareHuman(false, [class_sniper, class_mortar, class_bazooker][nation], skill)
+                   else
+                    PrepareHuman(false, i, skill);
+                 end
+                  else
+                 PrepareHuman(false, i, skill);
+
                un := CreateHuman;
                result := Insert(result, 1, un);
                PlaceHumanInUnit(un, j);
@@ -529,7 +539,16 @@ if buildings then
               if not f then
                  break;
 
-              PrepareHuman(false, i, skill);
+              if GetBType(f[1]) = b_barracks then
+                 begin
+                 if UnitsInside(f[1]) < 3 then
+                    PrepareHuman(false, [class_sniper, class_mortar, class_bazooker][nation], skill)
+                   else
+                    PrepareHuman(false, i, skill);
+                 end
+                  else
+                 PrepareHuman(false, i, skill);
+
               un := CreateHuman;
               result := Insert(result, 1, un);
               PlaceHumanInUnit(un, f[1]);
