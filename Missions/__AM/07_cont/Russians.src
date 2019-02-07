@@ -68,21 +68,7 @@ bunker_list := tmp;
 
 // place weapon on turrets
 for i in bunker_list^turret_list do
-    begin
-    tmp := rand(0, 100);
-    r := 0;
-
-    for j in weapons_list do
-        begin
-        r := r + j[2];
-
-        if r >= tmp then
-           begin
-           PlaceWeaponTurret(i, j[1]);
-           break;
-           end;
-        end;
-    end;
+    PlaceWeaponTurret(i, GetTurretWeapon(i));
 
 // place personel in base
 while (personel_counter[1]) do
@@ -359,7 +345,7 @@ for i = 1 to count do
 End;
 
 // Kill Frank Patrol
-Every 4$00 do
+Every 8$00 do
 var i, un, time;
 begin
 time := [2$00, 1$00, 0$30];

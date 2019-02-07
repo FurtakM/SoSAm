@@ -561,7 +561,10 @@ for i = 1 to mc_bases do
               continue;
               end;
 
-           if GetClass(mc_miners[i][j]) = 1 and not MineOfUnit(mc_miners[i][j]) and DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][j][1], mc_mines[i][j][2], 12)[4] = 0 then
+           if WantPlant(mc_miners[i][j]) and (DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][k][1], mc_mines[i][k][2], 15)[4] or DangerAtRange(mc_miners[i][j], 10)[4]) then
+              ComStop(mc_miners[i][j]);
+
+           if GetClass(mc_miners[i][j]) = 1 and not MineOfUnit(mc_miners[i][j]) and DangerAtRangeXY(GetSide(mc_miners[i][j]), mc_mines[i][k][1], mc_mines[i][k][2], 15)[4] = 0 then
               begin
 
               if IsInUnit(mc_miners[i][j]) then
@@ -893,7 +896,10 @@ if not list then
    exit;
 
 for i = 1 to amount do
-    tmp := Replace(tmp, i, [list[1][i], list[2][i]]);
+    begin
+    x := rand(1, list[1]);
+    tmp := Replace(tmp, i, [list[1][x], list[2][x]]);
+    end;
 
 mc_mines := Replace(mc_mines, base, tmp);
 mc_minefields := Replace(mc_minefields, base, area);
