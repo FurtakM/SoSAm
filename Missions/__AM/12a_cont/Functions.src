@@ -1,0 +1,47 @@
+Export Function PrepareUnit(ident, exist_mode, prefix);
+var unit;
+begin
+
+if exist_mode then
+   unit := CreateCharacter(prefix&ident)
+  else
+   unit := NewCharacter(ident);
+                     
+result := unit;
+End;
+
+Export Function PrepareVehicle(chassis, engine, control, weapon, fuel);
+begin
+vc_chassis := chassis;
+vc_engine := engine;
+vc_control := control;
+vc_weapon := weapon;
+vc_fuel_battery := fuel;
+End;
+
+Export Function CanSayRand(side);
+begin
+result := FilterAllUnits([[f_placed], [f_side, side], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+End;
+
+Export Function SayRand(sex, dial);
+begin
+result := FilterAllUnits([[f_placed], [f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+
+if not result then
+   exit;
+
+result := result[1];
+Say(result, dial);
+End;
+
+Export Function SayRand2(sex, dial, filter);
+begin
+result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi]^filter;
+
+if not result then
+   exit;
+
+result := result[1];
+Say(result, dial);
+End;
