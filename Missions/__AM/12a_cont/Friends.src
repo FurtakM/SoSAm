@@ -1,0 +1,96 @@
+Export Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
+       Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
+       Simms, Joan, DeltaDoctor;
+Export Function PrepareFriends;
+var i;
+begin
+uc_side := 4;
+uc_nation := 1;
+
+DeltaDoctor := PrepareUnit('DeltaDoctor', (not debug), '10c_');
+
+Joan := PrepareUnit('Joan', (not debug), '10c_');
+
+if Joan then
+   friends := Insert(friends, 1, Joan);
+
+Simms := PrepareUnit('Simms', (not debug), '10c_');
+
+Kikuchi := PrepareUnit('Kikuchi', (not debug), '11_');
+
+if Kikuchi then
+   friends := Insert(friends, 1, Kikuchi);
+
+Frank := PrepareUnit('Frank', (not debug), '11_');
+
+if Frank then
+   friends := Insert(friends, 1, Frank);
+
+Gary := PrepareUnit('Gary', (not debug), '11_');
+
+if Gary then
+   friends := Insert(friends, 1, Gary);
+
+Cornel := PrepareUnit('Cornel', (not debug), '11_');
+
+if Cornel then
+   friends := Insert(friends, 1, Cornel);
+
+Houten := PrepareUnit('Houten', (not debug), '11_');
+
+if Houten then
+   friends := Insert(friends, 1, Houten);
+
+Gladstone := PrepareUnit('Gladstone', (not debug), '11_');
+
+if Gladstone then
+   friends := Insert(friends, 1, Gladstone);
+
+Lisa := PrepareUnit('Lisa', (not debug), '11_');
+
+if Lisa then
+   friends := Insert(friends, 1, Lisa);
+
+Donaldson := PrepareUnit('Donaldson', (not debug), '11_');
+
+if Donaldson then
+   friends := Insert(friends, 1, Donaldson);
+
+Bobby := PrepareUnit('Bobby', (not debug), '11_');
+
+if Bobby then
+   friends := Insert(friends, 1, Bobby);
+
+Cyrus := PrepareUnit('Cyrus', (not debug), '11_');
+
+if Cyrus then
+   friends := Insert(friends, 1, Cyrus);
+
+Denis := PrepareUnit('Denis', (not debug), '11_');
+
+Brown := PrepareUnit('Brown', (not debug), '11_');
+
+if Brown then
+   friends := Insert(friends, 1, Brown);
+
+friends := friends ^ CreateCharacterSet('11c_others');
+friends := friends ^ CreateCharacterSet('11_others');
+
+
+// robimy machlojki przed anszlusem
+for i in friends do
+    SetClass(i, class_soldier);
+
+if Frank then
+   SetClass(Frank, class_sniper);
+
+SetClass([Joan, Denis, DeltaDoctor, Simms], class_scientistic);
+
+selected = CharacterSelection('', 7, 7,
+                             [sel_dont_change_class, JMM, Simms, Denis, DeltaDoctor,
+                              sel_not_hired,sel_changeable, sel_change_class]^friends,
+                             [class_soldier, [class_scientistic, 3], [class_sniper, 0, 3]]);
+
+
+
+End;
