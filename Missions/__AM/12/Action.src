@@ -11,14 +11,26 @@ begin
    AddComMoveXY(i, 114, 102);
 
     Say(JMM, 'D1-JMM-1');
+    CenterNowOnUnits(IsInUnit(JMM));
 
     if IsOk(Donaldson) then
     begin
       Say(Donaldson, 'D1-Don-1');
+      CenterNowOnUnits(IsInUnit(JMM));
       Say(JMM, 'D1-JMM-2');
+      CenterNowOnUnits(IsInUnit(JMM));
       Say(Donaldson, 'D1-Don-2');
+      CenterNowOnUnits(IsInUnit(JMM));
     end;
     AddComMoveXY(FilterAllUnits([f_side, 1]), 110, 101);
+    wait(0$1);
+    CenterNowOnUnits(IsInUnit(JMM));
+    wait(0$1);
+    CenterNowOnUnits(IsInUnit(JMM));
+    wait(0$1);
+    CenterNowOnUnits(IsInUnit(JMM));
+    wait(0$1);
+    CenterNowOnUnits(IsInUnit(JMM));
 
 end;
 
@@ -26,7 +38,7 @@ end;
 Every 0$1 trigger SeeXY(1, 102, 94) do
 var i;
 begin
-    CenterOnXY(95, 84);
+    CenterOnXY(102, 94);
     DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]), 'D1-Sol1-2', '');
     Say(JMM, 'D1-JMM-3');
     ChangeMissionObjectives('M1');
@@ -725,7 +737,7 @@ begin
 
     if vehs > 0 then
        for i := 1 to RuScientists do ComEnterUnit(UnitFilter(RuScientists[i], [f_not, [f_hastask]]), vehs[i])
-    else ComMoveToArea(RuScientists, [EscapeArea1, EscapeArea2][Rand(1,2)]);
+    else ComMoveToArea(UnitFilter(RuScientists[i], [f_not, [f_hastask]]), [EscapeArea1, EscapeArea2][Rand(1,2)]);
 
 
 end;
