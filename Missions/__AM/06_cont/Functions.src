@@ -323,6 +323,33 @@ begin
 
 END;
 
+
+Export function CraneRepairBuild(side, repairArea, destroyedBuildings);
+var i, mechTmp, vehicleTmp, crane_list, buildings_list;
+begin
+    crane_list = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_weapon, ru_crane]]);
+    buildings_list = FilterAllUnits([[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+    if buildings_list > 0 and UnitFilter(crane_list, [f_lives, 750]) > 0 then ComRepairBuilding( UnitFilter(crane_list, [f_lives, 750]), buildings_list[1]);
+
+    if UnitFilter(crane_list, [f_not, [f_lives, 750]]) > 0 then ComMoveToArea(UnitFilter(crane_list, [f_not, [f_lives, 750]]), repairArea);
+
+    //if crane_list > 0 and buildings_list = 0 and destroyedBuildings > 0  then ComBuild(crane_list, destroyedBuildings[1], destroyedBuildings[2], destroyedBuildings[3], destroyedBuildings[4]);
+
+    if FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_weapon, ru_crane], [f_not, [f_lives, 750]]]) > 0 then
+    begin
+        for i in FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_weapon, ru_crane], [f_not, [f_lives, 750]]]) do
+        begin
+            mechTmp = UnitsInside(i);
+            ComExitVehicle(mechTmp);
+            AddComRepairVehicle(mechTmp, vehicleTmp);
+            wait(0$2);
+            AddComEnterUnit(mechTmp, FilterUnitsInArea(repairArea, [[f_side, side], [f_type, unit_vehicle], [f_weapon, ru_crane], [f_lives, 1000], [f_empty]])[1]);
+        end;
+    end;
+end;
+
+
 // Other functions
 
 Export function RespawnAttackInfantry(side, nation, soldierCount, sniperCount, bazookCount, mortalCount, medicCount, skil, spawnArea, healArea, targetSide, strategy);
