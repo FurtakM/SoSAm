@@ -2,7 +2,7 @@ Export Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
        Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
        Simms, Joan, DeltaDoctor;
 Export Function PrepareFriends;
-var i;
+var i, tmp, buildings;
 begin
 uc_side := 4;
 uc_nation := 1;
@@ -76,10 +76,20 @@ if Brown then
 friends := friends ^ CreateCharacterSet('11c_others');
 friends := friends ^ CreateCharacterSet('11_others');
 
+if friends < 10 then
+   for i = 1 to 10 do
+       begin
+       PrepareHuman(false, rand(1, 4), 7);
+       friends := Insert(friends, 1, CreateHuman);
+       end;
+
 
 // robimy machlojki przed anszlusem
 for i in friends do
-    SetClass(i, class_soldier);
+    if GetSkill(i, 1) >= GetSkill(i, 4) then
+       SetClass(i, class_soldier)
+      else
+       SetClass(i, class_scientistic);
 
 if Frank then
    SetClass(Frank, class_sniper);
@@ -92,5 +102,14 @@ selected = CharacterSelection('', 7, 7,
                              [class_soldier, [class_scientistic, 3], [class_sniper, 0, 3]]);
 
 
+others := friends diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
+                        Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
+                        Simms, Joan, DeltaDoctor]^selected;
 
+
+// buildings
+buildings := [ambar1, ambar2, amlab2, amlab3, amlab4, amct1, amfac1];
+
+for i in buildings do
+    SetSide(i, 4);
 End;

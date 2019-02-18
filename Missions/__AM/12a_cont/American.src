@@ -1,1 +1,29 @@
 Export Powell;
+Export Function PrepareAmerican;
+var i, un, bunkers;
+begin
+uc_side := 1;
+uc_nation := 1;
+
+Powell := NewCharacter('Powell');
+PlaceUnitXY(Powell, 110, 26, false);
+
+ComHold(Powell);
+
+// @see Friends module
+bunkers := FilterAllUnits([[f_side, 1], [f_btype, b_bunker]]);
+
+if others < bunkers then
+   for i = bunkers-others downto 1 do
+       begin
+       PrepareHuman(false, 1, [7, 8, 9][Difficulty]);
+       others := Insert(others, 1, CreateHuman);
+       end;
+
+if others then
+   for i = 1 to bunkers do
+       begin
+       SetSide(others[i], 1);
+       PlaceHumanInUnit(others[i], bunkers[i]);
+       end;
+End;
