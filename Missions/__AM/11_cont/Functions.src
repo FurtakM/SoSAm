@@ -1351,7 +1351,7 @@ repeat
              continue;
              end;
 
-          if f_crawl and GetLives(group[i]) < 800 and not Crawls(group[i]) then
+          if f_crawl and GetClass(group[i]) = 1 and GetLives(group[i]) < 800 and not Crawls(group[i]) then
              ComCrawl(group[i]);
                          
           if f_mines then
@@ -1374,7 +1374,7 @@ repeat
           end;
                 
        // kamikaze
-       if GetClass(group[i]) = 17 then
+       if GetClass(group[i]) = 17 and not GetTag(group[i]) = 71 then
           begin
           attacking := false;
           k := 5;
@@ -1388,6 +1388,7 @@ repeat
                  begin
                  ComAttackUnit(group[i], tmp[j]);
                  attacking := true;
+                 SetTag(group[i], 71);
                  continue;
                  end;
               end;
@@ -1580,10 +1581,10 @@ repeat
      begin
      e := NearestUnitToUnit(enemy, i);
 
-     if not WantsToAttack(i) and IsOk(i) and GetDistUnits(i, e) < 30 then
+     if GetLives(i) > 600 and GetDistUnits(i, e) < 30 then
         ComAttackUnit(i, e)
        else
-        if GetDistUnits(i, e) >= 30 and not IsInArea(i, mc_parking[base]) then
+        if (GetDistUnits(i, e) >= 30 or GetLives(i) <= 600) and not IsInArea(i, mc_parking[base]) then
            ComMoveToArea(i, mc_parking[base]);
      end;
 until not enemy or not defenders;
