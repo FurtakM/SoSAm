@@ -144,19 +144,19 @@ End;
 //
 //
 // Dragon zapcha³ kibel i zrzuci³ na kolege
-Every 0$2 trigger FilterAllUnits([[f_side, 3], [f_class, 2], [f_ok]]) do
+Every 0$2 trigger FilterAllUnits([[f_side, 3], [f_class, 2]]) do
 var i, filter, tmp, engs, enemy;
 begin
 enable;
 
 filter := FilterUnitsInArea(baseArea, [[f_not, [f_lives, 1000]], [f_type, unit_building]]);
-engs := FilterAllUnits([[f_side, 3], [f_class, 2], [f_lives, 650]]);
+engs := FilterAllUnits([[f_side, 3], [f_class, 2]]);
 
 if not filter and not ru_rebuild_list then
    begin
-   if not IsInUnit(engs[1]) then
-      ComEnterUnit(engs, ru_dep_main);
-   exit;
+   for i in engs do
+       if GetLives(i) = 1000 and not HasTask(i) and not IsInUnit(i) then
+          ComEnterUnit(i, ru_dep_main);
    end;
 
 if debug then
@@ -173,6 +173,11 @@ if UnitFilter(engs, [f_not, [f_lives, 650]]) then
           AddComWait(i, 0$30);
           end;
    end;
+
+engs := UnitFilter(engs, [f_lives, 650]);
+
+if not engs then
+   exit;
 
 if filter then
    begin
