@@ -792,6 +792,7 @@ until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 6;
 
 SayRadio(Cornel, 'D5-Corn-1');
 SaveCharacters(Cornel, mission_prefix&'Cornel');
+cornel_saved := true;
 
 ChangeSideFog(4, 8);
 
@@ -958,7 +959,7 @@ if Khatam in save_group then
 if save_others then
    SaveCharacters(save_others, '03_others');
 
-if Bierezov and IsOk(Bierezov) then
+if Bierezov and IsOk(Bierezov) and cornel_saved then
    begin
    ResetFog;
    DisplayEndingScene;
