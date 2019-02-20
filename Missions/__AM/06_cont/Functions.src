@@ -168,16 +168,20 @@ begin
 
     if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_not, [f_empty], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]]]]) = [5, 6, 6][Difficulty] then
 
+      if seeEnemy = 0 then
         repeat
             wait(0$1);
 
             vehiclesOK = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 660], [f_not, [f_empty], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]]]]);
 
             if not FilterAllUnits([[f_side, side], [f_inarea, meetArea]]) and seeEnemy = 0 then for i := 1 to wayX do ComAgressiveMove(vehiclesOK, wayX[i], wayY[i]);
+       until FilterAllUnits([[f_side, side], [f_inarea, meetArea]]) > 0;
 
-            if FilterAllUnits([[f_side, side], [f_inarea, meetArea]]) then
-            begin
-                seeEnemy = 1;
+      seeEnemy = 1;
+
+       repeat
+          wait(0$1);
+                
 
                 for j in vehiclesOK do
                 begin
@@ -187,8 +191,6 @@ begin
                     If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
                     else ComAttackUnit(j, target2);
                 end;
-            end;
-
 
         until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000], [f_not, [f_empty], [f_or, [f_weapon, 43], [f_weapon, 44], [f_weapon, 46]]]]) = 0;
         seeEnemy = 0;
