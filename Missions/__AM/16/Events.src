@@ -65,6 +65,15 @@ begin
         ComEnterUnit(powellPeople[2], FilterAllUnits([[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[2]);
     end;
 
+    if GetSide(building) = 4 and GetBType(building) = b_ext_siberium then
+    begin
+
+       AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+       AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+       AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [3, 5, 7][Rand(1, 3)]);
+       AddComConstruct(AmFact, us_morphling, engine_siberite, control_manual, 6);
+    end;
+
     if GetSide(building) = 8 then
     begin
         if GetBType(building) = b_workshop then ComUpgrade(building);
@@ -120,7 +129,7 @@ begin
 end;
 
 On VehicleConstructed(vehicle, building) Do
-var legionBomb;
+var legionBomb, rocketTarget;
 begin
     if vehicle = powellVeh then ComExitVehicle(UnitsInside(vehicle));
 
@@ -158,8 +167,14 @@ begin
             if Kurt then Say(Kurt, 'D12-Kurt-1')
             else Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[2], 'D12-Kurt-1');
             DialogueOff;
-            wait(0$3);
-            AddComAttackPlace(legionRocket, GetX(JMM), GetY(JMM));
+
+            wait(0$15);
+
+            rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 1], [f_or, [f_btype, 0], [f_btype, 1]]]);
+            if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 2], [f_or, [f_btype, 0], [f_btype, 1]]]);
+            if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1], [f_ok]]);
+
+            ComAttackPlace(legionRocket, GetX(rocketTarget[1]), GetY(rocketTarget[1]));
         end;
 
         if legionBomb = 2 then
@@ -168,7 +183,8 @@ begin
             else Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[2], 'D12a-Kurt-11');
             SayRadio(Roth, 'D12a-Roth-1');
             DialogueOff;
-            ComAttackUnit(legionRocket, RuDep2);
+            wait(0$15);
+            ComAttackPlace(legionRocket, GetX(RuDep2), GetY(RuDep2));
         end;
        
 
