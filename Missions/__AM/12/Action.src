@@ -742,25 +742,36 @@ begin
 end;
 
 // Remove sci from map
-Every 0$1 trigger ruAI = 0 do
-var i, j;
+Every 0$0.3 trigger ruAI = 0 and UnitFilter(RuScientists, [f_inarea, EscapeArea1]) or FilterUnitsInArea(EscapeArea1, [[f_control, control_manual], [f_nation, 3]]) do
+var i, unit, veh, tmp;
 begin
-    enable;
+enable;
 
-    for i in FilterUnitsInArea(EscapeArea1, [[f_side, 3]]) do
-    begin
-        for j in RuScientists do 
-            if j = i then RuScientists = RuScientists diff [i];
+unit := UnitFilter(RuScientists, [f_inarea, EscapeArea1])[1];
 
-        RemoveUnit(i);
-    end; 
-    
-    for i in FilterUnitsInArea(EscapeArea2, [[f_side, 3]]) do
-    begin
+if not unit then
+   begin
+   tmp := FilterUnitsInArea(EscapeArea1, [[f_control, control_manual], [f_nation, 3]]);
 
-        for j in RuScientists do 
-            if j = i then RuScientists = RuScientists diff [i];
+   if not tmp then
+      exit;
 
-        RemoveUnit(i);
-    end; 
-end;
+   for i in tmp do
+       if IsDrivenBy(i) in RuScientists then
+          begin
+          unit := IsDrivenBy(i);
+          veh := i;
+          break;
+          end;
+   end;
+
+if not unit then
+   exit;
+
+RuScientists = RuScientists diff unit;
+RemoveUnit(unit);
+
+if veh then
+   if GetWeapon(veh) = 49 then KillUnit(veh)
+   else RemoveUnit(veh);
+End;
