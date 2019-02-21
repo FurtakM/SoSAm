@@ -445,7 +445,7 @@ Every 0$1 trigger FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehic
 var tmp, temp1, temp2, i;
 begin
      tmp = FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]);
-     temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby];
+     temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby, Khatam];
      temp2 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_female]]) diff [Lisa];
 
      DialogueOn;
@@ -503,7 +503,7 @@ begin
     until FilterUnitsInArea(NorthBase, [[f_side, 1], [f_class, 2]]);
 
     repeat
-       temp = FilterAllUnits([[f_side, 1], [f_nation, 1], [f_class, 2], [f_ok], [f_outside]]) diff [JMM];
+       temp = FilterAllUnits([[f_side, 1], [f_nation, 1], [f_class, 2], [f_ok], [f_outside]]) diff [JMM, Khatam];
        wait(0$1);
     until temp > 0;
 
@@ -779,7 +779,7 @@ Every 0$1 trigger GetDistUnits(JMM, mikhailDepot) < 5 AND mikhailStatus = 3 AND 
 var tmp;
 begin
 
-     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM];
+     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Khatam];
 
      DialogueOn;
      Say(JMM, 'D7-JMM-1');

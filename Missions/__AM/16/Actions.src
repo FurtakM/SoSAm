@@ -122,7 +122,6 @@ begin
             if JMMGirl = 2 then ComMoveUnit(JMM, Lisa);
             if JMMGirl = 3 then ComMoveUnit(JMM, Connie);
         until GetDistUnits(JMM, Joan) < 6 or GetDistUnits(JMM, Lisa) < 6 or GetDistUnits(JMM, Connie) < 6;
-    end;
 
     CenterNowOnUnits(JMM);
 
@@ -148,7 +147,7 @@ begin
             Say(JMM, 'D3W-JMM-1');
         end;
     end;
-
+  end;
     people = 0;
 
     if Lisa and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Lisa;  end;
@@ -365,7 +364,7 @@ Every 0$30 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, 
 
 
 // Second Powell attack - attack
-Every 1$15 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_lives, 250]]) = 0 and startAttacks = 0 and powellAttacks = 2 do
+Every 1$15 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle]]) = 0 and startAttacks = 0 and powellAttacks = 2 do
 var i, sold, powellPeople, arControler;
 begin
     powellAttacks = 3;
@@ -374,6 +373,8 @@ begin
     wait(0$5);
 
     Video(true);
+
+    ComStop(FilterAllUnits([f_side, 1]));
 
     CenterNowOnUnits(Powell);
     ComMoveXY(Powell, 45, 64);
@@ -390,7 +391,9 @@ begin
         wait(0$1);
         AddComMoveXY(amUnitsAttack[i], 43 + i, 66);
         AddComTurnUnit(amUnitsAttack[i], Powell);
-    end;
+    end; 
+
+    wait(0$10);
 
     powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_not, [f_hastask]]]) diff [Powell];
     ComEnterUnit(powellPeople, AmArm);
@@ -450,7 +453,7 @@ begin
             tmp = i;
             break;
         end;
-            
+
 
     ComExitBuilding(UnitsInside(AmArm));
     Say(tmp, 'D6-Sol3-2');
@@ -461,9 +464,13 @@ begin
 end;
 
 // Destroy Powell's fab
-Every 0$1 trigger IsDead(AmFact) do
+Every 1 trigger IsDead(AmFact) do
 var i, tmp;
 begin
+
+    if FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_control, 2], [f_weapon, 29], [f_ok]]) = 1 then
+       ComAttackUnit(FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_control, 2], [f_weapon, 29], [f_ok]]), FilterUnitsInArea(BunkerHillArea, [[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[1]);
+
 
     for i in FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside]]) diff [Powell] do
     if GetSex(i) = sex_male then
@@ -911,7 +918,7 @@ enable;
 end;
 
 // TP your units to Alliance base
-Every 0$1 trigger FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_or, [f_type, unit_human], [f_control, 1]]]) > 0 and IsOK(Roth) and AllianceAI = 1 do
+Every 0$1 trigger FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_not, [f_empty]]]) > 0 and IsOK(Roth) and AllianceAI = 1 do
 var tpUnit, heroes, rnd;
 begin
     tpUnit = FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_or, [f_type, unit_human], [f_control, 1]]])[1];

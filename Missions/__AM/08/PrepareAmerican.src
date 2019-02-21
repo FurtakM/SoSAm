@@ -390,6 +390,24 @@ begin
 
     veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
     JMM = PrepareUnit(mission_prefix_prev&'JMM', true);
+
+   other = CreateCharacterSet('07c_others');
+
+    for i in other do 
+    begin
+        veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
+        if veh > 0 and GetClass(i) = 3 then begin PlaceHumanInUnit(i, veh[1]);
+        end else begin PlaceUnitArea(i, GammaSupport, false); end;
+        other = other diff i;
+    end; 
+
+    for i in other do 
+    begin
+        veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
+        if veh > 0 then begin PlaceHumanInUnit(i, veh[1]);
+        end else begin PlaceUnitArea(i, GammaSupport, false); end;
+    end; 
+
     if veh > 0 then begin PlaceHumanInUnit(JMM, veh[1]);
     end else begin PlaceUnitArea(JMM, GammaSupport, false); end;
 
@@ -462,14 +480,6 @@ begin
        if veh > 0 then begin PlaceHumanInUnit(Khatam, veh[1]);
        end else begin PlaceUnitArea(Khatam, GammaSupport, false); end;
        end;
-
-    other = CreateCharacterSet('07c_others');
-    for i in other do 
-    begin
-        veh = FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_vehicle], [f_empty]]);  
-        if veh > 0 then begin PlaceHumanInUnit(i, veh[1]);
-        end else begin PlaceUnitArea(i, GammaSupport, false); end;
-    end; 
 
     ComMoveXY(FilterUnitsInArea(GammaSupport,[[f_side, 1]]), 53, 19);
 end;
