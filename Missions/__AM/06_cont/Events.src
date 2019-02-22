@@ -86,6 +86,9 @@ begin
               PlaceHumanInUnit(CreateHuman, rufab);
         end;
 
+        if GetSide(unit) = 3 and GetWeapon(unit) = ru_crane and IsOK(rufab) and GetSide(rufab) = 3 then
+           ComConstruct(rufab, 22, 1, 1, ru_crane);
+
 end;
 
 On VehicleConstructed(vehicle, building) Do
@@ -106,7 +109,11 @@ end;
 On ApemanTamed(apeman, human) Do
 begin
 
-    if GetSide(apeman) = 3 then tamedApemans = tamedApemans + 1;
+    if GetSide(apeman) = 3 then
+    begin
+      tamedApemans = tamedApemans + 1;
+      ComMoveXY(apeman, 106, 85);
+    end;
 end;
 
 On UnitGoesToRed(unit) Do

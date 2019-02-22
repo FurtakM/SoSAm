@@ -138,11 +138,13 @@ begin
 end;
 
 Export function ResAllTechs(side, lab, nation);
-var i, tech, cout;
+var i, tech, cout, ru_tech_list;
 begin
 
-  For i = 1 to 72 do
-    If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true then AddComResearch(lab, i);
+  ru_tech_list := [48, 49, 50, 20, 1, 51, 52, 69, 39, 34, 40, 53, 71, 57, 58, 44, 32, 27, 23, 33, 59, 54, 55, 56, 63, 64, 65, 30, 31, 21, 22, 25];
+
+  For i = 1 to ru_tech_list do
+    If GetTech(ru_tech_list[i], side) = state_enabled and TechNationAvailable(ru_tech_list[i], nation) = true then AddComResearch(lab, ru_tech_list[i]);
 
 end;
 
@@ -177,22 +179,6 @@ end;
 Export function BaseDefendersSpawn(side, areaSpawn, nation, skill, infantryCount, vehCount);
 var i,j, un, target, veh;
 begin
-
-        for i = 1 to infantryCount do
-        begin
-
-                uc_side = side;
-                uc_nation = nation;
-
-                hc_class = 1;
-                hc_name = '';
-                hc_gallery = '';
-                PrepareHuman(false, 1, rand(RuSolMinLevel, RuSolMaxLevel));
-
-                un = CreateHuman;
-                PlaceUnitArea(un, areaSpawn, false);
-                defenders_list = defenders_list ^ un;
-        end;
 
         for i = 1 to vehCount do
         begin

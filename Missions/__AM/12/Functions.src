@@ -121,11 +121,13 @@ begin
 END;
 
 Export function ResAllTechs(side, lab, nation);
-var i, tech, cout;
+var i, tech, cout, ru_tech_list;
 begin
 
-  For i = 1 to 72 do
-    If GetTech(i, side) = state_enabled and TechNationAvailable(i, nation) = true then AddComResearch(lab, i);
+  ru_tech_list := [48, 49, 50, 20, 1, 51, 52, 69, 39, 34, 40, 53, 71, 57, 58, 44, 32, 27, 23, 33, 59, 54, 55, 56, 63, 64, 65, 30, 31, 21, 22, 25];
+
+  For i = 1 to ru_tech_list do
+    If GetTech(ru_tech_list[i], side) = state_enabled and TechNationAvailable(ru_tech_list[i], nation) = true then AddComResearch(lab, ru_tech_list[i]);
 
 end;
 
@@ -175,6 +177,39 @@ begin
   if FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 3], [f_lives, 751]]) > 0 and IsOk(ru_fact) and GetSide(ru_fact) = 3 then ComEnterUnit(FilterUnitsInArea(baseArea, [[f_side, side], [f_class, 3], [f_lives, 751]]), ru_fact);
 
 END;
+
+Export function AttackNearBuildings(side, enemySide);
+var i, j, turretsList, enemyBuildings;
+begin
+    turretsList = FilterAllUnits([[f_side, side], [f_or, [f_btype, 31], [f_btype, 32], [f_btype, 33], [f_btype, 4], [f_btype, 5]]]);
+    enemyBuildings = FilterAllUnits([[f_side, enemySide], [f_type, unit_building], [f_empty]]);
+
+    if turretsList > 0 and enemyBuildings > 0 then
+    begin
+        for i in turretsList do
+        begin
+            for j in enemyBuildings do
+            begin
+                if GetDistUnits(i, j) < 20 then
+                begin
+                    ComAttackUnit(i, j);
+                end;
+            end;
+        end;
+    end;
+
+END;
+
+Export function CraneRepairBuild(side, baseArea);
+var i, mechTmp, vehicleTmp, crane_list, buildings_list;
+begin
+    crane_list = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_vehicle], [f_weapon, ru_crane]]);
+    buildings_list = FilterUnitsInArea(baseArea, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+    if buildings_list > 0 and UnitFilter(crane_list, [f_lives, 750]) > 0 then ComRepairBuilding(crane_list, buildings_list[1]);
+
+end;
+
 
 Export function BuildingVehicle(side, fabric, vehCount, weaponTab, engine, control, chassis);
 var i;
@@ -262,7 +297,7 @@ for i = 1 to AreaToList(area, 0)[1] do
        begin
        if not MineAtPos(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]) then
           begin
-          PlaceMine(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i], 5, 0);
+          PlaceMine(AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i], 8, 0);
 
           arabianMines := Insert(arabianMines, 1, [AreaToList(area, 0)[1][i], AreaToList(area, 0)[2][i]]);
 

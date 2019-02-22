@@ -71,8 +71,15 @@ begin
 end;
 
 On LeaveVehicle(vehicle, human) Do
+var i;
 begin
     if GetSide(human) = 3 and GetClass(human) = 3 and GetSide(ru_fact) = 3 and IsOk(ru_fact) then ComEnterUnit(human, ru_fact);
+
+
+    if GetClass(human) = 4 and GetSide(human) = 3 and ruAI = 0 then
+       for i in RuScientists do
+           if i = human then
+              ComMoveToArea(i, [EscapeArea1, EscapeArea2][Rand(1,2)]);
 end;
 
 On EnterVehicle(vehicle, human) Do
@@ -88,6 +95,6 @@ begin
                   AddComMoveToArea(vehicle, [EscapeArea1, EscapeArea2][Rand(1,2)]);
                end else
                begin
-                  ComMoveToArea(vehicle, [EscapeArea1, EscapeArea2][Rand(1,2)])
+                  ComMoveToArea(vehicle, [EscapeArea1, EscapeArea2][Rand(1,2)]);
                end;
 end;
