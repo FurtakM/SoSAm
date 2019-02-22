@@ -283,3 +283,14 @@ begin
 
     until russianTimeLapsers = 0;
 end;
+
+Export function CraneRepairBuild(side, baseArea);
+var i, mechTmp, vehicleTmp, crane_list, buildings_list;
+begin
+    crane_list = FilterUnitsInArea(baseArea, [[f_side, side], [f_type, unit_vehicle], [f_weapon, ru_crane]]);
+    buildings_list = FilterUnitsInArea(baseArea, [[[f_side, side], [f_type, unit_building], [f_not, [f_lives, 1000]]]]);
+
+    if buildings_list > 0 and UnitFilter(crane_list, [f_lives, 750]) > 0 then ComRepairBuilding(crane_list, buildings_list[1]);
+
+    if crane_list > 0 and buildings_list = 0 and rudestroyedBuildings > 0  then AddComCraneBuild(crane_list, rudestroyedBuildings[1], rudestroyedBuildings[2], rudestroyedBuildings[3], rudestroyedBuildings[4]);
+end;
