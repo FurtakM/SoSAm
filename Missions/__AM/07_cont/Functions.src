@@ -380,3 +380,25 @@ begin
      end;
 
 End;
+
+Export Function NearbyTowerHasEnergy(unit);
+var i, tmp, energy;
+begin
+result := [];
+tmp := FilterAllUnits([[f_enemy, GetSide(unit)], [f_dist, unit, 15], [f_or, [f_btype, b_bunker], [f_btype, b_turret]]]);
+
+if not tmp then
+   exit;
+
+for i in tmp do
+    begin
+    energy := GetEnergy(GetBase(i));
+
+    if energy[4] > energy[1] then
+       begin
+       result := i;
+       break;
+       end;
+    end;
+
+End;
