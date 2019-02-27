@@ -1,6 +1,7 @@
 // Prepare base
 Export JMM, Gladstone, Frank, Lisa, Cyrus, Bobby, Donaldson, Brown, Houten, Khatam, Harisson;
 Export gamma_commander;
+Export RandGuy;
 
 Export Function PrepareAmerican;
 var others, others_delta, others4, veh, team, dep, bar, lab, fac, bun, filter, i, j;
@@ -283,10 +284,18 @@ uc_side := 4;
 
 Harisson := PrepareUnit('Harisson', false, '');
 // prepare vehicles
-veh := PrepareTank(4, 1, us_light_wheeled, engine_combustion, control_manual, us_machine_gun, 100);
+veh := PrepareTank(4, 1, us_medium_wheeled, engine_combustion, control_manual, us_double_gun, 100);
 SetDir(veh, 2);
-PlaceUnitXY(veh, 21, 8, false);
+PlaceUnitXY(veh, 22, 9, false);
 PlaceHumanInUnit(Harisson, veh);
+
+PrepareHuman(false, 1, 0);
+RandGuy := CreateHuman;
+
+veh := PrepareTank(4, 1, us_medium_wheeled, engine_combustion, control_manual, us_gatling_gun, 100);
+SetDir(veh, 2);
+PlaceUnitXY(veh, 17, 4, false);
+PlaceHumanInUnit(RandGuy, veh);
 End;
 
 Function PrepareBase;

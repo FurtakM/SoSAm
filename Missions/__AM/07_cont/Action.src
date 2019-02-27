@@ -145,13 +145,23 @@ InGameOff;
 End;
 
 Every 0$1 trigger FilterUnitsInArea(massDamageArea, [[f_side, 1], [f_not, [f_lives, 1000]]]) do
-var un, x, i;
+var un, x, tw, i;
 begin
-un := FilterUnitsInArea(massDamageArea, [[f_side, 1], [f_not, [f_lives, 1000]]])[1];
+
+repeat
+ wait(0$1);
+ un := FilterUnitsInArea(massDamageArea, [[f_side, 1], [f_not, [f_lives, 1000]]]);
+
+ if not un then
+    continue;
+
+ tw := NearbyTowerHasEnergy(un[1]);
+
+until tw;
 
 DialogueOn;
 
-CenterNowOnUnits(un);
+CenterNowOnUnits(tw);
 
 if Lisa then
    begin

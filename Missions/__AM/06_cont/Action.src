@@ -40,7 +40,7 @@ End;
 
 
 // Frank dialog
-Every 5$0 trigger IsOk(Frank) and FilterAllUnits([[f_side, 1], [f_class, 16]]) > 0 do
+Every 5$0 trigger IsOk(Frank) and FilterAllUnits([[f_side, 1], [f_class, 16]]) > 0 and not InBattle(1) do
 begin
     DialogueOn;
     Say(Frank, 'D10-Frank-1');
@@ -59,7 +59,7 @@ begin
 end;
 
 // Harrison support and dialog with him
-Every 10$30 do
+Every 10$30 trigger not InBattle(1) do
 begin
     HarrisonSupport;
     CenterNowOnUnits(IsInUnit(HarrSupp1));
@@ -92,7 +92,7 @@ begin
 end;
 
 // Denis spawn
-Every 15$0 trigger LoadVariable('DenisInDelta', 0) = 1  do
+Every 15$0 trigger LoadVariable('DenisInDelta', 0) = 1 and not InBattle(1) do
 begin
     PrepareDenis;
     CenterNowOnUnits(Denis);
@@ -110,7 +110,7 @@ begin
 end;
 
 // Build opto lab
-Every 0$6 trigger CheckOptoLab and IsOk(Denis) do 
+Every 0$6 trigger CheckOptoLab and IsOk(Denis) and not InBattle(1) do
 begin
     Say(Denis, 'DR1-Den-1');
     Say(JMM, 'DR1-JMM-1');
@@ -133,7 +133,7 @@ begin
 end;
 
 // Research remote control
-Every 0$1 trigger GetTech(15, 1) = state_researched and IsOK(Denis) do
+Every 0$1 trigger GetTech(15, 1) = state_researched and IsOK(Denis) and not InBattle(1) do
 begin
     DialogueOn;
 
@@ -152,7 +152,7 @@ begin
 end;
 
 // Build first remote vehicle without tower control
-Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) = 0 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) > 0 and firstTower = 0 do 
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) = 0 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) > 0 and firstTower = 0 and not InBattle(1) do
 begin
     DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_class, 3]]) diff [JMM, Brown, Donaldson, Denis, Joan, Bobby, Cyrus, Lisa, Frank, Gladstone], 'D3a-Mech1-1', 'D3a-Mech1-1');
     firstTower = 2;
@@ -167,7 +167,7 @@ begin
 end;
 
 // All ready to test remote veh
-Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) > 0 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) > 0 and CheckMehInside do 
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_btype, 36]]) > 0 and FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_control, control_remote]]) > 0 and CheckMehInside and not InBattle(1) do
 var i, j,  tmpControlTowers, tmpRemoteVehs, tmpMechanicInside;
 begin
 
@@ -235,13 +235,22 @@ end;
 // Spawn Kurt + dialog
 Every 25$0 do 
 begin
-    PrepareKurt;
+ repeat
+  wait(0$1);
+ until not InBattle(1);
+
+ PrepareKurt;
 end;
 
 
 // Spawn Joan + dialog
 Every 35$0 do
 begin
+
+    repeat
+     wait(0$1);
+    until not InBattle(1);
+    
     PrepareJoan;
 
     wait(1$0);
