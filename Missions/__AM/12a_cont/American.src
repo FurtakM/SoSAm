@@ -26,6 +26,7 @@ if others then
        SetSide(others[i], 1);
        PlaceHumanInUnit(others[i], bunkers[i]);
        end;
+
 End;
 
 Export Function PreparePatrol;
@@ -35,6 +36,11 @@ uc_side := 1;
 uc_nation := 1;
 
 points := [ [99,55], [113,67], [129,68], [135,62], [103,41] ];
+mobile_patrol := [];
 
+PrepareVehicle(us_medium_tracked, engine_combustion, control_computer, us_gatling_gun, 100);
+mobile_patrol := Insert(mobile_patrol, 1, CreateVehicle);
+PlaceUnitXY(mobile_patrol[1], 99, 55, false);
 
+Patrol(mobile_patrol[1], points, []);
 End;
