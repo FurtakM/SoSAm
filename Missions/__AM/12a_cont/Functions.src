@@ -46,18 +46,208 @@ result := result[1];
 Say(result, dial);
 End;
 
+{
+    flags:
+    'safe_place' => [x, y, r] (default: null)
+    'spot_dist' => r (default: 8)
+    'chase_range' => r (default: 8)
+}
 Export Function Patrol(unit, path, flags);
-var i, p, un, tmp;
+var i, x, y, c, p, station, tmp_path, status, enemy, e, spot_dist, safe_place, chase_range, need_refuel;
 begin
-if not unit or not path or not flags then
-   exit;
+if not unit or not path or GetType(unit) = unit_building then
+    exit;
 
-tmp := [];
+for i = path downto 1 do
+    begin
+    if not ValidHex(path[i][1], path[i][2]) then
+        path = Delete(path, i);
+    end;
 
-for i in path do
-    if ValidHex(i[1], i[2]) then
-       tmp := Insert(tmp, 1, i);
+if not path then
+    exit;
 
+tmp_path := [];
 
+if flags then
+   begin
+
+   if flags[1] then
+      safe_place = flags[1];
+
+   if flags[2] then
+      spot_dist = flags[2];
+
+   if flags[3] then
+      chase_range = flags[3];
+
+   end;
+
+if not chase_range then
+   chase_range = 8;
+
+if not spot_dist then
+   spot_dist := 8;
+
+need_refuel = (GetType(unit) = unit_vehicle and GetEngine(unit) <> engine_siberite);
+
+// unit status
+{
+    1 - patrol
+    2 - chase
+    3 - retreat
+    4 - wait for heal/repair
+    5 - return to patrol
+    6 - refuel
+}
+
+status = 1; // as default
+tmp_path = [1, path[1]]; // as default
+
+repeat
+ wait(0$1); // update time
+
+ // refuel
+ if need_refuel and GetFuel(unit) < 20 then
+    begin
+    station := FilterAllUnits([[f_side, GetSide(unit)], [f_or, [f_btype, b_depot], [f_btype, b_warehouse], [f_btype, b_oil_mine], [f_btype, b_factory]]]);
+
+    if not station then
+       begin
+       SetFuel(unit, 40);
+       continue;
+       end;
+
+    status := 6;
+    station := NearestUnitToUnit(station, unit);
+
+    repeat
+     wait(0$1);
+     ComMoveUnit(unit, station);
+    until GetDistUnits(unit, station) < 6;
+
+    SetFuel(unit, 100);
+    status := 5;
+    end;
+
+ // check status
+ // patrol
+ if status = 1 then
+    begin
+    // scan area
+    enemy := FilterAllUnits([[f_enemy, GetSide(unit)], [f_dist, unit, spot_dist]]);
+
+     // enemy spotted!
+    if (enemy) then
+        begin
+        SetRememberedX(unit, GetX(unit));
+        SetRememberedY(unit, GetY(unit));
+
+        status = 2;
+        end
+    else // continue patrol
+        begin
+        // go to next point
+        if IsAt(unit, tmp_path[2][1], tmp_path[2][2]) or not HasTask(unit) then
+            begin
+            if tmp_path[1]+1 > path then
+                tmp_path := Replace(tmp_path, 1, 1)
+            else
+                tmp_path := Replace(tmp_path, 1, tmp_path[1]+1);
+
+            tmp_path := Replace(tmp_path, 2, path[tmp_path[1]]);
+
+            ComAgressiveMove(unit, tmp_path[2][1], tmp_path[2][2]);
+            end;
+        end;
+    end;
+
+ // chase
+ if status = 2 then
+    begin
+    // check health
+    if GetLives(unit) < 650 and safe_place then
+       begin
+       status = 3;
+
+       continue;
+       end;
+
+    x := GetRememberedX(unit);
+    y := GetRememberedY(unit);
+
+    enemy := FilterAllUnits([[f_enemy, GetSide(unit)], [f_distxy,  x, y, spot_dist]]);
+
+    // nearest unit
+    if enemy then
+       begin
+       e := NearestUnitToUnit(enemy, unit);
+
+       if GetDistUnitXY(e, x, y) < spot_dist + chase_range then
+          ComAttackUnit(unit, e);
+       end
+    else
+       begin
+       ComStop(unit);
+
+       status = 5;
+       end;
+    end;
+
+ // retreat
+ if status = 3 and safe_place then
+    begin
+
+    repeat
+     ComMoveXY(unit, safe_place[1], safe_place[2]);
+     wait(0$1);
+    until GetDistUnitXY(unit, safe_place[1], safe_place[2]) < 4;
+
+    ComStop(unit);
+
+    status = 4;
+    end;
+
+ // healing
+ if status = 4 then
+    begin
+    // <--- add to heal/repair array here
+
+    repeat
+     wait(0$1);
+    until GetLives(unit) = 1000;
+
+    status = 5;
+    end;
+
+ // return
+ if status = 5 then
+    begin
+    p := 999;
+    e := [tmp_path[2][1], tmp_path[2][2]];
+    c := 1;
+
+    for i = 1 to tmp_path[2] div 2 do
+        begin
+        x := GetDistUnitXY(unit, tmp_path[2][c], tmp_path[2][c+1]);
+
+        if x < p then
+           begin
+           p := x;
+           e := [tmp_path[2][c], tmp_path[2][c+1]];
+           end;
+
+        c = c + 2;
+        end;
+
+    repeat
+     ComMoveXY(unit, e[1], e[2]);
+     wait(0$1);
+    until IsAt(unit, e[1], e[2]);
+
+    status = 1;
+    end;
+
+until IsDead(unit);
 
 End;
