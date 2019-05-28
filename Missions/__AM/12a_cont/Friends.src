@@ -2,7 +2,7 @@ Export Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
        Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
        Simms, Joan, DeltaDoctor;
 Export Function PrepareFriends;
-var i, tmp, buildings;
+var i, tmp, buildings, areas, bunkers, cl;
 begin
 uc_side := 4;
 uc_nation := 1;
@@ -80,7 +80,7 @@ if friends < 10 then
    for i = 1 to 10 do
        begin
        PrepareHuman(false, rand(1, 4), 7);
-       friends := Insert(friends, 1, CreateHuman);
+       friends := Insert(friends, friends+1, CreateHuman);
        end;
 
 
@@ -105,11 +105,114 @@ selected = CharacterSelection('', 7, 7,
 others := friends diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
                         Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
                         Simms, Joan, DeltaDoctor]^selected;
+friends := friends diff others^selected;
 
 
 // buildings
-buildings := [ambar1, ambar2, amlab2, amlab3, amlab4, amct1, amfac1];
+buildings := [ [ambar1, ambar2], [amlab2, amlab3, amlab4] ];
+// areas
+areas := [friends_spawn_1, friends_spawn_2, friends_spawn_3, friends_spawn_4];
 
 for i in buildings do
     SetSide(i, 4);
+
+for i in selected do
+    begin
+    if GetClass(i) in [1,5] then
+       begin
+       if buildings[1] then
+          begin
+          PlaceHumanInUnit(i, buildings[1][1]);
+          buildings := Replace(buildings, 1, Delete(buildings[1], 1));
+          end
+        else
+          begin
+          PlaceUnitArea(i, areas[1], false);
+          ComHold(i);
+          areas := Delete(areas, 1);
+          end;
+       end
+      else
+       begin
+       if buildings[2] then
+          begin
+          PlaceHumanInUnit(i, buildings[2][1]);
+          buildings := Replace(buildings, 2, Delete(buildings[2], 1));
+          end
+        else
+          begin
+          PlaceUnitArea(i, areas[1], false);
+          ComHold(i);
+          areas := Delete(areas, 1);
+          end;
+       end;
+    end;
+
+// @see Friends module
+bunkers := FilterAllUnits([[f_side, 1], [f_btype, b_bunker]]);
+
+for i = bunkers downto 1 do
+    begin
+    PrepareHuman(false, 1, [7, 8, 9][Difficulty]);
+    others := Insert(others, others+1, CreateHuman);
+    end;
+
+if others then
+   for i = 1 to bunkers do
+       begin
+       SetSide(others[i], 1);
+       PlaceHumanInUnit(others[1], bunkers[i]);
+       others := Delete(others, 1);
+       end;
+
+
+areas := areas union [guard_spawn_1, guard_spawn_2, guard_spawn_3,
+                      guard_spawn_4, guard_spawn_5, guard_spawn_6,
+                      guard_spawn_7, guard_spawn_8];
+
+for i in others do
+    begin
+    SetTag(i, 2);
+
+    if buildings[1] then
+       begin
+       cl := GetBType(buildings[1][1]);
+
+       case cl of
+       b_barracks: SetClass(i, 1);
+       b_factory: SetClass(i, 3);
+       b_lab_full: SetClass(i, 4);
+       end;
+       
+       PlaceHumanInUnit(i, buildings[1][1]);
+       buildings := Replace(buildings, 1, Delete(buildings[1], 1));
+       continue;
+       end;
+
+    if buildings[2] then
+       begin
+       cl := GetBType(buildings[2][1]);
+
+       case cl of
+       b_barracks: SetClass(i, 1);
+       b_factory: SetClass(i, 3);
+       b_lab_full: SetClass(i, 4);
+       end;
+
+       PlaceHumanInUnit(i, buildings[2][1]);
+       buildings := Replace(buildings, 2, Delete(buildings[2], 1));
+       continue;
+       end;
+
+    PlaceUnitArea(i, areas[1], false);
+
+    SetClass(i, 1);
+
+    ComHold(i);
+
+    areas := Delete(areas, 1);
+
+    if not areas then
+       break;
+    end; 
 End;
