@@ -1,7 +1,9 @@
-Export Powell, mobile_patrol;
+Export Powell, mobile_patrol, mobile_points, powell_guards;
 Export Function PrepareAmerican;
-var i, un, bunkers;
+var i, un;
 begin
+SetBName(alfa, 'alpha');
+
 uc_side := 1;
 uc_nation := 1;
 
@@ -10,37 +12,38 @@ PlaceUnitXY(Powell, 110, 26, false);
 
 ComHold(Powell);
 
-// @see Friends module
-bunkers := FilterAllUnits([[f_side, 1], [f_btype, b_bunker]]);
-
-if others < bunkers then
-   for i = bunkers-others downto 1 do
-       begin
-       PrepareHuman(false, 1, [7, 8, 9][Difficulty]);
-       others := Insert(others, 1, CreateHuman);
-       end;
-
-if others then
-   for i = 1 to bunkers do
-       begin
-       SetSide(others[i], 1);
-       PlaceHumanInUnit(others[i], bunkers[i]);
-       end;
-
+for i = 1 to 5 do
+    begin
+    PrepareHuman(false, 1, 10);
+    powell_guards := Insert(powell_guards, 1, CreateHuman);
+    PlaceHumanInUnit(powell_guards[1], ambar0);
+    end;
 End;
 
 Export Function PreparePatrol;
-var i, un, points;
+var i, un;
 begin
 uc_side := 1;
 uc_nation := 1;
 
-points := [ [99,55], [113,67], [129,68], [135,62], [103,41] ];
+mobile_points := [ [ [99,55], [113,67], [129,68], [135,62], [103,41] ],
+                   [ [27,49], [46,49], [87,70], [99,79], [118,111], [99,79], [87,70], [46,49] ],
+                   [ [200,88], [175,80], [135,62], [117,53], [103,41], [99,24], [85,3], [99,24], [103,41], [98,47], [99,56], [96,66], [99,56], [112,66], [129,68], [135,62], [156,71], [168,76], [168,61], [168,75], [185,85] ]
+                 ];
 mobile_patrol := [];
 
 PrepareVehicle(us_medium_tracked, engine_combustion, control_computer, us_gatling_gun, 100);
 mobile_patrol := Insert(mobile_patrol, 1, CreateVehicle);
 PlaceUnitXY(mobile_patrol[1], 99, 55, false);
 
-Patrol(mobile_patrol[1], points, []);
+PrepareVehicle(us_medium_wheeled, engine_combustion, control_computer, us_gatling_gun, 100);
+mobile_patrol := Insert(mobile_patrol, 2, CreateVehicle);
+PlaceUnitXY(mobile_patrol[2], 27, 49, false);
+
+PrepareVehicle(us_medium_tracked, engine_combustion, control_computer, us_rocket_launcher, 100);
+mobile_patrol := Insert(mobile_patrol, 3, CreateVehicle);
+PlaceUnitXY(mobile_patrol[3], 200, 88, false);
+
+for i = mobile_patrol downto 1 do
+    RaiseSailEvent(1);
 End;

@@ -1,6 +1,7 @@
 Export JMM, Roth;
 
 Export Function PrepareAlliance;
+var cargo;
 begin
 uc_side := 7;
 uc_nation := 1;
@@ -19,6 +20,14 @@ PlaceUnitXY(Roth, 109, 10, false);
 
 ComTurnUnit(JMM, Roth);
 ComTurnUnit(Roth, JMM);
+
+PrepareVehicle(us_medium_wheeled, engine_siberite, control_manual, us_cargo_bay, 100);
+cargo := CreateVehicle;
+
+SetDir(cargo, 3);
+PlaceUnitXY(cargo, 179, 45, false);
+
+SetCargo(cargo, mat_artifact, 30);
 
 ChangeSideFog(7, 4);
 End;

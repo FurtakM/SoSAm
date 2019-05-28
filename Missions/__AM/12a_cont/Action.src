@@ -46,18 +46,19 @@ ComTurnUnit(JMM, Powell);
 ComTurnUnit(Roth, Powell);
 
 Say(JMM, 'D1-JMM-8');
-Say(Powell, 'D1-Pow-8');
+Say(Powell, 'D1-Pow-8');   
+Say(JMM, 'D1-JMM-9');
 
 ComMoveXY(Powell, 124, 61);
 
-Say(JMM, 'D1-JMM-9');
-
 repeat
  wait(0$1);
-until GetDistUnits(JMM, Powell) > 11;
+until GetDistUnits(JMM, Powell) > 6;
 
 SayRadio(Powell, 'D1-Pow-9');
 RemoveUnit(Powell);
+
+PlaceHumanInUnit(Powell, ambar0);
 
 if Joan and not Joan in selected then
    SayRadio(Joan, 'D1-Joan-9');
@@ -78,4 +79,102 @@ wait(0$3);
 
 ComMoveXY(Roth, 124, 18);
 AddComInvisible(Roth);
+End;
+
+// Spotted
+// selected - units which players get
+// tag(2) - others
+// See Friend
+Every 0$1 do
+var i, tmp;
+begin
+tmp := selected union others;
+
+if not tmp then
+   exit;
+
+repeat
+ wait(0$1);
+
+ for i in tmp do
+     if CanSpot(JMM, i) then
+        begin
+        tmp := tmp diff i;
+        Spot(i);
+        end;
+
+until not tmp;
+
+End;
+
+Export Function Spot(unit);
+var building, side, joined;
+begin
+if not unit then
+   exit;
+
+InGameOn;
+
+side := GetSide(JMM);
+joined := false;
+
+building := IsInUnit(unit);
+
+if building then
+   begin
+   SetSide(JMM, GetSide(unit));
+   ComEnterUnit(JMM, building);
+   end
+  else
+   begin
+   ComTurnUnit(JMM, unit);
+   ComTurnUnit(unit, JMM);
+   end;
+
+if unit = Joan then
+   begin
+   // blablabla
+   joined := true;
+   end
+else if unit = Lisa then
+   begin
+   // itd.
+   end
+// ..
+else // if random guy
+   begin
+   // blablabla
+   joined := unit in selected;
+   end;
+
+InGameOff;
+
+if building then
+   begin
+   SetSide(JMM, side);
+   ComExitBuilding(JMM);
+
+   if joined then
+      begin
+      SetSide(unit, side);
+      ComExitBuilding(unit);
+      end;
+   end
+else
+   begin
+   ComStop([JMM, unit]);
+
+   if joined then
+      SetSide(unit, side)
+    else
+      begin
+
+      repeat
+       wait(0$1);
+      until GetDistUnits(JMM, unit) > 10;
+
+      SetSide(unit, 1);
+      end;
+   end;
+
 End;
