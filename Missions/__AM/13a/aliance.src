@@ -1,0 +1,557 @@
+export john,roth,joan,bobby,cyrus,lisa,frank,markc,tim,denis,yamoko,gary,simms,zbytekze12;
+export brown,lucy;
+
+var plidi;
+export function prepare_americans;
+var tmp,old_al,lidi;
+begin
+//load jednotek  
+  uc_side=al;
+  old_al=7;     //BACHA loudi se strana ze predchozi mise!
+  if checkcharacterset('JMM') then john=createcharacterwithclass('JMM',class_engineer)//class_bazooker)
+  else buildquery('neny JMM',['OK']);
+  placeunitxyr(john,62,25,3,false);//51,6
+//  if checkcharacterset('Roth') then roth=createcharacterwithclass('Roth',class_engineer)
+//  else buildquery('neny Roth',['OK']);
+  roth=newcharacter('Roth');
+  if not roth then buildquery('neny Roth',['OK']);
+  placeunitxyr(roth,62,25,3,false);
+
+  joan=0;
+  if checkcharacterset('Joan') then begin
+    if testvariable('joan_side') then tmp=loadvariable('joan_side',-1)
+    else buildquery('neny joan_side',['OK']);
+    if tmp=old_al then joan=createcharacter('Joan');
+    placeunitxyr(joan,62,25,3,false);
+  end;
+  bobby=0;
+  if checkcharacterset('Bobby') then begin
+    if testvariable('bobby_side') then tmp=loadvariable('bobby_side',-1)
+    else buildquery('neny bobby_side',['OK']);
+    if tmp=old_al then bobby=createcharacter('Bobby');
+    placeunitxyr(bobby,62,25,3,false);
+  end;
+  cyrus=0;
+  if checkcharacterset('Cyrus') then begin
+    if testvariable('cyrus_side') then tmp=loadvariable('cyrus_side',-1)
+    else buildquery('neny cyrus_side',['OK']);
+    if tmp=old_al then cyrus=createcharacter('Cyrus');
+    placeunitxyr(cyrus,62,25,3,false);
+  end;
+  lisa=0;
+  if checkcharacterset('Lisa') then begin
+    if testvariable('lisa_side') then tmp=loadvariable('lisa_side',-1)
+    else buildquery('neny lisa_side',['OK']);
+    if tmp=old_al then lisa=createcharacter('Lisa');
+    placeunitxyr(lisa,62,25,3,false);
+  end;
+  frank=0;
+  if checkcharacterset('Frank') then begin
+    if testvariable('frank_side') then tmp=loadvariable('frank_side',-1)
+    else buildquery('neny frank_side',['OK']);
+    if tmp=old_al then frank=createcharacter('Frank');
+    placeunitxyr(frank,62,25,3,false);
+  end;
+  markc=0;
+  if checkcharacterset('Cornell') then begin
+    if testvariable('markc_side') then tmp=loadvariable('markc_side',-1)
+    else buildquery('neny markc_side',['OK']);
+    if tmp=old_al then markc=createcharacter('Cornell');
+    placeunitxyr(markc,62,25,3,false);
+  end;
+
+  brown=0;
+  if checkcharacterset('Brown') then begin
+    if testvariable('brown_side') then tmp=loadvariable('brown_side',-1)
+    else buildquery('neny brown_side',['OK']);
+    if tmp=old_al then brown=createcharacter('Brown');
+    placeunitxyr(brown,62,25,3,false);
+  end;
+  lucy=0;
+  if checkcharacterset('Donaldson') then begin
+    if testvariable('lucy_side') then tmp=loadvariable('lucy_side',-1)
+    else buildquery('neny lucy_side',['OK']);
+    if tmp=old_al then lucy=createcharacter('Donaldson');
+    placeunitxyr(lucy,62,25,3,false);
+  end;
+
+
+  tim=0;
+  if checkcharacterset('Gladstone') then begin
+    if testvariable('tim_side') then tmp=loadvariable('tim_side',-1)
+    else buildquery('neny tim_side',['OK']);
+    if tmp=old_al then tim=createcharacter('Gladstone');
+    placeunitxyr(tim,62,25,3,false);
+  end;
+  denis=0;
+  if checkcharacterset('Denis') then begin
+    if testvariable('denis_side') then tmp=loadvariable('denis_side',-1)
+    else buildquery('neny denis_side',['OK']);
+    if tmp=old_al then denis=createcharacter('Denis');
+    placeunitxyr(denis,62,25,3,false);
+  end;
+  yamoko=0;
+  if not frank then
+    if checkcharacterset('Yamoko') then begin
+      if testvariable('yamoko_side') then tmp=loadvariable('yamoko_side',-1)
+      else buildquery('neny yamoko_side',['OK']);
+      if tmp=old_al then yamoko=createcharacter('Yamoko');
+      placeunitxyr(yamoko,62,25,3,false);
+    end
+  else;
+  gary=0;
+  if checkcharacterset('Gary') then begin
+    if testvariable('gary_side') then tmp=loadvariable('gary_side',-1)
+    else buildquery('neny gary_side',['OK']);
+    if tmp=old_al then gary=createcharacter('Gary');
+    placeunitxyr(gary,62,25,3,false);
+  end;
+  simms=0;
+  if checkcharacterset('Simms') then begin
+    if testvariable('simms_side') then tmp=loadvariable('simms_side',-1)
+    else buildquery('neny simms_side',['OK']);
+    if tmp=old_al then simms=createcharacter('Simms');
+    placeunitxyr(simms,62,25,3,false);
+  end;
+                     
+  if testcharacters('otherwithJMM') then
+    if checkcharacterset('otherwithJMM') then zbytekze12=createcharacterset('otherwithJMM')
+    else zbytekze12=[]
+  else buildquery('neny otherwithJMM',['OK']);
+  for tmp in zbytekze12 do placeunitxyr(tmp,62,25,3,false);
+
+  lidi=[john,roth,joan,bobby,cyrus,lisa,frank,markc,tim,denis,yamoko,gary,simms,brown,lucy]^zbytekze12;
+  lidi=lidi diff [0];
+  plidi=0+lidi;
+  ingameon;
+  centernowonunits(john);
+  commovexy(lidi,61,49);
+
+  while getdistunitxy(john,61,49)>5 do begin wait(1);centeronunits(john);end;
+  ingameoff;
+
+  dialogueon;
+  say(john,'D1-JMM-1');
+  if joan then say(joan,'D1-Joan-1');
+  if lisa then say(lisa,'D1-Lisa-1');
+  say(john,'D1-JMM-2');
+  dialogueoff;
+  saveforquickrestart;
+  wait(0$0.5);
+  changemissionobjectives('M1');
+//  if debug then enable(07);
+end;
+
+
+export gossud,kiril,jahoda,burlak,arusove;
+export gnyevko,dolgov,kapitsova,gleb,kovalyuk,scholtze,titov,oblukov,bystrov,lipshchin;
+every 1$30 do  //prichod aliancnich rusaku
+var tmp,tmp1,tmp2,pomrusaci;
+begin
+  uc_side=rus;
+  pomrusaci=[];
+  gossud=newcharacter('Gossudarov');
+  if not gossud then buildquery('neny Gossudarov',['OK']);
+  kiril=newcharacter('Kirilenkova');
+  if not kiril then buildquery('neny Kirilenkova',['OK']);
+  gnyevko=newcharacter('Gnyevko');
+  if not gnyevko then buildquery('neny Gnyevko',['OK']);
+  pomrusaci=pomrusaci^[gnyevko];
+  dolgov=newcharacter('Dolgov');
+  if not dolgov then buildquery('neny Dolgov',['OK']);
+  pomrusaci=pomrusaci^[dolgov];
+  kapitsova=newcharacter('Kapitsova');
+  if not kapitsova then buildquery('neny Kapitsova',['OK']);
+  pomrusaci=pomrusaci^[kapitsova];
+  gleb=newcharacter('Gleb');
+  if not gleb then buildquery('neny Gleb',['OK']);
+  pomrusaci=pomrusaci^[gleb];
+  kovalyuk=newcharacter('Kovalyuk');
+  if not kovalyuk then buildquery('neny Kovalyuk',['OK']);
+  pomrusaci=pomrusaci^[kovalyuk];
+  scholtze=newcharacter('Scholtze');
+  if not scholtze then buildquery('neny Scholtze',['OK']);
+  pomrusaci=pomrusaci^[scholtze];
+  titov=newcharacter('Titov');
+  if not titov then buildquery('neny Titov',['OK']);
+  pomrusaci=pomrusaci^[titov];
+  oblukov=newcharacter('Oblukov');
+  if not oblukov then buildquery('neny Oblukov',['OK']);
+  pomrusaci=pomrusaci^[oblukov];
+  bystrov=newcharacter('Bystrov');
+  if not bystrov then buildquery('neny Bystrov',['OK']);
+  pomrusaci=pomrusaci^[bystrov];
+  lipshchin=newcharacter('Lipshchin');
+  if not lipshchin then buildquery('neny Lipshchin',['OK']);
+  pomrusaci=pomrusaci^[lipshchin];
+
+  changesidefog(oth,al);
+  uc_side=oth;
+//  if checkcharacterset('Yagoda') then jahoda=createcharacterwithclass('Yagoda',class_soldier)
+//  else buildquery('neny Yagoda',['OK']);
+  jahoda=newcharacter('Belkov');
+  if not jahoda then msg('neny Belkov');
+//  if checkcharacterset('Burlak') then burlak=createcharacterwithclass('Burlak',class_mechanic)
+//  else buildquery('neny Burlak',['OK']);
+  burlak=newcharacter('Burlak');
+  if not burlak then buildquery('neny Burlak',['OK']);
+  uc_side=rus;
+
+  placeunitxyr(gossud,70,96,2,false);
+  placeunitxyr(kiril,70,96,2,false);
+//  tmp2=filterallunits([[f_side,al],[f_type,unit_human]]);
+  tmp=maxlidi-(0+plidi)-2;
+  tmp2=0+pomrusaci;
+  uc_nation=nation_russian;
+  for tmp1=1 to tmp do
+    if tmp1>tmp2 then begin
+      preparescientist(sex_male,8);
+      placeunitxyr(createhuman,70,96,2,false);
+    end
+    else placeunitxyr(pomrusaci[tmp1],70,96,2,false);
+  arusove=filterallunits([[f_side,rus]]);
+  commovexy(arusove,64,54);
+  setattitude(rus,al,att_friend,false);
+  hint('CombinedForces');
+end;
+
+
+var r_seen;
+function side_sees_side(sidea,sideb);
+var tmp,tmp2;
+begin
+  tmp2=filterallunits([[f_side,sideb]]);
+  result=0;
+  for tmp in tmp2 do 
+    if see(sidea,tmp) then begin r_seen=tmp;result=tmp;break;end;
+//  debug_strings=[result];
+end;
+
+every 0$1+1$30 trigger side_sees_side(al,rus) do
+var tmp,tmp2,tmp1,utoci;
+begin
+//  debug_strings=['in'];
+  utoci=false;
+  tmp2=filterallunits([[f_side,al],[f_type,unit_human]]);
+  repeat
+    for tmp in tmp2 do
+      if (attacks(tmp)){ and (tmp<>john) and (tmp<>roth)} then begin
+  //if (attacks(tmp)=r_seen) then
+  //if (tmp<>john) and (tmp<>roth) then begin
+        //while not attacks(tmp) do wait(0$0.2);
+       // debug_strings=['attacking'];
+        wait(0$0.5);
+        ingameon;
+        utoci=true;
+        if islive(roth) then begin
+          setside(arusove,al);
+          comstop(tmp);
+          comstop(arusove);
+          say(roth,'D2-Roth-2');
+          say(roth,'D2-Roth-2a');
+          commovexy([john,roth],getx(gossud),gety(gossud));
+          while (getdistunits(john,gossud)+getdistunits(roth,gossud))>19 do begin centeronunits([roth,gossud,john]);wait(1);end;
+          say(roth,'D2-Roth-2b');
+          say(john,'D2-JMM-3');
+        end
+        else begin
+          setside(arusove,al);
+          comstop(tmp);
+          comstop(arusove);
+          say(john,'D2-JMM-1');
+          say(john,'D2-JMM-1a');
+          commovexy(john,getx(gossud),gety(gossud));
+          while getdistunits(john,gossud)>11 do begin centeronunits([roth,gossud,john]);wait(1);end;
+          say(john,'D2-JMM-1b');
+          say(gossud,'D2-Gos-1');
+          say(john,'D2-JMM-2');
+          say(gossud,'D2-Gos-2');
+        end;
+        say(gossud,'D2-Gos-3');
+        say(john,'D2-JMM-4');
+        say(gossud,'D2-Gos-4');
+        say(john,'D2-JMM-5');
+        say(gossud,'D2-Gos-5');
+        say(john,'D2-JMM-6');
+        ingameoff;
+      end;
+    wait(0$0.1);
+  until utoci;
+  setattitude(al,rus,att_enemy,true);
+end;
+
+export lb1;
+on buildingcomplete(b) do
+  if (getbtype(b)=b_lab)and(getnation(b)<>nation_russian)and not lb1 then begin lb1=true;enable(01);end
+  else if (getbtype(b)=b_lab)and(getnation(b)=nation_russian) then begin disable;enable(02);end;
+
+every 0$1+1$45 marked 01 do
+var tmp;
+begin
+   dialogueon;
+  if isok(kiril) then say(kiril,'D3-Kir-1')
+  else if isok(gossud) then say(gossud,'D3-Kir-1')
+  else begin
+    tmp=filterallunits([[f_nation,nation_russian],[f_type,unit_human],[f_ok]]);
+    if tmp then say(tmp[1],'D3-Kir-1')
+  end;
+  dialogueoff;
+end;
+
+every 0$1+2$0 marked 02 do
+var tmp;
+begin
+  tmp=filterallunits([[f_nation,nation_russian],[f_type,unit_human],[f_ok]]);
+  dialogueon;
+  if isok(kiril) then say(kiril,'D3a-Kir-1')
+  else begin
+    tmp=tmp diff [gossud];
+    if tmp then say(tmp[1],'D3a-Sci1-1')
+    else if isok(gossud) then say(gossud,'D3a-Sci1-1');
+  end;
+  say(john,'D3a-JMM-1');
+  dialogueoff;
+end;
+
+
+every 0$1+2$30 trigger see(al,ruv0) do  //ten zatraceny rusky pruzkum
+var tmp;
+begin
+  tmp=unitfilter(arusove,[[f_ok],[f_sex,sex_male]]);
+  if 0=tmp then exit;
+  tmp=tmp diff [gossud];
+  dialogueon;
+  if tmp then say(tmp[1],'D4-RSci1-1')
+  else say(gossud,'D4-RSci1-1');
+  if isok(gossud) then say(gossud,'D4-Gos-1');
+  say(john,'D4-JMM-1');
+  dialogueoff;
+end;
+
+
+//dorazil jahoda
+every 4$10 do  //debug! should be 4$10
+begin
+  if debug then begin
+    uc_side=oth;
+    changesidefog(oth,al);
+    jahoda=newcharacter('Belkov');
+  end;
+  placeunitxyr(jahoda,113,97,2,false);
+//  comhold(jahoda);
+  commovexy(jahoda,79,65);
+end;
+
+every 0$2+4$28 trigger isinarea(jahoda,stred) do
+var tmp;
+begin
+  tmp=unitfilter(arusove,[[f_ok]]);
+  dialogueon;
+  sayradio(jahoda,'D5-Bel-1');
+  if isok(gossud) then begin
+    say(gossud,'D5-Gos-1');
+    say(john,'D5-JMM-1');
+    say(gossud,'D5-Gos-2');
+    say(john,'D5-JMM-2');
+  end
+  else if tmp then begin
+    say(tmp[1],'D5-Gos-1');
+    say(john,'D5-JMM-1');
+    say(tmp[1],'D5-Gos-2');
+    say(john,'D5-JMM-2');
+  end;
+  dialogueoff;
+  case query('QSaveBelkov') of
+    1:begin
+      dialogueon;
+      say(john,'D5a-JMM-1');
+      sayradio(jahoda,'D5a-Bel-1');
+      dialogueoff;
+    end;
+    2:begin
+      dialogueon;
+      say(john,'D5a-JMM-2');
+      dialogueoff;
+      commovexy(jahoda,117,97);
+      enable(04);
+    end;
+  end;
+end;
+
+//hm tady negde chybi 'D5a-JMM-2a' if [somebody sees Belkov's death]
+
+
+every 0$1+4$33 trigger filterallunits([[f_side,al],[f_dist,jahoda,6]]) do
+begin
+//  msg('jahoda v dostrelu');
+  setside(jahoda,al);
+end;
+
+every 0$1+8$03 trigger see(al,ruv1) or see(al,ruv2) or see(al,ruv3) marked 03 do
+var tmp;
+begin
+  if islive(jahoda) then begin
+    wait(0$2);
+    dialogueon;
+    say(jahoda,'D6-Bel-1');
+    dialogueoff;
+  end;
+end;
+
+
+export masha;
+//dorazil burlak
+every 10$05 do  
+begin
+  uc_side=oth;
+  uc_nation=nation_russian;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  vc_chassis=ru_medium_wheeled;
+  vc_weapon=ru_gatling_gun;
+  masha=createvehicle;
+  setmark(masha,1);
+  setfuel(masha,0);
+  setdir(masha,3);
+  setlives([masha,burlak],499);
+  placeunitxy(masha,116,4,false);
+  placeunitxy(burlak,116,2,false);
+  commoveunit(burlak,masha);
+  wait(0$0.3);
+  commovexy(masha,109,9);
+end;
+
+every 0$0.51+10$08{1$38} trigger isinarea(masha,burlakarriv) do
+var tmp;
+begin
+  tmp=filterallunits([[f_side,al],[f_nation,nation_russian],[f_ok]]);
+  commovexy(burlak,110,8);
+  wait(0$1);
+  dialogueon;
+  sayradio(burlak,'D10-Bur-1');
+  if isok(jahoda) then say(jahoda,'D10-Bel-1')
+  else if isok(gossud) then say(gossud,'D10-Gos-1')
+  else if isok(kiril) then say(kiril,'D10-Kir-1')
+  else if tmp then say(tmp[1],'D10-RSol1-1')
+  else if isok(roth) then say(roth,'D10-RSol1-1');
+//  else sayradio(john,'D10-RSol1-1');
+  sayradio(burlak,'D10-Bur-2');
+  say(john,'D10-JMM-2');
+  tmp=tmp diff gossud;
+  if isok(kiril) then say(kiril,'D10-Kir-2')
+  else if tmp then say(tmp[1],'D10-RSol1-2');
+  say(john,'D10-JMM-3');
+  sayradio(burlak,'D10-Bur-3');
+  say(john,'D10-JMM-4');
+  dialogueoff;
+  changemissionobjectives('M2');
+  update_display(1);
+  case difficulty of
+   1:wait(20$0);
+   2:wait(15$0);
+   3:wait(7$0);
+  end;
+  hiddencamera(117,15,ar);
+  hiddencamera(111,18,ar);
+  hiddencamera(107,18,ar);
+  hiddencamera(108,23,ar);
+  hiddencamera(122,18,ar);
+  hiddencamera(102,22,ar);
+  hiddencamera(107,29,ar);
+
+  defid=mcdefend(100,regid,[ars3,ars4,ars5,arm1,arm4,arm5,arm6],[[mc_area_dont_leave,area4reg]]);
+
+end;
+
+export burlakmet;
+every 0$1+10$15{1$45} trigger filterallunits([[f_side,al],[f_dist,burlak,6]]) marked 08 do
+begin
+//  msg('burlak v dostrelu');
+  setside(burlak,al);
+  burlakmet=true;
+  enable(13);
+end;
+
+every 0$1+10$15{1$45} trigger getdistunits(john,burlak)<11 do
+var tmp,tmp2;
+begin
+  disable(08);
+  setside(burlak,al);
+  burlakmet=true;
+  enable(13);
+  tmp=filterallunits([[f_side,al],[f_ok],f_not,[f_nation,nation_nature]]);
+  tmp2=unitfilter(tmp,[[f_class,class_scientistic]]);
+  dialogueon;
+  say(john,'D11-JMM-1');
+  say(burlak,'D11-Bur-1');
+  say(john,'D11-JMM-2');
+  say(burlak,'D11-Bur-2');
+  say(john,'D11-JMM-3');
+  say(burlak,'D11-Bur-3');
+  say(john,'D11-JMM-4');
+  dialogueoff;
+  changemissionobjectives('M3');     
+  dialogueon;
+  if ar_base_spotted then say(burlak,'D12-Bur-1')
+  else begin
+    disable(06);
+    say(burlak,'D12-Bur-1a');
+    revealfogarea(al,arab_base_reveal);
+    //centernowonxy(125,39);
+    centernowonunits([abduluv]);
+  end;
+  say(burlak,'D12-Bur-1b');
+  say(john,'D12-JMM-1');
+  say(burlak,'D12-Bur-2');
+  if isok(roth) then say(roth,'D12-Roth-2')
+  else if tmp2 then say(tmp2[1],'D12-RSci1-2')
+  else if tmp then say(tmp[1],'D12-RSci1-2');
+  say(john,'D12-JMM-2');
+  say(burlak,'D12-Bur-3');
+  say(john,'D12-JMM-3');
+  say(burlak,'D12-Bur-4');
+  dialogueoff;
+  case query('QBase') of
+    1:begin
+      dialogueon;
+      say(john,'D13a-JMM-1');
+      say(burlak,'D13a-Bur-1');
+      if isok(roth) then say(roth,'D13a-Roth-1')
+      else if tmp2 then say(tmp2[1],'D13a-RSci1-1')
+      else if tmp then say(tmp[1],'D13a-RSci1-1');
+      say(john,'D13a-JMM-2');
+      dialogueoff;
+      case query('QBaseAgain') of
+        1:pokec1;
+        2:pokec2;
+      end;
+    end;
+    2:pokec1;
+    3:pokec2;
+  end;
+  changemissionobjectives('M4');
+end;
+
+export vyjednavalo_se;
+function pokec1;
+begin
+  dialogueon;
+  say(john,'D13b-JMM-1');
+  say(burlak,'D13b-Bur-1');
+  say(john,'D13b-JMM-2');
+  sayradio(abdul,'D13b-Abd-2');
+  say(john,'D13b-JMM-3');
+  sayradio(abdul,'D13b-Abd-3');
+  say(john,'D13b-JMM-4');
+  dialogueoff;
+  vyjednavalo_se=true;
+  enable(07);
+end;
+
+function pokec2;
+begin
+  dialogueon;
+  say(john,'D13c-JMM-1');
+  say(burlak,'D13c-Bur-1');
+  dialogueoff;
+end;
