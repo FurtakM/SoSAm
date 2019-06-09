@@ -7,26 +7,37 @@ FogOff(7);
 
 InitVariables;
 
+PrepareNature;
 PrepareAlliance;
 PrepareFriends;
 PrepareAmerican;
 
-if not debug then
+if debug then
    begin
    SetAttitude(1, 7, att_enemy, true);
    RemoveUnit(Powell);
+   DoNotAttack(1, JMM);
    end
   else
    Action;
 
 PreparePatrol;
+
+game := true;
 End;
 
-Export debug, selected, friends, others;
+
+Export debug, game, selected, friends, others, reached_lab, can_escape,
+       friends_kill_counter, team_kill_counter;
 Export Function InitVariables;
 begin
 debug := 1;
 friends := [];
 selected := [];
+reached_lab := false;
+can_escape := false;
+game := false;
+friends_kill_counter := 0;
+team_kill_counter := 0;
 End;
 

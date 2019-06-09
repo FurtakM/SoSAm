@@ -79,6 +79,10 @@ wait(0$3);
 
 ComMoveXY(Roth, 124, 18);
 AddComInvisible(Roth);
+AddComWait(Roth, 1$30);
+AddComMoveXY(Roth, 156, 20);
+AddComMoveXY(Roth, 178, 42);
+AddComInvisible(Roth);
 End;
 
 // Spotted
@@ -88,7 +92,7 @@ End;
 Every 0$1 do
 var i, tmp;
 begin
-tmp := selected union others;
+tmp := selected union friends union others;
 
 if not tmp then
    exit;
@@ -124,29 +128,250 @@ if building then
    begin
    SetSide(JMM, GetSide(unit));
    ComEnterUnit(JMM, building);
+
+   repeat
+    wait(3);
+   until IsInUnit(JMM);
+
+   DialogueOn;
    end
   else
    begin
    ComTurnUnit(JMM, unit);
    ComTurnUnit(unit, JMM);
+   DialogueOn;
    end;
 
 if unit = Joan then
    begin
-   // blablabla
    joined := true;
+
+   if Joan in selected then
+      begin
+      Say(Joan, 'D3-Joan-Joan-1');
+      Say(JMM, 'D3-Joan-JMM-1');
+      end
+   else
+      begin
+      Say(Joan, 'D4-Joan-Joan-1');
+      Say(JMM, 'D4-Joan-JMM-1');
+      Say(Joan, 'D4-Joan-Joan-2');
+      Say(JMM, 'D4-Joan-JMM-2');
+      Say(Joan, 'D4-Joan-Joan-3');
+      end;
    end
 else if unit = Lisa then
    begin
-   // itd.
+   if Lisa in selected then
+      begin
+      if GetSide(Joan) = 7 then
+         begin
+         Say(Lisa, 'D3-LisaJ-Lisa-1');
+         Say(JMM, 'D3-LisaJ-JMM-1');
+         Say(Lisa, 'D3-LisaJ-Lisa-2');
+         Say(JMM, 'D3-LisaJ-JMM-2');
+         Say(Lisa, 'D3-LisaJ-Lisa-3');
+         end
+      else
+         begin
+         Say(Lisa, 'D3-LisaL-Lisa-1');
+         Say(JMM, 'D3-LisaL-JMM-1');
+         joined := true;
+         end;
+      end
+   else
+      begin
+      if GetSide(Joan) = 7 then
+         begin
+         Say(Lisa, 'D4-LisaJ-Lisa-1');
+         Say(JMM, 'D4-LisaJ-JMM-1');
+         Say(Lisa, 'D4-LisaJ-Lisa-2');
+         end
+      else
+         begin
+         Say(Lisa, 'D4-LisaL-Lisa-1');
+         end;
+      end;
    end
-// ..
+else if unit = Frank then
+   begin
+   joined := true;
+
+   if Frank in selected then
+      begin
+      Say(Frank, 'D3-Frank-Frank-1');
+      Say(JMM, 'D3-Frank-JMM-1');
+      Say(Frank, 'D3-Frank-Frank-2');
+
+      if reached_lab then
+         begin
+         Say(JMM, 'D3-Frank-JMM-2');
+         Say(Frank, 'D3-Frank-Frank-3');
+         end;
+      end
+   else
+      begin
+      Say(Frank, 'D4-Frank-Frank-1');
+      Say(JMM, 'D4-Frank-JMM-1');
+      Say(Frank, 'D4-Frank-Frank-2');
+      Say(JMM, 'D4-Frank-JMM-2');
+      end;
+   end
+else if unit = Brown then
+   begin
+   Say(Brown, 'D3-Soldier1-Sol1-1');
+   Say(JMM, 'D3-Soldier1-JMM-1');
+   joined := true;
+   end
+else if unit = Donaldson then
+   begin
+   Say(Donaldson, 'D3-Soldier2-FSol2-1');
+   Say(JMM, 'D3-Soldier2-JMM-1');
+   joined := true;
+   end
+else if unit = Cyrus then
+   begin
+   if Cyrus in selected then
+      begin
+      Say(Cyrus, 'D3-Cyrus-Cyrus-1');
+      Say(JMM, 'D3-Cyrus-JMM-1');
+      joined := true;
+      end
+   else
+      begin
+      Say(Cyrus, 'D4-Cyrus-Cyrus-1');
+      Say(JMM, 'D4-Cyrus-JMM-1');
+      end;
+   end
+else if unit = Bobby then
+   begin
+   if Bobby in selected then
+      begin
+      Say(Bobby, 'D3-Bobby-Bobby-1');
+      Say(JMM, 'D3-Bobby-JMM-1');
+      joined := true;
+      end
+   else
+      begin
+      Say(Bobby, 'D4-Bobby-Bobby-1');
+      Say(JMM, 'D4-Bobby-JMM-1');
+      Say(Bobby, 'D4-Bobby-Bobby-2');
+      end;
+   end
+else if unit = Cornel then
+   begin
+   if Cornel in selected then
+      begin
+      Say(Cornel, 'D3-Mark-Corn-1');
+      Say(JMM, 'D3-Mark-JMM-1');
+      Say(Cornel, 'D3-Mark-Corn-2');
+      joined := true;
+      end
+   else
+      begin
+      Say(Cornel, 'D4-Mark-Corn-1');
+      Say(JMM, 'D3-Joan-JMM-1');
+      Say(Cornel, 'D4-Mark-Corn-2');
+      end;
+   end
+else if unit = Gary then
+   begin
+   if Gary in selected then
+      begin
+      Say(Gary, 'D3-Gary-Gary-1');
+      Say(JMM, 'D3-Gary-JMM-1');
+      joined := true;
+      end
+   else
+      begin
+      Say(Gary, 'D4-Gary-Gary-1');
+      SetSide(Gary, 1);
+
+      DialogueOff;
+      InGameOff;
+      exit;
+      end;
+   end
+else if unit = Kikuchi then
+   begin
+   if Kikuchi in selected then
+      begin
+      Say(Kikuchi, 'D3-Yamako-Yam-1');
+      Say(JMM, 'D3-Soldier2-JMM-1');
+      joined := true;
+      end
+   else
+      begin
+      Say(Kikuchi, 'D4-Yamako-Yam-1');
+      SetSide(Kikuchi, 1);
+
+      DialogueOff;
+      InGameOff;
+      exit;
+      end;
+   end
+else if unit = Gladstone then
+   begin
+   if Gladstone in selected then
+      begin
+      Say(JMM, 'D3-Tim-JMM-1');
+      Say(Gladstone, 'D3-Tim-Glad-1');
+      end
+   else
+      begin
+      Say(JMM, 'D4-Tim-JMM-1');
+      Say(Gladstone, 'D4-Tim-Glad-1');
+      end;
+   end
+else if unit = Denis then
+   begin
+   joined := true;
+
+   Say(Denis, 'D3-Denis-Den-1');
+   Say(JMM, 'D3-Denis-JMM-1');
+   end
+else if unit = Simms then
+   begin
+   joined := true;
+
+   Say(Simms, 'D3-Simms-Sim-1');
+   Say(JMM, 'D3-Simms-JMM-1');
+   end
 else // if random guy
    begin
-   // blablabla
    joined := unit in selected;
+
+   if joined then
+      begin
+      if GetSex(unit) = sex_male then
+         begin
+         Say(unit, 'D3-Soldier1-Sol1-1');
+         Say(JMM, 'D3-Soldier1-JMM-1');
+         end
+      else
+         begin
+         Say(unit, 'D3-Soldier2-FSol2-1');
+         Say(JMM, 'D3-Soldier2-JMM-1');
+         end;
+      end
+   else
+      begin
+      if GetSex(unit) = sex_male then
+         begin
+         Say(unit, 'D4-Soldier2-Sol1-1');
+         Say(JMM, 'D4-Soldier2-JMM-1');
+         Say(unit, 'D4-Soldier2-Sol2-1');
+         end
+      else
+         begin
+         Say(unit, 'D4-Soldier1-FSol1-1');
+         Say(JMM, 'D4-Soldier1-JMM-1');
+         Say(unit, 'D4-Soldier1-FSol1-2');
+         end;
+      end;
    end;
 
+DialogueOff;
 InGameOff;
 
 if building then
@@ -178,3 +403,36 @@ else
    end;
 
 End;
+
+// JMM reached Roth's lab
+Every 0$01 trigger IsInUnit(JMM) = amlab do
+begin
+ChangeMissionObjectives('M1a');
+
+SetTech(tech_Soporific, 1, state_researched);
+SetTech(tech_SpacAnom, 1, state_researched);
+SetClass(JMM, class_bazooker);
+
+can_escape := true;
+SetAreaMapShow(escape_area, 1);
+End;
+
+Every 0$01 trigger FilterAllUnits([[f_side, 4], [f_weapon, us_cargo_bay]]) do
+var i;
+begin
+enable;
+
+for i in FilterAllUnits([[f_side, 4], [f_weapon, us_cargo_bay]]) do
+    if GetDistUnits(i, JMM) < 6 then
+       SetSide(i, 7);
+End;
+
+Every 0$01 trigger FilterAllUnits([f_side, 7]) = FilterUnitsInArea(escape_area, [f_side, 7]) do
+var all_taken;
+begin
+all_taken := (UnitFilter(selected, [[f_side, 4], [f_type, unit_human]]) = 0);
+
+
+
+End;
+

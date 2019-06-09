@@ -1,0 +1,169 @@
+export al,rus,ar,oth;
+export maxlidi;
+
+export ars0,ars1,ars2,ars3,ars4,ars5,ars6,ars7,ars8,ars9,ars10,arm0;
+export arv1_ch,arv1_wp,arm1_sk,arv2_ch,arv2_wp,arm2_sk,arv3_ch,arv3_wp,arm3_sk,arv4_ch,arv4_wp,arm4_sk,arv5_ch,arv5_wp,arm5_sk,arv6_ch,arv6_wp,arm6_sk,arv7_ch,arv7_wp,arv8_ch,arv8_wp,arv9_ch,arv9_wp,arv10_ch,arv10_wp;
+export ruv0_ch,ruv0_wp,ruv1_ch,ruv1_wp,ruv2_ch,ruv2_wp,ruv3_ch,ruv3_wp,ruv4_ch,ruv4_wp,ruv5_ch,ruv5_wp,ruv6_ch,ruv6_wp,ruv7_ch,ruv7_wp,ruv8_ch,ruv8_wp;
+export rumech1_sk,rumech2_sk,rumech3_sk,rumech4_sk,rumech5_sk,rumech6_sk,rumech7_sk,rumech8_sk;
+
+export hr_auta,time2wait,delay,arab_artef_zdrh,time2destmasha_,time2destmasha;
+export koncime,debug,artef_out,base_out;
+
+function set_vars;
+begin
+  al=7;
+  rus=3;
+  ar=2;
+  oth=4;
+  rusove=[];
+  rusoveu=[];
+  maxlidi=13;
+  burlakmet=false;
+  ar_base_spotted=false;
+  vyjednavalo_se=false;
+  base_out=false;
+  lb1=false;
+
+  supplies=30;
+  cperiode=[1$30,1$30,1$45][difficulty];
+  hr_auta=[500,500,500][difficulty];
+  time2wait=[3$0,1$30,0$30][difficulty];
+  arab_artef_zdrh=[30$0,15$0,5$0][difficulty]; //base is 25$0
+  time2destmasha=[10$0,7$0,5$0][difficulty];
+  ars0=[3,5,7][difficulty];
+  ars1=[4,6,8][difficulty];
+  ars2=[4,6,8][difficulty];
+  ars3=[3,5,7][difficulty];
+  ars4=[5,7,9][difficulty];
+  ars5=[4,6,8][difficulty];
+  //barracks
+  ars6=[4,6,8][difficulty];
+  ars7=[3,5,7][difficulty];
+  ars8=[4,6,8][difficulty];
+  ars9=[4,6,8][difficulty];
+  ars10=[4,6,8][difficulty];
+
+  ruv0_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  ruv0_wp=[ru_heavy_machine_gun,ru_heavy_machine_gun,ru_heavy_machine_gun][difficulty];
+  ruv1_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  ruv1_wp=[ru_gatling_gun,ru_gatling_gun,ru_gun][difficulty];
+  rumech1_sk=[4,6,7][difficulty];
+  ruv2_ch=[ru_heavy_wheeled,ru_heavy_wheeled,ru_heavy_wheeled][difficulty];
+  ruv2_wp=[ru_heavy_gun,ru_heavy_gun,ru_heavy_gun][difficulty];
+  rumech2_sk=[3,5,7][difficulty];
+  ruv3_ch=[ru_medium_tracked,ru_medium_tracked,ru_medium_tracked][difficulty];
+  ruv3_wp=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  rumech3_sk=[5,7,9][difficulty];
+
+  ruv4_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_tracked][difficulty];
+  ruv4_wp=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  rumech4_sk=[4,6,8][difficulty];
+  ruv5_ch=[ru_heavy_wheeled,ru_heavy_wheeled,ru_heavy_wheeled][difficulty];
+  ruv5_wp=[ru_gun,ru_heavy_gun,ru_heavy_gun][difficulty];
+  rumech5_sk=[4,5,8][difficulty];
+  ruv6_ch=[ru_medium_tracked,ru_medium_tracked,ru_medium_tracked][difficulty];
+  ruv6_wp=[ru_rocket_launcher,ru_rocket_launcher,ru_rocket_launcher][difficulty];
+  rumech6_sk=[4,7,9][difficulty];
+  ruv7_ch=[ru_medium_tracked,ru_medium_tracked,ru_medium_tracked][difficulty];
+  ruv7_wp=[ru_gun,ru_gun,ru_gun][difficulty];
+  rumech7_sk=[5,7,9][difficulty];
+  ruv8_ch=[ru_medium_wheeled,ru_heavy_wheeled,ru_heavy_tracked][difficulty];
+  ruv8_wp=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  rumech8_sk=[5,7,8][difficulty];
+
+  arm0=[6,8,10][difficulty];  //nesahat!
+  arv1_ch=[ar_medium_trike,ar_half_tracked,ar_half_tracked][difficulty];
+  arv1_wp=[ar_flame_thrower,ar_flame_thrower,ar_flame_thrower][difficulty];
+  arm1_sk=[3,6,8][difficulty];
+  arv2_ch=[ar_medium_trike,ar_medium_trike,ar_medium_trike][difficulty];
+  arv2_wp=[ar_double_machine_gun,ar_gatling_gun,ar_gatling_gun][difficulty];
+  arm2_sk=[4,6,9][difficulty];
+  arv3_ch=[ar_medium_trike,ar_half_tracked,ar_half_tracked][difficulty];
+  arv3_wp=[ar_gun,ar_gun,ar_gun][difficulty];
+  arm3_sk=[4,6,8][difficulty];
+  arv4_ch=[ar_medium_trike,ar_medium_trike,ar_half_tracked][difficulty];
+  arv4_wp=[ar_double_machine_gun,ar_gatling_gun,ar_gatling_gun][difficulty];
+  arm4_sk=[4,6,8][difficulty];
+  arv5_ch=[ar_hovercraft,ar_hovercraft,ar_hovercraft][difficulty];
+  arv5_wp=[ar_multimissile_ballista,ar_double_machine_gun,ar_double_machine_gun][difficulty];
+  arm5_sk=[5,7,9][difficulty];
+  arv6_ch=[ar_medium_trike,ar_medium_trike,ar_half_tracked][difficulty];
+  arv6_wp=[ar_double_machine_gun,ar_gatling_gun,ar_gatling_gun][difficulty];
+  arm6_sk=[4,6,8][difficulty];
+  //used only for diff. >=2
+  arv7_ch=[0,ar_medium_trike,ar_half_tracked][difficulty];
+  arv7_wp=[0,ar_rocket_launcher,ar_rocket_launcher][difficulty];
+  arv8_ch=[0,ar_medium_trike,ar_half_tracked][difficulty];
+  arv8_wp=[0,ar_gun,ar_gun][difficulty];
+  //used only for diff. >2
+  arv9_ch=ar_half_tracked;
+  arv9_wp=ar_flame_thrower;
+  arv10_ch=ar_medium_trike;
+  arv10_wp=ar_flame_thrower;
+
+  setblevel([arbunk0,arbunk1,arbunk2,arbunk3,arbunk4,arbunk5],[5,7,9][difficulty]);
+  setblevel([arbarr],[4,6,8][difficulty]);
+  time2destmasha_=time2destmasha;
+end;
+
+starting
+begin
+  debug=false;   
+  koncime=false;
+  set_vars;
+  cper=cperiode;
+  delay=time2wait;
+  artef_out=false;
+  disable(01);
+  disable(02);
+  disable(03);
+  disable(04);
+  disable(05);
+  disable(07);
+  disable(09);
+  disable(10);
+  disable(12);
+  disable(13);
+  disable(14);
+  disable(15);
+  disable(37);
+  revealfogarea(al,revfog);
+  if debug then msg('Bacha debug je on!');
+  prepare_arabians;
+  prepare_americans;
+//  update_display(1);
+end;
+
+
+//krabice
+var cper,cperiode,supplies;
+every 0$15+0$45 do
+begin
+  cper=cper-0$15;
+  if cper=0 then begin
+    createcratesarea(5,dropzone,true);
+    if (supplies>1) then begin
+      supplies=supplies-1;
+      enable;
+    end;
+    cper=cperiode;
+  end
+  else enable;
+end;
+
+every 0$7 do
+begin
+  randomize;
+  if debug then debug_strings=[cper];
+  enable;
+end;
+
+every 0$20 do
+  createcratesarea(5,stred,true);
+every 0$30 do
+  createcratesarea(5,stred,true);
+every 0$45 do
+  createcratesarea(5,stred,true);
+every 0$55 do
+  createcratesarea(5,stred,true);
+
