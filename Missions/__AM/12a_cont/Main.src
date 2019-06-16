@@ -2,9 +2,6 @@ Starting
 begin
 ResetFog;
 
-FogOff(7);
-
-
 InitVariables;
 
 PrepareNature;
@@ -18,7 +15,7 @@ if debug then
    RemoveUnit(Powell);
    DoNotAttack(1, JMM);
    end
-  else
+else
    Action;
 
 PreparePatrol;
@@ -28,15 +25,16 @@ End;
 
 
 Export debug, game, selected, friends, others, reached_lab, can_escape,
-       friends_kill_counter, team_kill_counter;
+       friends_kill_counter, team_kill_counter, gamma_commander;
 Export Function InitVariables;
 begin
-debug := 1;
+debug := 0;
 friends := [];
 selected := [];
 reached_lab := false;
 can_escape := false;
 game := false;
+gamma_commander := LoadVariable('GammaCommander', 0); // 1 - Donaldson, 2 - Brown, 3 - Van Houten
 friends_kill_counter := 0;
 team_kill_counter := 0;
 End;

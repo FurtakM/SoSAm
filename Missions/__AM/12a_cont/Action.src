@@ -219,15 +219,33 @@ else if unit = Frank then
    end
 else if unit = Brown then
    begin
-   Say(Brown, 'D3-Soldier1-Sol1-1');
-   Say(JMM, 'D3-Soldier1-JMM-1');
-   joined := true;
+   if Brown in selected or gamma_commander = 2 then
+      begin
+      Say(Brown, 'D3-Soldier1-Sol1-1');
+      Say(JMM, 'D3-Soldier1-JMM-1');
+      joined := true;
+      end
+   else
+      begin
+      Say(unit, 'D4-Soldier1-Sol1-1');
+      Say(JMM, 'D4-Soldier1-JMM-1');
+      Say(unit, 'D4-Soldier1-Sol1-2');
+      end;
    end
 else if unit = Donaldson then
    begin
-   Say(Donaldson, 'D3-Soldier2-FSol2-1');
-   Say(JMM, 'D3-Soldier2-JMM-1');
-   joined := true;
+   if Donaldson in selected or gamma_commander = 1 then
+      begin
+      Say(Donaldson, 'D3-Soldier2-FSol2-1');
+      Say(JMM, 'D3-Soldier2-JMM-1');
+      joined := true;
+      end
+   else
+      begin
+      Say(unit, 'D4-Soldier1-FSol1-1');
+      Say(JMM, 'D4-Soldier1-JMM-1');
+      Say(unit, 'D4-Soldier1-FSol1-2');
+      end;
    end
 else if unit = Cyrus then
    begin
@@ -314,6 +332,8 @@ else if unit = Gladstone then
    begin
    if Gladstone in selected then
       begin
+      joined := true;
+
       Say(JMM, 'D3-Tim-JMM-1');
       Say(Gladstone, 'D3-Tim-Glad-1');
       end
@@ -336,6 +356,13 @@ else if unit = Simms then
 
    Say(Simms, 'D3-Simms-Sim-1');
    Say(JMM, 'D3-Simms-JMM-1');
+   end
+else if unit = DeltaDoctor then
+   begin
+   joined := true;
+
+   Say(DeltaDoctor, 'D3-Soldier1-Sol1-1');
+   Say(JMM, 'D3-Soldier1-JMM-1');
    end
 else // if random guy
    begin
@@ -382,7 +409,16 @@ if building then
    if joined then
       begin
       SetSide(unit, side);
+      SetSide(building, 1);
+
       ComExitBuilding(unit);
+      end
+     else
+      begin
+      wait(0$10);
+
+      SetSide(unit, 1);
+      SetSide(building, 1);
       end;
    end
 else
@@ -427,12 +463,120 @@ for i in FilterAllUnits([[f_side, 4], [f_weapon, us_cargo_bay]]) do
        SetSide(i, 7);
 End;
 
-Every 0$01 trigger FilterAllUnits([f_side, 7]) = FilterUnitsInArea(escape_area, [f_side, 7]) do
-var all_taken;
+Every 0$01 trigger can_escape and FilterAllUnits([f_side, 7]) = FilterUnitsInArea(escape_area, [f_side, 7]) and not FindArtifact(3) and not FindArtifact(5) do
+var all_taken, tmp;
 begin
 all_taken := (UnitFilter(selected, [[f_side, 4], [f_type, unit_human]]) = 0);
 
+if not all_taken then
+   case query('Q1') of
+   1: begin
+      repeat
+       wait(0$1);
+      until (UnitFilter(selected, [[f_side, 4], [f_type, unit_human]]) = 0) and (FilterAllUnits([f_side, 7]) = FilterUnitsInArea(escape_area, [f_side, 7])) and not FindArtifact(3) and not FindArtifact(5);
 
+      all_taken := true;
+      end;
+   2:;
+   end;
 
+if all_taken then
+   AddMedal('All', 1)
+else
+   AddMedal('All', -1);
+
+if team_kill_counter then
+   AddMedal('Save', -1)
+else
+   AddMedal('Save', 1);
+
+if friends_kill_counter then
+   AddMedal('Friendship', -1)
+else
+   AddMedal('Friendship', 1);
+
+tmp := FilterAllUnits([[f_side, 7, [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]]);
+
+RewardPeople(tmp union Roth);
+
+// Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
+// Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
+// Simms, Joan, DeltaDoctor
+SaveCharacters(JMM, '12a_JMM');
+
+if IsLive(Roth) then
+   SaveCharacters(Roth, '12a_Roth');
+
+if Lisa in tmp then
+   SaveCharacters(Lisa, '12a_Lisa')
+else if Lisa then
+   SaveCharacters(Lisa, '12p_Lisa');
+
+if Donaldson in tmp then
+   SaveCharacters(Donaldson, '12a_Donaldson')
+else if Donaldson then
+   SaveCharacters(Donaldson, '12p_Donaldson');
+
+if Bobby in tmp then
+   SaveCharacters(Bobby, '12a_Bobby')
+else if Bobby then
+   SaveCharacters(Bobby, '12p_Bobby');
+
+if Cyrus in tmp then
+   SaveCharacters(Cyrus, '12a_Cyrus')
+else if Cyrus then
+   SaveCharacters(Cyrus, '12p_Cyrus');
+
+if Denis in tmp then
+   SaveCharacters(Denis, '12a_Denis');
+
+if Brown in tmp then
+   SaveCharacters(Brown, '12a_Brown')
+else if Brown in tmp then
+   SaveCharacters(Brown, '12p_Brown');
+
+if Gladstone in tmp then
+   SaveCharacters(Gladstone, '12a_Gladstone')
+else if Gladstone then
+   SaveCharacters(Gladstone, '12p_Gladstone');
+
+if Houten in tmp then
+   SaveCharacters(Houten, '12a_Houten')
+else if Houten then
+   SaveCharacters(Houten, '12p_Houten');
+
+if Cornel in tmp then
+   SaveCharacters(Cornel, '12a_Cornel')
+else if Cornel then
+   SaveCharacters(Cornel, '12p_Cornel');
+
+if Gary in tmp then
+   SaveCharacters(Gary, '12a_Gary')
+else if Gary then
+   SaveCharacters(Gary, '12p_Gary');
+
+if Kikuchi in tmp then
+   SaveCharacters(Kikuchi, '12a_Kikuchi')
+else if Kikuchi then
+   SaveCharacters(Kikuchi, '12p_Kikuchi');
+
+if Simms in tmp then
+   SaveCharacters(Simms, '12a_Simms');
+
+if Joan in tmp then
+   SaveCharacters(Joan, '12a_Joan');
+
+if DeltaDoctor in tmp then
+   SaveCharacters(DeltaDoctor, '12a_DeltaDoctor');
+
+tmp := tmp diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
+                 Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
+                 Simms, Joan, DeltaDoctor];
+
+if tmp then
+   SaveCharacters(tmp, '12a_others');
+
+SaveCharacters(others diff tmp, '12p_others');
+
+YouWin;
 End;
-
