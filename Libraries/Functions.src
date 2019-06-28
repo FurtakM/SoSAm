@@ -133,7 +133,7 @@ defenders := defenders diff UnitFilter(defenders, [f_or, [f_class, 1], [f_class,
 
 if not enemy and UnitFilter(defenders, [f_type, unit_vehicle]) then
    begin
-   tmp := GetByTag(GetSide(defenders[1]), 19);
+   tmp := FilterByTag(defenders, 19);
 
    if tmp then
       begin
@@ -217,7 +217,7 @@ begin
 if not building then
    exit;
 
-result := building in FilterAllUnits([f_empty]);
+result := building in FilterAllUnits([[f_side, GetSide(building)], [f_empty]]);
 End;
 
 Export Function GetFacExt(factory);
@@ -2008,14 +2008,17 @@ for i in tmp do
     end;
 End;
 
-Export Function GetByTag(side, tag);
+Export Function FilterByTag(units, tag);
 var i;
 begin
-result := FilterAllUnits([f_side, side]);
+if not units then
+   exit;
 
-for i in result do
-    if GetTag(i) <> tag then
-       result := result diff i;
+result := [];
+
+for i in units do
+    if GetTag(i) = tag then
+       result := Insert(result, result+1, i);
 End;
 
 Export Function IsDriver(un);

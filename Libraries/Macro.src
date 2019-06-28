@@ -107,6 +107,7 @@ RaiseSailEvent(110); // mc_attack
 RaiseSailEvent(111); // mc_defense
 RaiseSailEvent(112); // mc_research
 RaiseSailEvent(120); // mc_repair_vehicle
+RaiseSailEvent(121); // mc_tame
 RaiseSailEvent(200); // mc_idle
 End;
 
@@ -135,7 +136,7 @@ for i = 1 to mc_bases do
        mc_sides := Replace(mc_sides, i, GetSide(mc_bases[i][1]));
 End;
 
-Export Function MC_Tame(base, area);
+Export Function MC_SetTame(base, area);
 begin
 if not mc_bases or not base then
    exit;
@@ -159,6 +160,7 @@ End;
   111: Defend
   112: Research
   120: RepairVehicle
+  121: Tame
   200: Idle
 }
 On SailEvent(event) do
@@ -202,6 +204,9 @@ if event = 112 then
 // repair
 if event = 120 then
    MC_RepairVehicle();
+// tame
+if event = 121 then
+   MC_TameApe();
 
 
 // idle event
@@ -898,6 +903,62 @@ for i = 1 to mc_bases do
 
            if not HasTask(j) then
               AddComRepairVehicle(j, vehs[1]);
+           end;
+        end;
+    end;
+
+End;
+
+Export Function MC_TameApe();
+var i, j, x, y, ape, apes, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    if not mc_can_tame[i] or not Researched(mc_sides[i], tech_apelang) or mc_scan[i] then
+       continue;
+
+    tmp := UnitFilter(mc_bases[i], [[f_class, 4], [f_ok], [f_not, [f_hastask]]]);
+
+    if not tmp then
+       continue;
+
+    apes := FilterUnitsInArea(mc_can_tame[i], [[f_side, 0], [f_class, class_apeman]]);
+
+    if not apes then
+       begin
+       if FilterByTag(mc_bases[i], 121) then
+          MC_Reset(i, 121);
+
+       continue;
+       end;
+
+    for j in tmp do
+        begin
+
+        if not GetTag(j) and FilterByTag(mc_bases[i], 121) < 3 then
+           SetTag(j, 121);
+
+        if GetTag(j) = 121 then
+           begin
+           if IsInUnit(j) then
+              ComExitBuilding(j);
+
+           ape := NearestUnitToUnit(apes, j);
+
+           if not ape then
+              break;
+
+           x := GetX(ape);
+           y := GetY(ape);
+
+           if not ValidHex(x, y) then
+              break;
+
+           if not HasTask(j) then
+              AddComTameXY(j, x, y);
            end;
         end;
     end;
