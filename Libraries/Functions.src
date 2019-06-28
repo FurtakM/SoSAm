@@ -789,10 +789,7 @@ End;
 
 Export Function IsExtension(b);
 begin
-result := false;
-
-if GetBType(b) in [b_ext_stitch, b_ext_radar, b_ext_radio, b_ext_gun, b_ext_computer, b_ext_siberium, b_ext_noncombat, b_ext_track, b_ext_laser, b_ext_rocket] then
-   result := true;
+result := GetBType(b) in [b_ext_stitch, b_ext_radar, b_ext_radio, b_ext_gun, b_ext_computer, b_ext_siberium, b_ext_noncombat, b_ext_track, b_ext_laser, b_ext_rocket];
 End;
 
 Export Function GetBaseBuildings(base);
@@ -940,12 +937,25 @@ if buildings then
               begin
               InitHc;
 
+              if not f then
+                 begin
+                 PrepareHuman(false, i, skill);
+
+                 un := CreateHuman;
+                 result := Insert(result, 1, un);
+                 PlaceUnitXYR(un, GetX(base_dep), GetY(base_dep), 10, false);
+                 continue;
+                 end;
+
               if (UnitsInside(f[1]) and GetBType(f[1]) in [b_bunker, b_breastwork]) or
                  (UnitsInside(f[1]) = 6) then
                   f := Delete(f, 1);
 
               if not f then
-                 break;
+                 begin
+                 x := x + 2;
+                 continue;
+                 end;
 
               if GetBType(f[1]) = b_barracks then
                  begin
@@ -1508,71 +1518,90 @@ ComMoveXY(unit, j[1], j[2]);
 End;
 
 
-
-Export Function PrepareNature;
-var i, animal, nat_area;
+Export Function PrepareNature(birds, tigers, apemans, enchidnas, horses, mastodonts, fishes, nat_area, wat_area);
+var i, animal;
 begin
+uc_side = 0;
+uc_nation = 0;
 
-     uc_side = 0;
-     uc_nation = 0;
+InitHc;
+InitVc;
 
-     nat_area := natureArea;
+if mastodonts then
+   for i = 1 to mastodonts do
+       begin
+       vc_chassis := 31;
+       vc_control := control_rider;
+       animal := CreateVehicle;
+       PlaceUnitArea(animal, nat_area, false);
+       end;
 
-     InitHc;
+if horses then
+   for i = 1 to horses do
+       begin
+       hc_class := 21;
+       hc_gallery := '';
 
-     // birds
-     for i = 1 to 4 do
-     begin
-     hc_class = 18;
-     hc_gallery = '';
+       animal := CreateHuman;
+       PlaceUnitArea(animal, nat_area, false);
+       end;
 
-     animal := CreateHuman;
-     PlaceUnitArea(animal, nat_area, false);
-     end;
+if birds then
+   for i = 1 to birds do
+       begin
+       hc_class = 18;
+       hc_gallery = '';
 
-     // tigers
-     for i = 1 to 3 do
-     begin
-     hc_class = class_tiger;
-     hc_gallery = '';
-     hc_agressivity = Rand(-5, 5);
+       animal := CreateHuman;
+       PlaceUnitArea(animal, nat_area, false);
+       end;
 
-     animal := CreateHuman;
-     PlaceUnitArea(animal, nat_area, false);
-     end;
+if tigers then
+   for i = 1 to tigers do
+       begin
+       hc_class = class_tiger;
+       hc_gallery = '';
+       hc_agressivity = Rand(-7, 7);
 
-     // apeman
-     for i = 1 to multi_ape_amount do
-     begin
-     hc_class = class_apeman;
-     hc_gallery = '';
-     hc_agressivity = rand(-2, 2);
-     hc_skills := [rand(1, 3), rand(1, 3), 0, 0];
+       animal := CreateHuman;
+       PlaceUnitArea(animal, nat_area, false);
+       end;
 
-     animal := CreateHuman;
-     PlaceUnitArea(animal, nat_area, false);
-     end;
+if apemans then
+   for i = 1 to apemans do
+       begin
+       hc_class = class_apeman;
+       hc_gallery = '';
+       hc_agressivity = rand(-5, 5);
+       hc_skills := [rand(1, 3), rand(1, 3), 0, 0];
+
+       animal := CreateHuman;
+       PlaceUnitArea(animal, nat_area, false);
+       end;
 
 
-     // enhidna
-     for i = 1 to 3 do
-     begin
-     hc_class = 13;
-     hc_gallery = '';
+if enchidnas then
+   for i = 1 to enchidnas do
+       begin
+       hc_class = 13;
+       hc_gallery = '';
 
-     animal := CreateHuman;
-     PlaceUnitArea(animal, nat_area, false);
-     end;
+       animal := CreateHuman;
+       PlaceUnitArea(animal, nat_area, false);
+       end;
 
-     // fish
-     for i = 1 to 7 do
-     begin
-     hc_class = 20;
-     hc_gallery = '';
+if not wat_area then
+   exit;
 
-     animal := CreateHuman;
-     PlaceUnitArea(animal, waterArea, false);
-     end;
+if fishes then
+   for i = 1 to fishes do
+       begin
+       hc_class = 20;
+       hc_gallery = '';
+
+       animal := CreateHuman;
+       PlaceUnitArea(animal, wat_area, false);
+       end;
 
 End;
 
