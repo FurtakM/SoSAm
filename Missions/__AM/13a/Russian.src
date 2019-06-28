@@ -1,0 +1,24 @@
+Export russian_force, russian_guard;
+Export Function PrepareRussian;
+var i, veh, tmp;
+begin
+uc_side := 3;
+uc_nation := 3;
+
+russian_force := PrepareBase(ru_depot, '', [7, 8, 9][Difficulty], [5000, 1000, 300], [9, 6, 6, 4]);
+mc_bases := Replace(mc_bases, 2, russian_force);
+
+tmp := [];
+
+for i = 1 to 4 do
+    begin
+    PrepareVehicle(ru_medium_tracked, engine_siberite, control_computer, [ru_gatling_gun, ru_rocket_launcher, ru_rocket_launcher, ru_gun][i mod 4 + 1], 100);
+
+    veh := CreateVehicle;
+    tmp := tmp ^ veh;
+
+    PlaceUnitArea(veh, parking_russian, false);
+    end;
+
+russian_guard := tmp;
+End;

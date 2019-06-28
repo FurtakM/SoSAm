@@ -5,4 +5,39 @@
 Starting
 begin
 ResetFog;
+RandomizeAll;
+
+InitVariables;
+InitMacro;
+
+// birds, tigers, apemans, enchidnas, horses, mastodonts, fishes
+PrepareNature(4, 3, 11, 6, 3, 1, 0, nature_area, 0);
+PrepareRussian;
+
+Skirmish_Start;
+
+if debug then
+   FogOff(1);
+End;
+
+
+Export Function CustomInitMacro;
+var i;
+begin
+// set mines
+//MC_SetMinesField(1, [8, 10, 12][Difficulty], minefield1_left);
+
+
+// mc_def
+mc_parking := [ parking_arabian, parking_russian ];
+mc_scan_area := [ area_base_arabian, area_base_russian ];
+
+MC_SetDefenderList(2, russian_guard);
+End;
+
+
+Export debug;
+Function InitVariables;
+begin
+debug := true;
 End;
