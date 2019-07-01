@@ -10,6 +10,12 @@ for i = 1 to mc_bases do
     if sci in mc_bases[i] then
        begin
        mc_ape := Add(mc_ape, [i, mc_ape[i]+1], ape);
+
+       tmp := NearestUnitToUnit(UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]), ape);
+
+       if tmp then
+          ComStandNearbyBuilding(ape, tmp);
+
        break;
        end;
     end;
@@ -142,14 +148,38 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MCE_ResearchComplete(tech, lab);
-var side;
+var side, i, tmp;
 begin
 side := GetSide(lab);
 
-if not side in mc_sides or not mc_tech then
+if not side in mc_sides or not mc_tech or not mc_bases then
    exit;
 
 mc_tech := Replace(mc_tech, side, mc_tech[side] diff tech);
+
+for i = 1 to mc_bases do
+    begin
+
+    if lab in mc_bases[i] then
+       begin
+
+       if tech in [tech_apeagres, tech_apebrain, tech_apeneural, tech_apepsych] and mc_ape_in_lab[i] then
+          begin
+          tmp := mc_ape_in_lab[i][1];
+          mc_ape_in_lab := Replace(mc_ape_in_lab, i, []);
+
+          SetTag(tmp, 0);
+          ComExitBuilding(tmp);
+
+          mc_ape := Replace(mc_ape, i, Insert(mc_ape[i], 1, tmp));
+
+          if not mc_tech[side][1] in [tech_apeagres, tech_apebrain, tech_apeneural, tech_apepsych] then
+             MC_Reset(i, 112);
+          end;
+
+       end;
+
+    end;
 End;
 
 Export Function MCE_UnitDestroyed(un);
@@ -160,8 +190,18 @@ if not mc_bases then
    exit;
 
 for i = 1 to mc_bases do
-    if un in mc_bases[i] or un in mc_construct_list[i] or un in mc_vehicles[i] then
+    if un in mc_bases[i] or un in mc_construct_list[i] or un in mc_vehicles[i] or un in mc_ape[i] or un in mc_ape_in_lab[i] then
        begin
+
+       if un in mc_ape[i] then
+          begin
+          mc_ape := Replace(mc_ape, i, mc_ape[i] diff un);
+          end;
+
+       if un in mc_ape_in_lab[i] then
+          begin
+          mc_ape_in_lab := Replace(mc_ape_in_lab, i, []);
+          end;
 
        if GetType(un) = unit_vehicle and GetTag(un) = 20 then
           begin
@@ -213,14 +253,12 @@ for i = 1 to mc_bases do
 
        if un in mc_bases[i] then
           begin
-          tmp := mc_bases[i] diff un;
-          mc_bases := Replace(mc_bases, i, tmp);
+          mc_bases := Replace(mc_bases, i, mc_bases[i] diff un);
           end;
 
        if un in mc_construct_list[i] then
           begin
-          tmp := mc_construct_list[i] diff un;
-          mc_construct_list := Replace(mc_construct_list, i, tmp);
+          mc_construct_list := Replace(mc_construct_list, i, mc_construct_list[i] diff un);
           end;
 
        if un in mc_vehicles[i] then
@@ -243,7 +281,7 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MCE_BuildingComplete(building);
-var i, j;
+var i, j, btype, tmp, units;
 begin
 if not mc_bases then
    exit;
@@ -255,11 +293,38 @@ for i = 1 to mc_bases do
        begin
        mc_construct_list := Replace(mc_construct_list, i, mc_construct_list[i] diff building);
        mc_bases := Add(mc_bases, [i, mc_bases[i]+1], building);
+       btype := GetBType(building);
 
-       if GetBType(building) in [b_bunker, b_turret] then
+       if btype in [b_bunker, b_turret] then
           begin
           mc_turret_list := Add(mc_turret_list, [i, mc_turret_list[i]+1], building);
-          mc_empty_turret_list := Add(mc_empty_turret_list, [i, mc_empty_turret_list[i]+1], building);
+
+          if btype = b_bunker then
+             begin
+             mc_empty_turret_list := Add(mc_empty_turret_list, [i, mc_empty_turret_list[i]+1], building);
+
+             // get soldier for tower
+             tmp := UnitFilter(mc_bases[i], [[f_class, 1], [f_not, [f_inside]]]);
+
+             if tmp then
+                exit;
+
+             tmp := UnitFilter(mc_bases[i], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
+
+             if not tmp then
+                exit;
+
+             for j in tmp do
+                 begin
+                 units := UnitFilter(UnitsInside(j), [f_class, 1]);
+
+                 if units then
+                    begin
+                    ComExitBuilding(units[1]);
+                    exit;
+                    end;
+                 end;
+             end;
           end;
 
        exit;

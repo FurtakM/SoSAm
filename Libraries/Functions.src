@@ -24,6 +24,28 @@ if state > -1 and state < 3 then
           result := result diff i;
 End;
 
+Export Function ComStandNearbyBuilding(unit, building);
+var i, x, y, _x, _y;
+begin
+if not unit or not building then
+   exit;
+
+x := GetX(building);
+y := GetY(building);
+
+for i = 0 to 5 do
+    begin
+    _x := ShiftX(x, i, 3);
+    _y := ShiftY(y, i, 3);
+
+    if HexInfo(_x, _y) = 0 and ValidHex(_x, _y) then
+       begin
+       ComMoveXY(unit, _x, _y);
+       exit;
+       end;
+    end;
+End;
+
 Export Function ScanBase(side, base_area);
 begin
 result := FilterUnitsInArea(base_area, [f_enemy, side]);
