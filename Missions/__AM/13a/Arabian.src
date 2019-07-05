@@ -1,1 +1,47 @@
-//
+Export arabian_force, arabian_guard;
+Export Function PrepareArabian;
+var i, veh, tmp, xy, un, un2;
+begin
+uc_side := 2;
+uc_nation := 2;
+
+arabian_force := PrepareBase(ar_depot, '', [7, 8, 9][Difficulty], [5000, 1000, 300], [22, 5, 6, 9]);
+mc_bases := Replace(mc_bases, 1, arabian_force);
+
+tmp := [];
+
+vc_chassis := ar_half_tracked;
+vc_engine := engine_siberite;
+vc_control := control_manual;
+vc_weapon := ar_control_tower;
+
+for i = 1 to 3 do
+    begin
+    xy := [[153,71], [155,81]][i mod 2 + 1];
+    PrepareHuman(false, class_mechanic, [7, 8, 9][Difficulty]);
+
+    un := CreateVehicle;
+
+    SetDir(un, rand(0, 5));
+    PlaceUnitXYR(un, xy[1], xy[2], 6, false);
+
+    un2 := CreateHuman;
+
+    PlaceHumanInUnit(un2, un);
+
+    mc_bases := Add(mc_bases, [1, mc_bases[1]+1], un);
+    mc_bases := Add(mc_bases, [1, mc_bases[1]+1], un2);
+    end;
+
+for i = 1 to 5 do
+    begin
+    PrepareVehicle(ar_half_tracked, engine_siberite, control_manual, [ar_gatling_gun, ar_rocket_launcher, ar_rocket_launcher, ar_gun][i mod 4 + 1], 100);
+
+    veh := CreateVehicle;
+    tmp := tmp ^ veh;
+
+    PlaceUnitArea(veh, parking_arabian, false);
+    end;
+
+arabian_guard := tmp;
+End;
