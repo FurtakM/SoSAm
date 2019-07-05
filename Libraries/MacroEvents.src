@@ -163,7 +163,7 @@ for i = 1 to mc_bases do
     if lab in mc_bases[i] then
        begin
 
-       if tech in [tech_apeagres, tech_apebrain, tech_apeneural, tech_apepsych] and mc_ape_in_lab[i] then
+       if tech in [tech_apeagres, tech_apebrain, tech_apeneural, tech_apepsych] and mc_ape_in_lab[i] and not mc_tech[side][2] in [tech_apeagres, tech_apebrain, tech_apeneural, tech_apepsych] then
           begin
           tmp := mc_ape_in_lab[i][1];
           mc_ape_in_lab := Replace(mc_ape_in_lab, i, []);
@@ -172,9 +172,7 @@ for i = 1 to mc_bases do
           ComExitBuilding(tmp);
 
           mc_ape := Replace(mc_ape, i, Insert(mc_ape[i], 1, tmp));
-
-          if not mc_tech[side][1] in [tech_apeagres, tech_apebrain, tech_apeneural, tech_apepsych] then
-             MC_Reset(i, 112);
+          MC_Reset(i, 112);
           end;
 
        end;
@@ -280,8 +278,32 @@ for i = 1 to mc_bases do
        end;
 End;
 
+Export Function MCE_UpgradeComplete(building);
+var i, j;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    if building in mc_construct_list[i] then
+       begin
+       mc_construct_list := Replace(mc_construct_list, i, mc_construct_list[i] diff building);
+
+       if building in mc_lab[i] then
+          mc_lab_upgrade := Replace(mc_lab_upgrade, i, Reindex(mc_lab_upgrade[i], 1, mc_lab_upgrade[i], false));
+
+       if not building in mc_bases[i] then
+          mc_bases := Add(mc_bases, [i, mc_bases[i]+1], building);
+       exit;
+       end;
+
+    end;
+End;
+
 Export Function MCE_BuildingComplete(building);
-var i, j, btype, tmp, units;
+var i, j, btype, tmp, units, side;
 begin
 if not mc_bases then
    exit;
@@ -294,6 +316,29 @@ for i = 1 to mc_bases do
        mc_construct_list := Replace(mc_construct_list, i, mc_construct_list[i] diff building);
        mc_bases := Add(mc_bases, [i, mc_bases[i]+1], building);
        btype := GetBType(building);
+       side := GetSide(building);
+
+       if btype = b_lab then
+          begin
+          mc_lab := Add(mc_lab, [i, mc_lab[i]+1], building);
+          exit;
+          end;
+
+       if btype in [b_depot, b_workshop, b_armoury] then
+          begin
+          if btype = b_armoury then
+             btype := b_barracks;
+
+          if btype = b_depot then
+             btype := b_warehouse;
+
+          if btype = b_workshop then
+             btype := b_factory;
+
+          if GetRestrict(btype, side) = state_enabled then
+             mc_build_upgrade := Add(mc_build_upgrade, [i, mc_build_upgrade[i]+1], building);
+          exit;
+          end;
 
        if btype in [b_bunker, b_turret] then
           begin
