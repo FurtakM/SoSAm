@@ -120,7 +120,7 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MCE_CrateSpawn(id, x, y, amount, mode);
-var i, depot;
+var i, j, depot;
 begin
 if not mc_bases then
    exit;
@@ -134,16 +134,25 @@ if GetResourceTypeXY(x, y) = mat_artefact then
 
 for i = 1 to mc_bases do
     begin
+    if mc_crates_area[i] then
+       for j in mc_crates_area[i] do
+           if InArea(x, y, j) then
+              begin
+              mc_crates := Add(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
+              exit;
+              end;
+
     depot := UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
 
     if not depot then
        continue;
 
-    if GetDistUnitXY(depot[1], x, y) < 30 then
-       begin
-       mc_crates := Add(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
-       break;
-       end;
+    for j in depot do
+        if GetDistUnitXY(j, x, y) < 30 then
+           begin
+           mc_crates := Add(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
+           exit;
+           end;
     end;
 End;
 

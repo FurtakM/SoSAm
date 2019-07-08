@@ -1,1 +1,114 @@
-//
+Export Function Action;
+var tmp, i;
+begin
+CenterNowOnXY(68, 39);
+tmp := FilterAllUnits([f_side, 7]);
+
+InGameOn;
+
+ComMoveXY(tmp, 71, 49);
+
+repeat
+ wait(0$1);
+until SeeXY(7, 71, 51);
+
+DialogueOn;
+
+Say(JMM, 'D1-JMM-1');
+
+if Joan then
+   Say(Joan, 'D1-Joan-1');
+
+if Lisa then
+   Say(Lisa, 'D1-Lisa-1');
+
+if Joan or Lisa then
+   Say(JMM, 'D1-JMM-2');
+
+DialogueOff;
+InGameOff;
+
+PlaceSeeing(71, 50, 7, -30);
+RemoveSeeing(71, 50, 7);
+
+ChangeMissionObjectives('M1');
+
+repeat
+ wait(0$1);
+until freedom;
+
+wait(rand(0$10, 0$20));
+
+PrepareGossudarov;
+
+repeat
+ wait(0$1);
+until See(7, Gossudarov) and FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]]]);
+
+tmp := FilterAllUnits([f_side, 6]);
+
+for i in tmp do
+    SetSide(i, 7);
+
+DialogueOn;
+
+ComTurnUnit([JMM, Roth], Gossudarov);
+
+CenterNowOnUnits(Gossudarov);
+
+if not Roth then
+   begin
+   Say(JMM, 'D2-JMM-1');
+   Say(JMM, 'D2-JMM-1b');
+   Say(Gossudarov, 'D2-Gos-1');
+   Say(JMM, 'D2-JMM-2');
+   Say(Gossudarov, 'D2-Gos-2');
+   end
+else
+   begin
+   Say(Roth, 'D2-Roth-2');
+   Say(JMM, 'D2-JMM-1a');
+   Say(Roth, 'D2-Roth-2a');
+   Say(Roth, 'D2-Roth-2b');
+   Say(JMM, 'D2-JMM-3');
+   Say(Gossudarov, 'D2-Gos-3');
+   Say(JMM, 'D2-JMM-4');
+   Say(Gossudarov, 'D2-Gos-4');
+   end;
+
+Say(JMM, 'D2-JMM-5');
+Say(Gossudarov, 'D2-Gos-5');
+Say(JMM, 'D2-JMM-6');
+
+DialogueOff;
+
+wait(0$2);
+
+if Kirilenkova then
+   Say(Kirilenkova, 'D3-Kir-1');
+
+gossudarov_arrive := true;
+
+repeat
+ wait(0$1);
+until ru_lab_builded;
+
+if Kirilenkova then
+   Say(Kirilenkova, 'D3a-Kir-1')
+else
+   SaySciRu('D3a-Sci1-1');
+
+Say(JMM, 'D3a-JMM-1');
+End;
+
+Export Function SaySciRu(dialog);
+var tmp, t;
+begin
+t := [Gossudarov, Titov, Fadeev, Dologov,
+      Petrosyan, Burlak, Bielkov, Gnyevko];
+
+tmp := FilterAllUnits([[f_side, 7], [f_nation, 3], [f_class, 4], [f_sex, sex_male]]) diff t;
+
+if tmp then
+   Say(tmp[1], dialog);
+End;

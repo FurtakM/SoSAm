@@ -5,6 +5,7 @@
   - Sprawdziæ budowê bazy od zera (bez sk³adu)!
 
   TODO #2
+  - Dodaæ mechanizm budowy teleportu/ustawiania wyjœcia z teleportu/ataku przez teleport
   - Dodaæ mechanizm budowy pojazdów sterowanych przez ma³py
   - Dodaæ mechanizm oswajania mastodontów+tygrysów przez szejków
   - Dodaæ mechanizm karczowania lasu (buldo¿er + miotacz ognia)
@@ -17,10 +18,10 @@ Export mc_bases, mc_building_need_repair, mc_building_repairs,
        mc_need_heal, mc_healers, mc_build_list, mc_builders,
        mc_construct_list, mc_turret_list, mc_empty_turret_list,
        mc_busy_turret_list, mc_defender_limit, mc_repair_vehicle,
-       mc_mines, mc_miners, mc_minefields, mc_crates, mc_crates_collector,
+       mc_mines, mc_miners, mc_minefields, mc_crates, mc_crates_collector, mc_crates_area,
        mc_vehicles, mc_attack, mc_produce, mc_defender, mc_scan, mc_parking,
        mc_scan_area, mc_sides, mc_tech, mc_can_tame, mc_ape, mc_ape_in_lab, mc_taming,
-       mc_build_upgrade, mc_lab, mc_lab_upgrade;
+       mc_build_upgrade, mc_lab, mc_lab_upgrade, mc_teleport_exit;
 
 Export Function InitMacro;
 var i;
@@ -43,6 +44,7 @@ mc_mines := [];
 mc_minefields := [];
 mc_crates := [];
 mc_crates_collector := [];
+mc_crates_area := [];
 mc_vehicles := [];
 mc_attack := [];
 mc_produce := [];
@@ -77,6 +79,7 @@ for i = 1 to mc_bases do
     mc_minefields := Replace(mc_minefields, i, []);
     mc_crates := Replace(mc_crates, i, []);
     mc_crates_collector := Replace(mc_crates_collector, i, []);
+    mc_crates_area := Replace(mc_crates_area, i, []);
     mc_vehicles := Replace(mc_vehicles, i, []);
     mc_attack := Replace(mc_attack, i, []);
     mc_produce := Replace(mc_produce, i, []);
@@ -92,6 +95,7 @@ for i = 1 to mc_bases do
     mc_taming := Replace(mc_taming, i, []);
     mc_lab := Replace(mc_lab, i, UnitFilter(mc_bases[i], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]));
     mc_lab_upgrade := Replace(mc_lab_upgrade, i, []);
+    mc_teleport_exit := Replace(mc_teleport_exit, i, []);
     end;
 
 MC_InitSides();
@@ -129,6 +133,7 @@ RaiseSailEvent(120); // mc_repair_vehicle
 RaiseSailEvent(121); // mc_tame
 RaiseSailEvent(122); // mc_change_ape_class
 RaiseSailEvent(123); // mc_bazooka
+// RaiseSailEvent(124); // mc_teleport // todo
 RaiseSailEvent(200); // mc_idle
 End;
 
@@ -165,6 +170,7 @@ End;
   121: Tame
   122: ChangeApeClass
   123: Bazooka
+  124: TeleportExit
   200: Idle
 }
 On SailEvent(event) do
@@ -217,6 +223,9 @@ if event = 122 then
 // bazooka
 if event = 123 then
    MC_Bazooka();
+// teleport
+if event = 124 then
+   MC_TeleportExit();
 
 // idle event
 if event = 200 then
@@ -642,7 +651,7 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MC_CollectCrates();
-var i, j, tmp, target;
+var i, j, tmp, target, cargo, depot, fac, components;
 begin
 if not mc_bases then
    exit;
@@ -683,42 +692,95 @@ for i = 1 to mc_bases do
     if not target then
        continue;
 
-    if mc_crates_collector[i] < 5 then
+    cargo := UnitFilter(mc_vehicles[i], [[f_or, [f_not, [f_empty]], [f_linked], [f_control, control_apeman], [f_control, control_computer]], [f_or, [f_weapon, ar_cargo_bay], [f_weapon, ru_cargo_bay], [f_weapon, us_cargo_bay]]]);
+
+    if not cargo then
        begin
-       tmp := UnitFilter(mc_bases[i] union mc_ape[i], [[f_or, [f_class, 2], [f_class, 16]], [f_lives, 750]]);
+       if mc_crates_collector[i] < 5 then
+          begin
+          tmp := UnitFilter(mc_bases[i] union mc_ape[i], [[f_or, [f_class, 2], [f_class, 16]], [f_lives, 750]]);
 
-       if not tmp then
-          continue;
+          if not tmp then
+             continue;
 
-       for j in tmp do
-           if GetTag(j) = 0 then
+          for j in tmp do
+              if GetTag(j) = 0 then
+                 begin
+                 mc_crates_collector := Add(mc_crates_collector, [i, mc_crates_collector[i]+1], j);
+                 SetTag(j, 107);
+
+                 if mc_crates_collector[i] > 5 then
+                    break;
+                 end;
+          end;
+
+       if mc_crates_collector[i] and target then
+          begin
+
+          if mc_crates_collector[i] < target[1] then
+             tmp := mc_crates_collector[i]
+          else
+             tmp := target[1];
+
+          for j = 1 to tmp do
               begin
-              mc_crates_collector := Add(mc_crates_collector, [i, mc_crates_collector[i]+1], j);
-              SetTag(j, 107);
+              if IsInUnit(mc_crates_collector[i][j]) then
+                 ComExitBuilding(mc_crates_collector[i][j]);
 
-              if mc_crates_collector[i] > 5 then
-                 break;
+              wait(3);
+              ComCollect(mc_crates_collector[i][j], target[2], target[3]);
               end;
-       end;
 
-    if mc_crates_collector[i] and target then
+          end;
+       end
+    else
        begin
-       if mc_crates_collector[i] < target[1] then
-          tmp := mc_crates_collector[i]
-         else
-          tmp := target[1];
-
-       for j = 1 to tmp do
+       for j in cargo do
            begin
-           if IsInUnit(mc_crates_collector[i][j]) then
-              ComExitBuilding(mc_crates_collector[i][j]);
+           if GetTag(j) <> 0 then
+              continue;
 
-           wait(3);
-           ComCollect(mc_crates_collector[i][j], target[2], target[3]);
+           if GetEngine(j) = engine_solar and GetFuel(j) < 15 then
+              continue;
+
+           if GetEngine(j) = engine_combustion and GetFuel(j) < 10 then
+              begin
+              depot := UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
+
+              if not depot then
+                 continue;
+
+              if GetDistUnits(j, NearestUnitToUnit(depot, j)) < 6 then
+                 SetFuel(j, 100)
+              else if GetFuel(j) = 0 then
+                 begin
+                 mc_vehicles := Replace(mc_vehicles, i, mc_vehicles[i] diff j);
+
+                 if GetControl(j) = control_manual then
+                    ComExitVehicle(IsInUnit(j));
+                 if GetControl(j) = control_remote then
+                    ComUnlink(j);
+
+                 fac := MC_GetBuilding(i, b_factory);
+
+                 if fac then
+                    begin
+                    components := Produce(fac, GetChassis(j), GetEngine(j), GetControl(j), GetWeapon(j));
+
+                    if components then
+                       MC_InsertProduceList(i, components);
+                    end;
+
+                 continue;
+                 end;
+              end;
+
+           if GetCargo(j, mat_cans) < 100 and not HasTask(j) then
+              ComCollect(j, target[2], target[3]);
+
+           break; // only one cargo!
            end;
-
        end;
-
     end;
 End;
 
@@ -876,7 +938,10 @@ for i = 1 to mc_bases do
 
               tmp2 := Delete(mc_ape[i], 1);
               mc_ape := Replace(mc_ape, i, tmp2);
+              end;
 
+           if mc_ape[i] and mc_ape_in_lab[i] and not IsInUnit(mc_ape_in_lab[i][1]) and UnitsInside(j) = 6 then
+              begin
               tmp2 := UnitsInside(j);
 
               if tmp2 = 6 then
@@ -1207,6 +1272,18 @@ for i = 1 to mc_bases do
 
 End;
 
+Export Function MC_TeleportExit(); // TODO
+var i, j, tmp;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+
+    end;
+End;
+
 Export Function MC_Back(base, base_unit_list, unit, class);
 var i, j, tmp, x, depot;
 begin
@@ -1437,4 +1514,20 @@ if not mc_bases or not base or not kinds then
 
 for i in kinds do
     mc_lab_upgrade := Add(mc_lab_upgrade, [base, mc_lab_upgrade[base]+1], i);
+End;
+
+Export Function MC_SetCratesArea(base, areas);
+begin
+if not mc_bases or not base or not areas then
+   exit;
+
+mc_crates_area := Replace(mc_crates_area, base, areas);
+End;
+
+Export Function MC_SetTeleportExit(base, x, y);
+begin
+if not mc_bases or not base then
+   exit;
+
+mc_teleport_exit := Replace(mc_teleport_exit, base, [x, y]);
 End;
