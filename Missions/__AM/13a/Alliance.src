@@ -1,1 +1,141 @@
-//
+Export JMM, Roth, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
+       Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
+       Simms, Joan, DeltaDoctor;
+Export Gossudarov, Kirilenkova, Titov, Fadeev, Dologov,
+       Petrosyan;
+Export Burlak, Bielkov, Gnyevko;
+Export Function PrepareAlliance;
+var veh;
+begin
+uc_side := 7;
+uc_nation := 1;
+
+JMM := PrepareUnit('JMM', (not debug), '12a_');
+PlaceUnitXY(JMM, 71, 23, false);
+SetClass(JMM, 2);
+
+Roth := PrepareUnit('Roth', (not debug), '12a_');
+
+if Roth then
+   PlaceUnitXY(Roth, 71, 21, false);
+
+Lisa := PrepareUnit('Lisa', (not debug), '12a_');
+
+if Lisa then
+   PlaceUnitArea(Lisa, alliance_start, false);
+
+Donaldson := PrepareUnit('Donaldson', (not debug), '12a_');
+
+if Donaldson then
+   PlaceUnitArea(Donaldson, alliance_start, false);
+
+Bobby := PrepareUnit('Bobby', (not debug), '12a_');
+
+if Bobby then
+   PlaceUnitArea(Bobby, alliance_start, false);
+
+Cyrus := PrepareUnit('Cyrus', (not debug), '12a_');
+
+if Cyrus then
+   PlaceUnitArea(Cyrus, alliance_start, false);
+
+Denis := PrepareUnit('Denis', (not debug), '12a_');
+
+if Denis then
+   PlaceUnitArea(Denis, alliance_start, false);
+
+Brown := PrepareUnit('Brown', (not debug), '12a_');
+
+if Brown then
+   PlaceUnitArea(Brown, alliance_start, false);
+
+Gladstone := PrepareUnit('Gladstone', (not debug), '12a_');
+
+if Gladstone then
+   PlaceUnitArea(Gladstone, alliance_start, false);
+
+Houten := PrepareUnit('Houten', (not debug), '12a_');
+
+if Houten then
+   PlaceUnitArea(Houten, alliance_start, false);
+
+Cornel := PrepareUnit('Cornel', (not debug), '12a_');
+
+if Cornel then
+   PlaceUnitArea(Cornel, alliance_start, false);
+
+Gary := PrepareUnit('Gary', (not debug), '12a_');
+
+if Gary then
+   PlaceUnitArea(Gary, alliance_start, false);
+
+Frank := PrepareUnit('Frank', (not debug), '12a_');
+
+if Frank then
+   PlaceUnitArea(Frank, alliance_start, false);
+
+Kikuchi := PrepareUnit('Kikuchi', (not debug), '12a_');
+
+if Kikuchi then
+   PlaceUnitArea(Kikuchi, alliance_start, false);
+
+Simms := PrepareUnit('Simms', (not debug), '12a_');
+
+if Simms then
+   PlaceUnitArea(Simms, alliance_start, false);
+
+Joan := PrepareUnit('Joan', (not debug), '12a_');
+
+if Joan then
+   PlaceUnitArea(Joan, alliance_start, false);
+
+DeltaDoctor := PrepareUnit('DeltaDoctor', (not debug), '12a_');
+
+if DeltaDoctor then
+   PlaceUnitArea(DeltaDoctor, alliance_start, false);
+
+PrepareVehicle(us_medium_tracked, engine_siberite, control_computer, us_cargo_bay, 100);
+veh := CreateVehicle;
+
+SetDir(veh, 2);
+PlaceUnitXY(veh, 63, 9, false);
+SetCargo(veh, mat_artifact, 30);
+
+if LoadVariable('11_artifact_captured', debug) then
+   begin
+   PrepareVehicle(us_medium_tracked, engine_siberite, control_computer, us_cargo_bay, 100);
+   veh := CreateVehicle;
+
+   SetDir(veh, 2);
+   PlaceUnitXY(veh, 60, 4, false);
+   SetCargo(veh, mat_artifact, 50);
+   end;
+End;
+
+// Gossudarov, Kirilenkova, Titov, Fadeev, Dologov, Petrosyan
+Export Function PrepareGossudarov;
+var tmp, i, un;
+begin
+uc_side := 6;
+uc_nation := 3;
+
+InitHc;
+
+Gossudarov := NewCharacter('Gossudarov');
+Kirilenkova := NewCharacter('Kirilenkova');
+Titov := NewCharacter('Titov');
+Fadeev := NewCharacter('Fadeev');
+Dologov := NewCharacter('Dologov');
+Petrosyan := NewCharacter('Petrosyan');
+
+PrepareScientist(sex_male, 8);
+un := CreateHuman;
+PlaceUnitArea(un, gossudarov_spawn, false);
+
+tmp := [Gossudarov, Kirilenkova, Titov, Fadeev, Dologov, Petrosyan, un];
+
+for i in tmp do
+    PlaceUnitArea(i, gossudarov_spawn, false);
+
+ComMoveXY(tmp, GetX(freedom), GetY(freedom));
+End;

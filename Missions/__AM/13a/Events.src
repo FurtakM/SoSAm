@@ -1,6 +1,12 @@
 On UnitDestroyed(un) do
 var i, side;
 begin
+if un = JMM then
+   begin
+   YouLost('JMM');
+   exit;
+   end;
+
 MCE_UnitDestroyed(un);
 End;
 
@@ -16,6 +22,20 @@ End;
 
 On BuildingComplete(building) do
 begin
+if building in FilterAllUnits([[f_side, 7], [f_btype, b_depot]]) then
+   begin
+   SetBName(building, 'freedom');
+   SetRestrict(b_depot, 7, false);
+   freedom := building;
+   exit;
+   end;
+
+if building in FilterAllUnits([[f_side, 7], [f_nation, 3], [f_btype, b_lab]]) then
+   begin
+   ru_lab_builded := true;
+   exit;
+   end;
+
 MCE_BuildingComplete(building);
 End;
 
