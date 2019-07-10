@@ -1,5 +1,5 @@
 Export Function Action;
-var tmp, i;
+var tmp, i, un;
 begin
 CenterNowOnXY(68, 39);
 tmp := FilterAllUnits([f_side, 7]);
@@ -43,7 +43,7 @@ PrepareGossudarov;
 
 repeat
  wait(0$1);
-until See(7, Gossudarov) and FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]]]);
+until FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]]]);
 
 tmp := FilterAllUnits([f_side, 6]);
 
@@ -96,19 +96,151 @@ until ru_lab_builded;
 if Kirilenkova then
    Say(Kirilenkova, 'D3a-Kir-1')
 else
-   SaySciRu('D3a-Sci1-1');
+ begin
+ un := SciRu;
+ Say(un, 'D3a-Sci1-1');
+ end;
 
-Say(JMM, 'D3a-JMM-1');
+if Kirilenkova or un then
+   Say(JMM, 'D3a-JMM-1');
 End;
 
-Export Function SaySciRu(dialog);
+// First attempt
+Every 0$40 trigger GetSide(Gossudarov) = 7 do
+var i, tmp, un;
+begin
+uc_side := 3;
+uc_nation := 3;
+
+PrepareVehicle(ru_medium_wheeled, engine_siberite, control_computer, ru_heavy_machine_gun, 100);
+un := CreateVehicle;
+PlaceUnitArea(un, south_west_spawn, false);
+
+ComMoveXY(un, 67, 45);
+AddComWait(un, 0$2);
+AddComMoveXY(un, 69, 18);
+AddComMoveXY(un, 60, 2);
+
+repeat
+ wait(0$1);
+until not IsOk(un) or IsInArea(un, north_spawn);
+
+if IsInArea(un, north_spawn) then
+   RemoveUnit(un);
+End;
+
+// Russian spot player base
+Every 0$2 do
+var i, un, tmp;
+begin
+repeat
+ wait(0$2);
+ tmp := FilterAllUnits([[f_side, 7], [f_see, 3]]);
+until tmp;
+
+un := NearestUnitToUnit(FilterAllUnits([f_side, 3]), JMM);
+player_spotted := true;
+tmp := SciRu;
+
+DialogueOn;
+
+PlaceSeeing(GetX(un), GetY(un), 7, -8);
+CenterNowOnUnits(un);
+
+if tmp then
+   Say(tmp, 'D4-RSci1-1');
+
+if Gossudarov then
+   begin
+   Say(Gossudarov, 'D4-Gos-1');
+   Say(JMM, 'D4-JMM-1');
+   end;
+
+RemoveSeeing(GetX(un), GetY(un), 7);
+
+DialogueOff;
+End;
+
+// Spawn Bielkov
+Every 0$10+1$00 trigger player_spotted do
+begin
+PrepareBielkov;
+
+ComMoveXY(Bielkov, 118, 106);
+AddComHold(Bielkov);
+
+repeat
+ wait(0$1);
+until IsAt(Bielkov, 118, 106);
+
+ChangeSideFog(4, 7);
+
+if IsOk(Bielkov) then
+   begin
+   InGameOn;
+   DialogueOn;
+
+   SayRadio(Bielkov, 'D5-Bel-1');
+
+   if Gossudarov then
+      begin
+      Say(Gossudarov, 'D5-Gos-1');
+      Say(JMM, 'D5-JMM-1');
+      Say(Gossudarov, 'D5-Gos-2');
+      Say(JMM, 'D5-JMM-2');
+      end;
+
+   DialogueOff;
+   InGameOff;
+   end;
+
+case Query('QSaveBelkov') of
+1: begin
+   DialogueOn;
+   Say(JMM, 'D5a-JMM-1');
+   SayRadio(Bielkov, 'D5a-Bel-1');
+   DialogueOff;
+
+   ComMoveXY(Bielkov, 83, 49);
+   end;
+2: begin
+   Say(JMM, 'D5a-JMM-2');
+
+   ComWait(Bielkov, 0$10);
+   AddComMoveXY(Bielkov, 107, 109);
+   AddComHold(Bielkov);
+   end;
+end;
+
+repeat
+ wait(0$1);
+until (IsDead(Bielkov) and GetSide(Bielkov) = 4) or GetDistUnits(NearestUnitToUnit(FilterAllUnits([f_side, 7]), Bielkov), Bielkov) < 10;
+
+if IsDead(Bielkov) then
+   begin
+   CenterNowOnUnits(Bielkov);
+   Say(JMM, 'D5a-JMM-2a');
+   exit;
+   end;
+
+if See(7, Bielkov) then
+   SetSide(Bielkov, 7);
+
+repeat
+ wait(0$1);
+until GetDistUnitXY(Bielkov, 66, 45) < 30;
+
+Say(Bielkov, 'D6-Bel-1');
+End;
+
+Export Function SciRu;
 var tmp, t;
 begin
-t := [Gossudarov, Titov, Fadeev, Dologov,
+t := [Gossudarov, Titov, Fadeev, Dolgov,
       Petrosyan, Burlak, Bielkov, Gnyevko];
 
 tmp := FilterAllUnits([[f_side, 7], [f_nation, 3], [f_class, 4], [f_sex, sex_male]]) diff t;
 
 if tmp then
-   Say(tmp[1], dialog);
+   result := tmp[1];
 End;

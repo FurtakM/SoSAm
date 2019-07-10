@@ -1,7 +1,7 @@
 Export JMM, Roth, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
        Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
        Simms, Joan, DeltaDoctor;
-Export Gossudarov, Kirilenkova, Titov, Fadeev, Dologov,
+Export Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov,
        Petrosyan;
 Export Burlak, Bielkov, Gnyevko;
 Export Function PrepareAlliance;
@@ -112,7 +112,7 @@ if LoadVariable('11_artifact_captured', debug) then
    end;
 End;
 
-// Gossudarov, Kirilenkova, Titov, Fadeev, Dologov, Petrosyan
+// Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov, Petrosyan
 Export Function PrepareGossudarov;
 var tmp, i, un;
 begin
@@ -125,17 +125,28 @@ Gossudarov := NewCharacter('Gossudarov');
 Kirilenkova := NewCharacter('Kirilenkova');
 Titov := NewCharacter('Titov');
 Fadeev := NewCharacter('Fadeev');
-Dologov := NewCharacter('Dologov');
+Dolgov := NewCharacter('Dolgov');
 Petrosyan := NewCharacter('Petrosyan');
 
 PrepareScientist(sex_male, 8);
 un := CreateHuman;
 PlaceUnitArea(un, gossudarov_spawn, false);
 
-tmp := [Gossudarov, Kirilenkova, Titov, Fadeev, Dologov, Petrosyan, un];
+tmp := [Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov, Petrosyan, un];
 
 for i in tmp do
     PlaceUnitArea(i, gossudarov_spawn, false);
 
 ComMoveXY(tmp, GetX(freedom), GetY(freedom));
+End;
+
+Export Function PrepareBielkov;
+begin
+uc_side := 4;
+uc_nation := 3;
+
+InitHc;
+
+Bielkov := NewCharacter('Belkov');
+PlaceUnitArea(Bielkov, gossudarov_spawn, false);
 End;
