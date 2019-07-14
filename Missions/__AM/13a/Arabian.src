@@ -6,6 +6,7 @@ uc_side := 2;
 uc_nation := 2;
 
 Abdul := NewCharacter('Abdul');
+SetClass(Abdul, class_desert_warior);
 PlaceHumanInUnit(Abdul, ar_depot);
 
 vc_chassis := 31;
@@ -54,4 +55,70 @@ for i = 1 to 5 do
     end;
 
 arabian_guard := tmp;
+End;
+
+// Shariff the great escape
+Every 0$1 trigger FilterAllUnits([[f_side, 7], [f_dist, ar_depot, 12]]) or GetLives(Mastodont) < 990 or GetLives(Abdul) < 990 do
+begin
+if IsInUnit(Abdul) then
+   ComExitBuilding(Abdul);
+
+if Mastodont then
+   ComMoveXY(Mastodont, 205, 132);
+
+AddComMoveXY(Abdul, 205, 132);
+
+repeat
+ wait(0$1);
+until IsInArea(Abdul, escape_area);
+
+RemoveUnit(Abdul);
+
+abdul_escaped := true;
+
+repeat
+ wait(0$1);
+until IsInArea(Mastodont, escape_area) or IsDead(Mastodont);
+
+if IsOk(Mastodont) then
+   RemoveUnit(Mastodont);
+End;
+
+Every 8$00+2$00 trigger IsOk(ar_depot) and ar_active_attack do
+var i, base, tmp, flags, _target, attackers;
+begin
+enable;
+
+base := 1;
+flags := [0, 0, 0, 0, 0, 0, 0, 0, 1, 0];
+
+tmp := [ [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+         [ar_medium_trike, engine_combustion, control_remote, ar_gun],
+         [ar_medium_trike, engine_combustion, control_remote, ar_selfpropelled_bomb],
+       ];
+
+for i = 1 to Difficulty+tick div 10$00 do
+    tmp := Insert(tmp, tmp+1, [ar_medium_trike, engine_combustion, control_remote, [ar_rocket_launcher, ar_selfpropelled_bomb, ar_gatling_gun, ar_gun][rand(1,4)]]);
+
+MC_SetProduceList(base, tmp);
+
+repeat
+ wait(0$1);
+until MC_GetProduceList(base) = 0;
+
+wait(0$20);
+
+_target := [[124,85], [90,61], [69,48], [68,48]];
+attackers := mc_vehicles[base] diff (mc_defender[base] union UnitFilter(mc_vehicles[base], [f_weapon, ar_cargo_bay]));
+
+if not attackers then
+   exit;
+
+ar_attackers := attackers;
+
+repeat
+ wait(0$1);
+until not UnitFilter(attackers, [f_hastask]);
+
+MC_PrepareAttack(base, attackers, _target, flags);
 End;
