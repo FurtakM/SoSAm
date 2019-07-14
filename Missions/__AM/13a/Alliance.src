@@ -2,10 +2,12 @@ Export JMM, Roth, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
        Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
        Simms, Joan, DeltaDoctor;
 Export Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov,
-       Petrosyan;
-Export Burlak, Bielkov, Gnyevko;
+       Petrosyan, Scholtze, Oblukov, Kapitsova,
+       Lipshchin, Petrovova, Kovalyuk, Kuzmov, Karamazov;
+Export Burlak, Belkov, Gnyevko;
+Export Masha;
 Export Function PrepareAlliance;
-var veh;
+var veh, i, tmp;
 begin
 uc_side := 7;
 uc_nation := 1;
@@ -94,6 +96,12 @@ DeltaDoctor := PrepareUnit('DeltaDoctor', (not debug), '12a_');
 if DeltaDoctor then
    PlaceUnitArea(DeltaDoctor, alliance_start, false);
 
+tmp := CreateCharacterSet('12a_others');
+
+if tmp then
+   for i in tmp do
+       PlaceUnitArea(i, alliance_start, false);
+
 PrepareVehicle(us_medium_tracked, engine_siberite, control_computer, us_cargo_bay, 100);
 veh := CreateVehicle;
 
@@ -114,7 +122,7 @@ End;
 
 // Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov, Petrosyan
 Export Function PrepareGossudarov;
-var tmp, i, un;
+var tmp, i;
 begin
 uc_side := 6;
 uc_nation := 3;
@@ -124,15 +132,13 @@ InitHc;
 Gossudarov := NewCharacter('Gossudarov');
 Kirilenkova := NewCharacter('Kirilenkova');
 Titov := NewCharacter('Titov');
-Fadeev := NewCharacter('Fadeev');
+Oblukov := NewCharacter('Oblukov');
 Dolgov := NewCharacter('Dolgov');
 Petrosyan := NewCharacter('Petrosyan');
+Scholtze := NewCharacter('Scholtze');
+Kapitsova := NewCharacter('Kapitsova');
 
-PrepareScientist(sex_male, 8);
-un := CreateHuman;
-PlaceUnitArea(un, gossudarov_spawn, false);
-
-tmp := [Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov, Petrosyan, un];
+tmp := [Gossudarov, Kirilenkova, Titov, Oblukov, Dolgov, Petrosyan, Scholtze, Kapitsova];
 
 for i in tmp do
     PlaceUnitArea(i, gossudarov_spawn, false);
@@ -140,13 +146,82 @@ for i in tmp do
 ComMoveXY(tmp, GetX(freedom), GetY(freedom));
 End;
 
-Export Function PrepareBielkov;
+Export Function PrepareBelkov;
 begin
 uc_side := 4;
 uc_nation := 3;
 
 InitHc;
 
-Bielkov := NewCharacter('Belkov');
-PlaceUnitArea(Bielkov, gossudarov_spawn, false);
+Belkov := NewCharacter('Belkov');
+PlaceUnitArea(Belkov, gossudarov_spawn, false);
+End;
+
+Export Function PrepareGnyevko;
+begin
+uc_side := 4;
+uc_nation := 3;
+
+InitHc;
+
+Gnyevko := NewCharacter('Gnyevko');
+PlaceUnitArea(Gnyevko, gossudarov_spawn, false);
+End;
+
+Export Function PrepareBurlak;
+var i, tmp;
+begin
+uc_side := 4;
+uc_nation := 3;
+
+InitHc;
+
+Burlak := NewCharacter('Burlak');
+
+PrepareVehicle([ru_heavy_tracked, ru_heavy_wheeled, ru_medium_tracked][Difficulty], engine_combustion, control_manual, ru_rocket_launcher, 0);
+Masha := CreateVehicle;
+
+SetLives([Masha, Burlak], 499);
+SetDir(Masha, 3);
+SetMark(Masha, 1);
+
+PlaceUnitArea(Masha, burlak_spawn, false);
+PlaceUnitXY(Burlak, 125, 1, false);
+
+ComMoveUnit(Burlak, Masha);
+
+wait(0$0.3);
+
+AddComMoveXY(Masha, 110, 10);
+
+Petrovova := NewCharacter('Petrovova');
+Kuzmov := NewCharacter('Kuzmov');
+Kovalyuk := NewCharacter('Kovalyuk');
+Lipshchin := NewCharacter('Lipshchin');
+Karamazov := NewCharacter('Karamazov');
+
+tmp := [Petrovova, Kuzmov, Kovalyuk, Lipshchin, Karamazov];
+
+for i in tmp do
+    begin
+    SetLives(i, rand(399, 799));
+    PlaceUnitArea(i, burlak_friends_spawn, false);
+    end;
+
+ComMoveXY(tmp, 116, 8);
+AddComHold(tmp);
+
+for i in UnitFilter(tmp, [f_class, 1]) do
+    begin
+    AddComMoveToArea(i, burlak_crawl_area);
+    AddComTurnXY(i, 147, 45);
+    AddComCrawl(i);          
+    end;
+
+repeat
+ wait(0$1);
+until IsAt(Masha, 110, 10);
+
+ComStop(Burlak);
+AddComHold(Burlak);
 End;

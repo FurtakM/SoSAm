@@ -20,10 +20,10 @@ PrepareArabian;
 PrepareRussian;
 PrepareAlliance;
 
-Skirmish_Start;
+MC_Start();
 
-//if debug then
-//   FogOff(1);
+if debug then
+   FogOff(1);
 
 Action;
 End;
@@ -63,7 +63,7 @@ MC_SetBuildingList(2, [
 ]);
 MC_InsertProduceList(2, [
    ru_medium_wheeled,
-   engine_siberite,
+   engine_combustion,
    control_computer,
    ru_cargo_bay
 ]);
@@ -71,7 +71,8 @@ End;
 
 
 Export debug, game, freedom, gossudarov_arrive, ru_lab_builded,
-       player_spotted;
+       player_spotted, first_attack, ar_base_spotted, ar_active_attack,
+       ar_attackers, first_powell_attack;
 Function InitVariables;
 begin
 debug := true;
@@ -79,4 +80,10 @@ game := true;
 gossudarov_arrive := false;
 ru_lab_builded := false;
 player_spotted := false;
+first_attack := false;
+ru_attackers := [];
+ar_base_spotted := false;
+ar_active_attack := false;
+ar_attackers := [];
+first_powell_attack := false;
 End;

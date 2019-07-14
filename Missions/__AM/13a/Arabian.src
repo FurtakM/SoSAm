@@ -1,9 +1,19 @@
-Export arabian_force, arabian_guard;
+Export arabian_force, arabian_guard, Abdul, mastodont;
 Export Function PrepareArabian;
 var i, veh, tmp, xy, un, un2;
 begin
 uc_side := 2;
 uc_nation := 2;
+
+Abdul := NewCharacter('Abdul');
+PlaceHumanInUnit(Abdul, ar_depot);
+
+vc_chassis := 31;
+vc_control := control_rider;
+mastodont := CreateVehicle;
+PlaceUnitXY(mastodont, 153, 71, false);
+
+InitVc;
 
 arabian_force := PrepareBase(ar_depot, '', [7, 8, 9][Difficulty], [5000, 1000, 300], [22, 5, 6, 9]);
 mc_bases := Replace(mc_bases, 1, arabian_force);

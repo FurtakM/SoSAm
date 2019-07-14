@@ -1,11 +1,35 @@
 On UnitDestroyed(un) do
 var i, side;
 begin
+if un in ru_attackers then
+   ru_attackers := ru_attackers diff un;
+
+if un in ar_attackers then
+   ar_attackers := ar_attackers diff un;
+
 if un = JMM then
    begin
    YouLost('JMM');
    exit;
    end;
+
+if un = Burlak then
+   begin
+   YouLost('Burlak');
+   exit;
+   end;
+
+if un = freedom then
+   begin
+   YouLost('Destroyed');
+   exit;
+   end;
+
+if un = Masha then
+   ChangeMissionObjectives('M4b');
+
+if un = Mastodont then
+   ChangeMissionObjectives('M4a');
 
 MCE_UnitDestroyed(un);
 End;
