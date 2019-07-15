@@ -37,6 +37,24 @@ if state > -1 and state < 3 then
           result := result diff i;
 End;
 
+Export Function TechCanBeResearch(side, tech);
+var i, tmp;
+begin
+result := true;
+
+tmp := GetTechTechsReq(tech);
+
+if not tmp then
+   exit;
+
+for i in tmp do
+    if GetTech(i, side) <> state_researched then
+       begin
+       result := false;
+       exit;
+       end;
+End;
+
 Export Function ComSpaceTimeShoot(unit);
 var i, x, y, _x, _y, tmp, side, enemy, in_unit, tech_space, tech_time, missile;
 begin
