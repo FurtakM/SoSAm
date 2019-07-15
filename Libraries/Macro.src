@@ -893,14 +893,14 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MC_Research();
-var i, j, side, t, tmp, x, sci, tech_temp, tmp2;
+var i, j, side, t, tmp, x, sci, tmp2;
 begin
 if not mc_bases then
    exit;
 
 for i = 1 to mc_bases do
     begin
-    tmp := UnitFilter(mc_bases[i], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]);
+    tmp := mc_lab[i];
 
     if not tmp then
        continue;
@@ -914,7 +914,7 @@ for i = 1 to mc_bases do
 
         if BuildingStatus(j) = bs_idle then
            for t in mc_tech[side] do
-               if CanBeResearched(j, t) then
+               if CanBeResearched(j, t) and TechCanBeResearch(side, t) then
                   begin
                   ComResearch(j, t);
                   break;
@@ -926,8 +926,8 @@ for i = 1 to mc_bases do
               begin
               ComCancel(j);
 
-              tech_temp := Reindex(mc_tech[side], mc_tech[side], 1, false);
-              mc_tech := Replace(mc_tech, side, tech_temp);
+              mc_tech := Replace(mc_tech, side, Reindex(mc_tech[side], mc_tech[side]-1, mc_tech[side], false));
+              mc_tech := Replace(mc_tech, side, Reindex(mc_tech[side], mc_tech[side], 1, false));
               continue;
               end;
 
@@ -951,14 +951,11 @@ for i = 1 to mc_bases do
                  end;
               end;
 
-           if mc_ape_in_lab[i] and not HasTask(mc_ape_in_lab[i][1]) and not IsInUnit(mc_ape_in_lab[i][1]) in mc_lab[i] then
-              begin
+           if mc_ape_in_lab[i] and not HasTask(mc_ape_in_lab[i][1]) and not IsInUnit(mc_ape_in_lab[i][1]) then
+              ComEnterUnit(mc_ape_in_lab[i][1], j);
 
-              if IsInUnit(mc_ape_in_lab[i][1]) then
-                 ComExitBuilding(mc_ape_in_lab[i][1]);
-
-              AddComEnterUnit(mc_ape_in_lab[i][1], j);
-              end;
+           if IsInUnit(mc_ape_in_lab[i][1]) and BuildingStatus(IsInUnit(mc_ape_in_lab[i][1])) <> bs_working then
+              ComExitBuilding(mc_ape_in_lab[i][1]);
 
            end;
 

@@ -84,7 +84,29 @@ if IsOk(Mastodont) then
    RemoveUnit(Mastodont);
 End;
 
-Every 8$00+2$00 trigger IsOk(ar_depot) and ar_active_attack do
+// Contaminate 92 40
+Every 12$00 trigger ar_active_attack and GetBType(HexInfo(92, 40)) = b_siberite_mine do
+var sci;
+begin
+sci := UnitFilter(mc_bases[1], [f_class, 4]);
+
+if not sci then
+   exit;
+
+mc_bases := Replace(mc_bases, 1, mc_bases[1] diff sci[1]);
+
+if IsInUnit(sci[1]) then
+   ComExitBuilding(sci[1]);
+
+if DangerAtRangeXY(2, 105, 14, 20)[4] < 10 then
+   AddComMoveXY(sci[1], 105, 14)
+else
+   AddComMoveXY(sci[1], 118, 77);
+
+AddComContaminate(sci[1], 92, 40);
+End;
+                     
+Every 8$00 trigger IsOk(ar_depot) and ar_active_attack do
 var i, base, tmp, flags, _target, attackers;
 begin
 enable;
@@ -92,7 +114,7 @@ enable;
 base := 1;
 flags := [0, 0, 0, 0, 0, 0, 0, 0, 1, 0];
 
-tmp := [ [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+tmp := [ [ar_medium_trike, engine_combustion, control_remote, ar_flame_thrower],
          [ar_medium_trike, engine_combustion, control_remote, ar_gun],
          [ar_medium_trike, engine_combustion, control_remote, ar_selfpropelled_bomb],
        ];
@@ -115,6 +137,53 @@ if not attackers then
    exit;
 
 ar_attackers := attackers;
+
+repeat
+ wait(0$1);
+until not UnitFilter(attackers, [f_hastask]);
+
+MC_PrepareAttack(base, attackers, _target, flags);
+End;
+
+Every 12$00 trigger IsOk(ar_depot) and ar_active_attack and IsInArea(masha, masha_area) and MC_GetProduceList(1) = 0 and not ar_attackers do
+var i, base, tmp, flags, _target, attackers, un;
+begin
+base := 1;
+flags := [0, 0, 0, 0, 0, 0, 0, 0, 1, 0];
+
+tmp := [ [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+         [ar_medium_trike, engine_combustion, control_remote, ar_gun],
+         [ar_medium_trike, engine_combustion, control_remote, ar_gatling_gun],
+         [ar_hovercraft, engine_solar, control_remote, ar_double_machine_gun],
+         [ar_hovercraft, engine_solar, control_remote, ar_double_machine_gun]
+       ];
+
+MC_SetProduceList(base, tmp);
+
+repeat
+ wait(0$1);
+until MC_GetProduceList(base) = 0;
+
+wait(0$20);
+
+_target := [[119,9]];
+attackers := mc_vehicles[base] diff (mc_defender[base] union UnitFilter(mc_vehicles[base], [f_weapon, ar_cargo_bay]));
+
+if not attackers then
+   exit;
+
+uc_side := 2;
+uc_nation := 2;
+
+InitHc;
+
+for i = 1 to [4, 5, 6][Difficulty] do
+    begin
+    PrepareHuman(false, [class_apeman_soldier, class_apeman_kamikaze][rand(1,2)], 8);
+    un := CreateHuman;
+    PlaceUnitArea(un, east_spawn, false);
+    attackers := attackers union un;
+    end;
 
 repeat
  wait(0$1);
