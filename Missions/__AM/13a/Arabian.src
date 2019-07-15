@@ -46,7 +46,7 @@ for i = 1 to 3 do
 
 for i = 1 to 5 do
     begin
-    PrepareVehicle(ar_half_tracked, engine_siberite, control_manual, [ar_gatling_gun, ar_rocket_launcher, ar_rocket_launcher, ar_gun][i mod 4 + 1], 100);
+    PrepareVehicle(ar_half_tracked, engine_siberite, control_manual, [ar_gatling_gun, ar_rocket_launcher, ar_rocket_launcher, ar_flame_thrower][i mod 4 + 1], 100);
 
     veh := CreateVehicle;
     tmp := tmp ^ veh;
@@ -114,13 +114,13 @@ enable;
 base := 1;
 flags := [0, 0, 0, 0, 0, 0, 0, 0, 1, 0];
 
-tmp := [ [ar_medium_trike, engine_combustion, control_remote, ar_flame_thrower],
-         [ar_medium_trike, engine_combustion, control_remote, ar_gun],
+tmp := [ [ar_half_tracked, engine_combustion, control_remote, ar_flame_thrower],
+         [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
          [ar_medium_trike, engine_combustion, control_remote, ar_selfpropelled_bomb],
        ];
 
 for i = 1 to Difficulty+tick div 10$00 do
-    tmp := Insert(tmp, tmp+1, [ar_medium_trike, engine_combustion, control_remote, [ar_rocket_launcher, ar_selfpropelled_bomb, ar_gatling_gun, ar_gun][rand(1,4)]]);
+    tmp := Insert(tmp, tmp+1, [[ar_medium_trike, ar_half_tracked][rand(1,2)], engine_combustion, control_remote, [ar_rocket_launcher, ar_selfpropelled_bomb, ar_gatling_gun, ar_flame_thrower][rand(1,4)]]);
 
 MC_SetProduceList(base, tmp);
 
