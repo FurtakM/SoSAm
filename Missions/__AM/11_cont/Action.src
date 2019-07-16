@@ -113,7 +113,9 @@ SaveForQuickRestart;
 
 ar_run := true;
 
-wait(0$45);
+repeat
+ wait(0$1);
+until FilterAllUnits([[f_side, 1], [f_dist, ar_dep_s, 10]]) or GetLives(ar_dep_s) < 999;
 
 if GetSide(ar_dep_s) = 2 then
    SetSide(ar_dep_s, 1);
@@ -914,9 +916,6 @@ DialogueOff;
 YouLost('Command');
 End;
 
-Every 0$1 trigger IsDead(JMM) and ar_run do
-YouLost('JMM');
-
 
 // YOU WIN
 Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_btype, b_warehouse]]) = 0 and IsOk(JMM) do
@@ -1000,4 +999,32 @@ if Kikuchi then
    SaveCharacters(Kikuchi, mission_prefix&'Kikuchi');
 
 YouWin;
+End;
+
+
+Export Function CanSayRand(side);
+begin
+result := FilterAllUnits([[f_placed], [f_side, side], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+End;
+
+Export Function SayRand(sex, dial);
+begin
+result := FilterAllUnits([[f_placed], [f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi];
+
+if not result then
+   exit;
+
+result := result[1];
+Say(result, dial);
+End;
+
+Export Function SayRand2(sex, dial, filter);
+begin
+result := FilterAllUnits([[f_side, 1], [f_sex, sex], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Frank, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Powell, Cornel, Gary, Kikuchi]^filter;
+
+if not result then
+   exit;
+
+result := result[1];
+Say(result, dial);
 End;
