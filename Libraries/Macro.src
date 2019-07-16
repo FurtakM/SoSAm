@@ -864,11 +864,14 @@ begin
 if not mc_bases then
    exit;
 
-class := AllowSpecClass(mc_defender[1]);
-
 for i = 1 to mc_bases do
     begin
-    mc_scan := Replace(mc_scan, i, ScanBase(GetSide(mc_bases[1]), mc_scan_area[i]));
+
+    if not mc_bases[i] then
+       continue;
+
+    class := AllowSpecClass(mc_bases[i][1]);
+    mc_scan := Replace(mc_scan, i, ScanBase(GetSide(mc_bases[i][1]), mc_scan_area[i]));
 
     if not mc_scan[i] then
        begin
@@ -878,7 +881,7 @@ for i = 1 to mc_bases do
           continue;
 
        for j in tmp do
-           if GetBType(IsInUnit(j)) in [b_barracks] and GetClass(j) = 1 and not MineOfUnit(j) then
+           if GetBType(IsInUnit(j)) = b_barracks and GetClass(j) = 1 and not MineOfUnit(j) and class then
               ComChangeProfession(j, class);
        end;
 
@@ -1092,7 +1095,7 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MC_TameApe();
-var i, j, x, y, ape, apes, tmp;
+var i, j, x, y, ape, apes, tmp, danger_at_area, side;
 begin
 if not mc_bases then
    exit;
@@ -1107,9 +1110,12 @@ for i = 1 to mc_bases do
     if not tmp then
        continue;
 
-    apes := FilterUnitsInArea(mc_can_tame[i], [[f_side, 0], [f_class, class_apeman]]);
+    side := GetSide(tmp[1]);
 
-    if not apes then
+    apes := FilterUnitsInArea(mc_can_tame[i], [[f_side, 0], [f_class, class_apeman]]);
+    danger_at_area := FilterUnitsInArea(mc_can_tame[i], [f_enemy, side]);
+
+    if not apes or danger_at_area then
        begin
        if mc_taming[i] then
           begin
@@ -1142,7 +1148,7 @@ for i = 1 to mc_bases do
            x := GetX(ape);
            y := GetY(ape);
 
-           if not ValidHex(x, y) then
+           if not ValidHex(x, y) or DangerAtRangeXY(side, x, y, 20)[4] then
               break;
 
            if not HasTask(j) then

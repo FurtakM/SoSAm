@@ -1,9 +1,10 @@
 Export Powell, mobile_patrol, mobile_points, powell_guards, defenders,
-       defcon;
+       defcon, defcon_wave;
 Export Function PrepareAmerican;
 var i, j, b, un;
 begin
 defcon := 0;
+defcon_wave := 0;
 defenders := [];
 
 SetBName(alfa, 'alpha');
@@ -136,10 +137,35 @@ defenders := FilterAllUnits([[f_side, 1], [f_control, control_remote]]);
 End;
 
 Export Function Defend;
-var i, tmp;
+var i, un, veh, tmp;
 begin
+defcon_wave := defcon_wave + 1;
+
 if not defenders then
    PrepareDefenders;
+
+if defcon_wave > 1 then
+   begin
+   for i = 1 to defcon_wave + 2 do
+       begin
+       PrepareVehicle(us_heavy_tracked, engine_siberite, control_manual, [us_gatling_gun, us_heavy_gun, us_rocket_launcher][rand(1,3)], 100);
+       veh := CreateVehicle;
+       SetDir(veh, 1);
+       defenders := defenders ^ veh;
+
+       PrepareHuman(false, 3, 9);
+       PlaceHumanInUnit(CreateHuman, veh);
+       PlaceUnitArea(veh, west_spawn, false);
+       end;
+
+   for i = 1 to defcon_wave do
+       begin
+       PrepareHuman(false, 5, 9);
+       un := CreateHuman;
+       PlaceUnitArea(un, west_spawn, false);
+       defenders := defenders ^ un;
+       end;
+   end;
 
 repeat
  wait(0$1);
