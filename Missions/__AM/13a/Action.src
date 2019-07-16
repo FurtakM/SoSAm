@@ -551,8 +551,10 @@ Every 0$01 trigger FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 and
                    FilterAllUnits([f_side, 1]) = 0 and
                    GetTechNation(7, 1, state_enabled) = 0 and
                    GetTechNation(7, 3, state_enabled) = 0 do
-var tmp, tmp2;
+var i, tmp, tmp2;
 begin
+
+wait(0$3);
 
 if not IsDead(Masha) then
    AddMedal('Masha', 1)
@@ -660,6 +662,23 @@ if Gossudarov then
    SaveCharacters(Gossudarov, '13a_Gossudarov');
 if Kirilenkova then
    SaveCharacters(Kirilenkova, '13a_Kirilenkova');
+
+// Save Variables
+if Masha then
+   SaveVariable([GetChassis(Masha), GetEngine(Masha), GetControl(Masha), GetWeapon(Masha)], '13a_Masha');
+
+tmp := FilterAllUnits([f_type, unit_building]);
+tmp2 := [];
+
+if tmp then
+   for i in tmp do
+       if IsOk(i) then
+          tmp2 := tmp2 ^ [GetSide(i), GetNation(i), GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetLabKind(i, 1), GetLabKind(i, 2)];
+
+if tmp2 then
+   SaveVariable(tmp2, '13a_buildings');
+
+YouWin;
 End;
 
 

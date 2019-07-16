@@ -159,7 +159,6 @@ if not defenders and not solds then
 depot_under_attack := false;
 sold_defenders := [];
 
-
 if mechs then
    for i in defenders do
        begin
@@ -2166,6 +2165,10 @@ repeat
              ComAttackUnit(group[i], x)
             else
              ComAttackUnit(group[i], tmp[1]);
+
+          // if target is unreachable
+          if not HasTask(group[i]) then
+             ComAttackUnit(group[i], NearestUnitToUnit(tmp, group[i]));
           end;
     end;
 
