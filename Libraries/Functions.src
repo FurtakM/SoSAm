@@ -1020,9 +1020,6 @@ if buildings then
        4: f := UnitFilter(buildings, [[f_side, side], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
        end;
 
-       if not f then
-          continue;
-
        x := personel[i];
 
        if x = -1 then
@@ -1309,7 +1306,7 @@ result := GetResourceType(pom, mat_cans) >= cost[1] and
 End;
 
 Export Function TryClearPlaceForBuilding(base, btype, x, y, d);
-var i, j, _x, _y, tmp, hexes;
+var i, j, _x, _y, tmp, hexes, r, xy, dep;
 begin
 
 if not base or not btype or not x or not y then
@@ -1328,10 +1325,28 @@ for i = 1 to hexes do
     if not tmp or GetType(tmp) = unit_building then
        continue;
 
-    for j = 0 to 5 do
+    dep := FilterAllUnits([[f_side, GetSide(tmp)], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+
+    if dep then
+       begin                      
+       xy := [ShiftX(GetX(dep[1]), GetDir(dep[1]), 5), ShiftY(GetY(dep[1]), GetDir(dep[1]), 5)];
+
+       if ValidHex(xy[1], xy[2]) then
+          begin
+          ComMoveXY(tmp, xy[1], xy[2]);
+          continue;
+          end;
+       end;
+
+    r := GetDir(tmp);
+
+    if r = 5 then
+       r := 0;
+
+    for j = r to 5 do
         begin
-        _x := ShiftX(GetX(tmp), j, 3);
-        _y := ShiftY(GetY(tmp), j, 3);
+        _x := ShiftX(GetX(tmp), j, 2);
+        _y := ShiftY(GetY(tmp), j, 2);
 
         if ValidHex(_x, _y) and not HexInfo(_x, _y) then
            begin
@@ -1399,6 +1414,9 @@ for i = 1 to hexes do
     end;
 
 if DangerAtRangeXY(GetSide(bdepot), x, y, 20)[4] then
+   exit;
+
+if btype in [b_oil_mine, b_siberite_mine] and not GetResourceVisibility(x, y, GetSide(bdepot)) then
    exit;
 
 result := true;

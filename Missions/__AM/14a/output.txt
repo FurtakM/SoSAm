@@ -1,4 +1,34 @@
 // starting begin ResetFog ;
    0: CALL_OW 335
+// LoadBuildings ;
+   4: CALL 9 0 0
+// end ; end_of_file
+   8: END
+// export function LoadBuildings ; var i , tmp ; begin
+   9: LD_INT 0
+  11: PPUSH
+  12: PPUSH
+  13: PPUSH
+// tmp := LoadVariable ( 13a_buildings , [ ] ) ;
+  14: LD_ADDR_VAR 0 3
+  18: PUSH
+  19: LD_STRING 13a_buildings
+  21: PPUSH
+  22: EMPTY
+  23: PPUSH
+  24: CALL_OW 30
+  28: ST_TO_ADDR
+// for i in tmp do
+  29: LD_ADDR_VAR 0 2
+  33: PUSH
+  34: LD_VAR 0 3
+  38: PUSH
+  39: FOR_IN
+  40: IFFALSE 44
+// begin end ;
+  42: GO 39
+  44: POP
+  45: POP
 // end ;
-   4: END
+  46: LD_VAR 0 1
+  50: RET
