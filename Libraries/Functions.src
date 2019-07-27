@@ -26,7 +26,7 @@ if not side or not nation then
    exit;
 
 case nation of
-     nation_american: result := [35, 45, 46, 47, 1, 2, 6, 15, 16, 7, 12, 13, 10, 14, 20, 25, 36, 69, 39, 34, 40, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 80];
+     nation_american: result := [35, 45, 46, 47, 1, 2, 6, 15, 16, 7, 12, 13, 10, 14, 20, 25, 32, 27, 36, 69, 39, 34, 40, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 80];
      nation_arabian: result := [35, 45, 46, 47, 70, 1, 11, 3, 4, 5, 6, 15, 18, 7, 17, 8, 20, 72, 26, 69, 39, 40, 41, 42, 43, 48, 49, 50, 51, 52, 53, 54, 55, 56, 60, 61, 62, 66, 67, 68];
      nation_russian: result := [46, 47, 1, 2, 11, 9, 20, 19, 21, 24, 22, 25, 28, 29, 31, 37, 38, 32, 27, 33, 69, 39, 34, 40, 71, 23, 44, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 63, 64, 65];
 end;
@@ -1210,14 +1210,18 @@ if not weapon and GetTech(tech_rocket, side) = state_researched and
 if not weapon then
    begin
    list := list diff [us_radar, ar_radar, ru_time_lapser];
+
+   if not list then
+      exit;
+
    weapon := list[rand(1, list)];
-   tmp := FilterAllUnits([[f_side, side], [f_not, [f_bweapon, 0]]]);
+   {tmp := FilterAllUnits([[f_side, side], [f_not, [f_bweapon, 0]]]);
 
    for i in tmp do
        list := list diff GetBWeapon(i);
 
    if list then
-      weapon := list[rand(1, list)];
+      weapon := list[rand(1, list)];}
    end;
 
 if weapon then
@@ -1256,12 +1260,9 @@ begin
 pom := GetBase(fac);
 cost := CostOfVehicle(list[1], list[2], list[3], list[4]);
 
-if GetResourceType(pom, mat_cans) >= cost[1] and
-   GetResourceType(pom, mat_oil) >= cost[2] and
-   GetResourceType(pom, mat_siberit) >= cost[3] then
-   result := true
-    else
-     result := false;
+result := GetResourceType(pom, mat_cans) >= cost[1] and
+          GetResourceType(pom, mat_oil) >= cost[2] and
+          GetResourceType(pom, mat_siberit) >= cost[3];
 End;
 
 Export Function UpgradeCost(building);
@@ -1308,6 +1309,7 @@ End;
 Export Function TryClearPlaceForBuilding(base, btype, x, y, d);
 var i, j, _x, _y, tmp, hexes, r, xy, dep;
 begin
+result := false;
 
 if not base or not btype or not x or not y then
    exit;
@@ -1324,6 +1326,8 @@ for i = 1 to hexes do
 
     if not tmp or GetType(tmp) = unit_building then
        continue;
+
+    result := true;
 
     dep := FilterAllUnits([[f_side, GetSide(tmp)], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
 
@@ -1357,6 +1361,12 @@ for i = 1 to hexes do
     end;
 End;
 
+{
+  Check if specify building can be build
+  Returns:
+  0: Can't be build
+  1: Can be build
+}
 Export Function CanBeBuilded(bdepot, btype, x, y, d);
 var i, j, pom, cost, hexes, height, dist, hex;
 begin
@@ -2237,6 +2247,35 @@ End;
 Export Function IsDriver(un);
 begin
 result := un in FilterAllUnits([f_driving]);
+End;
+
+Export Function GetFacExtXYD(x, y, d);
+var list;
+begin
+list := [];
+
+     Case d of
+     0: begin
+        list := [[x-4, y-4, 2], [x-3, y, 1], [x+4, y, 4], [x+3, y+3, 5], [x, y+4, 0]];
+        end;
+     1: begin
+        list := [[x, y-4, 3], [x-3, y-3, 2], [x-4, y, 1], [x, y+3, 0], [x+4, y+4, 5]];
+        end;
+     2: begin
+        list := [[x, y-3, 3], [x+4, y, 4], [x, y+4, 0], [x-3, y, 1], [x-4, y-4, 2]];
+        end;
+     3: begin
+        list := [[x+3, y, 4], [x+4, y+4, 5], [x-4, y, 1], [x, y-4, 3], [x-3, y-3, 2]];
+        end;
+     4: begin
+        list := [[x, y+4, 0], [x+3, y+3, 5], [x+4, y, 4], [x, y-3, 3], [x-4, y-4, 2]];
+        end;
+     5: begin
+        list := [[x-4, y, 1], [x, y-4, 3], [x+4, y+4, 5], [x+3, y, 4], [x, y+3, 0]];
+        end;
+     End;
+
+result := list;
 End;
 
 

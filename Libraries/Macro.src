@@ -1,5 +1,5 @@
 // Macro Module By Serpent
-// ver. 19.07.19
+// ver. 19.07.26
 {
   TODO #1
   - Sprawdziæ budowê bazy od zera (bez sk³adu)!
@@ -22,7 +22,7 @@ Export mc_bases, mc_building_need_repair, mc_building_repairs,
        mc_vehicles, mc_attack, mc_produce, mc_defender, mc_scan, mc_parking,
        mc_scan_area, mc_sides, mc_tech, mc_can_tame, mc_ape, mc_ape_in_lab, mc_taming,
        mc_build_upgrade, mc_lab, mc_lab_upgrade, mc_teleport_exit, mc_deposits_xy,
-       mc_deposits_finder;
+       mc_deposits_finder, mc_allowed_tower_weapons, mc_remote_driver;
 
 Export Function InitMacro;
 var i;
@@ -99,6 +99,8 @@ for i = 1 to mc_bases do
     mc_teleport_exit := Replace(mc_teleport_exit, i, []);
     mc_deposits_xy := Replace(mc_deposits_xy, i, []);
     mc_deposits_finder := Replace(mc_deposits_finder, i, []);
+    mc_allowed_tower_weapons := Replace(mc_allowed_tower_weapons, i, []);
+    mc_remote_driver := Replace(mc_remote_driver, i, []);
     end;
 
 MC_InitSides();
@@ -181,6 +183,7 @@ RaiseSailEvent(122); // mc_change_ape_class
 RaiseSailEvent(123); // mc_bazooka
 // RaiseSailEvent(124); // mc_teleport // todo
 RaiseSailEvent(125); // mc_deposits
+RaiseSailEvent(126); // mc_remote_driver
 RaiseSailEvent(200); // mc_idle
 End;
 
@@ -219,6 +222,7 @@ End;
   123: Bazooka
   124: TeleportExit
   125: Deposits
+  126: RemoteDriver
   200: Idle
 }
 On SailEvent(event) do
@@ -277,6 +281,9 @@ if event = 124 then
 // deposits
 if event = 125 then
    MC_Deposits();
+// remote driver
+if event = 126 then
+   MC_RemoteDriver();
 
 // idle event
 if event = 200 then
@@ -289,7 +296,7 @@ begin
 if not mc_bases[base] or not tag then
    exit;
 
-for i in mc_bases[base] do
+for i in mc_bases[base] union mc_ape[base] do
     if GetTag(i) = tag then
        SetTag(i, 0);
 End;
@@ -528,8 +535,11 @@ for i = 1 to mc_bases do
               ComBuild(j, mc_build_list[i][1][1], mc_build_list[i][1][2], mc_build_list[i][1][3], mc_build_list[i][1][4]);
            end;
        end
-    else
-       TryClearPlaceForBuilding(mc_bases[i], mc_build_list[i][1][1], mc_build_list[i][1][2], mc_build_list[i][1][3], mc_build_list[i][1][4]);
+    else if not TryClearPlaceForBuilding(mc_bases[i], mc_build_list[i][1][1], mc_build_list[i][1][2], mc_build_list[i][1][3], mc_build_list[i][1][4]) then
+         begin
+         mc_build_list := Replace(mc_build_list, i, Reindex(mc_build_list[i], 1, -1, false));
+         continue;
+         end;
     end;
 End;
 
@@ -618,6 +628,10 @@ for i = 1 to mc_bases do
 
     if not weapon then
        continue;
+
+    if mc_allowed_tower_weapons[i] then
+       if not weapon in mc_allowed_tower_weapons[i] then
+          continue;
 
     ComPlaceWeapon(mc_turret_list[i][1], weapon);
     end;
@@ -749,18 +763,24 @@ for i = 1 to mc_bases do
        begin
        if mc_crates_collector[i] < 5 then
           begin
-          tmp := UnitFilter(mc_bases[i] union mc_ape[i], [[f_or, [f_class, 2], [f_class, 16]], [f_lives, 750]]);
+          if mc_ape[i] then
+             tmp := UnitFilter(mc_ape[i], [[f_class, 16], [f_lives, 750]]);
+
+          if not tmp then
+             tmp := UnitFilter(mc_bases[i], [[f_class, 2], [f_lives, 750]])
+          else if tmp < 5 then
+             tmp := tmp union UnitFilter(mc_bases[i], [[f_class, 2], [f_lives, 750]]);
 
           if not tmp then
              continue;
 
           for j in tmp do
-              if GetTag(j) = 0 then
+              if not GetTag(j) then
                  begin
                  mc_crates_collector := Add(mc_crates_collector, [i, mc_crates_collector[i]+1], j);
                  SetTag(j, 107);
 
-                 if mc_crates_collector[i] > 5 then
+                 if mc_crates_collector[i] >= 5 then
                     break;
                  end;
           end;
@@ -1104,7 +1124,7 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MC_TameApe();
-var i, j, x, y, ape, apes, tmp, danger_at_area, side;
+var i, j, x, y, ape, apes, tmp, dep, danger_at_area, side;
 begin
 if not mc_bases then
    exit;
@@ -1115,13 +1135,15 @@ for i = 1 to mc_bases do
        continue;
 
     tmp := UnitFilter(mc_bases[i], [[f_class, 4], [f_ok], [f_not, [f_hastask]]]) diff mc_healers[i];
+    dep := UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]);
 
-    if not tmp then
+    if not tmp or not dep then
        continue;
 
     side := GetSide(tmp[1]);
+    dep := dep[1];
 
-    apes := FilterUnitsInArea(mc_can_tame[i], [[f_side, 0], [f_class, class_apeman]]);
+    apes := FilterUnitsInArea(mc_can_tame[i], [[f_side, 0], [f_class, class_apeman]]) union FilterAllUnits([[f_side, 0], [f_class, class_apeman], [f_dist, dep, 20]]);
     danger_at_area := FilterUnitsInArea(mc_can_tame[i], [f_enemy, side]);
 
     if not apes or danger_at_area then
@@ -1346,6 +1368,64 @@ for i = 1 to mc_bases do
           else if not HasTask(mc_deposits_finder[i][1]) and GetDistUnitXY(mc_deposits_finder[i][1], mc_deposits_xy[i][1][1], mc_deposits_xy[i][1][2]) > 6 then
                ComMoveXY(mc_deposits_finder[i][1], mc_deposits_xy[i][1][1], mc_deposits_xy[i][1][2]);
           end;
+       end;
+    end;
+End;
+
+Export Function MC_RemoteDriver();
+var i, j, k, places, tmp, nation, ct, cts;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    nation := GetNation(mc_bases[i][1]);
+
+    if nation <> 1 or not UnitFilter((mc_vehicles[i] union mc_defender[i]), [f_control, control_remote]) then
+       continue;
+
+    cts := UnitFilter(mc_bases[i], [f_btype, b_control_tower]);
+
+    if not cts then
+       continue;
+
+    if mc_remote_driver[i] then
+       for j in mc_remote_driver[i] do
+           if not IsInUnit(j) or GetBType(IsInUnit(j)) <> b_control_tower then
+              begin
+              if IsInUnit(j) then
+                 ComExitBuilding(j);
+
+              ct := 0;
+
+              for k in cts do
+                  if UnitsInside(k) < 3 then
+                     begin
+                     ct := k;
+                     break;
+                     end;
+
+              if ct then
+                 AddComEnterUnit(j, ct);
+              end;
+
+    places := 0;
+
+    for j = 1 to cts do
+        places := places + 3;
+
+    tmp := UnitFilter(mc_bases[i], [f_class, 3]) diff mc_remote_driver[i];
+
+    if not tmp then
+       continue;
+
+    places := places - (mc_remote_driver[i] + 1);
+
+    if places then
+       begin
+       mc_remote_driver := Replace(mc_remote_driver, i, mc_remote_driver[i] union tmp[1]);
+       SetTag(tmp[1], 126);
        end;
     end;
 End;
@@ -1589,6 +1669,7 @@ if mc_bases[base] then
    end;
 End;
 
+// Set available tame area
 Export Function MC_SetTame(base, area);
 begin
 if not mc_bases or not base then
@@ -1597,6 +1678,7 @@ if not mc_bases or not base then
 mc_can_tame := Replace(mc_can_tame, base, area);
 End;
 
+// Set available upgrade for buildings
 Export Function MC_SetUpgradeBuilding(base, btype);
 var tmp;
 begin
@@ -1611,6 +1693,7 @@ if not tmp then
 mc_build_upgrade := Replace(mc_build_upgrade, base, Insert(mc_build_upgrade[base], mc_build_upgrade[base]+1, tmp[1]));
 End;
 
+// Set available lab kinds
 Export Function MC_SetLabKind(base, kinds);
 var i;
 begin
@@ -1621,6 +1704,8 @@ for i in kinds do
     mc_lab_upgrade := Add(mc_lab_upgrade, [base, mc_lab_upgrade[base]+1], i);
 End;
 
+// Set area for collect crates
+// Default: 30 hex-radius from depot
 Export Function MC_SetCratesArea(base, areas);
 begin
 if not mc_bases or not base or not areas then
@@ -1635,4 +1720,64 @@ if not mc_bases or not base then
    exit;
 
 mc_teleport_exit := Replace(mc_teleport_exit, base, [x, y]);
+End;
+
+// Set available factory extension for specify coords
+Export Function MC_SetFactoryExtension(base, x, y, d, ext_list);
+var i, tmp;
+begin
+if not mc_bases or not base or not ext_list then
+   exit;
+
+tmp := GetFacExtXYD(x, y, d);
+
+if not tmp then
+   exit;
+
+
+for i in tmp do
+    begin
+    mc_build_list := Replace(mc_build_list, base, Insert(mc_build_list[base], mc_build_list[base]+1, [ext_list[1], i[1], i[2], i[3]]));
+    ext_list := Delete(ext_list, 1);
+
+    if not ext_list then
+       exit;
+    end;
+End;
+
+// Set available weapons for towers/turrets
+// Default: all weapons except basic weapons [us_machine_gun, ru_machine_gun, ar_ballista]
+Export Function MC_SetAllowedTurretWeapons(base, weapon_list);
+begin
+if not mc_bases or not base or not weapon_list then
+   exit;
+
+mc_allowed_tower_weapons := Replace(mc_allowed_tower_weapons, base, weapon_list);
+End;
+                               
+// Replace default tech list by specified list
+Export Function MC_SetTechList(base, tech_list);
+begin
+if not mc_bases or not base or not tech_list then
+   exit;
+
+mc_tech := Replace(mc_tech, base, tech_list);
+End;
+
+// Set parking area
+Export Function MC_SetParkingArea(base, parking_area);
+begin
+if not mc_bases or not parking_area or not base then
+   exit;
+
+mc_parking := Replace(mc_parking, base, parking_area);
+End;
+
+// Set scan area
+Export Function MC_SetScanArea(base, scan_area);
+begin
+if not mc_bases or not base or not scan_area then
+   exit;
+
+mc_scan_area := Replace(mc_scan_area, base, scan_area);
 End;
