@@ -16,7 +16,7 @@ PlaceUnitXY(mastodont, 153, 71, false);
 
 InitVc;
 
-arabian_force := PrepareBase(ar_depot, '', [7, 8, 9][Difficulty], [5000, 1000, 300], [22, 5, 6, 9]);
+arabian_force := PrepareBase(ar_depot, '', [7, 8, 9][Difficulty], [5000, 1000, 300], [22, 5, 6, 9]); // 41
 mc_bases := Replace(mc_bases, 1, arabian_force);
 
 tmp := [];
@@ -74,14 +74,74 @@ until IsInArea(Abdul, escape_area);
 
 RemoveUnit(Abdul);
 
-abdul_escaped := true;
-
 repeat
  wait(0$1);
 until IsInArea(Mastodont, escape_area) or IsDead(Mastodont);
 
 if IsOk(Mastodont) then
    RemoveUnit(Mastodont);
+End;
+
+// Others arabs escape
+Every 0$5 trigger IsDead(Abdul) or FilterAllUnits([[f_side, 2], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 8]]]) < [16, 19, 22][Difficulty] do
+var tmp_vehs, tmp, tmp_ape, tmp_empty, i, veh;
+begin
+MC_Kill(1); // destory mc here
+
+tmp := FilterAllUnits([[f_side, 2], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 8]]]);
+tmp_ape := FilterAllUnits([[f_side, 2], [f_type, unit_human]]) diff tmp;
+tmp_vehs := FilterAllUnits([[f_side, 2], [f_type, unit_vehicle], [f_lives, 300]]);
+tmp_empty := UnitFilter(tmp_vehs, [[f_control, control_manual], [f_empty]]);
+
+for i in tmp do
+    begin
+    if i in FilterAllUnits([f_driving]) then
+       begin
+       AddComMoveXY(i, 209, 132);
+       continue;
+       end;
+
+    if IsInUnit(i) then
+       begin
+       ComExitBuilding(i);
+       wait(3);
+       end;
+
+    if tmp_empty then
+       if GetDistUnits(i, NearestUnitToUnit(tmp_empty, i)) < 25 then
+          begin
+          veh := NearestUnitToUnit(tmp_empty, i);
+          AddComEnterUnit(i, veh);
+          AddComMoveXY(i, 209, 132);
+
+          tmp_empty := tmp_empty diff veh;
+          continue;
+          end;
+
+    AddComMoveXY(i, 201, 132);
+    end;
+
+for i in tmp_ape do
+    begin
+    if IsInUnit(i) then
+       ComExitBuilding(i);
+
+    AddComMoveXY(i, 201, 132);
+    end;
+
+repeat
+ wait(0$1);
+
+ for i in tmp union tmp_ape union tmp_vehs do
+     if not HasTask(i) then
+        ComMoveXY(i, 201, 132);
+
+ if FilterUnitsInArea(escape_area, [f_side, 2]) then
+    for i in FilterUnitsInArea(escape_area, [f_side, 2]) do
+        RemoveUnit(i);
+
+until not FilterAllUnits([[f_side, 2], [f_or, [f_type, unit_human], [f_type, unit_vehicle]]]);
+
 End;
 
 // Contaminate 92 40

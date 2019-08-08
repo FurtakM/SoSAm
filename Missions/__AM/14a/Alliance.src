@@ -1,0 +1,72 @@
+Export JMM, Burlak, freedom;
+Export Function PrepareAlliance;
+var tmp, i, veh;
+begin
+JMM := PrepareUnit('JMM', (not debug), '13a_');
+Burlak := PrepareUnit('Burlak', (not debug), '13a_');
+freedom := FilterAllUnits([[f_side, 7], [f_or, [f_nation, 1], [f_nation, 3]], [f_btype, b_warehouse]]);
+
+if freedom then
+   freedom := freedom[1];
+
+if freedom then
+   begin
+   SetBName(freedom, 'freedom');
+   CenterNowOnUnits(freedom);
+
+   PlaceHumanInUnit(JMM, freedom);
+   PlaceHumanInUnit(Burlak, freedom);
+
+   SetResourceType(GetBase(freedom), mat_cans, 1000);
+   SetResourceType(GetBase(freedom), mat_oil, 400);
+   SetResourceType(GetBase(freedom), mat_siberit, 30);
+   end
+  else
+   begin
+   PlaceUnitArea(JMM, freedom_base, false);
+   PlaceUnitXYR(Burlak, GetX(JMM), GetY(JMM), 8, false);
+
+   ComTurnUnit(JMM, Burlak);
+   ComTurnUnit(Burlak, JMM);
+
+   CenterNowOnUnits(JMM);
+   end;
+
+tmp := [ [us_medium_tracked, us_heavy_tracked, us_morphling],
+         [us_double_gun, us_laser, us_rocket_launcher, us_gatling_gun, us_cargo_bay] ];
+
+uc_side := 7;
+uc_nation := 1;
+
+for i = 1 to 4 do
+    begin
+    PrepareVehicle(tmp[1][rand(1, tmp[1])], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][rand(1, tmp[2])], 100);
+    veh := CreateVehicle;
+    SetDir(veh, rand(0, 5));
+    PlaceUnitArea(veh, freedom_base, false);
+    end;
+
+uc_nation := 3;
+
+tmp := [ [ru_medium_tracked, ru_heavy_wheeled, ru_heavy_tracked],
+         [ru_gatling_gun, ru_gun, ru_rocket_launcher, ru_cargo_bay] ];
+
+for i = 1 to 4 do
+    begin
+    PrepareVehicle(tmp[1][rand(1, tmp[1])], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][rand(1, tmp[2])], 100);
+    veh := CreateVehicle;
+
+    SetDir(veh, rand(0, 5));
+    PlaceUnitArea(veh, freedom_base, false);
+    end;
+
+if not FilterAllUnits([[f_or, [f_weapon, us_cargo_bay], [f_weapon, ru_cargo_bay]]]) then
+   begin
+   PrepareVehicle(ru_medium_tracked, engine_siberite, control_manual, ru_cargo_bay, 0);
+   veh := CreateVehicle;
+
+   SetDir(veh, rand(0, 5));
+   PlaceUnitArea(veh, freedom_base, false);
+   end;
+
+End;

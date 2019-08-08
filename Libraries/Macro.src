@@ -1,5 +1,5 @@
 // Macro Module By Serpent
-// ver. 19.07.26
+// ver. 19.08.08
 {
   TODO #1
   - Sprawdziæ budowê bazy od zera (bez sk³adu)!
@@ -56,6 +56,49 @@ mc_repair_vehicle := [];
 mc_scan := [];
 mc_scan_area := [];
 mc_tech := [];
+End;
+
+// destroy current mc_base instance
+Export Function MC_Kill(base);
+begin
+mc_bases := Replace(mc_bases, base, []);
+mc_building_need_repair := Replace(mc_building_need_repair, base, []);
+mc_building_repairs := Replace(mc_building_repairs, base, []);
+mc_need_heal := Replace(mc_need_heal, base, []);
+mc_healers := Replace(mc_healers, base, []);
+mc_build_list := Replace(mc_build_list, base, []);
+mc_builders := Replace(mc_builders, base, []);
+mc_construct_list := Replace(mc_construct_list, base, []);
+mc_turret_list := Replace(mc_turret_list, base, []);
+mc_empty_turret_list := Replace(mc_empty_turret_list, base, []);
+mc_busy_turret_list := Replace(mc_busy_turret_list, base, []);
+mc_defender_limit := Replace(mc_defender_limit, base, 0);
+mc_repair_vehicle := Replace(mc_repair_vehicle, base, []);
+mc_mines := Replace(mc_mines, base, []);
+mc_miners := Replace(mc_miners, base, []);
+mc_minefields := Replace(mc_minefields, base, []);
+mc_crates := Replace(mc_crates, base, []);
+mc_crates_collector := Replace(mc_crates_collector, base, []);
+mc_crates_area := Replace(mc_crates_area, base, []);
+mc_vehicles := Replace(mc_vehicles, base, []);
+mc_attack := Replace(mc_attack, base, []);
+mc_produce := Replace(mc_produce, base, []);
+mc_defender := Replace(mc_defender, base, []);
+mc_scan := Replace(mc_scan, base, []);
+mc_parking := Replace(mc_parking, base, []);
+mc_scan_area := Replace(mc_scan_area, base, []);
+mc_tech := Replace(mc_tech, base, []);
+mc_ape := Replace(mc_ape, base, []);
+mc_ape_in_lab := Replace(mc_ape_in_lab, base, []);
+mc_taming := Replace(mc_taming, base, []);
+mc_build_upgrade := Replace(mc_build_upgrade, base, []);
+mc_lab := Replace(mc_lab, base, []);
+mc_lab_upgrade := Replace(mc_lab_upgrade, base, []);
+mc_teleport_exit := Replace(mc_teleport_exit, base, []);
+mc_deposits_xy := Replace(mc_deposits_xy, base, []);
+mc_deposits_finder := Replace(mc_deposits_finder, base, []);
+mc_allowed_tower_weapons := Replace(mc_allowed_tower_weapons, base, []);
+mc_remote_driver := Replace(mc_remote_driver, base, []);
 End;
 
 Export Function MC_Start();
@@ -1380,6 +1423,10 @@ if not mc_bases then
 
 for i = 1 to mc_bases do
     begin
+
+    if not mc_bases[i] then
+       continue;
+
     nation := GetNation(mc_bases[i][1]);
 
     if nation <> 1 or not UnitFilter((mc_vehicles[i] union mc_defender[i]), [f_control, control_remote]) then
