@@ -25,7 +25,7 @@ begin
     Say(Peter, 'D1-Pet-3');
     SetLives(FilterUnitsInArea(ObsBaseArea, [f_side, 1]), 150);
     InGameOff;
-    ChangeMissionObjectives('C1');                  
+                  
     If IsOk(Stevens) then ChangeMissionObjectives('C1stev')
     else ChangeMissionObjectives('C1baker');
 end;
@@ -41,7 +41,7 @@ Every 0$10 trigger ruAttacksCounter = 3 and FilterAllUnits([[f_side, 3], [f_or, 
 // Teleport russian units near am siberite lab
 
 Every 0$1 trigger EscapeAvalaible = 1 do
-var i;
+var i, tmp;
 begin
 
      InGameOn;
@@ -52,6 +52,12 @@ begin
      ChangeSideFog(3, 1);
 
      wait(0$5);
+
+     tmp := FilterUnitsInArea(labHill, [[f_side, 1], [f_not, [f_type, unit_building]]]);
+
+     if tmp then
+        for i in tmp do
+            TeleportUnit(i, 143, 98, 10, true);
 
      for i in russianTPUnits do TeleportUnit(i, 128, 19, 4, true);
      wait(0$1);
