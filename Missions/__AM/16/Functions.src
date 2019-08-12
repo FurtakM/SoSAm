@@ -323,6 +323,12 @@ begin
             for i in vehicleOK_list  do
             begin
 
+            if GetSide(i) <> side then
+               begin
+               ComStop(i);
+               continue;
+               end;
+
             target1 := NearestUnitToUnit(FilterAllUnits([f_side, targetSide]), i);
             target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, targetSide], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), i);
 

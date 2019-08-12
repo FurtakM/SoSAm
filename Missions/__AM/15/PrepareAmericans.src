@@ -1,11 +1,23 @@
 Export function PrepareOmegaTeam;
 var i, omegaVeh, sum, veh, un, mecha, avalaibleVehs, randBuild;
 begin
-     uc_side = 1;
+
+    uc_side = 1;
+    uc_nation := 0;
+
+    for i = 1 to 5 do
+        begin
+        PrepareHuman(false, class_apeman_engineer, 5);
+        un := CreateHuman;
+        PlaceUnitXYR(un, 69, 36, 8, false);
+        end;
+
      uc_nation = 1;
      omegaVeh = [];
 
-     Powell = PrepareUnit('Powell', false);
+
+
+    Powell = PrepareUnit('Powell', false);
 
     if TestCharacters('13s_Lisa') = false then Lisa = PrepareUnitOmega('Lisa');
     if TestCharacters('13s_Donaldson') = false then Donaldson = PrepareUnitOmega('Donaldson');
@@ -20,27 +32,10 @@ begin
     if TestCharacters('13s_Frank') = false then Frank = PrepareUnitOmega('Frank');
     if TestCharacters('13s_Kikuchi') = false then Kikuchi = PrepareUnitOmega('Kikuchi');
 
-    if JMMGirl = 1 or JMMGirl = 2 then
+    if JMMGirl <> 3 then
     begin
-      Connie = PrepareUnit('Connie', true);
+      Connie = PrepareUnit('Coonie', false);
       PlaceHumanInUnit(Connie, AmFab1);
-    end;
-
-    if StevensStatus = 1 then
-    begin
-        Stevens = PrepareUnitOmega('Stevens');
-        PlaceUnitArea(Stevens, StevensSpawn, false);
-        ComTurnXY(Stevens, 125, 16);
-        SetClass(Stevens, 4);
-    end else
-    begin  
-        hc_name = 'Baker Smith';
-        hc_gallery = '';
-
-        PrepareScientist(sex_male, 10);
-        Baker = CreateHuman;
-        PlaceUnitArea(Baker, StevensSpawn, false);
-        ComTurnXY(Baker, 125, 16);
     end;
 
     Gordon = NewCharacter('Gordon');
@@ -107,15 +102,32 @@ begin
             begin
                 PlaceHumanInUnit(others13Omega[i], randBuild);
                 if GetBType(IsInUnit(others13Omega[i])) = b_factory then SetClass(others13Omega[i], 3);
-                if GetBType(IsInUnit(others13Omega[i])) = 4 then SetClass(others13Omega[i], 1);
-                if GetBType(IsInUnit(others13Omega[i])) = b_lab_full then SetClass(others13Omega[i], 1);
+                if GetBType(IsInUnit(others13Omega[i])) = b_barracks then SetClass(others13Omega[i], 1);
+                if GetBType(IsInUnit(others13Omega[i])) = b_lab_full then SetClass(others13Omega[i], 4);
             end;
         end;
     end;
 
+    if StevensStatus = 1 then
+    begin
+        Stevens = PrepareUnitOmega('Stevens');
+        PlaceUnitArea(Stevens, StevensSpawn, false);
+        ComTurnXY(Stevens, 125, 16);
+        SetClass(Stevens, 4);
+    end else
+    begin
+        hc_name = 'Baker Smith';
+        hc_gallery = '';
+
+        PrepareScientist(sex_male, 10);
+        Baker = CreateHuman;
+        PlaceUnitArea(Baker, StevensSpawn, false);
+        ComTurnXY(Baker, 125, 16);
+    end;
+
     for i = 1 to 8 do
         begin
-        PrepareVehicle([us_morphling, us_heavy_tracked, us_medium_tracked][rand(1, 3)], [engine_combustion, engine_siberite][rand(1, 2)], [control_computer, control_remote, control_computer][rand(1, 3)], [us_laser, us_rocket_launcher, us_laser, us_crane, us_double_gun][rand(1, 5)], 100);
+        PrepareVehicle([us_morphling, us_heavy_tracked, us_medium_tracked][rand(1, 3)], [engine_combustion, engine_siberite][rand(1, 2)], [control_computer, control_remote, control_computer][rand(1, 3)], [us_laser, us_rocket_launcher, us_laser, us_crane, us_double_gun][i mod 5 + 1], 100);
         veh := CreateVehicle;
         SetDir(veh, rand(0, 5));
         PlaceUnitArea(veh, base_vehicles, false);
@@ -125,13 +137,6 @@ begin
     veh := CreateVehicle;
     SetDir(veh, rand(0, 5));
     PlaceUnitArea(veh, base_vehicles, false);
-
-    for i = 1 to 5 do
-        begin
-        PrepareHuman(false, class_apeman_engineer, 5);
-        un := CreateHuman;
-        PlaceUnitXYR(un, 69, 36, 8, false);
-        end;
 
     for i in FilterAllUnits([[f_side, 1], [f_control, control_remote]]) do
         Connect(i);

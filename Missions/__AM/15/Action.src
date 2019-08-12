@@ -16,7 +16,7 @@ begin
     PrepareFirstAtacks;
     CenterOnXY(108, 140);
     wait(0$5);
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]), 'D1-Rand-1', '');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]) diff Peter, 'D1-Rand-1', '');
     wait(0$3);
     CenterNowOnUnits([Gordon, Peter]);
     Say(Peter, 'D1-Pet-2');
@@ -26,8 +26,10 @@ begin
     SetLives(FilterUnitsInArea(ObsBaseArea, [f_side, 1]), 150);
     InGameOff;
                   
-    If IsOk(Stevens) then ChangeMissionObjectives('C1stev')
-    else ChangeMissionObjectives('C1baker');
+    if IsOk(Stevens) then
+       ChangeMissionObjectives('C1stev')
+    else
+       ChangeMissionObjectives('C1baker');
 end;
 
 Every 0$1 trigger EscapeAvalaible = 1 do
