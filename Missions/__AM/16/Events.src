@@ -392,3 +392,15 @@ On SibDepositContaminated(unit, x, y) Do
 begin
   if GetSide(unit) = 2 then YouLost('Motherlode3');
 end;
+
+On VehicleCaptured(new_identifier, old_identifier, old_side, capturing_unit) do
+begin
+if old_identifier in allianceVehicles then
+   allianceVehicles := allianceVehicles diff old_identifier;
+
+if old_identifier in legionVehicles then
+   legionVehicles := legionVehicles diff old_identifier;
+
+if old_identifier in russianVehicles then
+   russianVehicles := russianVehicles diff old_identifier;
+End;
