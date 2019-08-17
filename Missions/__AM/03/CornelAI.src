@@ -4,7 +4,7 @@ var i, has_eng, filter, dep, blist, crates, cargo, sol;
 begin
 ComMoveXY(Cornel^Bierezov^cornel_units, 250, 120);
 
-has_eng := UnitFilter(cornel_units, [f_class, 2]) diff [Bierezov];
+has_eng := UnitFilter(cornel_units, [f_class, 2]) diff Bierezov;
 filter := UnitFilter(cornel_units, [f_type, unit_human]) diff has_eng;
 
 if not has_eng then
@@ -64,17 +64,20 @@ if IsInUnit(Cornel) then
    cargo := IsInUnit(Cornel);
 
    if GetCargo(cargo, mat_cans) then
-      ComGive(Cornel, dep);
+      ComUnload(cargo);
 
    AddComMoveXY(Cornel, 235, 122);
    AddComExitVehicle(Cornel);
    AddComEnterUnit(Cornel, dep);
    end;
 
-if Bierezov then
-   ComEnterUnit(Bierezov, dep);
+ComMoveXY(Bierezov, 260, 120);
+AddComHold(Bierezov);
 
-has_eng := FilterAllUnits([[f_side, 4], [f_class, 2]]) diff [Bierezov];
+if Bierezov and dep and not IsInUnit(Bierezov) then
+   AddComEnterUnit(Bierezov, dep);
+
+has_eng := FilterAllUnits([[f_side, 4], [f_class, 2]]) diff Bierezov;
 
 repeat
  wait(0$01);
@@ -167,6 +170,8 @@ repeat
 until cornel_attack;
 
 ComAgressiveMove(filter, 209, 63);
+ComAgressiveMove(Cornel, 208, 62);
+AddComHold(Cornel);
 
 if Bierezov then
    begin
