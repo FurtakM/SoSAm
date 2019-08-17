@@ -790,9 +790,12 @@ repeat
  wait(0$01);
 until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 6;
 
-SayRadio(Cornel, 'D5-Corn-1');
-SaveCharacters(Cornel, mission_prefix&'Cornel');
-cornel_saved := true;
+if Cornel then
+   begin
+   SayRadio(Cornel, 'D5-Corn-1');
+   SaveCharacters(Cornel, mission_prefix&'Cornel');
+   cornel_saved := true;
+   end;
 
 ChangeSideFog(4, 8);
 
