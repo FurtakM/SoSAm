@@ -1,7 +1,8 @@
 Every 1 do 
 var i;
 begin
-    InGameOn;
+
+    Video(true);
 
     CenterOnXY(53, 40);
 
@@ -38,15 +39,28 @@ begin
         for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 500]]]) do
             ComMoveXY(i, GetX(amDepot), GetY(amDepot));
 
-    until FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_lives, 250]]) < 6;
+    until FilterAllUnits([[f_side, 6], [f_type, unit_human], [f_lives, 250]]) < 5;
 
-    InGameOff;
+    Video(false);
 
     ChangeMissionObjectives('M1');
     SaveForQuickRestart;
 
     startCutscene = 0;
 end;
+
+Every 0$1 trigger startCutscene do
+var tmp, i;
+begin
+enable;
+
+tmp := FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 500]]]);
+
+for i in tmp do
+    SetLives(i, 600);
+end;
+
+
 
 // Arrive two soldiers from Delta base
 Every 1$0 do 
