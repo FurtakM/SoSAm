@@ -835,7 +835,7 @@ ChangeMissionObjectives('MCar');
 
 PlaceSeeing(124, 90, 1, -6);
 RemoveSeeing(124, 90, 1);
-SetAreaMapShow(parking_area, 1);
+SetAreaMapShow(parking_marea, 1);
 
 wait(3);
 
@@ -845,18 +845,18 @@ cargo := false;
 
 repeat
  wait(0$1);
- cargo := FilterUnitsInArea(parking_area, [[f_engine, engine_siberite], [f_weapon, ar_cargo_bay], [f_empty]]);
+ cargo := FilterUnitsInArea(parking_marea, [[f_engine, engine_siberite], [f_weapon, ar_cargo_bay], [f_empty]]);
 until cargo;
 
 cargo := cargo[1];
 
 SetSide(cargo, 5);
-SetAreaMapShow(parking_area, 0);
+SetAreaMapShow(parking_marea, 0);
 
 PlaceUnitArea(ar_mechanic, mechanic_spawn, false);
 PlaceUnitArea(ar_mechanic_friend, mechanic_spawn, false);
 
-ComMoveToArea([ar_mechanic, ar_mechanic_friend], parking_area);
+ComMoveToArea([ar_mechanic, ar_mechanic_friend], parking_marea);
 AddComEnterUnit(ar_mechanic, cargo);
 AddComMoveXY([ar_mechanic, ar_mechanic_friend], 209, 178);
 
