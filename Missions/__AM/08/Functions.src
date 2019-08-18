@@ -213,17 +213,45 @@ begin
 end;
 
 Export function DefenseBase(targetSide, defenseArea);
-var i, target;
+var i, target, tmp, veh, mech;
 begin
-        If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) = 0 and defenders_list > 0 then
+        If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) = 0 and defenders_list then
         begin
-                  ComMoveXY(defenders_list, 65, 68);
-                  SetFuel(defenders_list, 100);
+             for i in defenders_list do
+                 begin
+                 if GetDistUnitXY(i, 63, 75) > 8 and not HasTask(i) then
+                    ComMoveXY(i, 63, 75)
+                 else if GetClass(i) = 3 and not IsInUnit(i) and not HasTask(i) then
+                     ComEnterUnit(i, NearestUnitToUnit(UnitFilter(defenders_list, [[f_empty], [f_lives, 1000]]), i))
+                 else if GetFuel(i) < 100 then
+                    SetFuel(defenders_list, 100)
+                 else if GetControl(i) = control_manual and GetLives(i) < 990 then
+                      begin
+                      veh := i;
+                      mech := IsDrivenBy(i);
+
+                      if veh then
+                         begin
+                         ComMoveXY(i, 63, 75);
+                         AddComExitVehicle(veh);
+                         AddComRepairVehicle(mech, veh);
+                         end;
+                      end;
+                 end;
         end;
 
-        If FilterUnitsInArea(defenseArea, [[f_side, targetSide]]) > 0 and defenders_list > 0 then
-             ComAgressiveMove(defenders_list, GetX(FilterUnitsInArea(defenseArea, [[f_side, targetSide]])[1]), GetY(FilterUnitsInArea(defenseArea, [[f_side, targetSide]])[1]) );
+        tmp := FilterUnitsInArea(defenseArea, [[f_side, targetSide]]);
 
+        if tmp and defenders_list then
+           for i in defenders_list do
+               begin
+               if GetClass(i) = 3 and not IsInUnit(i) then
+                  ComEnterUnit(i, NearestUnitToUnit(UnitFilter(defenders_list, [f_empty]), i))
+               else if not HasTask(i) and IsInArea(i, defenseArea) then
+                  ComAttackUnit(i, NearestUnitToUnit(tmp, i))
+               else if not IsInArea(i, defenseArea) then
+                  ComMoveXY(i, 63, 75);
+               end;
 end;
 
 Export function BuildingVehicle(side, fabric, vehCount, weaponTab, engine, control, chassis);

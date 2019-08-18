@@ -8,15 +8,15 @@ begin
 
     wait(0$5);
 
-    if gammaCommander = 1 then CenterNowOnUnits(Donaldson);
+    {if gammaCommander = 1 then CenterNowOnUnits(Donaldson);
     if gammaCommander = 2 then CenterNowOnUnits(Brown);
-    if gammaCommander = 3 then CenterNowOnUnits(Houten);
+    if gammaCommander = 3 then CenterNowOnUnits(Houten);}
 
     if gammaCommander = 1 then Say(Donaldson, 'D1-Don-1');
     if gammaCommander = 2 then Say(Brown, 'D1-Brown-1');
     if gammaCommander = 3 then Say(Houten, 'D1-VanH-1');
     SayRadio(Harisson, 'D1-Har-1');
-    CenterOnXY(53, 40);
+    //CenterOnXY(53, 40);
     if gammaCommander = 1 then Say(Donaldson, 'D1-Don-2');
     if gammaCommander = 2 then Say(Brown, 'D1-Brown-2');
     if gammaCommander = 3 then Say(Houten, 'D1-VanH-2');
@@ -54,10 +54,10 @@ var tmp, i;
 begin
 enable;
 
-tmp := FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 500]]]);
+tmp := FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_not, [f_lives, 700]]]);
 
 for i in tmp do
-    SetLives(i, 600);
+    SetLives(i, 700);
 end;
 
 
@@ -73,7 +73,7 @@ begin
         Say(Gladstone, 'D2-Glad-1');
     end else
     begin
-        DialogRandom(FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [Joan], 'D2-Sol1-1', 'D2-FSol1-1');
+        DialogRandom(FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [Joan, Denis], 'D2-Sol1-1', 'D2-FSol1-1');
     end;
 
     If IsOK(Donaldson) and gammaCommander = 1 then Say(Donaldson, 'D2-Don-1');
