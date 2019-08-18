@@ -648,6 +648,8 @@ Every 0$01 trigger cornel_prepared do
 begin
 SayRadio(Cornel, 'D3-Corn-1');
 
+ChangeMissionObjectives('MOutWait');
+
 repeat
  wait(0$01);
 until cornel_counter = 0;
@@ -788,7 +790,7 @@ SayRadio(Cornel, 'D4-Corn-1');
 
 repeat
  wait(0$01);
-until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_ok]]) < 6;
+until FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_not, [f_lives, 1000]]]) < 6;
 
 if Cornel then
    begin

@@ -2,7 +2,8 @@
 Every 0$01 do
 begin
 
-     If FilterAllUnits([[f_side, 1], [f_class, 2]]) = 0 then SetClass(JMM, 2);
+    if FilterAllUnits([[f_side, 1], [f_class, 2]]) = 0 then
+       SetClass(JMM, 2);
 
     ChangeMissionObjectives('M1');
 
@@ -16,21 +17,25 @@ begin
 
     SaveForQuickRestart;
 
-    Wait(Rand(0$10,0$25));
+    wait(rand(0$15, 0$20));
 
-    CreateCratesArea(5, FirstCrate, true);
+    CreateCratesXYR(5, 82, 38, 10, true);
+
+    wait(0$14);
+
+    firstCrateSpawn := true;
 end;
 
 // First crate spawn
-Every 0$15 trigger firstCrateSpawn do
+Every 0$02 trigger firstCrateSpawn do
 begin
 
     if IsOk(Lisa) then
        Say(Lisa, 'DR0-Lisa-1')
      else
-       DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank, Brown, Donaldson], 'DR0-Sol1-1', 'DR0-Sol1-1');
+       DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank, Brown, Donaldson, Cyrus, Bobby], 'DR0-Sol1-1', 'DR0-Sol1-1');
 
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank, Lisa, Brown, Donaldson], 'DR0-Sol2-1', 'DR0-Sol2-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Gladstone, Frank, Lisa, Brown, Donaldson, Cyrus, Bobby], 'DR0-Sol2-1', 'DR0-Sol2-1');
     if IsOk(Cyrus) then
        Say(Cyrus, 'DR0-Cyrus-1');
 
@@ -272,16 +277,10 @@ begin
 end;
 
 // Charles dialog near Americans
-Every 0$1 do
-var i, others;
+Every 0$1 trigger tempCharles and FilterAllUnits([[f_side, 1], [f_dist, tempCharles, 10], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) > 1 do
 begin
-     others = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [tempCharles];
-
-     for i in others do
-     begin
-          if GetDistUnits(tempCharles, i) < 6 then begin Disable; Say(tempCharles, 'D5-Sol1-1'); end;
-     end;
-end;
+Say(tempCharles, 'D5-Sol1-1');
+End;
 
 // Remote vehicles
 Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_control, control_remote]]) >= 2 do
@@ -291,12 +290,17 @@ begin
 end; 
 
 // Spawn randoms
-Every 4$0 do PrepareRandoms(1);
-Every 10$0 do PrepareRandoms(2);
-Every 28$0 do PrepareRandoms(4);
-Every 32$0 do PrepareRandoms(5);
-Every 35$30 do PrepareRandoms(6);
-Every 37$20 do PrepareRandoms(7);
+Every 0$10 do
+var i, last;
+begin
+last := 7;
+
+for i = 1 to last do
+    begin
+    wait(rand(3$00, 7$00));
+    PrepareRandoms(i);
+    end;
+End;
 
 // Dialogs from Delta base
 
