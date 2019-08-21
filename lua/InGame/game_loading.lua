@@ -26,7 +26,7 @@ loading.textName  = getLabelEX(loading.img,anchorLTRB,XYWH(0,10,loading.width,30
 loading.textGameType  = getLabelEX(loading.img,anchorLTRB,XYWH(0,40,loading.width,30),Tahoma_20B,loc(loc(TID_InGame_NoName)),{wordwrap=true, nomouseevent=true, text_halign=ALIGN_MIDDLE,shadowtext=true,});
 
 loading.players   = getElementEX(loading,anchorLTRB,XYWH(0,0,getWidth(loading),getHeight(loading)),true,{colour1=WHITEA(0),});
-loading.wait_to = false;
+wait_for = false;
 
 loadingPlayers = {};
 LDIR_LEFT = 1;
@@ -231,7 +231,7 @@ function FROMOW_SETLOADIMAGE(filename)
 	setVisible(loading,true);
 	setVisible(menu,false);
 
-        loading.wait_for = false;
+        wait_for = false;
 
 	resetScorebar()
 	loadingPlayers = {};
@@ -409,7 +409,7 @@ end;
 
 function pressToContinueCallback(key)
         if not loading.wait_for and key == 32 then
-           loading.wait_for = true;
+           wait_for = true;
            PauseOW(false);
 
            setColour1(gamewindow,BLACK()); -- Hide it until a new frame is done! (Game changes it to WHITE)
