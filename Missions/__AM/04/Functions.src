@@ -514,6 +514,20 @@ begin
                end; until soldiersOK_list = [];
         end;
 
+        if not soldiersOK_list and medic_list then
+           begin
+           repeat
+            medic_list = FilterAllUnits([[f_side, side], [f_class, 4], [f_ok]]);
+            wait(0$1);
+
+            for i in medic_list do
+                if not HasTask(i) and not IsInArea(i, RussianAttack) then
+                   ComMoveToArea(i, RussianAttack)
+                else if IsInArea(i, RussianAttack) then
+                     RemoveUnit(i);
+           until not medic_list;
+           end;
+
 END;
 
 

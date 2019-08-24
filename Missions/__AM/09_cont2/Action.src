@@ -419,6 +419,7 @@ repeat
 until ar_spawned;
 
 have_crates := true;
+player_want_info := 2;
 
 // cinematics
 DialogueOn;
@@ -732,6 +733,7 @@ if player_want_info then
           repeat
            wait(0$1);
            time := time + 0$1;
+           // display_strings := [time, i, x, tmp[1]];
 
            if time > 2$00 then
               begin
@@ -759,7 +761,7 @@ if player_want_info then
        if player_attacked_ar then
           exit;
 
-      until GetCargo(tmp[1], player_want_info) = x * 10;
+      until GetCargo(tmp[1], player_want_info) >= x * 10;
 
       no_oil_gain := false;
       end
@@ -775,7 +777,7 @@ if player_want_info then
        wait(0$1);
        time := time + 0$1;
 
-       if time > 0$45 then
+       if time > 1$45 then
           break;
 
       until GetDistUnits(Gali, dep) < 4;
