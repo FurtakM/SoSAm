@@ -404,3 +404,55 @@ if old_identifier in legionVehicles then
 if old_identifier in russianVehicles then
    russianVehicles := russianVehicles diff old_identifier;
 End;
+
+On SailEvent(event) do
+begin
+
+   case event of
+   1: begin
+      PlaceSeeing(118, 180, 1, -15);
+      RemoveSeeing(118, 180, 1);
+      PlaceSeeing(76, 133, 1, -15);
+      RemoveSeeing(76, 133, 1);
+
+      if not skip then
+         begin
+         wait(0$4.3);
+         CenterOnXY(118, 180);
+         wait(0$2);
+         CenterOnXY(76, 133);
+         wait(0$1.3);
+
+         if IsInUnit(JMM) then
+            CenterOnUnits(IsInUnit(JMM))
+         else
+             CenterOnUnits(JMM);
+         end;
+      end;
+   2: begin
+      wait(0$2);
+
+      RevealFogArea(1, RevealArea1);
+      RevealFogArea(1, RevealArea2);
+      RevealFogArea(1, RevealArea3);
+
+      if not skip then
+         begin
+         CenterOnXY(171, 81);
+         wait(0$2);
+         CenterOnXY(162, 36);
+         wait(0$2);
+         CenterOnXY(75, 16);
+         wait(0$1.3);
+         CenterNowOnUnits([Powell, JMM]);
+         end;
+      end;
+   end;
+
+End;
+
+On DialogueSkipped(i) DO
+begin
+if cinematics then
+   skip = true;
+End;

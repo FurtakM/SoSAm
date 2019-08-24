@@ -1,5 +1,4 @@
 // Start mission
-
 Every 1 do
 var i, dec1, options, people;
 begin
@@ -9,7 +8,9 @@ begin
 
     SetClass(Simms, 4);
 
-    InGameOn;
+    Video(true);
+    cinematics := true;
+
     ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 60, 75);
 
     if KappaStatus = 0 then
@@ -66,9 +67,9 @@ begin
     ComExitVehicle(JMM);
 
     repeat
-        wait(0$1);
+        wait(0$2);
         ComMoveUnit(JMM, Powell);
-        CenterNowOnUnits(JMM);
+        CenterOnUnits(JMM);
     until GetDistUnits(JMM, Powell) < 6;
 
     CenterNowOnUnits([JMM, Powell]);
@@ -76,17 +77,12 @@ begin
     ComTurnUnit(Powell, JMM);
 
     Say(JMM, 'D1-JMM-1');
+
+    RaiseSailEvent(2);
+
+    skip := false;
+
     Say(Powell, 'D1-Pow-1');
-    RevealFogArea(1, RevealArea1);
-    RevealFogArea(1, RevealArea2);
-    RevealFogArea(1, RevealArea3);
-    CenterOnXY(171, 81);
-    wait(0$4);
-    CenterOnXY(162, 36);
-    wait(0$4);
-    CenterOnXY(75, 16);
-    wait(0$4);
-    CenterNowOnUnits([Powell, JMM]);
     Say(JMM, 'D1-JMM-2');
     Say(Powell, 'D1-Pow-2');
     Say(JMM, 'D1-JMM-3');
@@ -94,6 +90,11 @@ begin
     Say(JMM, 'D1-JMM-4');
     Say(Powell, 'D1-Pow-4');
     Say(JMM, 'D1-JMM-5');
+
+    RaiseSailEvent(1);
+
+    skip := false;
+
     Say(Powell, 'D1-Pow-5');
 
     options = [1, 2, 3, 4, 5, 6];
@@ -179,7 +180,15 @@ begin
         AddComTurnXY([JMM, Joan, Lisa, Connie], 63, 95);
     until IsInArea(JMM, PowellHillArea) and FilterUnitsInArea(PowellHillArea, [[f_side, 4], [f_type, unit_human]]) = 5;
 
-    wait(0$2);
+    wait(0$3);
+
+    repeat
+     wait(0$1);
+    until IsInArea(JMM, PowellHillArea);
+
+    for i in amUnitsForJMM do
+        SetSide(i, 1);
+
     if IsInArea(Lisa, PowellHillArea) then Say(Lisa, 'D3nW-Lisa-1');
     if IsInArea(Cyrus, PowellHillArea) then Say(Cyrus, 'D3nW-Cyrus-1');
     if IsInArea(Bobby, PowellHillArea) then Say(Bobby, 'D3nW-Bobby-1');
@@ -190,7 +199,9 @@ begin
     Say(JMM, 'D3nW-JMM-1');
     Say(JMM, 'D3nW-JMM-1a');
 
-    InGameOff;
+    Video(false);
+    cinematics := false;
+
     ChangeMissionObjectives('M1');
 
     SaveForQuickRestart;
@@ -252,13 +263,6 @@ Function ResolveQuery(question, list_of_q);
    end;
  end;
 
-// Give player soldiers
- Every 0$1 trigger FilterUnitsInArea(PowellHillArea, [[f_side, 4], [f_type, unit_human]]) do
- begin
-    enable;
-    SetSide(FilterUnitsInArea(PowellHillArea, [[f_side, 4], [f_type, unit_human]]), 1);
- end;
-
 // First Powell attack - disable ru attacks
 Every 0$1 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) = 4 and startAttacks = 1 do startAttacks = 0;
 
@@ -281,7 +285,7 @@ begin
 end;
 
 // Powells warmings
-Every 1 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
 begin
     InGameOn;
     ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
@@ -290,7 +294,7 @@ begin
     InGameOff;
 end;
 
-Every 1 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
+Every 1 trigger  not cinematics and FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
 begin
     InGameOn;
     ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
@@ -299,7 +303,7 @@ begin
     InGameOff;
 end;
 
-Every 1 trigger FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
 begin
     InGameOn;
     ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
@@ -308,7 +312,7 @@ begin
     InGameOff;
 end;
 
-Every 1 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
 begin
 
     InGameOn;
@@ -318,7 +322,7 @@ begin
     InGameOff;
 end;
 
-Every 1 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
 begin
 
     InGameOn;
@@ -328,7 +332,7 @@ begin
     InGameOff;
 end;
 
-Every 1 trigger FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
 begin
 
     InGameOn;
@@ -612,7 +616,7 @@ begin
 end;
 
 // Powell center
-Every 0$1 trigger centerPowell = 1 do 
+Every 0$2 trigger centerPowell = 1 do
 begin
     enable;
 
@@ -620,8 +624,8 @@ begin
     if FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]]) > 0 then SetLives(FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]])[1], 1000);
     if FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]]) > 0 then SetLives(FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]])[1], 1000);
     if not IsInArea(powellVeh, DestroyPowellVeh) then SetLives(powellVeh, 1000);
-    if not IsInUnit(Powell) then CenterNowOnUnits(Powell)
-    else CenterNowOnUnits(IsInUnit(Powell));
+    if not IsInUnit(Powell) then CenterOnUnits(Powell)
+    else CenterOnUnits(IsInUnit(Powell));
 
 end;
 
@@ -652,7 +656,7 @@ begin
 end; 
 
 // Legion surrender
-Every 0$1 trigger FilterAllUnits([[f_side, 8], [f_type, unit_human], [f_nation, 2]]) <= [6, 5, 4][Difficulty] do
+Every 0$1 trigger FilterAllUnits([[f_side, 8], [f_type, unit_human], [f_nation, 2]]) <= [6, 6, 5][Difficulty] do
 begin
     PlaceUnitArea(Kurt, KurtSpawn, false);
     KillUnit(Kozlov);
@@ -731,7 +735,18 @@ Every 0$1 trigger IsInArea(LegionFriend, FriendEscapeArea) and GetSide(LegionFri
 // Kappa support or attack
 Every 0$1 trigger timeAction >= 15$02 do
 begin 
-    if KappaStatus = 1 and JMMGirlVeh = [] then PrepareSupportFromKappa;
+    if KappaStatus = 1 and JMMGirlVeh = [] then
+       begin
+       PrepareSupportFromKappa;
+
+       if burlakStatus = 1 then
+          begin
+          wait(25$00);
+
+          PrepareAttackFromKappa;
+          end;
+       end;
+
     if KappaStatus = 0 and JMMGirlStatus = 1 then  PrepareAttackFromKappa;
     if KappaStatus = 0 and JMMGirlStatus = 0 then  PrepareAttackFromKappa;
 end;
@@ -747,7 +762,7 @@ begin
     if BurlakStatus = 0 then Say(Vsevolod, 'D10nB-Vse-1');
     Say(JMM, 'D10nB-JMM-2');
 
-    if KappaStatus and JMMGirlStatus = 1 then Say(Vsevolod, 'D10nB-Vse-5');
+    if KappaStatus and JMMGirlStatus = 1 then SayRadio(Vsevolod, 'D10nB-Vse-5a');
     if KappaStatus and JMMGirlStatus = 0 then
     begin
         if JMMGirl = 1 then
@@ -785,26 +800,26 @@ begin
     if StevensStatus = 1 then
     begin
         CenterNowOnUnits(IsInUnit(Stevens));
-        Say(Stevens, 'D8-Huck-1');
+        SayRadio(Stevens, 'D8-Huck-1');
         Say(JMM, 'D8-JMM-1');
-        Say(Stevens, 'D8-Huck-2');
+        SayRadio(Stevens, 'D8-Huck-2');
         Say(JMM, 'D8-JMM-2');
-        Say(Stevens, 'D8-Huck-3');
+        SayRadio(Stevens, 'D8-Huck-3');
         Say(JMM, 'D8-JMM-3');
-        Say(Stevens, 'D8-Huck-4');
+        SayRadio(Stevens, 'D8-Huck-4');
         Say(JMM, 'D8-JMM-4');
     end;
 
     if StevensStatus = 0 then
     begin
         CenterNowOnUnits(IsInUnit(Baker));
-        Say(Baker, 'D8-Huck-1');
+        SayRadio(Baker, 'D8-Huck-1');
         Say(JMM, 'D8-JMM-1a');
-        Say(Baker, 'D8-Huck-2');
+        SayRadio(Baker, 'D8-Huck-2');
         Say(JMM, 'D8-JMM-2');
-        Say(Baker, 'D8-Huck-3');
+        SayRadio(Baker, 'D8-Huck-3');
         Say(JMM, 'D8-JMM-3');
-        Say(Baker, 'D8-Huck-4');
+        SayRadio(Baker, 'D8-Huck-4');
         Say(JMM, 'D8-JMM-4');
     end;
 
@@ -919,7 +934,7 @@ enable;
 end;
 
 // TP your units to Alliance base
-Every 0$15 trigger (FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0) and IsOK(Roth) and IsOk(AllLabR1) and IsOk(AllLabR2) and AllianceAI = 1 do
+Every 0$55 trigger (FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0) and IsOK(Roth) and IsOk(AllLabR1) and IsOk(AllLabR2) and AllianceAI = 1 do
 var tpUnit, heroes, rnd;
 begin
     enable;
