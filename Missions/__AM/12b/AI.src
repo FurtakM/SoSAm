@@ -26,12 +26,9 @@ begin
 
     wait(0$1);
 
-    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside]]) diff Powell union amUnitsAttack;
+    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human]]);
 
-    ComEnterUnit(powellPeople[1], PowellCargo);
-
-    SetClass(powellPeople[2], 2);
-    SetClass(powellPeople[3], 2);
+    ComEnterUnit(NearestUnitToUnit(powellPeople, PowellCargo), PowellCargo);
 
     SetResourceVisibility(30, 49, 4);
 
