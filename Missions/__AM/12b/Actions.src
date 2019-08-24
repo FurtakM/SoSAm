@@ -194,11 +194,10 @@ begin
     ChangeMissionObjectives('M1');
 
     SaveForQuickRestart;
+
     startAttacks = 1;
-
-    wait(0$5);
-
     powellBuildBase = 1;
+
 end;
 
 Function ResolveQuery(question, list_of_q);
@@ -550,9 +549,11 @@ begin
 end;
 
 // Boom boom :D
-Every 0$3 trigger IsDead(ArRuFact) and powellAttacks = 3 do
+Every 0$1 trigger IsDead(ArRuFact) and powellAttacks = 3 do
 var i, tmp, tmp1, tmp2;
 begin
+    wait(0$2);
+
     tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human],[f_sex, 1]]) diff [JMM, Stevens, Baker, Gordon, Peter,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
 
     CenterOnXY(49, 66);
@@ -723,7 +724,7 @@ begin
 
 end;
 
-// Remove legoion friend from map
+// Remove legion friend from map
 Every 0$1 trigger IsInArea(LegionFriend, FriendEscapeArea) and GetSide(LegionFriend) = 8 do RemoveUnit(LegionFriend);
 
 
@@ -905,7 +906,7 @@ begin
 
      ComExitBuilding(FilterAllUnits([[f_side, 7], [f_type, unit_human]]));
      wait(0$1);
-     ComMoveToArea(FilterAllUnits([[f_side, 7], [f_type, unit_human]]), AllianceEscapeArea);
+     AddComMoveToArea(FilterAllUnits([[f_side, 7], [f_type, unit_human]]), AllianceEscapeArea);
 end;
 
 // Remove Alliance units
@@ -918,9 +919,14 @@ enable;
 end;
 
 // TP your units to Alliance base
-Every 0$1 trigger FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0 and IsOK(Roth) and AllianceAI = 1 do
+Every 0$15 trigger (FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0) and IsOK(Roth) and IsOk(AllLabR1) and IsOk(AllLabR2) and AllianceAI = 1 do
 var tpUnit, heroes, rnd;
 begin
+    enable;
+
+    if not Prob([50, 60, 70][Difficulty]) then
+       exit;
+
     tpUnit = FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_or, [f_type, unit_human], [f_control, 1]]])[1];
     heroes = [JMM, Joan, Stevens, Baker, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie];
 
@@ -1165,7 +1171,6 @@ begin
 
     SetAttitude(1, 7, att_enemy, true);
     InGameOff;
-    enable;
 end;
 
 // Ru behemoth
@@ -1424,7 +1429,7 @@ begin
 
     ComExitBuilding(FilterAllUnits([[f_side, 3], [f_type, unit_human]]));
     wait(0$1);
-    ComMoveToArea(FilterAllUnits([[f_side, 3], [f_type, unit_human]]), RussianEscapeArea);
+    AddComMoveToArea(FilterAllUnits([[f_side, 3], [f_type, unit_human]]), RussianEscapeArea);
 
     wait(0$10);
     PrepareOmarArmy;

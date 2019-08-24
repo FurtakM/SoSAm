@@ -1,227 +1,72 @@
-Export JMM, Roth, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
-       Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
-       Simms, Joan, DeltaDoctor;
-Export Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov,
-       Petrosyan, Scholtze, Oblukov, Kapitsova,
-       Lipshchin, Petrovova, Kovalyuk, Kuzmov, Karamazov;
-Export Burlak, Belkov, Gnyevko;
-Export Masha;
+Export JMM, Burlak, freedom;
 Export Function PrepareAlliance;
-var veh, i, tmp;
+var tmp, i, veh;
 begin
+JMM := PrepareUnit('JMM', (not debug), '13a_');
+Burlak := PrepareUnit('Burlak', (not debug), '13a_');
+freedom := FilterAllUnits([[f_side, 7], [f_or, [f_nation, 1], [f_nation, 3]], [f_btype, b_warehouse]]);
+
+if freedom then
+   freedom := freedom[1];
+
+if freedom then
+   begin
+   SetBName(freedom, 'freedom');
+   CenterNowOnUnits(freedom);
+
+   PlaceHumanInUnit(JMM, freedom);
+   PlaceHumanInUnit(Burlak, freedom);
+
+   SetResourceType(GetBase(freedom), mat_cans, 1000);
+   SetResourceType(GetBase(freedom), mat_oil, 400);
+   SetResourceType(GetBase(freedom), mat_siberit, 30);
+   end
+  else
+   begin
+   PlaceUnitArea(JMM, freedom_base, false);
+   PlaceUnitXYR(Burlak, GetX(JMM), GetY(JMM), 8, false);
+
+   ComTurnUnit(JMM, Burlak);
+   ComTurnUnit(Burlak, JMM);
+
+   CenterNowOnUnits(JMM);
+   end;
+
+tmp := [ [us_medium_tracked, us_heavy_tracked, us_morphling],
+         [us_double_gun, us_laser, us_rocket_launcher, us_gatling_gun, us_cargo_bay] ];
+
 uc_side := 7;
 uc_nation := 1;
 
-JMM := PrepareUnit('JMM', (not debug), '12a_');
-PlaceUnitXY(JMM, 71, 23, false);
-SetClass(JMM, 2);
+for i = 1 to 4 do
+    begin
+    PrepareVehicle(tmp[1][rand(1, tmp[1])], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][rand(1, tmp[2])], 100);
+    veh := CreateVehicle;
+    SetDir(veh, rand(0, 5));
+    PlaceUnitArea(veh, freedom_base, false);
+    end;
 
-Roth := PrepareUnit('Roth', (not debug), '12a_');
+uc_nation := 3;
 
-if Roth then
-   PlaceUnitXY(Roth, 71, 21, false);
+tmp := [ [ru_medium_tracked, ru_heavy_wheeled, ru_heavy_tracked],
+         [ru_gatling_gun, ru_gun, ru_rocket_launcher, ru_cargo_bay] ];
 
-Lisa := PrepareUnit('Lisa', (not debug), '12a_');
+for i = 1 to 4 do
+    begin
+    PrepareVehicle(tmp[1][rand(1, tmp[1])], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][rand(1, tmp[2])], 100);
+    veh := CreateVehicle;
 
-if Lisa then
-   PlaceUnitArea(Lisa, alliance_start, false);
+    SetDir(veh, rand(0, 5));
+    PlaceUnitArea(veh, freedom_base, false);
+    end;
 
-Donaldson := PrepareUnit('Donaldson', (not debug), '12a_');
-
-if Donaldson then
-   PlaceUnitArea(Donaldson, alliance_start, false);
-
-Bobby := PrepareUnit('Bobby', (not debug), '12a_');
-
-if Bobby then
-   PlaceUnitArea(Bobby, alliance_start, false);
-
-Cyrus := PrepareUnit('Cyrus', (not debug), '12a_');
-
-if Cyrus then
-   PlaceUnitArea(Cyrus, alliance_start, false);
-
-Denis := PrepareUnit('Denis', (not debug), '12a_');
-
-if Denis then
-   PlaceUnitArea(Denis, alliance_start, false);
-
-Brown := PrepareUnit('Brown', (not debug), '12a_');
-
-if Brown then
-   PlaceUnitArea(Brown, alliance_start, false);
-
-Gladstone := PrepareUnit('Gladstone', (not debug), '12a_');
-
-if Gladstone then
-   PlaceUnitArea(Gladstone, alliance_start, false);
-
-Houten := PrepareUnit('Houten', (not debug), '12a_');
-
-if Houten then
-   PlaceUnitArea(Houten, alliance_start, false);
-
-Cornel := PrepareUnit('Cornel', (not debug), '12a_');
-
-if Cornel then
-   PlaceUnitArea(Cornel, alliance_start, false);
-
-Gary := PrepareUnit('Gary', (not debug), '12a_');
-
-if Gary then
-   PlaceUnitArea(Gary, alliance_start, false);
-
-Frank := PrepareUnit('Frank', (not debug), '12a_');
-
-if Frank then
-   PlaceUnitArea(Frank, alliance_start, false);
-
-Kikuchi := PrepareUnit('Kikuchi', (not debug), '12a_');
-
-if Kikuchi then
-   PlaceUnitArea(Kikuchi, alliance_start, false);
-
-Simms := PrepareUnit('Simms', (not debug), '12a_');
-
-if Simms then
-   PlaceUnitArea(Simms, alliance_start, false);
-
-Joan := PrepareUnit('Joan', (not debug), '12a_');
-
-if Joan then
-   PlaceUnitArea(Joan, alliance_start, false);
-
-DeltaDoctor := PrepareUnit('DeltaDoctor', (not debug), '12a_');
-
-if DeltaDoctor then
-   PlaceUnitArea(DeltaDoctor, alliance_start, false);
-
-tmp := CreateCharacterSet('12a_others');
-
-if tmp then
-   for i in tmp do
-       PlaceUnitArea(i, alliance_start, false);
-
-PrepareVehicle(us_medium_tracked, engine_siberite, control_computer, us_cargo_bay, 100);
-veh := CreateVehicle;
-
-SetDir(veh, 2);
-PlaceUnitXY(veh, 63, 9, false);
-SetCargo(veh, mat_artifact, 30);
-
-if LoadVariable('11_artifact_captured', 0) then
+if not FilterAllUnits([[f_or, [f_weapon, us_cargo_bay], [f_weapon, ru_cargo_bay]]]) then
    begin
-   PrepareVehicle(us_medium_tracked, engine_siberite, control_computer, us_cargo_bay, 100);
+   PrepareVehicle(ru_medium_tracked, engine_siberite, control_manual, ru_cargo_bay, 0);
    veh := CreateVehicle;
 
-   SetDir(veh, 2);
-   PlaceUnitXY(veh, 60, 4, false);
-   SetCargo(veh, mat_artifact, 50);
+   SetDir(veh, rand(0, 5));
+   PlaceUnitArea(veh, freedom_base, false);
    end;
-End;
 
-// Gossudarov, Kirilenkova, Titov, Fadeev, Dolgov, Petrosyan
-Export Function PrepareGossudarov;
-var tmp, i;
-begin
-uc_side := 6;
-uc_nation := 3;
-
-InitHc;
-
-Gossudarov := NewCharacter('Gossudarov');
-Kirilenkova := NewCharacter('Kirilenkova');
-Titov := NewCharacter('Titov');
-Oblukov := NewCharacter('Oblukov');
-Dolgov := NewCharacter('Dolgov');
-Petrosyan := NewCharacter('Petrosyan');
-Scholtze := NewCharacter('Scholtze');
-Kapitsova := NewCharacter('Kapitsova');
-
-tmp := [Gossudarov, Kirilenkova, Titov, Oblukov, Dolgov, Petrosyan, Scholtze, Kapitsova];
-
-for i in tmp do
-    PlaceUnitArea(i, gossudarov_spawn, false);
-
-ComMoveXY(tmp, GetX(freedom), GetY(freedom));
-End;
-
-Export Function PrepareBelkov;
-begin
-uc_side := 4;
-uc_nation := 3;
-
-InitHc;
-
-Belkov := NewCharacter('Belkov');
-PlaceUnitArea(Belkov, gossudarov_spawn, false);
-End;
-
-Export Function PrepareGnyevko;
-begin
-uc_side := 4;
-uc_nation := 3;
-
-InitHc;
-
-Gnyevko := NewCharacter('Gnyevko');
-PlaceUnitArea(Gnyevko, gossudarov_spawn, false);
-End;
-
-Export Function PrepareBurlak;
-var i, tmp;
-begin
-uc_side := 4;
-uc_nation := 3;
-
-InitHc;
-
-Burlak := NewCharacter('Burlak');
-
-PrepareVehicle([ru_heavy_tracked, ru_heavy_wheeled, ru_medium_tracked][Difficulty], engine_combustion, control_manual, [ru_rocket_launcher, ru_gun, ru_gatling_gun][Difficulty], 0);
-Masha := CreateVehicle;
-
-SetLives([Masha, Burlak], 499);
-SetDir(Masha, 3);
-SetMark(Masha, 1);
-
-PlaceUnitArea(Masha, burlak_spawn, false);
-PlaceUnitXY(Burlak, 125, 1, false);
-
-ComMoveUnit(Burlak, Masha);
-
-wait(0$0.3);
-
-AddComMoveXY(Masha, 110, 10);
-
-Petrovova := NewCharacter('Petrovova');
-Kuzmov := NewCharacter('Kuzmov');
-Kovalyuk := NewCharacter('Kovalyuk');
-Lipshchin := NewCharacter('Lipshchin');
-Karamazov := NewCharacter('Karamazov');
-
-tmp := [Petrovova, Kuzmov, Kovalyuk, Lipshchin, Karamazov];
-
-for i in tmp do
-    begin
-    SetLives(i, rand(399, 799));
-    PlaceUnitArea(i, burlak_friends_spawn, false);
-    end;
-
-ComMoveXY(tmp, 116, 8);
-AddComHold(tmp);
-
-for i in UnitFilter(tmp, [f_class, 1]) do
-    begin
-    AddComMoveToArea(i, burlak_crawl_area);
-    AddComTurnXY(i, 147, 45);
-    AddComCrawl(i);          
-    end;
-
-repeat
- wait(0$1);
-until IsAt(Masha, 110, 10);
-
-ComStop(Burlak);
-AddComHold(Burlak);
 End;
