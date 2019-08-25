@@ -287,7 +287,7 @@ DialogueOff;
 End;
 
 // Spawn Burlak
-Every 0$20 trigger first_attack do
+Every 0$20 trigger first_attack or tick >= 20$00 do
 var i, selected_option;
 begin
 selected_option := 1; // see Query QBaseAgain
@@ -511,7 +511,7 @@ DialogueOff;
 End;
 
 // Russian base destroyed
-Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 and IsDead(ru_depot) do
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 do
 begin
 ChangeMissionObjectives('M5a');
 

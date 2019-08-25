@@ -930,12 +930,12 @@ enable;
 end;
 
 // TP your units to Alliance base
-Every 0$55 trigger (FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0) and IsOK(Roth) and IsOk(AllLabR1) and IsOk(AllLabR2) and AllianceAI = 1 do
+Every 3$55 trigger (FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0) and IsOK(Roth) and IsOk(AllLabR1) and IsOk(AllLabR2) and AllianceAI = 1 do
 var tpUnit, heroes, rnd;
 begin
     enable;
 
-    if not Prob([50, 60, 70][Difficulty]) then
+    if Prob([80, 70, 60][Difficulty]) then
        exit;
 
     tpUnit = FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_or, [f_type, unit_human], [f_control, 1]]])[1];
