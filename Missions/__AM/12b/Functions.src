@@ -627,3 +627,11 @@ if result > 1 then
 
 ComLinkTo(vehicle, mech);
 End;
+
+Export Function ComCompleteUpgrade(plist, b);
+var i;
+begin
+if BuildingStatus(b) = bs_build then
+   for i = 1 to plist do
+       SetTaskList(plist[i], [['h', GetX(b), GetY(b), b, 0, 0, 0]]);
+End;

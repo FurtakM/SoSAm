@@ -204,6 +204,7 @@ begin
 
     startAttacks = 1;
     powellBuildBase = 1;
+    PowellBuildBaseScript;
 
 end;
 
@@ -358,14 +359,12 @@ begin
     powellVeh = AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, 3);
 end;
 
-// Second Powell attack - disable ru attacks
-Every 0$30 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and startAttacks = 1 do startAttacks = 0;
-
 
 // Second Powell attack - attack
-Every 1$15 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle]]) = 0 and startAttacks = 0 and powellAttacks = 2 do
+Every 1$15 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle]]) = 0 and powellAttacks = 2 do
 var i, sold, powellPeople, arControler;
 begin
+    startAttacks = 0;
     powellAttacks = 3;
     for i = 1 to amUnitsAttack do NormalAttack(8, amUnitsAttack[i]);
 
@@ -500,6 +499,8 @@ begin
 
     wait(0$15);
     Say(Powell, 'D6b-Pow-1');
+
+    game_speed := 4;
 end;
 
 // Powell in legion base
@@ -517,6 +518,7 @@ end;
 // Powell bomb
 Every 0$01 trigger FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb]]) do
 begin
+    game_speed := 4;
     powBomb = FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb]])[1];
     SetAttitude(8, 4, att_friend, true);
     ComMoveXY(PowBomb, 80, 19);
@@ -538,7 +540,7 @@ begin
     
     repeat
         wait(0$1);
-    until GetDistUnitXY(PowBomb, 78, 15) < 2;
+    until GetDistUnitXY(PowBomb, 78, 15) < 3;
 
     wait(0$1);
     DialogueOn;
