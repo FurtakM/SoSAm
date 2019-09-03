@@ -129,11 +129,14 @@ begin
 end;
 
 On VehicleConstructed(vehicle, building) Do
-var legionBomb, rocketTarget;
+var legionBomb, rocketTarget, mech;
 begin
-    if vehicle = powellVeh then ComExitVehicle(UnitsInside(vehicle));
 
-    if GetSide(vehicle) = 4 then AddComMoveXY(vehicle, 58, 63);
+    if GetSide(vehicle) = 4 then
+       begin
+       AddComWait(vehicle, 0$2);
+       AddComMoveToArea(vehicle, PowellParking);
+       end;
 
     if GetSide(vehicle) = 4 and powellAttacks = 2 and GetWeapon(vehicle) = us_heavy_gun then
     begin
@@ -146,7 +149,6 @@ begin
     if GetSide(vehicle) = 4 and powellAttacks = 2 and GetWeapon(vehicle) = us_light_gun then
     begin
         powellVeh = vehicle;
-        ComMoveXY(vehicle, 49, 74);
     end;
 
     if GetSide(vehicle) = 8 and GetNation(vehicle) = 2 and GetType(vehicle) = unit_vehicle then
