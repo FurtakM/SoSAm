@@ -369,8 +369,17 @@ Every 0$01 trigger GetDistUnitXY(JMM, 93, 1) < 5 and FilterAllUnits([f_side, 1])
 Say(JMM, 'D6a-JMM-1');
 
 // Macmilan is dead
-Every 0$01 trigger IsDying(JMM) or IsDead(JMM) do
-YouLost('JMM');
+On UnitGoesToRed(un) do
+begin
+if un = JMM then
+   YouLost('JMM');
+End;
+
+On UnitDestroyed(un) do
+begin
+if un = JMM then
+   YouLost('JMM');
+End;
 
 
 Every 0$01 trigger IsInArea(Bobby, exitArea) do
