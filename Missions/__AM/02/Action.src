@@ -441,27 +441,51 @@ begin
 
 end;
 
-Every 0$1 trigger FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]) >= 1 do
-var tmp, temp1, temp2, i;
+Every 0$1 trigger FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]) do
+var tmp, speaker, temp1, temp2, i;
 begin
      tmp = FilterAllUnits([[f_side, 1],[f_nation, 3], [f_type, unit_vehicle], [f_weapon, 42]]);
-     temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby, Khatam];
+     temp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_male]]) diff [JMM, Cyrus, Bobby];
      temp2 = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, sex_female]]) diff [Lisa];
+
+     if not tmp then
+        exit;
 
      DialogueOn;
 
-     if NOT IsInUnit(JMM) then Say(JMM, 'DX2a-JMM-1');
+     speaker := IsDrivenBy(tmp[1]);
 
-     IF IsInUnit(Bobby) = tmp[1] then Say(Bobby, 'DX2a-Bobby-1');
-     IF IsInUnit(Cyrus) = tmp[1] then Say(Cyrus, 'DX2a-Cyrus-1');
-     IF IsInUnit(Lisa) = tmp[1] then Say(Lisa, 'DX2a-Lisa-1');
+     if not speaker then
+        exit;
 
-     for i in temp1 do if IsInUnit(i) = tmp[1] then Say(i, 'DX2a-Sol1-1');
-     for i in temp2 do if IsInUnit(i) = tmp[1] then Say(i, 'DX2a-FSol1-1');
+     if speaker = JMM then
+        begin
+        if Lisa then
+           Say(Lisa, 'DX2b-Lisa-1');
 
-     IF IsInUnit(JMM) = tmp[1] then Say(JMM, 'DX2b-JMM-1');
+        Say(JMM, 'DX2b-JMM-1');
+        end
+     else
+        begin
+        Say(JMM, 'DX2a-JMM-1');
 
-     if NOT IsInUnit(JMM) then Say(JMM, 'DX2a-JMM-2');
+        if speaker = Bobby then
+           Say(Bobby, 'DX2a-Bobby-1');
+
+        if speaker = Cyrus then
+           Say(Cyrus, 'DX2a-Cyrus-1');
+
+        if speaker = Lisa then
+           Say(Lisa, 'DX2a-Lisa-1');
+
+        if speaker in temp1 then
+           Say(speaker, 'DX2a-Sol1-1');
+
+        if speaker in temp2 then
+           Say(speaker, 'DX2a-FSol1-1');
+
+        Say(JMM, 'DX2a-JMM-2');
+        end;
 
      DialogueOff;
 
@@ -699,10 +723,9 @@ begin
 end;
 
 // Mikhail ask  > kill/patrol/free
-Every 0$1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 1 AND GetSide(Mikhail) = 1 do
+Export Function AskMikhail;
 begin
-     enable;
-     
+
      case query('QMikh2') of
      1: Begin
         SetAttitude(1, 6, att_enemy, true);
@@ -744,8 +767,10 @@ Every 1 trigger IsInArea(Mikhail, MikhailEnter) AND mikhailInBase = 4 do
 begin
      enable;
 
+     mikhailInBase = 1;
+
      InGameOn;
-     SetSide(Mikhail, 1);
+     SetSide(dep1, 6);
 
      repeat
        wait(0$1);
@@ -756,10 +781,10 @@ begin
        AddComEnterUnit(Mikhail, dep1);
      until IsInUnit(Mikhail);
 
-     InGameOff;
+     SetSide(dep1, 1);
+     SetSide(Mikhail, 1);
 
-     mikhailInBase = 1;
-
+     InGameOff;   
 end;
 
 // Mikhail - Escape
@@ -769,12 +794,14 @@ enable;
 
      IF FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_dist, IsInUnit(Mikhail), 10]]) = 1 then
      begin
+       mikhailStatus = 4;
        SetAttitude(1, 6, att_enemy, true);
        SetSide(Mikhail, 6);
        ComExitBuilding(Mikhail);
        wait(0$1);
        ComMoveToArea(Mikhail, MikhailEscape);
        mikhailStatus = 3;
+       disable;
      end;
 end;
 

@@ -186,7 +186,7 @@ begin
 points := [ [89, 34], [138, 63], [196, 84], [135, 52], [103, 39], [58, 30], [38, 51] ];
 
 
-InGameOn;
+Video(true);
 
 if jmm_units then
    for i in jmm_units do
@@ -331,7 +331,7 @@ for i in jmm_units do
     if not IsInUnit(i) then
        ComFree(i);
 
-InGameOff;
+Video(false);
 
 ChangeMissionObjectives('MSolar1');
 
@@ -504,9 +504,9 @@ ComMoveUnit(Frank, us_dep_west);
 
 repeat
  wait(0$01);
-until GetDistUnits(Frank, JMM) < 8;
+until GetDistUnits(Frank, JMM) < 8 and GetLives(Frank) > 250;
 
-InGameOn;
+Video(true);
 
 CenterOnUnits(JMM);
 
@@ -611,15 +611,17 @@ Case Query('Q1') of
 2: frank_send_to_scout := false;
 End;
 
-InGameOff;
+Video(false);
 
 ComFree([JMM, Lisa, Lynch]);
 
 if frank_send_to_scout then
    begin
-   ComMoveXY(Frank, 130, 123);
 
    repeat
+    if not HasTask(Frank) then
+       ComMoveXY(Frank, 130, 123);
+
     wait(0$01);
    until not See(1, Frank);
 
@@ -831,7 +833,7 @@ if not filter then
 for i in filter do
     begin
               
-    if IsOk(i) and GetType(i) = unit_vehicle then
+    if IsOk(i) and GetType(i) = unit_vehicle and GetNation(i) = nation_american then
        begin
        veh_on_meta := true;
        Save(IsDrivenBy(i));

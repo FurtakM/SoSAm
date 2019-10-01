@@ -50,8 +50,19 @@ ChangeMissionObjectives('M1');
 active_russian_dialog := true;
 active_road_patrol := true;
 
-PlaceUnitXY(Bobby, 41, 71, false);
-ComHold(Bobby);
+if Difficulty < 3 then
+   begin
+   PlaceUnitXY(Bobby, 41, 71, false);
+   ComHold(Bobby);
+   end
+else
+   begin
+   SetDir(Bobby, 5);
+   PlaceUnitXY(Bobby, 108, 97, false);
+   ComCrawl(Bobby);
+   AddComHold(Bobby);
+   end;
+
 PlaceUnitXY(Cyrus, 90, 42, false);
 ComMoveXY(Cyrus, 79, 34);
 ComCrawl(Cyrus);
@@ -203,7 +214,7 @@ if powell_contact and not cyrus_in_squad then
 End;
 
 // Bobby move
-Every 0$45 trigger active_russian_dialog and not bobby_in_squad do
+Every 0$45 trigger active_russian_dialog and not bobby_in_squad and Difficulty < 3 do
 ComMoveXY(Bobby, 75, 83);
 
 // Bobby move v2
