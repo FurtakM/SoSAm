@@ -726,37 +726,33 @@ if player_want_info then
        wait(0$1);
       until not HasTask(Gali);
 
-      for i = 1 to x do
-          begin
-          time := 0$00;
-
-          repeat
-           wait(0$1);
-           time := time + 0$1;
-           // display_strings := [time, i, x, tmp[1]];
-
-           if time > 2$00 then
-              begin
-              blocked := true;
-              exit;
-              end;
-
-           if not Carry(Gali) then
-              ComTransport(Gali, dep, player_want_info)
-             else
-              ComMoveUnit(Gali, tmp[1]);
-
-           if player_attacked_ar then
-              exit;
-
-          until GetDistUnits(Gali, tmp[1]) < 4 and GetCargo(Gali, player_want_info);
-
-          SetCargo(tmp[1], player_want_info, GetCargo(tmp[1], player_want_info)+10);
-          SetCargo(Gali, player_want_info, 0);
-          end;
+      time := 0$00;
 
       repeat
        wait(0$1);
+       time := time + 0$1;
+ 
+       if debug then
+          debug_strings := ['time:' & time];
+
+       if time > 8$00 then
+          begin
+          blocked := true;
+          exit;
+          end;
+
+       if not Carry(Gali) then
+          ComTransport(Gali, dep, player_want_info)
+       else
+          begin
+          if GetDistUnits(Gali, tmp[1]) < 4 and GetCargo(Gali, player_want_info) then
+             begin               
+             SetCargo(tmp[1], player_want_info, GetCargo(tmp[1], player_want_info)+10);
+             SetCargo(Gali, player_want_info, 0);
+             end
+          else
+             ComMoveUnit(Gali, tmp[1]);
+          end;
 
        if player_attacked_ar then
           exit;

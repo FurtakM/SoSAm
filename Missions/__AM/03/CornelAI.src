@@ -20,7 +20,7 @@ if not has_eng then
 
 repeat
  wait(0$01);
-until IsInArea(Cornel, cornelBaseArea);
+until IsInArea(Cornel, cornelBaseArea) or IsInArea(IsInUnit(Cornel), cornelBaseArea);
 
 if has_eng and not dep then
    begin
@@ -71,11 +71,15 @@ if IsInUnit(Cornel) then
    AddComEnterUnit(Cornel, dep);
    end;
 
-ComMoveXY(Bierezov, 260, 120);
-AddComHold(Bierezov);
+if Bierezov then
+   begin
+   ComMoveXY(Bierezov, 260, 120);
 
-if Bierezov and dep and not IsInUnit(Bierezov) then
-   AddComEnterUnit(Bierezov, dep);
+   if dep then
+      AddComEnterUnit(Bierezov, dep)
+   else
+      AddComHold(Bierezov);
+   end;
 
 has_eng := FilterAllUnits([[f_side, 4], [f_class, 2]]) diff Bierezov;
 
@@ -88,7 +92,8 @@ repeat
 until GetResourceType(GetBase(dep), mat_cans) >= 40;
 
 blist := [ [b_armoury, 256, 111, 2],
-           [b_breastwork, 243, 112, 2] ];
+           [b_breastwork, 243, 112, 2],
+           [b_breastwork, 254, 114, 2] ];
 
 
 for i in blist do
@@ -103,12 +108,29 @@ AddComChangeProfession(filter, 1);
 
 repeat
  wait(0$01);
-until FilterAllUnits([[f_side, 4], [f_btype, b_breastwork], [f_not, [f_constructed]]]);
+until FilterAllUnits([[f_side, 4], [f_btype, b_breastwork], [f_not, [f_constructed]]]) > 1;
 
 sol := UnitFilter(cornel_units, [f_class, 1]);
 
-ComExitBuilding(sol[1]);
-AddComEnterUnit(sol[1], FilterAllUnits([[f_side, 4], [f_btype, b_breastwork]])[1]);
+for i = 1 to FilterAllUnits([[f_side, 4], [f_btype, b_breastwork], [f_not, [f_constructed]]]) do
+    begin
+    if not sol[i] then
+       break;
+
+    ComExitBuilding(sol[i]);
+    AddComEnterUnit(sol[i], FilterAllUnits([[f_side, 4], [f_btype, b_breastwork]])[i]);
+    end;
+
+if sol > 2 then
+   begin
+   ComExitBuilding(sol[3]);
+   AddComMoveXY(sol[3], 246, 94);
+   AddComWait(sol[3], 0$5);
+   AddComMoveXY(sol[3], 224, 90);
+   AddComWait(sol[3], 0$7);
+   AddComMoveXY(sol[3], 223, 110);
+   AddComHold(sol[3]);
+   end;
 
 ComEnterUnit(has_eng, dep);
 
@@ -142,6 +164,9 @@ begin
 arm := FilterAllUnits([[f_side, 4], [f_btype, b_armoury]])[1];
 
 ComExitBuilding(cornel_units);
+
+if Bierezov and IsInUnit(Bierezov) then
+   ComExitBuilding(Bierezov);
 
 Wait(0$03);
 
