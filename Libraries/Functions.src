@@ -146,6 +146,60 @@ begin
 result := FilterUnitsInArea(base_area, [f_enemy, side]);
 End;
 
+Export Function BasicDefend(base, solds, area);
+var enemy, side, i, hex;
+begin
+if not base or not mc_bases[base] or not solds or not area then
+   exit;
+
+side := mc_sides[base];
+
+if not side then
+   exit;
+
+for i in solds do
+    if GetBType(IsInUnit(i)) in [b_bunker, b_breastwork] then
+       solds := solds diff i
+    else
+       SetTag(i, 18);
+
+if not solds then
+   exit;
+
+repeat
+ wait(0$1);
+ enemy := ScanBase(side, area);
+
+ if not enemy or enemy > 5 then
+    begin
+    for i in solds do
+        if HasTask(i) then
+           ComStop(i);
+    break;
+    end;
+
+ for i in solds do
+     begin
+     if IsInUnit(i) then
+        ComExitBuilding(i);
+
+     if GetLives(i) > 333 then
+        ComAttackUnit(i, NearestUnitToUnit(enemy, i))
+     else
+        begin
+        hex :=  NearestUnitToUnit(UnitFilter(mc_bases[base], [f_or, [f_btype, b_depot], [f_btype, b_warehouse], [f_btype, b_lab]]), i);
+        ComMoveXY(i, ShiftX(GetX(hex), 3, 5), ShiftY(GetY(hex), 3, 5));
+        SetTag(i, 0);
+        solds := solds diff i;
+        continue;
+        end;
+     end;
+
+until solds;
+
+MC_Reset(base, 18);
+End;
+
 // base, defenders, enemy
 Export Function Defend(base, defenders, enemy);
 var i, j, x, solds, mech, un, tmp, mechs, e, fac, components, depot_under_attack, sold_defenders, b, can_defend;
@@ -334,6 +388,14 @@ if not building then
    exit;
 
 result := building in FilterAllUnits([[f_side, GetSide(building)], [f_empty]]);
+End;
+
+Export Function IsNotFull(building);
+begin
+if not building then
+   exit;
+
+result := UnitsInside(building) < 6;
 End;
 
 Export Function GetFacExt(factory);
@@ -901,6 +963,11 @@ End;
 Export Function DangerAtRange(unit, range);
 begin
 result := DangerAtRangeXY(GetSide(unit), GetX(unit), GetY(unit), range);
+End;
+
+Export Function DangerInArea(side, area);
+begin
+result := FilterUnitsInArea(area, [f_enemy, side]);
 End;
 
 Export Function IsExtension(b);
@@ -2276,6 +2343,42 @@ list := [];
      End;
 
 result := list;
+End;
+
+Export Function SortBySkill(units, class);
+var i, tmp;
+begin
+if not units or not class in [1, 2, 3, 4] then
+   exit;
+
+tmp := [];
+
+for i in units do
+    tmp := Insert(tmp, tmp+1, GetSkill(i, class));
+
+if not tmp then
+   exit;
+
+result := SortListByListDesc(units, tmp);
+End;
+
+Export Function UnitGoingToBuilding(unit, building);
+var x, y;
+begin
+x := GetX(building);
+y := GetY(building);
+
+     if GetTaskList(unit) then
+        begin
+        if 'e' = GetTaskList(unit)[1][1] and
+             x = GetTaskList(unit)[1][2] and
+             y = GetTaskList(unit)[1][3] then
+          result := true
+           else
+            result := false;
+        end
+         else
+          result := false;
 End;
 
 

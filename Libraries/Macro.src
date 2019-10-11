@@ -1,5 +1,5 @@
 // Macro Module By Serpent
-// ver. 19.10.07
+// ver. 19.10.09
 {
   TODO #2
   - Dodaæ mechanizm budowy teleportu/ustawiania wyjœcia z teleportu/ataku przez teleport
@@ -19,7 +19,7 @@ Export mc_bases, mc_building_need_repair, mc_building_repairs,
        mc_vehicles, mc_attack, mc_produce, mc_defender, mc_scan, mc_parking,
        mc_scan_area, mc_sides, mc_tech, mc_can_tame, mc_ape, mc_ape_in_lab, mc_taming,
        mc_build_upgrade, mc_lab, mc_lab_upgrade, mc_teleport_exit, mc_deposits_xy,
-       mc_deposits_finder, mc_allowed_tower_weapons, mc_remote_driver;
+       mc_deposits_finder, mc_allowed_tower_weapons, mc_remote_driver, mc_class;
 
 Export Function InitMacro;
 var i;
@@ -53,6 +53,7 @@ mc_repair_vehicle := [];
 mc_scan := [];
 mc_scan_area := [];
 mc_tech := [];
+mc_class := [];
 End;
 
 // destroy current mc_base instance
@@ -96,6 +97,7 @@ mc_deposits_xy := Replace(mc_deposits_xy, base, []);
 mc_deposits_finder := Replace(mc_deposits_finder, base, []);
 mc_allowed_tower_weapons := Replace(mc_allowed_tower_weapons, base, []);
 mc_remote_driver := Replace(mc_remote_driver, base, []);
+mc_class := Replace(mc_class, base, []);
 End;
 
 Export Function MC_Start();
@@ -142,6 +144,7 @@ for i = 1 to mc_bases do
     mc_deposits_finder := Replace(mc_deposits_finder, i, []);
     mc_allowed_tower_weapons := Replace(mc_allowed_tower_weapons, i, []);
     mc_remote_driver := Replace(mc_remote_driver, i, []);
+    mc_class := Replace(mc_class, i, []);
     end;
 
 MC_InitSides();
@@ -208,6 +211,7 @@ MC_CheckBuildings();
 MC_CheckPeopleLife();
 
 // action's
+RaiseSailEvent(100); // mc_class
 RaiseSailEvent(103); // mc_build
 RaiseSailEvent(104); // mc_weapon_turret
 RaiseSailEvent(105); // mc_upgrade_building
@@ -245,6 +249,7 @@ End;
 
 {
   MC EVENT LIST
+  100: ClassManager
   101: RepairBuilding
   102: Heal
   103: BuildBuilding
@@ -268,7 +273,9 @@ End;
 }
 On SailEvent(event) do
 begin
-
+// class manager
+if event = 100 then
+   MC_ClassManager();
 // repair building
 if event = 101 then
    MC_RepairBuildings();
@@ -340,6 +347,311 @@ if not mc_bases[base] or not tag then
 for i in mc_bases[base] union mc_ape[base] do
     if GetTag(i) = tag then
        SetTag(i, 0);
+End;
+
+Export Function MC_ClassManager();
+var i, j, tmp, p, b, e, k;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    begin
+    tmp := MC_ClassCheckReq(i);
+
+    mc_class := Replace(mc_class, i, tmp);
+
+    if not tmp then
+       continue;
+
+    b := [UnitFilter(mc_bases[i], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]),
+          UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]),
+          UnitFilter(mc_bases[i], [f_btype, b_factory]),
+          UnitFilter(mc_bases[i], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]])];
+
+
+    for j = 1 to 4 do
+        begin
+        if not tmp[j] then
+           continue;
+
+        for p in tmp[j] do
+            begin
+
+            if not b[j] then
+               break;
+
+            e := 0;
+
+            for k in b[j] do
+                if IsNotFull(k) then
+                   begin
+                   e := k;
+                   break;
+                   end;
+
+            if e and not UnitGoingToBuilding(p, e) then
+               begin
+
+               if IsInUnit(p) then
+                  ComExitBuilding(p);
+
+               ComEnterUnit(p, e);
+               AddComChangeProfession(p, j);
+               AddComExitBuilding(p);
+               end;
+
+            end;
+        end;
+    end;
+End;
+
+Export Function MC_ClassCheckReq(base);
+var i, tmp, sol, eng, mech, sci, sort, j, p, b, bcount;
+begin
+if not base or not mc_bases[base] or not UnitFilter(mc_bases[base], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]) then
+   exit;
+
+tmp := UnitFilter(mc_bases[base], [f_or, [f_class, 1], [f_class, 2],
+                                         [f_class, 3], [f_class, 4],
+                                         [f_class, 5], [f_class, 8],
+                                         [f_class, 9]]);
+
+for i in tmp do
+    if GetTag(i) then
+       tmp := tmp diff i;
+
+if not tmp then
+   exit;
+
+// przypadki uzycia
+{
+   1. brak labów, brak fabryki, brak zagro¿enia - 100% in¿ynierów
+   2. lab z aktywnymi technologiami, brak fabryki, brak zagro¿enia - 6 naukowców max, reszta in¿ynierowie
+   3. lab z aktywnymi technologiami, fabryka, brak zagro¿enia - 6 naukowcow max, 6 mechanikow max, reszta in¿ynierowie
+   4. zagro¿enie - naukowcy (min. 1, max. 2), (max. 3 mechów), (max. 4 engów), reszta zolnierze
+   5. lab bez techów, fabryka, brak zagro¿enia - 6 mechów, reszta engi
+   6. lab bez techów, fabryka, brak zagro¿enia, pusta kolejka budowy - 6 mechów, 4 engów, reszta zolnierze
+}
+
+sol := UnitFilter(tmp, [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]);
+eng := UnitFilter(tmp, [f_class, 2]);
+mech := UnitFilter(tmp, [f_class, 3]);
+sci := UnitFilter(tmp, [f_class, 4]);
+
+// case 4
+if mc_scan[base] then
+   begin
+   b := UnitFilter(mc_bases[base], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
+
+   if not b then
+      exit;
+
+   p := [];
+
+   if sci >= 2 then
+      sci := [sci[1], sci[2]]
+   else if sci = 1 then
+        sci := [sci[1]]
+   else if sci = 0 then
+        p := SortBySkill(tmp, 4)[1];
+
+   if eng > 4 then
+      for i = eng downto 4 do
+          eng := eng diff eng[i];
+
+   tmp := tmp diff (sol union eng union mech union sci);
+
+   bcount := UnitFilter(mc_bases[base], [f_or, [f_btype, b_bunker], [f_btype, b_breastwork]])
+           + UnitFilter(mc_bases[base], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]) * 6;
+
+
+   if bcount < tmp then
+      for i = tmp downto bcount do
+          tmp := Delete(tmp, tmp);
+
+   result := [tmp, 0, 0, p];
+   exit;
+   end;
+
+// case 1
+if not UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and not UnitFilter(mc_bases[base], [f_btype, b_factory]) then
+   begin
+   if eng = tmp then
+      exit;
+
+   result := [0, tmp diff eng, 0, 0];
+
+   exit;
+   end;
+
+// case 2
+if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and not UnitFilter(mc_bases[base], [f_btype, b_factory]) then
+   begin
+   if sci >= 6 then
+      exit;
+      
+   sort := SortBySkill(tmp diff sci, 4);
+   p := [];
+
+   if sci < 6 and sort > 6 then
+      begin
+      for i = 1 to 6 - sci do
+          begin
+          p := Insert(p, p + 1, sort[1]);
+          sort := Delete(sort, 1);
+          end;
+      end
+   else if sort then
+      p := sort[1];
+
+   result := [0, 0, 0, p];
+
+   exit;
+   end;
+
+// case 3
+if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and UnitFilter(mc_bases[base], [f_btype, b_factory]) then
+   begin
+   result := [0, 0, 0, 0];
+
+   if eng then
+      tmp := tmp diff eng[1]
+   else
+      result := Replace(result, 2, SortBySkill(tmp, 2)[1]);
+
+   if sci < 6 then
+      begin
+      sort := SortBySkill(tmp diff sci, 4);
+      p := [];
+
+      if sort then
+         for i = 1 to 6 - sci do
+             begin
+             if i = sort then
+                break;
+
+             p := Insert(p, p + 1, sort[i]);
+             end;
+
+      if p then
+         result := Replace(result, 4, p);
+      end;
+
+   if mech < 6 then
+      begin
+      sort := SortBySkill(tmp diff (mech union sci), 3);
+      p := [];
+
+      if sort then
+         for i = 1 to 6 - mech do
+             begin 
+             if i = sort then
+                break;
+
+             p := Insert(p, p + 1, sort[i]);
+             end;
+
+      if p then
+         result := Replace(result, 3, p);
+      end;
+
+   exit;
+   end;
+
+// case 5
+if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and mc_build_list[base] then
+   begin
+   result := [0, 0, 0, 0];
+
+   if mech < 6 then
+      begin
+      sort := SortBySkill(tmp diff mech, 3);
+      p := [];
+
+      if sort then
+         for i = 1 to 6 - mech do
+             begin
+             if i = sort then
+                break;
+
+             p := Insert(p, p + 1, sort[i]);
+             end;
+
+      if p then
+         result := Replace(result, 3, p);
+      end;
+
+   if eng < 6 then
+      begin
+      sort := SortBySkill(tmp diff (eng union mech), 2);
+      p := [];
+
+      if sort then
+         for i = 1 to 6 - eng do
+             begin
+             if i = sort then
+                break;
+
+             p := Insert(p, p + 1, sort[i]);
+             end;
+
+      if p then
+         result := Replace(result, 2, p);
+      end;
+
+   exit;
+   end;
+
+// case 6
+if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and not mc_build_list[base] then
+   begin
+   result := [0, 0, 0, 0];
+
+   if mech < 6 then
+      begin
+      sort := SortBySkill(tmp diff mech, 3);
+      p := [];
+
+      if sort then
+         for i = 1 to 6 - mech do
+             begin
+             if i = sort then
+                break;
+
+             p := Insert(p, p + 1, sort[i]);
+             end;
+
+      if p then
+         result := Replace(result, 3, p);
+      end;
+
+   if eng < 4 then
+      begin
+      sort := SortBySkill(tmp diff (eng union mech), 2);
+      p := [];
+
+      if sort then
+         for i = 1 to 4 - eng do
+             begin
+             if i = sort then
+                break;
+
+             p := Insert(p, p + 1, sort[i]);
+             end;
+
+      if p then
+         result := Replace(result, 2, p);
+      end
+   else
+      for i = eng downto 5 do
+          eng := Delete(eng, eng);
+
+   result := Replace(result, 1, tmp diff (sol union eng union mech));
+
+   exit;
+   end;
+
 End;
 
 
@@ -1015,6 +1327,18 @@ for i = 1 to mc_bases do
        for j in tmp do
            if GetBType(IsInUnit(j)) = b_barracks and GetClass(j) = 1 and not MineOfUnit(j) and class then
               ComChangeProfession(j, class);
+       end;
+
+    if mc_scan[i] and not mc_defender[i] then
+       begin
+       tmp := UnitFilter(mc_bases[i], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]);
+       tmp := tmp diff FilterByTag(tmp, 18);
+
+       if tmp then
+          begin
+          BasicDefend(i, tmp, mc_scan_area[i]);
+          exit;
+          end;
        end;
 
     if mc_scan[i] and mc_defender[i] then
