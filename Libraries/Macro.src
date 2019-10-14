@@ -10,7 +10,7 @@
 }
 
 
-Export skirmish;
+Export skirmish, debug_mc;
 Export mc_bases, mc_building_need_repair, mc_building_repairs,
        mc_need_heal, mc_healers, mc_build_list, mc_builders,
        mc_construct_list, mc_turret_list, mc_empty_turret_list,
@@ -25,6 +25,7 @@ Export Function InitMacro;
 var i;
 begin
 skirmish := false;
+debug_mc := false;
 mc_bases := [];
 mc_sides := [];
 mc_building_need_repair := [];
@@ -222,6 +223,7 @@ RaiseSailEvent(109); // mc_produce_vehicle
 RaiseSailEvent(110); // mc_attack
 RaiseSailEvent(111); // mc_defense
 RaiseSailEvent(112); // mc_research
+RaiseSailEvent(113); // mc_mines_trigger
 RaiseSailEvent(120); // mc_repair_vehicle
 RaiseSailEvent(121); // mc_tame
 RaiseSailEvent(122); // mc_change_ape_class
@@ -230,20 +232,6 @@ RaiseSailEvent(123); // mc_bazooka
 RaiseSailEvent(125); // mc_deposits
 RaiseSailEvent(126); // mc_remote_driver
 RaiseSailEvent(200); // mc_idle
-End;
-
-// mine triggering
-Every 10 trigger skirmish do
-var i;
-begin
-enable;
-
-if not mc_bases then
-   exit;
-
-for i = 1 to mc_bases do
-    if mc_mines[i] and mc_miners[i] then
-       DetonateMines(GetSide(mc_miners[i][1]), mc_mines[i]);
 End;
 
 
@@ -262,6 +250,7 @@ End;
   110: SendAttack
   111: Defend
   112: Research
+  113: Mines
   120: RepairVehicle
   121: Tame
   122: ChangeApeClass
@@ -311,6 +300,9 @@ if event = 111 then
    MC_Defend();
 if event = 112 then
    MC_Research();
+// mines
+if event = 113 then
+   MC_MinesTrigger();
 // repair
 if event = 120 then
    MC_RepairVehicle();
@@ -434,14 +426,17 @@ if not tmp then
    6. lab bez techów, fabryka, brak zagro¿enia, pusta kolejka budowy - 6 mechów, 4 engów, reszta zolnierze
 }
 
-sol := UnitFilter(tmp, [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]);
-eng := UnitFilter(tmp, [f_class, 2]);
-mech := UnitFilter(tmp, [f_class, 3]);
-sci := UnitFilter(tmp, [f_class, 4]);
+sol := UnitFilter(mc_bases[base], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]);
+eng := UnitFilter(mc_bases[base], [f_class, 2]);
+mech := UnitFilter(mc_bases[base], [f_class, 3]);
+sci := UnitFilter(mc_bases[base], [f_class, 4]);
 
 // case 4
 if mc_scan[base] then
    begin
+   if debug_mc then
+      debug_strings := 'case 4';
+
    b := UnitFilter(mc_bases[base], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
 
    if not b then
@@ -480,17 +475,23 @@ if not UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half]
    if eng = tmp then
       exit;
 
+   if debug_mc then
+      debug_strings := 'case 1';
+
    result := [0, tmp diff eng, 0, 0];
 
    exit;
    end;
 
 // case 2
-if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and not UnitFilter(mc_bases[base], [f_btype, b_factory]) then
+if mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and not UnitFilter(mc_bases[base], [f_btype, b_factory]) then
    begin
    if sci >= 6 then
       exit;
-      
+
+   if debug_mc then
+      debug_strings := 'case 2';
+
    sort := SortBySkill(tmp diff sci, 4);
    p := [];
 
@@ -511,18 +512,26 @@ if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btyp
    end;
 
 // case 3
-if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and UnitFilter(mc_bases[base], [f_btype, b_factory]) then
-   begin
+if mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and UnitFilter(mc_bases[base], [f_btype, b_factory]) then
+   begin     
+   if debug_mc then
+      debug_strings := 'case 3';
+
    result := [0, 0, 0, 0];
 
-   if eng then
-      tmp := tmp diff eng[1]
-   else
-      result := Replace(result, 2, SortBySkill(tmp, 2)[1]);
-
-   if sci < 6 then
+   if not eng then
       begin
-      sort := SortBySkill(tmp diff sci, 4);
+      p := SortBySkill(tmp, 2)[1];
+      result := Replace(result, 2, p);
+
+      tmp := tmp diff p;
+      end;
+
+   tmp := tmp diff (mech union sci);
+
+   if tmp and sci < 6 then
+      begin
+      sort := SortBySkill(tmp, 4);
       p := [];
 
       if sort then
@@ -532,15 +541,16 @@ if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btyp
                 break;
 
              p := Insert(p, p + 1, sort[i]);
+             tmp := tmp diff sort[i];
              end;
 
       if p then
          result := Replace(result, 4, p);
       end;
 
-   if mech < 6 then
+   if tmp and mech < 6 then
       begin
-      sort := SortBySkill(tmp diff (mech union sci), 3);
+      sort := SortBySkill(tmp, 3);
       p := [];
 
       if sort then
@@ -550,6 +560,7 @@ if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btyp
                 break;
 
              p := Insert(p, p + 1, sort[i]);
+             tmp := tmp diff sort[i];
              end;
 
       if p then
@@ -560,13 +571,18 @@ if mc_tech[base] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btyp
    end;
 
 // case 5
-if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and mc_build_list[base] then
+if not mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and mc_build_list[base] then
    begin
+   if debug_mc then
+      debug_strings := 'case 5';
+
    result := [0, 0, 0, 0];
 
-   if mech < 6 then
+   tmp := tmp diff mech;
+
+   if tmp and mech < 6 then
       begin
-      sort := SortBySkill(tmp diff mech, 3);
+      sort := SortBySkill(tmp, 3);
       p := [];
 
       if sort then
@@ -576,15 +592,18 @@ if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and mc
                 break;
 
              p := Insert(p, p + 1, sort[i]);
+             tmp := tmp diff sort[i];
              end;
 
       if p then
          result := Replace(result, 3, p);
       end;
 
-   if eng < 6 then
+   tmp := tmp diff eng;
+
+   if tmp and eng < 6 then
       begin
-      sort := SortBySkill(tmp diff (eng union mech), 2);
+      sort := SortBySkill(tmp, 2);
       p := [];
 
       if sort then
@@ -594,6 +613,7 @@ if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and mc
                 break;
 
              p := Insert(p, p + 1, sort[i]);
+             tmp := tmp diff sort[i];
              end;
 
       if p then
@@ -604,13 +624,18 @@ if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and mc
    end;
 
 // case 6
-if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and not mc_build_list[base] then
+if not mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and not mc_build_list[base] then
    begin
+   if debug_mc then
+      debug_strings := 'case 6';
+
    result := [0, 0, 0, 0];
 
-   if mech < 6 then
+   tmp := tmp diff mech;
+
+   if tmp and mech < 6 then
       begin
-      sort := SortBySkill(tmp diff mech, 3);
+      sort := SortBySkill(tmp, 3);
       p := [];
 
       if sort then
@@ -620,15 +645,18 @@ if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and no
                 break;
 
              p := Insert(p, p + 1, sort[i]);
+             tmp := tmp diff sort[i];
              end;
 
       if p then
          result := Replace(result, 3, p);
       end;
 
-   if eng < 4 then
+   tmp := tmp diff eng;
+
+   if tmp and eng < 4 then
       begin
-      sort := SortBySkill(tmp diff (eng union mech), 2);
+      sort := SortBySkill(tmp, 2);
       p := [];
 
       if sort then
@@ -638,6 +666,7 @@ if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and no
                 break;
 
              p := Insert(p, p + 1, sort[i]);
+             tmp := tmp diff sort[i];
              end;
 
       if p then
@@ -645,9 +674,9 @@ if not mc_tech[base] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and no
       end
    else
       for i = eng downto 5 do
-          eng := Delete(eng, eng);
+          tmp := tmp union eng[i];
 
-   result := Replace(result, 1, tmp diff (sol union eng union mech));
+   result := Replace(result, 1, tmp diff sol);
 
    exit;
    end;
@@ -1029,7 +1058,7 @@ for i = 1 to mc_bases do
 
        for j = mc_miners[i] downto 1 do
            begin
-           if IsDead(mc_miners[i][j]) then
+           if IsDead(mc_miners[i][j]) or GetClass(mc_miners[i][j]) <> 1 then
               begin
               tmp := mc_miners[i] diff mc_miners[i][j];
               mc_miners := Replace(mc_miners, i, tmp);
@@ -1089,7 +1118,7 @@ for i = 1 to mc_bases do
 End;
 
 Export Function MC_CollectCrates();
-var i, j, tmp, target, cargo, depot, fac, components;
+var i, j, k, tmp, target, cargo, depot, fac, components;
 begin
 if not mc_bases then
    exit;
@@ -1166,13 +1195,26 @@ for i = 1 to mc_bases do
           else
              tmp := target[1];
 
-          for j = 1 to tmp do
+          k := 0;
+
+          for j in mc_crates_collector[i] do
               begin
-              if IsInUnit(mc_crates_collector[i][j]) then
-                 ComExitBuilding(mc_crates_collector[i][j]);
+              k := k + 1;
+
+              if k > tmp then
+                 break;
+
+              if GetClass(j) <> 2 then
+                 begin
+                 mc_crates_collector := Replace(mc_crates_collector, i, mc_crates_collector[i] diff j);
+                 continue;
+                 end;
+
+              if IsInUnit(j) then
+                 ComExitBuilding(j);
 
               wait(3);
-              ComCollect(mc_crates_collector[i][j], target[2], target[3]);
+              ComCollect(j, target[2], target[3]);
               end;
 
           end;
@@ -1443,6 +1485,17 @@ for i = 1 to mc_bases do
     end;
 End;
 
+Export Function MC_MinesTrigger();
+var i;
+begin
+if not mc_bases then
+   exit;
+
+for i = 1 to mc_bases do
+    if mc_mines[i] and mc_miners[i] then
+       DetonateMines(GetSide(mc_miners[i][1]), mc_mines[i]);
+End;
+
 Export Function MC_RepairVehicle();
 var i, j, k, side, fac, vehs, tmp;
 begin
@@ -1495,6 +1548,12 @@ for i = 1 to mc_bases do
 
     for j in mc_repair_vehicle[i] do
         begin
+        if GetClass(j) <> 3 then
+           begin
+           mc_repair_vehicle := Replace(mc_repair_vehicle, i, mc_repair_vehicle[i] diff j);
+           continue;
+           end;
+
         if not IsDrivenBy(j) and not j in mc_need_heal[i][1] and not j in mc_need_heal[i][2] then
            begin
            if IsInUnit(j) then
@@ -1553,6 +1612,13 @@ for i = 1 to mc_bases do
 
         if j in mc_taming[i] then
            begin
+           if GetClass(j) <> 4 then
+              begin
+              mc_taming := Replace(mc_taming, i, mc_taming[i] diff j);
+              SetTag(j, 0);
+              continue;
+              end;
+
            if IsInUnit(j) then
               ComExitBuilding(j);
 
@@ -1781,6 +1847,14 @@ for i = 1 to mc_bases do
 
     if mc_remote_driver[i] then
        for j in mc_remote_driver[i] do
+           begin
+           if GetClass(j) <> 3 then
+              begin
+              mc_remote_driver := Replace(mc_remote_driver, i, mc_remote_driver[i] diff j);
+              SetTag(j, 0);
+              continue;
+              end;
+
            if not IsInUnit(j) or GetBType(IsInUnit(j)) <> b_control_tower then
               begin
               if IsInUnit(j) then
@@ -1798,6 +1872,7 @@ for i = 1 to mc_bases do
               if ct then
                  AddComEnterUnit(j, ct);
               end;
+           end;
 
     places := 0;
 
