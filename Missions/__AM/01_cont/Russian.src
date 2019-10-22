@@ -150,3 +150,9 @@ if not IsOk(russian_patrol_forest) then
 
 ComAgressiveMove(russian_troops_1 ^ Pokryshkin, GetRememberedX(russian_patrol_forest), GetRememberedY(russian_patrol_forest));
 End;
+
+On EvacuateVehicle(driver, vehicle, p1, p2) do
+begin
+if GetSide(driver) = 3 then
+   ComMoveUnit(driver, NearestUnitToUnit(FilterAllUnits([f_btype, b_depot]), driver));
+End;
