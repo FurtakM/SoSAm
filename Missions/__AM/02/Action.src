@@ -504,10 +504,11 @@ end;
 
 // Capture all enemy bases and spawn Mikhail
 
-Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND FilterUnitsInArea(NorthBase, [[f_side, 3], [f_type, unit_human]]) = 0 do
+Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 AND FilterAllUnits([[f_side, 3], [f_type, unit_human]]) < 2 do
 var temp, i;
 begin
 
+    wait(0$03);
 
     DialogueOn;
     Say(JMM, 'D3a-JMM-1');
