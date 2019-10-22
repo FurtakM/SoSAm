@@ -623,50 +623,42 @@ end;
 
 // Spawn enemy cargo bay
 Every 0$1 trigger GetSide(dep1) = 1 AND GetSide(dep2) = 1 and GetResourceType(GetBase(dep1), 1) >= 100 do
+var tmp;
 begin
 
     wait(rand(1$0, 2$0) + 0$30);
 
     PrepareCargoBays;
     cargoRespawn = 1;
-    ComMoveXY([cargo1, cargo2, driver1, driver2], 36, 13);
-    AddComMoveXY([cargo1, cargo2, driver1, driver2], 40, 20);
-    AddComMoveXY([cargo1, cargo2, driver1, driver2], 53, 16);
+    tmp := [cargo1, cargo2, driver1, driver2];
+
+    ComMoveXY(tmp, 17, 10);
+    AddComMoveXY(tmp, 36, 13);
+    AddComMoveXY(tmp, 40, 20);
+    AddComMoveXY(tmp, 53, 16);
 
     wait(0$5);
+
     Say(driver1, 'D5-Rus2-1');
 
 end;
 
 Every 0$1 trigger cargoRespawn = 1 do
-var i, j, tmp1, tmp2;
+var cargos;
 begin
-    enable;
-    tmp1 = FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_weapon, ru_cargo_bay]]);
-    tmp2 = FilterAllUnits([[f_side, 1], [f_or, [f_nation, 1], [f_btype, b_depot]]]);
-   
-    for i in tmp1 do
-    begin
-        for j in tmp2 do
-        begin
-            if GetDistUnits(i, j) < 7 then
-            begin
-                disable;
-                ComMoveXY([cargo1, cargo2], 7, 9);
+cargos = FilterAllUnits([[f_side, 3], [f_type, unit_vehicle], [f_weapon, ru_cargo_bay]]);
 
-                If cargoSee = 0 then
-                begin
-                   cargoSee = 1;
-                   cargoEscape = 1;
-                   Say(driver1, 'D5-Rus2-1a');
-                   exit;
-                end; 
-                
-            end;
-        end;
-    end;
+repeat
+ wait(0$3);
+until UnitFilter(cargos, [f_not, [f_hastask]]) or UnitFilter(cargos, [f_not, [f_lives, 980]]);
 
-end;
+ComMoveXY(cargos, 7, 9);
+
+cargoSee = 1;
+cargoEscape = 1;
+
+Say(driver1, 'D5-Rus2-1a');
+End;
 
 // Escape cargo from map
 Every 0$1 trigger cargoEscape > 0 do
@@ -691,18 +683,24 @@ begin
 end;
 
 Every 0$1 trigger cargoEscape > 1 do
+var speaker;
 begin
 
     SetRestrict(b_armoury, 1, true);
     SetRestrict(31, 1, true);
 
-    If IsOK(Jerry) then
-    begin
-         Say(Jerry, 'D5a-Sol1-1');
-    end else
-    begin
-         Say(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]])[rand(2, FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1]]))], 'D5a-Sol1-1');
-    end;
+    if IsOK(Jerry) then
+       Say(Jerry, 'D5a-Sol1-1')
+    else
+       begin
+       speaker := FilterAllUnits([[f_side, 1], [f_sex, sex_male]]) diff [JMM, Bobby, Cyrus, Khatam];
+
+       if not speaker then
+          exit;
+
+       Say(speaker[1], 'D5a-Sol1-1');
+       end;
+
     Say(JMM, 'D5a-JMM-1');
 end;
 
