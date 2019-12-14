@@ -89,32 +89,30 @@ for i = 1 to mc_bases do
     begin
     if factory in mc_bases[i] then
        begin
-       if mc_defender[i] < mc_defender_limit[i] then
+       if mc_defender[i] < mc_defender_limit[i] and not GetWeapon(vehicle) in [ar_control_tower, ar_cargo_bay, ru_cargo_bay, ru_big_cargo_bay, us_cargo_bay, ar_radar, ru_radar, us_radar, ru_bulldozer, us_bulldozer, ar_bio_bomb, ar_selfpropelled_bomb, us_hack, us_crane, ru_crane] then
+           mc_defender := Replace(mc_defender, i, mc_defender[i]^vehicle)
+       else
+          mc_vehicles := Add(mc_vehicles, [i, mc_vehicles[i]+1], vehicle);
+
+       if not mc_scan[i] then
           begin
-          mc_defender := Replace(mc_defender, i, mc_defender[i]^vehicle);
-
-          if not mc_scan[i] then
-             begin
-             if GetControl(vehicle) = control_remote then
-                repeat
-                 wait(0$1);
-                until IsControledBy(vehicle);
-
-             ComMoveToArea(vehicle, mc_parking[i]);
-
-             if GetControl(vehicle) <> control_manual then
-                break;
-
+          if GetControl(vehicle) = control_remote then
              repeat
               wait(0$1);
-             until IsInArea(vehicle, mc_parking[i]);
+             until IsControledBy(vehicle);
 
-             ComExitVehicle(IsDrivenBy(vehicle));
-             exit;
-             end;
-          end
-         else
-          mc_vehicles := Add(mc_vehicles, [i, mc_vehicles[i]+1], vehicle);
+          ComMoveToArea(vehicle, mc_parking[i]);
+
+          if GetControl(vehicle) <> control_manual then
+             break;
+
+          repeat
+           wait(0$1);
+          until IsInArea(vehicle, mc_parking[i]);
+
+          ComExitVehicle(IsDrivenBy(vehicle));
+          exit;
+          end;
        end;
     end;
 End;
