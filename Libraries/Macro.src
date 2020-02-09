@@ -1,5 +1,5 @@
 // Macro Module [SoS] By Serpent
-// ver. 19.11.19
+// ver.  27.12.19
 
 Export skirmish, debug_mc;
 Export mc_bases, mc_building_need_repair, mc_building_repairs,
@@ -415,7 +415,7 @@ if not tmp then
    2. lab z aktywnymi technologiami, brak fabryki, brak zagro¿enia - 6 naukowców max, reszta in¿ynierowie
    3. lab z aktywnymi technologiami, fabryka, brak zagro¿enia - 6 naukowcow max, 6 mechanikow max, reszta in¿ynierowie
    4. zagro¿enie - naukowcy (min. 1, max. 2), (max. 3 mechów), (max. 4 engów), reszta zolnierze
-   5. lab bez techów, fabryka, brak zagro¿enia - 6 mechów, reszta engi
+   5. lab bez techów, fabryka, brak zagro¿enia - 6 mechów, 1 naukowiec, reszta engi
    6. lab bez techów, fabryka, brak zagro¿enia, pusta kolejka budowy - 6 mechów, 4 engów, reszta zolnierze, 1 naukowiec
 }
 
@@ -570,6 +570,20 @@ if not mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_btype, b_factor
       debug_strings := 'case 5';
 
    result := [0, 0, 0, 0];
+
+   if sci > 1 then
+      tmp := tmp diff (sci diff sci[1]);
+
+   if tmp and not sci then
+      begin
+      sort := SortBySkill(tmp, 4);
+
+      if sort then
+         p := sort[1];
+
+      if p then
+         result := Replace(result, 4, p);
+      end;
 
    tmp := tmp diff mech;
 
@@ -1168,7 +1182,7 @@ for i = 1 to mc_bases do
            continue;
            end;
 
-        if DangerAtRangeXY(GetSide(mc_bases[i][1]), mc_crates[i][j][2], mc_crates[i][j][3], 20)[4] = 0 then
+        if DangerAtRangeXY(GetSide(mc_bases[i][1]), mc_crates[i][j][2], mc_crates[i][j][3], 30)[4] = 0 then
            begin
            target := mc_crates[i][j];
            break;
@@ -1256,6 +1270,12 @@ for i = 1 to mc_bases do
        for j in cargo do
            begin
            if GetTag(j) <> 0 then
+              continue;
+
+           if GetLives(j) < 1000 and not IsInArea(j, mc_parking[i]) then
+              ComMoveToArea(j, mc_parking[i]);
+
+           if GetLives(j) < 1000 and IsInArea(j, mc_parking[i]) then
               continue;
 
            if GetEngine(j) = engine_solar and GetFuel(j) < 15 then
@@ -1403,7 +1423,7 @@ for i = 1 to mc_bases do
               ComChangeProfession(j, class);
        end;
 
-    if mc_scan[i] and not mc_defender[i] then
+    if mc_scan[i] and not mc_defender[i] and not UnitFilter(mc_bases[i], [f_btype, b_bunker]) and not UnitFilter(mc_bases[i], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]) then
        begin
        tmp := UnitFilter(mc_bases[i], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]);
        tmp := tmp diff FilterByTag(tmp, 18);
@@ -2145,7 +2165,7 @@ begin
 if not mc_bases[base] then
    exit;
 
-mc_build_list := Replace(mc_build_list, base, Insert(mc_build_list[base], mc_build_list[base]+1, list));
+mc_build_list := Replace(mc_build_list, base, mc_build_list[base] union list);
 End;
 
 Export Function MC_SetProduceList(base, produce_list);
@@ -2161,7 +2181,7 @@ begin
 if not mc_bases[base] then
    exit;
 
-mc_produce := Replace(mc_produce, base, mc_produce[base] ^ [compontents]);
+mc_produce := Replace(mc_produce, base, mc_produce[base] union compontents);
 End;
 
 Export Function MC_SetDefenderList(base, deflist);

@@ -98,9 +98,21 @@ end;
 
 // Denis spawn
 Every 15$0 trigger LoadVariable('DenisInDelta', 0) = 1 and not InBattle(1) do
+var tmp;
 begin
     PrepareDenis;
     CenterNowOnUnits(Denis);
+
+    tmp := FilterAllUnits([f_side, 1]);
+
+    ComMoveUnit(Denis, NearestUnitToUnit(tmp, Denis));
+
+    repeat
+     wait(0$1);
+    until FilterAllUnits([[f_side, 1], [f_dist, Denis, 10]]);
+
+    SetSide(Denis, 1);
+
     DialogueOn;
     Say(Denis, 'DDen-Den-1');
     Say(JMM, 'DDen-JMM-1');
@@ -238,7 +250,7 @@ begin
 end;
 
 // Spawn Kurt + dialog
-Every 25$0 do 
+Every 25$0 do
 begin
  repeat
   wait(0$1);
