@@ -287,6 +287,9 @@ begin
 
     arSoldiers = FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 8], [f_class, 15]]]) diff [Dietrich];
 
+    if IsLive(Khatam) then
+       DoNotAttack(2, Khatam);
+
     ComExitBuilding(arSoldiers);
     wait(0$1);
     AddComAgressiveMove(arSoldiers, 77, 10);
@@ -320,7 +323,8 @@ begin
     wait(0$10);
     If IsOk(Gary) then Say(Gary, 'D8a-Gary-1');
     wait(0$5);
-    If IsOK(Khatam) then
+ 
+    if IsOK(Khatam) then
     begin
         tmp = FilterAllUnits([[f_side, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary, Simms, Denis, Joan, Khatam, Gladstone, Steve, DeltaDoctor, Cornell, Powell];
 
@@ -369,9 +373,6 @@ begin
         RemoveUnit(Khatam);
     end;
 end;
-
-// Khatam dead
-Every 0$1 trigger IsDead(Khatam) do KhatamStatus = 0;
 
 // Change variable value
 Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 and FilterAllUnits([[f_side, 4], [f_type, unit_human]]) = 0  do
