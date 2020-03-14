@@ -958,13 +958,12 @@ hexes := GetBuildingHexes(btype, x, y, d, GetNation(bdepot), 0);
 if not hexes then
    exit;
 
-// comment until 1.4!!
-{hex := GetHexInfo(x, y);
+hex := GetHexInfo(x, y);
 
 if hex[1] then
    exit;
 
-height := hex[2];}
+height := hex[2];
 
 for i = 1 to hexes do
     begin
@@ -972,14 +971,14 @@ for i = 1 to hexes do
     if not ValidHex(hexes[i][1], hexes[i][2]) then
        continue;
 
-    {j := GetHexInfo(hexes[i][1], hexes[i][2]);
+    j := GetHexInfo(hexes[i][1], hexes[i][2]);
 
     if j[1] or j[2] > height+2 or j[2] < height-2 or
        not j[3] in [0, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21] or
        not j[5] or not j[6] in [1, 2, 7, 9, 10, 11] or
        HexInfo(hexes[i][1], hexes[i][2]) > 0 or
        IsEnvironment(hexes[i][1], hexes[i][2]) then
-       exit;}
+       exit;
 
     end;
 
