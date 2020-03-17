@@ -52,10 +52,6 @@ for i = 1 to 2 do
     AddComChangeProfession(filter[1], 2);
     AddComExitBuilding(filter[1]);
 
-    repeat
-     wait(0$1);
-    until GetClass(filter[1]) = 2;
-
     filter := Delete(filter, 1);
     end;
 
@@ -80,6 +76,8 @@ if Bierezov then
    else
       AddComHold(Bierezov);
    end;
+
+wait(0$10);
 
 has_eng := FilterAllUnits([[f_side, 4], [f_class, 2]]) diff Bierezov;
 
@@ -131,6 +129,19 @@ if sol > 2 then
    AddComMoveXY(sol[3], 223, 110);
    AddComHold(sol[3]);
    end;
+
+if has_eng > 1 then
+   for i = has_eng downto 2 do
+       begin
+
+       if IsInUnit(has_eng[i]) then
+          ComExitBuilding(has_eng[i]);
+
+       AddComEnterUnit(has_eng[i], FilterAllUnits([[f_side, 4], [f_btype, b_armoury]])[1]);
+       AddComChangeProfession(has_eng[i], 1);
+
+       has_eng := Delete(has_eng, i);
+       end;
 
 ComEnterUnit(has_eng, dep);
 
