@@ -290,7 +290,13 @@ sol := NearestUnitToUnit(UnitFilter(jmm_units, [f_class, 1]), JMM);
 
 if sol then
    if GetDistUnits(JMM, sol) < 10 then
-      ComEnterUnit(sol, buns[2]);
+      begin
+
+      if IsInUnit(sol) then
+         ComExitVehicle(sol);
+
+      AddComEnterUnit(sol, buns[2]);
+      end;
 
 Wait(0$0.3);
 
@@ -619,13 +625,12 @@ if frank_send_to_scout then
    begin
 
    repeat
-    if not HasTask(Frank) then
-       ComMoveXY(Frank, 130, 123);
+    ComMoveToArea(Frank, cyrusEscape);
 
     wait(0$01);
    until not See(1, Frank);
 
-   Wait(0$02);
+   wait(0$02);
 
    RemoveUnit(Frank);
    end
