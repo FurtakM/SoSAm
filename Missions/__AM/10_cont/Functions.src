@@ -766,27 +766,47 @@ END;
 
 // Tame apemans
 Export function TameApemans;
-var i, j;
+var i, j, b, arm, dep, tmp;
 begin
 
 repeat
-    wait(0$1);
-    for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do
-    begin
-        for j in FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) do 
-        begin
-            AddComTameXY(i, GetX(j), GetY(j));
-        end;
-    end;
+ wait(0$1);
 
-until FilterAllUnits([[f_side, 2], [f_class, 4]]) = 0  or FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) = 0;
-wait(0$30);
+ tmp := FilterAllUnits([[f_side, 2], [f_class, 4], [f_not, [f_hastask]]]);
+
+ if not tmp then
+    continue;
+
+ for j in FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) do
+     ComTameXY(tmp, GetX(j), GetY(j));
+
+until FilterAllUnits([[f_side, 2], [f_class, 4]]) = 0 or FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) = 0;
+
+repeat
+ wait(0$1);
+ arm := FilterAllUnits([[f_side, 2], [f_btype, b_barracks]]);
+until arm;
+
+wait(0$25);
+
+dep := FilterAllUnits([[f_side, 2], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+j := 0;
+
 for i in FilterAllUnits([[f_side, 2], [f_class, 12]]) do
 begin
-    ComMoveXY(i, GetX(arDepot), GetY(arDepot));
-    SetClass(i, [16, 15][Rand(1,2)]);
-end; 
-for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do ComEnterUnit(i, FilterAllUnits([[f_side, 2], [f_btype, b_lab_full]])[1]);
+ComMoveXY(i, 63, 16);
+j := j + 1;
+
+if j < 5 then
+   b := arm[1]
+else
+   b := dep[1];
+
+AddComEnterUnit(i, b);
+end;
+
+for i in FilterAllUnits([[f_side, 2], [f_class, 4]]) do
+    ComEnterUnit(i, FilterAllUnits([[f_side, 2], [f_btype, b_lab_full]])[1]);
 
 end;
 

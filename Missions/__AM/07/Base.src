@@ -323,7 +323,7 @@ SetResourceVisibility(71, 5, 1);
 blist := LoadVariable('GammaBase', []);
 
 if not blist then
-   blist := [ [b_depot, 51, 10, 3, 3, 0, 0] ];
+   blist := [ [b_depot, 52, 12, 3, 3, 0, 0] ];
 
 uc_side := 1;
 uc_nation := 1;
@@ -347,6 +347,14 @@ for i in blist do
        end;
 
     end;
+
+if not FilterAllUnits([f_btype, b_depot]) then
+   begin
+   bc_type := b_depot;
+   bc_level := 6;
+
+   b := CreateAndPlaceBuildingXYD(52, 12, 3);
+   end;
 
 
 End;

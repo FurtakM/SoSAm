@@ -236,7 +236,7 @@ begin
     blist := LoadVariable('GammaBase', []);
 
     if not blist then
-       blist := [ [b_warehouse, 51, 10, 3, 3, 0, 0] ]; // !!!
+       blist := [ [b_warehouse, 52, 12, 3, 3, 0, 0] ];
 
     uc_side := 1;
     uc_nation := 1;
@@ -257,9 +257,6 @@ begin
         begin
             bc_type := b_warehouse;
             amDepot := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]);
-            SetBName(amDepot, 'gamma');
-            SetResourceType(GetBase(amDepot), 1, [500, 420, 350][Difficulty]);
-            SetResourceType(GetBase(amDepot), 2, 200);
         end else
         begin
             if bc_type = 4 then
@@ -278,6 +275,18 @@ begin
         if GetBType(b) = b_bunker then PlaceWeaponTurret(b, i[7]);
 
     end;
+
+    if not FilterAllUnits([[f_btype, b_depot], [f_nation, 1]]) then
+       begin
+       bc_type := b_warehouse;
+       bc_level := 6;
+
+       amDepot := CreateAndPlaceBuildingXYD(52, 12, 3);
+       end;
+
+    SetBName(amDepot, 'gamma');
+    SetResourceType(GetBase(amDepot), 1, [500, 420, 350][Difficulty]);
+    SetResourceType(GetBase(amDepot), 2, 200);
 
     // fac extension's
     if FilterAllUnits([[f_side, 1], [f_btype, b_factory]]) then
