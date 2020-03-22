@@ -112,7 +112,7 @@ DeleteCharacters('10_lock');
 DeleteCharacters('10c_lock');
 
 for i in tmp do
-    if GetClass(i) = class_mortar then
+    if GetClass(i) in [class_mortar, class_engineer] then
        SetClass(i, class_soldier);
 
 if tmp < 12 then
@@ -121,7 +121,7 @@ if tmp < 12 then
 
    for i = 1 to k do
        begin
-       PrepareHuman(false, [1, 1, 2, 3, 4][rand(1,5)], 6);
+       PrepareHuman(false, [1, 1, 3, 4][rand(1,4)], 6);
        tmp := tmp ^ CreateHuman;
        end;
    end;
@@ -131,7 +131,7 @@ selected := CharacterSelection('1', 12, 12,
                                 [sel_change_class, JMM,
                                  sel_not_hired,sel_changeable, sel_change_class]^tmp^
                                 [sel_dont_change_class, sel_not_changeable, Powell],
-                                [[class_soldier, 4], [class_engineer, 1], [class_mechanic, 0, 5], [class_scientistic, 0, 3], [class_sniper, 0, 2]]);
+                                [[class_soldier, 4], [class_mechanic, 0, 5], [class_scientistic, 0, 3], [class_sniper, 0, 2]]);
 
 // save others xd
 others := tmp diff selected;

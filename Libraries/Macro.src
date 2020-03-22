@@ -1,5 +1,5 @@
 // Macro Module [SoS] By Serpent
-// ver.  27.12.19
+// ver.  22.03.20
 
 Export skirmish, debug_mc;
 Export mc_bases, mc_building_need_repair, mc_building_repairs,
@@ -10,7 +10,8 @@ Export mc_bases, mc_building_need_repair, mc_building_repairs,
        mc_vehicles, mc_attack, mc_produce, mc_defender, mc_scan, mc_parking,
        mc_scan_area, mc_sides, mc_tech, mc_can_tame, mc_ape, mc_ape_in_lab, mc_taming,
        mc_build_upgrade, mc_lab, mc_lab_upgrade, mc_teleport_exit, mc_teleport_exit_set, mc_deposits_xy,
-       mc_deposits_finder, mc_allowed_tower_weapons, mc_remote_driver, mc_class;
+       mc_deposits_finder, mc_allowed_tower_weapons, mc_remote_driver, mc_class,
+       mc_class_case_use;
 
 Export Function InitMacro;
 var i;
@@ -46,6 +47,7 @@ mc_scan := [];
 mc_scan_area := [];
 mc_tech := [];
 mc_class := [];
+mc_class_case_use := [];
 End;
 
 // destroy current mc_base instance
@@ -91,6 +93,7 @@ mc_deposits_finder := Replace(mc_deposits_finder, base, []);
 mc_allowed_tower_weapons := Replace(mc_allowed_tower_weapons, base, []);
 mc_remote_driver := Replace(mc_remote_driver, base, []);
 mc_class := Replace(mc_class, base, []);
+mc_class_case_use := Replace(mc_class_case_use, base, 0);
 End;
 
 Export Function MC_Start();
@@ -139,6 +142,7 @@ for i = 1 to mc_bases do
     mc_allowed_tower_weapons := Replace(mc_allowed_tower_weapons, i, []);
     mc_remote_driver := Replace(mc_remote_driver, i, []);
     mc_class := Replace(mc_class, i, []);
+    mc_class_case_use := Replace(mc_class_case_use, i, 0);
     end;
 
 MC_InitSides();
@@ -427,8 +431,7 @@ sci := UnitFilter(mc_bases[base], [f_class, 4]);
 // case 4
 if mc_scan[base] then
    begin
-   if debug_mc then
-      debug_strings := 'case 4';
+   mc_class_case_use := Replace(mc_class_case_use, base, 4);
 
    b := UnitFilter(mc_bases[base], [f_or, [f_btype, b_armoury], [f_btype, b_barracks]]);
 
@@ -468,8 +471,7 @@ if not UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half]
    if eng = tmp then
       exit;
 
-   if debug_mc then
-      debug_strings := 'case 1';
+   mc_class_case_use := Replace(mc_class_case_use, base, 1);
 
    result := [0, tmp diff eng, 0, 0];
 
@@ -482,8 +484,7 @@ if mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab
    if sci >= 6 then
       exit;
 
-   if debug_mc then
-      debug_strings := 'case 2';
+   mc_class_case_use := Replace(mc_class_case_use, base, 2);
 
    sort := SortBySkill(tmp diff sci, 4);
    p := [];
@@ -507,8 +508,7 @@ if mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab
 // case 3
 if mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]) and UnitFilter(mc_bases[base], [f_btype, b_factory]) then
    begin
-   if debug_mc then
-      debug_strings := 'case 3';
+   mc_class_case_use := Replace(mc_class_case_use, base, 3);
 
    result := [0, 0, 0, 0];
 
@@ -520,7 +520,10 @@ if mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab
       tmp := tmp diff p;
       end;
 
-   tmp := tmp diff (mech union sci);
+   if not eng then
+      tmp := tmp diff (mech union sci)
+   else
+      tmp := tmp diff (eng[1] union mech union sci);
 
    if tmp and sci < 6 then
       begin
@@ -566,8 +569,7 @@ if mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_or, [f_btype, b_lab
 // case 5
 if not mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and mc_build_list[base] then
    begin
-   if debug_mc then
-      debug_strings := 'case 5';
+   mc_class_case_use := Replace(mc_class_case_use, base, 5);
 
    result := [0, 0, 0, 0];
 
@@ -633,13 +635,12 @@ if not mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_btype, b_factor
 // case 6
 if not mc_tech[mc_sides[base]] and UnitFilter(mc_bases[base], [f_btype, b_factory]) and not mc_build_list[base] then
    begin
-   if debug_mc then
-      debug_strings := 'case 6';
+   mc_class_case_use := Replace(mc_class_case_use, base, 6);
 
    result := [0, 0, 0, 0];
 
-   if sci > 1 then
-      tmp := tmp diff (sci diff sci[1]);
+   if sci >= 1 then
+      tmp := tmp diff sci[1];
 
    if tmp and not sci then
       begin
