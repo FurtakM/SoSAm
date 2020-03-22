@@ -4,6 +4,8 @@ begin
 InGameOn;
 CenterNowOnUnits(JMM);
 
+SetAttitude(2, 1, att_friend, true);
+
 tmp := FilterAllUnits([[f_side, 1], [f_class, 1]]);
 radar := FilterAllUnits([[f_side, 1], [f_weapon, us_radar]])[1];
 
@@ -100,6 +102,14 @@ ComExitBuilding(tmp[3]);
 
 CenterOnUnits(JMM);
 wait(0$1);
+
+ComMoveXY(sols, 88, 141);
+AddComWait(sols, 0$2);
+AddComWalk(sols);
+
+wait(0$2);
+
+SetAttitude(2, 1, att_enemy, true);
 
 InGameOff; // game start now!
 
@@ -922,8 +932,8 @@ Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_btype, b_warehouse]]) = 0 and 
 var tmp;
 begin
 
-// [90$00, 80$00, 75$00]
-if tick < [70$00, 60$00, 55$00][Difficulty] then
+// [100$00, 90$00, 85$00]
+if tick < [90$00, 80$00, 75$00][Difficulty] then
    AddMedal('Time1', 1)
 else if not powell_warn then
      AddMedal('Time1', -1)
