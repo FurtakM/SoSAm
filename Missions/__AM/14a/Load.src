@@ -1,11 +1,12 @@
 Export Function LoadBuildings;
 var i, tmp, b;
 begin
-tmp := LoadVariable('13a_buildings', [ [7, 1, b_warehouse, 70, 46, 3, 10, 0, 0] ]);
+tmp := LoadVariable('13a_buildings', [ [7, 1, b_warehouse, 70, 46, 3, 10, 0, 0, 0] ]);
 
+// GetSide(i), GetNation(i), GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)
 for i in tmp do
     begin
-    uc_side := i[1];
+    uc_side := 7;
     uc_nation := i[2];
 
     bc_type := i[3];
@@ -21,6 +22,9 @@ for i in tmp do
 
     b := CreateAndPlaceBuildingXYD(i[4], i[5], i[6]);
     SetBLevel(b, i[7]);
+
+    if i[10] then
+       PlaceWeaponTurret(b, i[10]);
     end;
 End;
 

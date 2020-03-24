@@ -41,9 +41,13 @@ end;
    13s_others - Pozostale postacie nie wybrane na misje
 }
 
+Export selected, othersSelect;
 Export function SelectAndSaveCharacters;
-var i, selected, tmp, othersSelect, othersInBase;
+var i, tmp, othersInBase;
 begin
+
+     selected := [];
+     othersSelect := [];
 
      tmp = [Lisa, Donaldson, Bobby, Cyrus, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
      tmp = tmp ^ others11;
@@ -63,8 +67,9 @@ begin
       othersInBase = tmp diff selected;
       othersInBase = othersInBase diff [Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
 
-      SaveCharacters(othersSelect, '13c_others');
       SaveCharacters(othersInBase, '13s_others');
+      {
+      SaveCharacters(othersSelect, '13c_others');
       
       SaveCharacters(JMM, '13c_JMM');
       SaveCharacters(Stevens, '13c_Stevens');
@@ -81,6 +86,7 @@ begin
       SaveCharactersAfterSelect(Gary, 'Gary', selected);
       SaveCharactersAfterSelect(Frank, 'Frank', selected);
       SaveCharactersAfterSelect(Kikuchi, 'Kikuchi', selected);
+      }
 
       SetSide(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 4);
       SetSide(selected, 1);

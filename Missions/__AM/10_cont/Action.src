@@ -69,7 +69,7 @@ begin
     end;
 
     
-    if IsOK(Kikuchi) then
+    if IsOK(Kikuchi) and not TestCharacters('08_Kikuchi') then
     begin
         repeat
             wait(0$1);
@@ -213,7 +213,7 @@ begin
 end;
 
 // Dialog about Arabians and trait
-Every 0$30 trigger GetTech(54, 1) = state_researched or GetTech(21, 1) = state_researched or GetTech(22, 1) = state_researched do
+Every 0$40 trigger GetTech(54, 1) = state_researched or GetTech(21, 1) = state_researched or GetTech(22, 1) = state_researched do
 var i, tmp;
 begin
 
@@ -292,7 +292,7 @@ begin
 
     ComExitBuilding(arSoldiers);
     wait(0$1);
-    AddComAgressiveMove(arSoldiers, 77, 10);
+    AddComAgressiveMove(arSoldiers, 84, 22);
     AddComAgressiveMove(arSoldiers, 82, 5);
     AddComAgressiveMove(arSoldiers, 95, 12);
     AddComAgressiveMove(arSoldiers, 102, 11);
@@ -302,14 +302,14 @@ begin
     AddComAgressiveMove(arSoldiers, 189, 79);
 
 
-    arCivilian = FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_or, [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 16]]]);
+    arCivilian = FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_or, [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 12], [f_class, 16]]]);
     arCivilian = arCivilian ^ Dietrich;
 
-    wait(0$20);
+    wait(0$10);
 
     ComExitBuilding(arCivilian);
     wait(0$1);
-    AddComMoveXY(arCivilian, 77, 10);
+    AddComMoveXY(arCivilian, 81, 5);
     AddComMoveXY(arCivilian, 82, 5);
     AddComMoveXY(arCivilian, 95, 12);
     AddComMoveXY(arCivilian, 102, 11);
@@ -386,7 +386,7 @@ begin
 end;
 
 // Spawn Cornell
-Every 6$30 trigger joinEpsilon and LoadVariable('02_mikhailStatus_1', 0) = 1 and FilterAllUnits([f_side, 5]) = 0 and (FilterAllUnits([f_side, 2]) = 0 or arabianTrait = 0) do
+Every 6$30 trigger joinEpsilon and LoadVariable('02_mikhailStatus_1', 0) = 1 and FilterAllUnits([f_side, 5]) = 0 and (FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 or arabianTrait = 0) do
 PrepareCornell;
 
 // Cornell dialog 1
@@ -409,7 +409,7 @@ begin
 end;
 
 // Cornell dialog 2
-Every 0$15 trigger GetSide(Cornell) = 1 and GetLives(Cornell) > 251 do
+Every 0$05 trigger GetSide(Cornell) = 1 and GetLives(Cornell) > 350 do
 begin
     DialogueOn;
     Say(JMM, 'D7a-JMM-1');
