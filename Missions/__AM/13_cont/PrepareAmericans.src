@@ -1,4 +1,5 @@
 Export function PrepareHeroes;
+var tmp, tmp2, i;
 begin
     uc_side = 1;
 
@@ -19,21 +20,18 @@ begin
 
     Powell = PrepareUnit('Powell', false);
 
-    PlaceHumanInUnit(JMM, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Stevens, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Lisa, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Donaldson, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Bobby, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Cyrus, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Denis, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Brown, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Gladstone, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Houten, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Cornel, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Gary, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Frank, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Kikuchi, FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_empty]])[1]);
+    tmp := [JMM, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+    tmp2 := FilterAllUnits([[f_side, 1], [f_control, control_manual], [f_type, unit_vehicle]]);
 
+    for i = tmp downto 1 do
+        if not tmp[i] then
+           tmp := Delete(tmp, i);
+
+    for i = 1 to tmp do
+        PlaceHumanInUnit(tmp[i], tmp2[i]);
+
+    if FilterAllUnits([[f_side, 1], [f_class, 2]]) = 0 and FilterAllUnits([[f_side, 1], [f_weapon, us_crane]]) = 0 then
+       SetClass(JMM, 2);
 end;
 
 Export function PrepareAmericansRandom;
