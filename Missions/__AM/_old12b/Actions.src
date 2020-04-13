@@ -1,0 +1,1514 @@
+// Start mission
+Every 1 do
+var i, dec1, options, people;
+begin
+
+    TeleportExit(rutp1, 92, 172);
+    TeleportExit(rutp2, 103, 74);
+
+    SetClass(Simms, 4);
+
+    Video(true);
+    cinematics := true;
+
+    ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 60, 75);
+
+    if KappaStatus = 0 then
+    begin
+        CenterNowOnUnits(NewJMMVeh);
+        Say(JMM, 'D1T-JMM-1');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-1');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(JMM, 'D1T-JMM-2');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-2');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(JMM, 'D1T-JMM-3');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-3');
+        CenterNowOnUnits(NewJMMVeh);
+        if not JMMGirlVeh = [] then
+        begin
+            if JMMGirl = 1 then Say(Joan, 'D1T-Joan-3');
+            if JMMGirl = 2 then Say(Lisa, 'D1T-Lisa-3');
+            if JMMGirl = 3 then Say(Connie, 'D1T-Con-3');
+            CenterNowOnUnits(NewJMMVeh);
+            Say(Powell, 'D1T-Pow-4');
+            CenterNowOnUnits(NewJMMVeh);
+        end else
+        begin
+            Say(JMM, 'D1T-JMM-4');
+            CenterNowOnUnits(NewJMMVeh);
+            Say(Powell, 'D1T-Pow-5');
+            CenterNowOnUnits(NewJMMVeh);
+        end;
+
+    end else
+    begin
+
+        CenterNowOnUnits(NewJMMVeh);
+        Say(JMM, 'D1T-JMM-1');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-1');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(JMM, 'D1T-JMM-2');
+        CenterNowOnUnits(NewJMMVeh);
+        Say(Powell, 'D1T-Pow-2');
+            
+    end;
+
+    repeat
+        wait(0$1);
+        ComMoveXY([NewJMMVeh, NewJMMGirlVeh], 60, 75);
+        CenterNowOnUnits(NewJMMVeh);
+    until GetDistUnits(NewJMMVeh, Powell) < 20 or not HasTask(NewJMMVeh);
+
+    ComExitVehicle(JMM);
+
+    repeat
+        wait(0$2);
+        ComMoveUnit(JMM, Powell);
+        CenterOnUnits(JMM);
+    until GetDistUnits(JMM, Powell) < 6;
+
+    CenterNowOnUnits([JMM, Powell]);
+    ComTurnUnit(JMM, Powell);
+    ComTurnUnit(Powell, JMM);
+
+    Say(JMM, 'D1-JMM-1');
+
+    RaiseSailEvent(2);
+
+    Say(Powell, 'D1-Pow-1');
+    Say(JMM, 'D1-JMM-2');
+    Say(Powell, 'D1-Pow-2');
+    Say(JMM, 'D1-JMM-3');
+    Say(Powell, 'D1-Pow-3');
+    Say(JMM, 'D1-JMM-4');
+    Say(Powell, 'D1-Pow-4');
+    Say(JMM, 'D1-JMM-5');
+
+    RaiseSailEvent(1);
+
+    Say(Powell, 'D1-Pow-5');
+
+    options = [1, 2, 3, 4, 5, 6];
+
+    dec1 = SelectiveQuery('Q1', options);
+
+    repeat
+        dec1 = SelectiveQuery('Q1', options);
+        options = options diff dec1;
+        ResolveQuery(dec1, options);
+    until (dec1 in [5, 6]) or options = 2;
+
+    if not(dec1 in [5, 6]) then
+    begin
+        dec1 = SelectiveQuery('Q1a', [1, 2]);
+        ResolveQuery(dec1+4, options);
+    end;
+
+    if not JMMGirlVeh = [] then
+    begin
+        ComExitVehicle(UnitsInside(NewJMMGirlVeh));
+        wait(0$1);
+        repeat
+            wait(0$1);
+            if JMMGirl = 1 then ComMoveUnit(JMM, Joan);
+            if JMMGirl = 2 then ComMoveUnit(JMM, Lisa);
+            if JMMGirl = 3 then ComMoveUnit(JMM, Connie);
+        until GetDistUnits(JMM, Joan) < 6 or GetDistUnits(JMM, Lisa) < 6 or GetDistUnits(JMM, Connie) < 6;
+
+    CenterNowOnUnits(JMM);
+
+    case JMMGirl of
+        1:begin
+            ComTurnUnit(JMM, Joan);
+            ComTurnUnit(Joan, JMM);
+            Say(Joan, 'D3W-Joan-1');
+            Say(JMM, 'D3W-JMM-1');
+        end;
+
+        2:begin
+            ComTurnUnit(JMM, Lisa);
+            ComTurnUnit(Lisa, JMM);
+            Say(Lisa, 'D3W-Lisa-1');
+            Say(JMM, 'D3W-JMM-1');
+        end;
+
+        3:begin
+            ComTurnUnit(JMM, Connie);
+            ComTurnUnit(Connie, JMM);
+            Say(Connie, 'D3W-Con-1');
+            Say(JMM, 'D3W-JMM-1');
+        end;
+    end;
+  end;
+    people = 0;
+
+    if Lisa and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Lisa;  end;
+    if Donaldson and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Donaldson;  end;
+    if Bobby and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Bobby; end;
+    if Cyrus and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Cyrus;  end;
+    if Denis and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Denis;  end;
+    if Brown and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Brown; end;
+    if Gladstone and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Gladstone; end;
+    if Houten and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Houten;  end;
+    if Cornel and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Cornel;  end;
+    if Gary and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Gary;  end;
+    if Frank and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Frank; end;
+    if Kikuchi and people < 5 then begin people = people + 1; amUnitsForJMM = amUnitsForJMM ^ Kikuchi; end;
+    
+    if UnitFilter(amUnitsForJMM, [f_class, 2]) = 0 then SetClass(amUnitsForJMM[1], 2);
+    
+    for i = 1 to 5 do
+    begin
+         ComMoveXY(amUnitsForJMM[i], 62 + i, 95);
+         AddComTurnUnit(amUnitsForJMM[i], JMM);
+    end;
+
+    repeat
+        wait(0$1);
+        CenterNowOnUnits(JMM);
+        ComMoveXY(JMM, 66, 98);
+        ComMoveXY([Joan, Lisa, Connie], 67, 98);
+        AddComTurnXY([JMM, Joan, Lisa, Connie], 63, 95);
+    until IsInArea(JMM, PowellHillArea) and FilterUnitsInArea(PowellHillArea, [[f_side, 4], [f_type, unit_human]]) = 5;
+
+    wait(0$3);
+
+    repeat
+     wait(0$1);
+    until IsInArea(JMM, PowellHillArea);
+
+    for i in amUnitsForJMM do
+        SetSide(i, 1);
+
+    if IsInArea(Lisa, PowellHillArea) then Say(Lisa, 'D3nW-Lisa-1');
+    if IsInArea(Cyrus, PowellHillArea) then Say(Cyrus, 'D3nW-Cyrus-1');
+    if IsInArea(Bobby, PowellHillArea) then Say(Bobby, 'D3nW-Bobby-1');
+    if IsInArea(Gary, PowellHillArea) then Say(Gary, 'D3nW-Gary-1');
+    if IsInArea(Donaldson, PowellHillArea) then Say(Donaldson, 'D3nW-Don-1');
+    if IsInArea(Cornel, PowellHillArea) then Say(Cornel, 'D3nW-Corn-1');
+    if IsInArea(Frank, PowellHillArea) then Say(Frank, 'D3nW-Frank-1');
+    Say(JMM, 'D3nW-JMM-1');
+    Say(JMM, 'D3nW-JMM-1a');
+
+    Video(false);
+    cinematics := false;
+
+    ChangeMissionObjectives('M1');
+
+    SaveForQuickRestart;
+
+    startAttacks = 1;
+    powellBuildBase = 1;
+    PowellBuildBaseScript;
+
+end;
+
+Function ResolveQuery(question, list_of_q);
+ begin
+   case question of
+     1: begin
+          Say(JMM, 'D2Mot-JMM-1');
+          Say(Powell, 'D2Mot-Pow-1');
+          Say(JMM, 'D2Mot-JMM-2');
+          Say(Powell, 'D2Mot-Pow-2');
+        end;
+
+     2: begin
+          Say(JMM, 'D2Rus-JMM-1');
+          Say(Powell, 'D2Rus-Pow-1');
+          Say(JMM, 'D2Rus-JMM-2');
+          if not(3 in list_of_q) then Say(Powell, 'D2Rus-Pow-2')
+          else Say(Powell, 'D2Rus-Pow-2a');
+        end;
+
+     3: begin
+          Say(JMM, 'D2Leg-JMM-1');
+          Say(Powell, 'D2Leg-Pow-1');
+          if (2 in list_of_q) then
+            begin
+              Say(JMM, 'D2Leg-JMM-2');
+              Say(Powell, 'D2Leg-Pow-2');
+            end;
+          Say(JMM, 'D2Leg-JMM-3');
+          Say(Powell, 'D2Leg-Pow-3');
+        end;
+
+     4: begin
+          Say(JMM, 'D2Ar-JMM-1');
+          Say(Powell, 'D2Ar-Pow-1');
+          Say(JMM, 'D2Ar-JMM-2');
+          Say(Powell, 'D2Ar-Pow-2');
+          Say(JMM, 'D2Ar-JMM-3');
+          Say(Powell, 'D2Ar-Pow-3');
+        end;
+
+     5: begin
+          Say(JMM, 'D2Conf-JMM-1');
+        end;
+
+     6: begin
+          Say(JMM, 'D2Com-JMM-1');
+          Say(Powell, 'D2Com-Pow-1');
+          Say(JMM, 'D2Com-JMM-2');
+          Say(Powell, 'D2Com-Pow-2');
+        end;
+   end;
+ end;
+
+// First Powell attack - disable ru attacks
+Every 0$1 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) = 4 and startAttacks = 1 do startAttacks = 0;
+
+// First Powell attack - attack
+Every 0$1 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) = 4 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_lives, 250]]) = 0 and startAttacks = 0 and powellAttacks = 0 do
+var i;
+begin
+    powellAttacks = 1;
+    
+    InGameOn;
+    CenterNowOnUnits(Powell);
+    ComTurnXY(POwell, 47, 60);
+    Say(Powell, 'D4-Pow-1');
+    for i = 1 to amUnitsAttack do if GetSex(amUnitsAttack[i]) = sex_male then begin Say(amUnitsAttack[i], 'D4-Sol1-1'); break; end;
+    Say(Powell, 'D4-Pow-2');
+    InGameOff;
+
+    ComAgressiveMove(FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]), 59, 21);
+
+end;
+
+// Powells warmings
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
+begin
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]), 70, 104);
+    if powellWarm = 0 then begin Say(Powell, 'DBack1-Pow-1'); powellWarm = powellWarm + 1; end;
+    InGameOff;
+end;
+
+Every 1 trigger  not cinematics and FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
+begin
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]), 70, 104);
+    if powellWarm = 1 then begin Say(Powell, 'DBack2-Pow-1'); powellWarm = powellWarm + 1; end;
+    InGameOff;
+end;
+
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
+begin
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea1, [[f_side, 1], [f_type, unit_human]]), 70, 104);
+    if powellWarm = 2 then begin Say(Powell, 'DBack3-Pow-1'); YouLost('Dismissed'); end;
+    InGameOff;
+end;
+
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 0 do
+begin
+
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]), 71, 63);
+    if powellWarm = 0 then begin Say(Powell, 'DBack1-Pow-1'); powellWarm = powellWarm + 1; end;
+    InGameOff;
+end;
+
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 1 do
+begin
+
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]), 71, 63);
+    if powellWarm = 1 then begin Say(Powell, 'DBack2-Pow-1'); powellWarm = powellWarm + 1; end;
+    InGameOff;
+end;
+
+Every 1 trigger not cinematics and FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]) > 0 and IsOk(Powell) and powellWarm = 2 do
+begin
+
+    InGameOn;
+    ComStop(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComMoveXY(FilterUnitsInArea(PowellWarmArea2, [[f_side, 1], [f_type, unit_human]]), 71, 63);
+    if powellWarm = 2 then begin Say(Powell, 'DBack3-Pow-1'); YouLost('Dismissed'); end;
+    InGameOff;
+end;
+
+// First Powell attack - block attack troops
+Every 0$1 trigger powellAttacks = 1  do
+var i;
+begin 
+    enable;
+    for i = 1 to amUnitsAttack do DoNotAttack(8, amUnitsAttack[i]);
+end;
+
+// Second Powell attack - build new vehs
+Every 2$0 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) = 0 and powellAttacks = 1 do
+begin
+    powellAttacks = 2;
+
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [5, 7][Rand(1, 2)]);
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [5, 7][Rand(1, 2)]);
+    AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, [5, 7][Rand(1, 2)]);
+    AddComConstruct(AmFact, us_morphling, engine_siberite, control_manual, 6);
+    powellVeh = AddComConstruct(AmFact, us_medium_tracked, engine_siberite, control_manual, 3);
+end;
+
+
+// Second Powell attack - attack
+Every 1$15 trigger FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]) >= 5 and FilterAllUnits([[f_side, 6], [f_type, unit_vehicle]]) = 0 and powellAttacks = 2 do
+var i, sold, powellPeople, arControler;
+begin
+    startAttacks = 0;
+    powellAttacks = 3;
+    for i = 1 to amUnitsAttack do NormalAttack(8, amUnitsAttack[i]);
+
+    wait(0$5);
+
+    Video(true);
+
+    ComStop(FilterAllUnits([f_side, 1]));
+
+    CenterNowOnUnits(Powell);
+    ComMoveXY(Powell, 45, 64);
+    AddComTurnXY(POwell, 46, 66);
+
+    for i = 5 to 8 do
+    begin
+        ComExitBuilding(amUnitsAttack[i]);
+        ComExitVehicle(amUnitsAttack[i]);
+        wait(0$1);
+        AddComEnterUnit(amUnitsAttack[i], AmArm);
+        AddComChangeProfession(amUnitsAttack[i], 1);
+        AddComExitBuilding(amUnitsAttack[i]);
+        wait(0$1);
+        AddComMoveXY(amUnitsAttack[i], 43 + i, 66);
+        AddComTurnUnit(amUnitsAttack[i], Powell);
+    end; 
+
+    wait(0$10);
+
+    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside], [f_not, [f_hastask]]]) diff [Powell];
+    ComEnterUnit(powellPeople, AmArm);
+    AddComChangeProfession(powellPeople, 1);
+
+    Say(Powell, 'D5-Pow-1');
+    for i = 1 to amUnitsAttack do if GetSex(amUnitsAttack[i]) = sex_male then begin Say(amUnitsAttack[i], 'D5-Sol2-1'); break; end;
+    Say(Powell, 'D5-Pow-2');
+    for i = 1 to amUnitsAttack do if GetSex(amUnitsAttack[i]) = sex_male then begin Say(amUnitsAttack[i], 'D5-Sol2-2'); break; end;
+    Say(Powell, 'D5-Pow-3');
+
+    ComAgressiveMove(FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]), 59, 21);
+    ComAgressiveMove(amUnitsAttack, 59, 21);
+
+    CenterOnXY(61, 35);
+
+    wait(0$15);
+    Say(Powell, 'D5a-Pow-1');
+    Say(Powell, 'D5a-Pow-1a');
+    wait(0$2);
+    Say(Powell, 'D5a-Pow-1b');
+    wait(0$3);
+    Say(Powell, 'D5a-Pow-1c');
+    wait(0$1);
+    Say(Powell, 'D5a-Pow-1d');
+
+    repeat
+        wait(0$1);
+        ComAgressiveMove(FilterAllUnits([[f_side, 4], [f_type, unit_vehicle], [f_not, [f_empty]]]), 59, 21);
+        ComAgressiveMove(amUnitsAttack, 59, 21);
+    until amUnitsAttack = [];
+
+    CenterNowOnUnits(Powell);
+
+    powellPeople = FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff [Powell];
+
+    for i in powellPeople do if GetSex(i) = sex_male then sold = i;
+
+    Say(sold, 'D6-Sol3-1');
+    Say(Powell, 'D6-Pow-1');
+
+
+
+    ComMoveToArea([ArBomb1, ArBomb2], PowellBaseNearArea);
+end;
+
+// Arrive legion bomb
+Every 0$1 trigger powellAttacks = 3 and FilterUnitsInArea(PowellBaseNearArea, [[f_side, 8], [f_type, unit_vehicle]]) = 2 do
+var i, tmp;
+begin
+    ChangeSideFog(8, 1);
+    SetAttitude(4, 8, att_friend, true);
+
+    for i in UnitsInside(AmArm) do
+        if GetSex(i) = sex_male then
+        begin
+            tmp = i;
+            break;
+        end;
+
+
+    ComExitBuilding(UnitsInside(AmArm));
+    Say(tmp, 'D6-Sol3-2');
+    ComAttackUnit([ArBomb1, ArBomb2], AmFact);
+    SetAttitude(4, 8, att_enemy, true);
+    ChangeSideFog(8, 8);
+    Say(Powell, 'D6-Pow-2');
+end;
+
+// Destroy Powell's fab
+Every 1 trigger IsDead(AmFact) do
+var i, tmp;
+begin
+
+    if FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_control, 2], [f_weapon, 29], [f_ok]]) = 1 then
+       ComAttackUnit(FilterAllUnits([[f_side, 8], [f_type, unit_vehicle], [f_control, 2], [f_weapon, 29], [f_ok]]), FilterUnitsInArea(BunkerHillArea, [[f_side, 4], [f_type, unit_building], [f_btype, b_bunker]])[1]);
+
+
+    for i in FilterAllUnits([[f_side, 4], [f_type, unit_human], [f_outside]]) diff [Powell] do
+    if GetSex(i) = sex_male then
+    begin
+        tmp = i;
+        break;
+    end;
+
+    Say(Powell, 'D6a-Pow-1');
+    Say(tmp, 'D6a-Sol3-1');
+    ComTurnUnit(Powell, tmp);
+    Say(Powell, 'D6a-Pow-2');
+    Say(tmp, 'D6a-Sol3-2');
+    Say(Powell, 'D6a-Pow-3');
+    ComEnterUnit(Powell, powellVeh);
+
+    repeat
+        wait(0$1);
+        ComEnterUnit(Powell, powellVeh);        
+    until IsInUnit(Powell);
+
+    wait(0$1);
+    AddComMoveXY(powellVeh, 77, 64);
+    AddComMoveXY(powellVeh, 91, 61);
+    AddComMoveXY(powellVeh, 74, 25);
+
+    centerPowell = 1;
+
+    wait(0$15);
+    Say(Powell, 'D6b-Pow-1');
+
+    game_speed := 4;
+end;
+
+// Powell in legion base
+Every 0$1 trigger IsInArea(powellVeh, DestroyPowellVeh) and powellAttacks = 3 do 
+begin
+    SetLives(PowellVeh, 250);
+    DialogueOn;
+    Say(Powell, 'D6b-Pow-1a');
+    DialogueOff;
+    ComEnterUnit(Powell, FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_ok]])[1]);
+    wait(0$1);
+    ComEnterUnit(Powell, FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_ok]])[1]);
+end;
+
+// Powell bomb
+Every 0$01 trigger FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb]]) do
+begin
+    game_speed := 4;
+    powBomb = FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb]])[1];
+    SetAttitude(8, 4, att_friend, true);
+    ComMoveXY(PowBomb, 80, 19);
+    AddComMoveXY(PowBomb, 74, 15);
+    AddComMoveXY(PowBomb, 72, 19);
+    AddComMoveXY(PowBomb, 78, 24);
+    AddComMoveXY(PowBomb, 77, 20);
+    AddComMoveXY(PowBomb, 74, 15);
+    AddComMoveXY(PowBomb, 72, 19);
+    AddComMoveXY(PowBomb, 78, 24);
+    AddComMoveXY(PowBomb, 77, 20);
+    AddComMoveXY(PowBomb, 78, 15);
+
+    Say(Powell, 'D6b-Pow-1b');
+    Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[1],'D6b-ArSol1-1');
+    Say(FilterAllUnits([[f_side, 8], [f_type, unit_human],[f_class, 1],[f_sex, 1]])[2],'D6b-ArSol2-1');
+
+    Say(Powell, 'D6b-Pow-2');
+    
+    repeat
+        wait(0$1);
+    until GetDistUnitXY(PowBomb, 78, 15) < 3;
+
+    wait(0$1);
+    DialogueOn;
+    Say(Powell, 'D6b-Pow-2a');
+    DialogueOff;
+    centerPowell = 0;
+    ComAttackUnit(PowBomb, ArRuFact);
+end;
+
+// Boom boom :D
+Every 0$1 trigger IsDead(ArRuFact) and powellAttacks = 3 do
+var i, tmp, tmp1, tmp2;
+begin
+    wait(0$2);
+
+    tmp = FilterAllUnits([[f_side, 4], [f_type, unit_human],[f_sex, 1]]) diff [JMM, Stevens, Baker, Gordon, Peter,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
+
+    CenterOnXY(49, 66);
+    Say(tmp[1], 'D6c-Sol3-1');
+    Say(JMM, 'D6c-JMM-1');
+    If IsOk(Cyrus) then Say(Cyrus, 'D6c-Cyrus-1');
+    if IsOk(Bobby) then Say(Bobby, 'D6c-Bobby-1');
+    if IsOk(Cornel) then Say(Cornel, 'D6c-Corn-1');
+    Say(tmp[2], 'D6c-Sol1-1');
+    if IsOk(Lisa) then Say(Lisa, 'D6c-Lisa-1');
+    if IsOk(Gary) then Say(Gary, 'D6c-Gary-1');
+    if IsOK(Donaldson) then Say(Donaldson, 'D6c-Don-1');
+    Say(tmp[3], 'D6c-Sol2-1');
+
+    ComExitBuilding(FilterAllUnits([[f_side, 1], [f_type, unit_human]]));
+    ComExitBuilding(FilterAllUnits([[f_side, 4], [f_type, unit_human]]));
+
+    wait(0$1);
+
+    tmp1 = FilterAllUnits([[f_side, 1], [f_type, unit_human]]) diff [JMM];
+    tmp2 = FilterAllUnits([[f_side, 4], [f_type, unit_human]]);
+
+    for i := 1 to tmp2 do
+    begin
+        ComMoveXY(tmp2[i], 43 + i, 64);
+        AddComTurnUnit(tmp2[i], JMM);
+    end;
+
+    for i := 1 to tmp1 do
+    begin
+        ComMoveXY(tmp1[i], 43 + i, 65);
+        AddComTurnUnit(tmp1[i], JMM);
+    end;
+
+
+    repeat
+        wait(0$1);
+        ComMoveXY(JMM, 48, 68);
+    until GetDistUnitXY(JMM, 48, 68) < 2;
+    AddComTurnXY(JMM, 47, 65);
+
+    wait(0$2);
+    Say(tmp[1], 'D6c-Sol3-2');
+    Say(JMM, 'D6c-JMM-2');
+
+    Video(false);
+    centerPowell = 0;
+
+    SetSide(FilterAllUnits([f_side, 4]), 1);
+    ChangeMissionObjectives('M2');
+    ChangeSideFog(4, 4);
+    timerStatus = 1;
+    missionStage = 1;
+    startAttacks = 1;
+
+end;
+
+// Powell center
+Every 0$2 trigger centerPowell = 1 do
+begin
+    enable;
+
+    SetLives([Powell, PowBomb], 1000);
+    if FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]]) > 0 then SetLives(FilterAllUnits([[f_side, 4], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]])[1], 1000);
+    if FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]]) > 0 then SetLives(FilterAllUnits([[f_side, 8], [f_weapon, ar_selfpropelled_bomb], [f_control, 1]])[1], 1000);
+    if not IsInArea(powellVeh, DestroyPowellVeh) then SetLives(powellVeh, 1000);
+    if not IsInUnit(Powell) then CenterOnUnits(Powell)
+    else CenterOnUnits(IsInUnit(Powell));
+
+end;
+
+// End prologue
+
+// Legion dialog and attack
+Every 0$1 trigger timeAction >= 0$16 do
+begin
+    DialogueOn;
+    SayRadio(LegionFriend, 'D7-Friend-1');
+    Say(JMM, 'D7-JMM-1');
+    SayRadio(LegionFriend, 'D7-Friend-2');
+    Say(JMM, 'D7-JMM-2');
+    SayRadio(LegionFriend, 'D7-Friend-3');
+    Say(JMM, 'D7-JMM-3');
+    SayRadio(LegionFriend, 'D7-Friend-4');
+    Say(JMM, 'D7-JMM-4');
+    SayRadio(LegionFriend, 'D7-Friend-5');
+    Say(JMM, 'D7-JMM-5');
+    SayRadio(LegionFriend, 'D7-Friend-6');
+    Say(JMM, 'D7-JMM-6');
+    DialogueOff;
+
+    PlaceUnitArea(Kozlov, KozlovSpawn, false);
+    SetClass(Kozlov, 2);
+    ComBuild(Kozlov, b_workshop, 78, 12, 3);
+    ChangeMissionObjectives('Mlegion');
+end; 
+
+// Legion surrender
+Every 0$1 trigger FilterAllUnits([[f_side, 8], [f_type, unit_human], [f_nation, 2]]) <= [6, 6, 5][Difficulty] do
+begin
+    PlaceUnitArea(Kurt, KurtSpawn, false);
+    KillUnit(Kozlov);
+    KillUnit(FilterAllUnits([[f_side, 8], [f_type, unit_building], [f_nation, 3], [f_btype, b_factory]])[1]);
+
+    DialogueOn;
+    Say(JMM, 'D13-JMM-1');
+    Say(Kurt, 'D13-Kurt-1');
+    Say(JMM, 'D13-JMM-2');
+    Say(Kurt, 'D13-Kurt-2a');
+    Say(JMM, 'D13-JMM-3');
+    Say(Kurt, 'D13-Kurt-3');
+    Say(JMM, 'D13-JMM-4');
+    DialogueOff;
+
+    SetSide(FilterAllUnits([[f_side, 8], [f_ok]]), 1);
+    SetLives(FilterAllUnits([[f_side, 8], [f_not, [f_lives, 250]]]), 0);
+    ChangeMissionObjectives('MlegionOut');
+
+    SetAttitude(8, 1, att_friend, true);
+
+    PlaceUnitArea(LegionFriend, LegFriendSpawn, false);
+    wait(0$1);
+    ComMoveUnit(LegionFriend, JMM);
+end;
+
+Every 0$1 trigger See(1, LegionFriend) do
+var dec;
+begin
+
+     CenterNowOnUnits(LegionFriend);
+     DialogueOn;
+     Say(JMM, 'D14-JMM-1');
+     Say(LegionFriend, 'D14-Friend-1');
+     Say(JMM, 'D14-JMM-2');
+     Say(LegionFriend, 'D14-Friend-2');
+     Say(JMM, 'D14-JMM-3');
+     Say(LegionFriend, 'D14-Friend-3');
+     DialogueOff;
+
+     dec = Query('Q14');
+
+     if dec = 1 then
+     begin
+       DialogueOn;
+       Say(JMM, 'D14a-JMM-1');
+       DialogueOff;
+       SetSide(LegionFriend, 1);
+     end;
+
+     if dec = 2 then
+     begin
+       DialogueOn;
+       Say(JMM, 'D14b-JMM-1');
+       DialogueOff;
+       ComMoveToArea(LegionFriend, FriendEscapeArea);
+     end;
+
+     if dec = 3 then
+     begin
+       DialogueOn;
+       Say(JMM, 'D14c-JMM-1');
+       Say(LegionFriend, 'D14c-Friend-1');
+       Say(JMM, 'D14c-JMM-2');
+       DialogueOff;
+       SetAttitude(8, 1, att_enemy, true);
+       ComMoveToArea(LegionFriend, FriendEscapeArea);
+     end;
+
+end;
+
+// Remove legion friend from map
+Every 0$1 trigger IsInArea(LegionFriend, FriendEscapeArea) and GetSide(LegionFriend) = 8 do RemoveUnit(LegionFriend);
+
+
+// Kappa support or attack
+Every 0$1 trigger timeAction >= 15$02 do
+begin 
+    if KappaStatus = 1 and JMMGirlVeh = [] then
+       begin
+       PrepareSupportFromKappa;
+
+       if burlakStatus = 1 then
+          begin
+          wait(25$00);
+
+          PrepareAttackFromKappa;
+          end;
+       end;
+
+    if KappaStatus = 0 and JMMGirlStatus = 1 then  PrepareAttackFromKappa;
+    if KappaStatus = 0 and JMMGirlStatus = 0 then  PrepareAttackFromKappa;
+end;
+
+// Dialog with Sewi
+Every 0$1 trigger See(1, sewiVeh) do 
+begin
+    missionStage = 2;
+    CenterNowOnUnits(sewiVeh);
+    DialogueOn;
+    Say(JMM, 'D10nB-JMM-1');
+    if BurlakStatus = 1 then Say(Vsevolod, 'D10nB-Vse-1a');
+    if BurlakStatus = 0 then Say(Vsevolod, 'D10nB-Vse-1');
+    Say(JMM, 'D10nB-JMM-2');
+
+    if KappaStatus and JMMGirlStatus = 1 then SayRadio(Vsevolod, 'D10nB-Vse-5a');
+    if KappaStatus and JMMGirlStatus = 0 then
+    begin
+        if JMMGirl = 1 then
+        begin
+            Say(Vsevolod, 'D10nB-Vse-2');
+            Say(JMM, 'D10nB-JMM-3');
+            Say(Vsevolod, 'D10nB-Vse-3');
+            Say(JMM, 'D10nB-JMM-4');
+        end;
+
+        if JMMGirl = 2 then
+        begin
+            Say(Vsevolod, 'D10nB-Vse-4');
+            Say(JMM, 'D10nB-JMM-5');
+        end;
+
+        if JMMGirl = 3 then
+        begin
+            Say(Vsevolod, 'D10nB-Vse-5');
+            Say(JMM, 'D10nB-JMM-6');
+        end;
+        
+    end;
+
+    DialogueOff;
+end;
+
+// Stevens or Baker from 13
+Every 0$1 trigger timeAction >= 30$02 do 
+begin
+    PrepareOmegaTeam;
+    missionStage = 3;
+    DialogueOn;
+
+    if StevensStatus = 1 then
+    begin
+        CenterNowOnUnits(IsInUnit(Stevens));
+        SayRadio(Stevens, 'D8-Huck-1');
+        Say(JMM, 'D8-JMM-1');
+        SayRadio(Stevens, 'D8-Huck-2');
+        Say(JMM, 'D8-JMM-2');
+        SayRadio(Stevens, 'D8-Huck-3');
+        Say(JMM, 'D8-JMM-3');
+        SayRadio(Stevens, 'D8-Huck-4');
+        Say(JMM, 'D8-JMM-4');
+    end;
+
+    if StevensStatus = 0 then
+    begin
+        CenterNowOnUnits(IsInUnit(Baker));
+        SayRadio(Baker, 'D8-Huck-1');
+        Say(JMM, 'D8-JMM-1a');
+        SayRadio(Baker, 'D8-Huck-2');
+        Say(JMM, 'D8-JMM-2');
+        SayRadio(Baker, 'D8-Huck-3');
+        Say(JMM, 'D8-JMM-3');
+        SayRadio(Baker, 'D8-Huck-4');
+        Say(JMM, 'D8-JMM-4');
+    end;
+
+    DialogueOff;
+    SetTech(tech_SibFiss, 1, state_enabled);
+end;
+
+// Roth and start Alliance attack
+Every 0$1 trigger timeAction >= 35$02 do 
+var dec;
+begin
+    missionStage = 4;
+    DialogueOn;
+    SayRadio(Roth, 'D9-Roth-1');
+    Say(JMM, 'D9-JMM-1');
+    SayRadio(Roth, 'D9-Roth-2');
+    SayRadio(Roth, 'D9-Roth-2a');
+    SayRadio(Platonov, 'D9-Pla-2');
+    SayRadio(Roth, 'D9-Roth-3');
+    SayRadio(Platonov, 'D9-Pla-3');
+    SayRadio(Roth, 'D9-Roth-4');
+
+    dec = Query('Q9');
+
+    if dec = 1 then SayRadio(Roth, 'D9a-Roth-1');
+    if dec = 2 then
+    begin
+        Say(JMM, 'D9b-JMM-1');
+        SayRadio(Roth, 'D9b-Roth-1');
+    end;
+
+    if dec = 3 then
+    begin
+        Say(JMM, 'D9c-JMM-1');
+        SayRadio(Roth, 'D9c-Roth-1');
+        Say(JMM, 'D9c-JMM-2');
+        SayRadio(Roth, 'D9c-Roth-2');
+        Say(JMM, 'D9c-JMM-3');
+    end;
+
+    SayRadio(Roth, 'D9c-Roth-3');
+    SayRadio(Roth, 'D9cont-Roth-1');
+    Say(JMM, 'D9cont-JMM-1');
+    SayRadio(Roth, 'D9cont-Roth-2');
+    Say(JMM, 'D9cont-JMM-2');
+    SayRadio(Roth, 'D9cont-Roth-3');
+    Say(JMM, 'D9cont-JMM-3');
+    DialogueOff;
+
+    ChangeMissionObjectives('M3');
+
+end;
+
+// Alliance surrender
+Every 0$1 trigger FilterAllUnits([[f_side, 7], [f_type, unit_human]]) <= [20, 18, 15][Difficulty] do
+var i, tmp;
+begin
+
+    for i in FilterAllUnits([[f_side, 7], [f_type, unit_human], [f_nation, 3], [f_lives, 900]]) do
+    if GetSex(i) = sex_male then
+    begin
+        tmp = i;
+        break;
+    end;
+
+     if tmp = 0 then
+     begin
+         uc_side = 7;
+         uc_nation = 3;
+
+         hc_name = '';
+         hc_gallery = '';
+
+         PrepareSoldier(sex_male, 10);
+         tmp = CreateHuman;
+     end;
+
+     AllianceAI = 0;
+     AllianceEscape = 1;
+     SetAttitude(7, 1, att_friend, true);
+
+     DialogueOn;
+     If IsOK(Roth) then Say(JMM, 'DAb-JMM-1');
+     If IsOK(Roth) then Say(Roth, 'DSurrenderAlliance-Roth-1')
+     else Say(tmp, 'DSurrenderAlliance-Sci1-1');
+
+     if FilterUnitsInArea(AllianceBaseArea, [f_side, 4]) = 1 then Say(JMM, 'DAb-JMM-1a');
+     if FilterUnitsInArea(AllianceBaseArea, [f_side, 4]) > 1 then Say(JMM, 'DAb-JMM-1b');
+     DialogueOff;
+
+     if FilterUnitsInArea(AllianceBaseArea, [f_side, 4]) > 0 then SetSide(FilterUnitsInArea(AllianceBaseArea, [f_side, 4]), 1);
+
+
+     If IsDying(Roth) then
+     begin
+        RothStatus = 0;
+        SetLives(Roth, 0);
+     end;
+
+     ComExitBuilding(FilterAllUnits([[f_side, 7], [f_type, unit_human]]));
+     wait(0$1);
+     AddComMoveToArea(FilterAllUnits([[f_side, 7], [f_type, unit_human]]), AllianceEscapeArea);
+end;
+
+// Remove Alliance units
+Every 0$1 trigger AllianceEscape = 1 and FilterUnitsInArea(AllianceEscapeArea, [[f_side, 7], [f_type, unit_human]]) do
+var i;
+begin
+enable;
+     for i in FilterUnitsInArea(AllianceEscapeArea, [[f_side, 7], [f_type, unit_human]]) do
+         RemoveUnit(i);
+end;
+
+// TP your units to Alliance base
+Every 3$55 trigger (FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_human]]) > 0 or  FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_type, unit_vehicle], [f_control, 1], [f_not, [f_empty]]]) > 0) and IsOK(Roth) and IsOk(AllLabR1) and IsOk(AllLabR2) and AllianceAI = 1 do
+var tpUnit, heroes, rnd;
+begin
+    enable;
+
+    if Prob([80, 70, 60][Difficulty]) then
+       exit;
+
+    tpUnit = FilterUnitsInArea(AllianceTeleport, [[f_side, 1], [f_or, [f_type, unit_human], [f_control, 1]]])[1];
+    heroes = [JMM, Joan, Stevens, Baker, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie];
+
+    InGameOn;
+    SetAttitude(1, 7, att_friend, true);
+
+    CenterNowOnUnits(tpUnit);
+    If GetType(tpUnit) = unit_vehicle then tpUnit = UnitsInside(tpUnit)[1];
+    ComExitVehicle(tpUnit);
+    wait(0$1);
+    TeleportUnit(tpUnit, 248, 186, 4, true);
+
+    wait(0$2);
+    CenterNowOnUnits(tpUnit);
+    ComTurnUnit(tpUnit, Roth);
+    ComTurnUnit([Roth, Simms], tpUnit);
+
+    if tpUnit = JMM then Say(JMM, 'DA1-JMM-1');
+    if tpUnit = Joan then Say(Joan, 'DA1-Joan-1');
+    if tpUnit = Lisa then Say(Lisa, 'DA1-Lisa-1');
+    if tpUnit = Donaldson then Say(Donaldson, 'DA1-Don-1');
+    if tpUnit = Cornel then Say(Cornel, 'DA1-Corn-1');
+    if tpUnit = Denis then Say(Denis, 'DA1-Den-1');
+    if tpUnit = Bobby then Say(Bobby, 'DA1-Bobby-1');
+    if tpUnit = Gladstone then Say(Gladstone, 'DA1-Glad-1');
+    if tpUnit = Cyrus then Say(Cyrus, 'DA1-Cyrus-1');
+    if tpUnit = Stevens then Say(Stevens, 'DA1-Huck-1');
+    if tpUnit = Baker then Say(Baker, 'DA1-Huck-1');
+    if tpUnit = Brown then Say(Brown, 'DA1-Brown-1');
+    if tpUnit = Gary then Say(Gary, 'DA1-Gary-1');
+    if tpUnit = Connie then Say(Connie, 'DA1-Con-1');
+    if tpUnit = Kurt then Say(Kurt, 'DA1-Kurt-1');
+    if tpUnit = Kikuchi then Say(Kikuchi, 'DA1-Yam-1');
+    if tpUnit = Frank then Say(Frank, 'DA1-Frank-1');
+
+    if not tpUnit in heroes then
+    begin
+       if GetSex(tpUnit) = 1 then Say(tpUnit, 'DA1-Sol1-1');
+       if GetSex(tpUnit) = 2 then Say(tpUnit, 'DA1-FSol1-1');
+    end;
+
+    Say(Roth, 'DA-Roth-1');
+    Say(Simms, 'DA-Sim-1');
+    Say(Roth, 'DA-Roth-2');
+
+    if tpUnit = JMM then
+    begin
+        Say(JMM, 'DA1-JMM-1a');
+        Say(Roth, 'DA-Roth-3a');
+        YouLost('JMMCaptured');
+    end;
+
+    if tpUnit = Joan then
+    begin
+        Say(Joan, 'DA1-Joan-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Joan, 4);
+        ComMoveXY(Joan, 257, 198);
+        AddComHold(Joan);
+    end;
+
+    if tpUnit = Donaldson then
+    begin
+        Say(Donaldson, 'DA1-Don-1a');
+        Say(Roth, 'DA-Roth-3');
+        SetSide(Donaldson, 7);
+        ComMoveXY(Donaldson, 240, 188);
+    end;
+
+    if tpUnit = Cornel then
+    begin
+        Say(Cornel, 'DA1-Corn-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Cornel, 4);
+        ComMoveXY(Cornel, 257, 198);
+        AddComHold(Cornel);
+    end;
+
+    if tpUnit = Denis then
+    begin
+        Say(Denis, 'DA1-Den-1a');
+        Say(Roth, 'DA-Roth-3');
+        SetSide(Denis, 7);
+        ComMoveXY(Denis, 240, 188);
+    end;
+
+    if tpUnit = Bobby then
+    begin
+        Say(Joan, 'DA1-Bobby-1a');
+        Say(Roth, 'DA-Roth-3');
+        SetSide(Bobby, 7);
+        ComMoveXY(Bobby, 240, 188);
+    end;
+
+    if tpUnit = Gladstone then
+    begin
+        Say(Gladstone, 'DA1-Glad-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Gladstone, 4);
+        ComMoveXY(Gladstone, 257, 198);
+        AddComHold(Gladstone);
+    end;
+
+    if tpUnit = Cyrus then
+    begin
+        Say(Cyrus, 'DA1-Cyrus-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Cyrus, 4);
+        ComMoveXY(Cyrus, 257, 198);
+        AddComHold(Cyrus);
+    end;
+
+    if tpUnit = Stevens then
+    begin
+        Say(Stevens, 'DA1-Huck-1a');
+        Say(Roth, 'DA-Roth-3');
+        SetSide(Stevens, 7);
+        ComMoveXY(Stevens, 240, 188);
+    end;      
+
+    if tpUnit = Baker then
+    begin
+        Say(Baker, 'DA1-Huck-1a');
+        Say(Roth, 'DA-Roth-3');
+        SetSide(Baker, 7);
+        ComMoveXY(Baker, 240, 188);
+    end;    
+
+    if tpUnit = Brown then
+    begin
+        Say(Cyrus, 'DA1-Brown-1a');
+        Say(Roth, 'DA-Roth-3');
+        SetSide(Brown, 7);
+        ComMoveXY(Brown, 240, 188);
+    end;
+
+    if tpUnit = Gary then
+    begin
+        Say(Gary, 'DA1-Gary-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Gary, 4);
+        ComMoveXY(Gary, 257, 198);
+        AddComHold(Gary);
+    end;
+
+    if tpUnit = Cyrus then
+    begin
+        Say(Cyrus, 'DA1-Cyrus-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Cyrus, 4);
+        ComMoveXY(Cyrus, 257, 198);
+        AddComHold(Cyrus);
+    end;
+
+    if tpUnit = Connie then
+    begin
+        Say(Connie, 'DA1-Con-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Connie, 4);
+        ComMoveXY(Connie, 257, 198);
+        AddComHold(Connie);
+    end;
+    
+    if tpUnit = Kurt then
+    begin
+        Say(Kurt, 'DA1-Kurt-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Kurt, 4);
+        ComMoveXY(Kurt, 257, 198);
+        AddComHold(Kurt);
+    end;     
+
+    if tpUnit = Kikuchi then
+    begin
+        Say(Kikuchi, 'DA1-Yam-1a');
+        Say(Roth, 'DA-Roth-3');
+        SetSide(Kikuchi, 7);
+        ComMoveXY(Kikuchi, 240, 188);
+    end;                                  
+
+    if tpUnit = Frank then
+    begin
+        Say(Frank, 'DA1-Frank-1a');
+        Say(Roth, 'DA-Roth-3a');
+        SetSide(Frank, 4);
+        ComMoveXY(Frank, 257, 198);
+        AddComHold(Frank);
+    end;  
+
+    if allianceFirstContact = 0 then
+    begin
+        Say(JMM, 'DAa-JMM-1');
+        Say(JMM, 'DAa-JMM-1a');
+        Say(JMM, 'DAa-JMM-1b');
+        allianceFirstContact = 1;
+    end;
+
+    if not tpUnit in heroes then
+    begin
+        rnd = Rand(1, 2);
+       if GetSex(tpUnit) = 1 then
+       begin
+            if rnd = 1 then
+            begin
+                Say(tpUnit, 'DA1-Sol1-1a');
+                Say(Roth, 'DA-Roth-3a');
+                SetSide(tpUnit, 4);
+                ComMoveXY(tpUnit, 257, 198);
+                AddComHold(tpUnit);
+            end;
+
+            if rnd = 2 then
+            begin
+                Say(tpUnit, 'DA1-Sol1-1b');
+                Say(Roth, 'DA-Roth-3');
+                SetSide(tpUnit, 7);
+                ComMoveXY(tpUnit, 240, 188);
+            end;
+       end; 
+
+       if GetSex(tpUnit) = 2 then
+       begin
+            if rnd = 1 then
+            begin
+                Say(tpUnit, 'DA1-FSol1-1a');
+                Say(Roth, 'DA-Roth-3a');
+                SetSide(tpUnit, 4);
+                ComMoveXY(tpUnit, 257, 198);
+                AddComHold(tpUnit);
+            end;
+
+            if rnd = 2 then
+            begin
+                Say(tpUnit, 'DA1-FSol1-1b');
+                Say(Roth, 'DA-Roth-3');
+                SetSide(tpUnit, 7);
+                ComMoveXY(tpUnit, 240, 188);
+            end;
+       end; 
+
+    end;
+
+    SetAttitude(1, 7, att_enemy, true);
+    InGameOff;
+end;
+
+// Ru behemoth
+Every 0$1 trigger timeAction >= 45$02 do 
+begin
+    DialogueOn;
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]), 'D11-Sol1-1', 'D5-FSol1-1');
+    SayRadio(Platonov, 'D11-Pla-1');
+    SayRadio(Kovalyuk, 'D11-Kov-1');
+    SayRadio(Platonov, 'D11-Pla-2');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]), 'D11-Sol1-2', 'D5-FSol1-1');
+    Say(JMM, 'D11-JMM-2');
+    DialogueOff;
+    PreapreMehBehs;
+    missionStage = 5;
+end;
+
+// Russian rocket
+Every 0$1 trigger timeAction >= 50$02 do
+var dec, time;
+begin
+
+    time = 0$00;
+
+    DialogueOn;
+    SayRadio(Platonov, 'D15-Pla-1');
+
+    dec = Query('Q15a');
+
+    if dec = 1 then
+    begin
+        Say(JMM, 'D15a-JMM-1');
+        YouLost('Surrender');
+    end;
+
+    if dec = 2 then
+    begin
+        Say(JMM, 'D15b-JMM-1');
+        SayRadio(Platonov, 'D15b-Pla-1');
+        DialogueOff;
+    end;
+
+    if dec = 3 then
+    begin
+        Say(JMM, 'D15c-JMM-1');
+        SayRadio(Platonov, 'D15c-Pla-1');
+        DialogueOff;
+        wait(0$15);
+        Say(Platonov, 'D18-Pla-1');
+        ComAttackPlace(rurocket, GetX(JMM), GetY(JMM));
+    end;
+
+    if dec = 4 then
+    begin
+        Say(JMM, 'D15d-JMM-1');
+        SayRadio(Platonov, 'D15d-Pla-1');
+        DialogueOff;
+        missionStage = 6;
+    end;
+
+    if dec = 2 then
+    begin
+        repeat
+            wait(0$01);
+            time = time + 0$01;
+        until time >= 3$00;
+
+        DialogueOn;
+        Say(JMM, 'D15d-JMM-1a');
+        SayRadio(Platonov, 'D15d-Pla-1');
+        DialogueOff;
+        missionStage = 6;
+    end;
+
+    if IsOk(LegionFriend) and GetSide(LegionFriend) = 1 then
+    begin
+        DialogueOn;
+        Say(JMM, 'D16-JMM-1');
+        Say(LegionFriend, 'D16-Friend-1');
+        Say(JMM, 'D16-JMM-2');
+        DialogueOff;
+    end;
+
+
+end;
+
+// Confirm Am rocket - traitor
+Every 1$0 trigger missionStage = 6 and IsOK(LegionFriend) and GetSide(LegionFriend) = 1 do
+var rocketTarget;
+begin
+    DialogueOn;
+
+    if FilterAllUnits([[f_side, 1], [f_or, [f_weapon, us_siberium_rocket], [f_bweapon, us_siberium_rocket]]]) > 0  then
+    begin
+        SayRadio(Platonov, 'D16c-Pla-1');
+        playerHaveRocket  = 1;
+    end else
+    begin
+        SayRadio(Platonov, 'D16a-Pla-1');
+        If IsOK(Stevens) then
+        begin
+            Say(Stevens, 'D16a-Huck-1');
+        end else
+        begin
+            if IsOk(Baker) then
+            begin
+                Say(Baker, 'D16a-Huck-1');
+            end
+            else
+            begin
+                DialogRandom(FilterAllUnits([[f_side, 1], [f_nation, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]), 'D16a-Sol1-1', 'D5-FSol1-1');
+            end;
+        end;
+
+         wait(0$30);
+         Say(Platonov, 'D18-Pla-1');
+         rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 1], [f_or, [f_btype, 0], [f_btype, 1]]]);
+         if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 2], [f_or, [f_btype, 0], [f_btype, 1]]]);
+         if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1], [f_ok]]);
+
+         ComAttackPlace(rurocket, GetX(rocketTarget[1]), GetY(rocketTarget[1]));
+    end;
+
+    Say(JMM, 'D16a-JMM-1a');
+    DialogueOff;
+    SetSide(LegionFriend, 3);
+    ComExitBuilding(LegionFriend);
+    ComExitVehicle(LegionFriend);
+    wait(0$1);
+    ComMoveToArea(LegionFriend, FriendEscapeArea);
+    wait(0$3);
+    DialogueOn;
+    Say(JMM, 'D16a-JMM-1');
+    DialogueOff;
+end;
+
+// Traitor detected
+Every 0$1 trigger GetSide(LegionFriend) = 3 do 
+var i;
+begin
+    enable;
+
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_outside]]) do 
+    begin
+        if GetDistUnits(i, LegionFriend) < 8 then
+        begin
+            Disable;
+            DialogueOn;
+            CenterNowOnUnits(LegionFriend);
+            Say(LegionFriend, 'D16a-Friend-1');
+            DialogueOff;
+        end;
+    end;
+end;
+
+// Confirm Am rocket - normal
+Every 5$0 trigger missionStage = 6 and not GetSide(LegionFriend) = 1 do
+var rocketTarget;
+begin
+
+    if FilterAllUnits([[f_side, 1], [f_or, [f_weapon, us_siberium_rocket], [f_bweapon, us_siberium_rocket]]]) > 0  then
+    begin
+        SayRadio(Platonov, 'D16c-Pla-1');
+        playerHaveRocket  = 1;
+    end else
+    begin
+        SayRadio(Platonov, 'D16b-Pla-1');
+        Say(JMM, 'D16b-JMM-1');
+        wait(0$15);
+        Say(Platonov, 'D18-Pla-1');
+
+        rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 1], [f_or, [f_btype, 0], [f_btype, 1]]]);
+        if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_nation, 2], [f_or, [f_btype, 0], [f_btype, 1]]]);
+        if rocketTarget = 0 then rocketTarget = FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_nation, 1], [f_ok]]);
+
+        ComAttackPlace(rurocket, GetX(rocketTarget[1]), GetY(rocketTarget[1]));
+    end;
+
+end;
+
+// Start russian rocket against Alliance if player build rocket - Idea by Thorgall :D
+Every 0$1 trigger timeAction >= 80$02 and missionStage >= 6 and AllianceAI = 1 do
+begin
+     Say(Platonov, 'D18-Pla-1');
+     ComAttackPlace(rurocket, 244, 187);
+
+end;
+
+// See behemoth
+Every 0$3 trigger missionStage >= 5 do
+var i;
+begin
+    enable;
+
+    for i in FilterAllUnits([[f_side, 6], [f_btype, b_behemoth], [f_constructed]]) do 
+    begin
+        If See(1, i) then
+        begin
+            Disable;
+            DialogueOn;
+            Say(JMM, 'D17a-JMM-1');
+            DialogueOff;
+            behemothStatus = 1;
+            ChangeMissionObjectives('M4a');
+        end;
+    end;
+
+    for i in ruBehs do 
+    begin
+        if See(1, i) then
+        begin
+            Disable;
+            DialogueOn;
+            Say(JMM, 'D17b-JMM-1');
+            DialogueOff;
+            behemothStatus = 0;
+            ChangeMissionObjectives('M4b');
+            wait(0$2);
+            Say(Platonov, 'D18-Pla-1');
+        end;
+    end;
+end;
+   
+// Arabian attack
+Every 1 trigger IsDead(Platonov) and IsDead(Yakotich) and FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_ok]]) < [7, 8, 9][Difficulty] do
+var i, tmp, arabianArmy;
+begin
+
+    russianAI = 0;
+    russianEscape = 1;
+
+    SetAttitude(1, 3, att_friend, true);
+
+    for i in FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_lives, 900]]) do
+    if GetSex(i) = sex_male then
+    begin
+        tmp = i;
+        break;
+    end;
+
+    if tmp = 0 then
+    begin
+         uc_side = 3;
+         uc_nation = 3;
+
+         hc_name = '';
+         hc_gallery = '';
+
+         PrepareSoldier(sex_male, 10);
+         tmp = CreateHuman;
+    end;
+
+    DialogueOn;
+    Say(tmp, 'DSurrenderRussians-RSol1-1a');
+    DialogueOff;
+
+    ComExitBuilding(FilterAllUnits([[f_side, 3], [f_type, unit_human]]));
+    wait(0$1);
+    AddComMoveToArea(FilterAllUnits([[f_side, 3], [f_type, unit_human]]), RussianEscapeArea);
+
+    wait(0$10);
+    PrepareOmarArmy;
+
+    missionStage = 7;
+
+    PlaceSeeing(157, 8, 1, -8);
+    CenterOnXY(157, 8);
+
+    DialogueOn;
+    CenterNowOnUnits(Heike);
+    Say(JMM, 'D19-JMM-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]), 'D19-Sol1-1', 'D5-FSol1-1');
+    Say(JMM, 'D19-JMM-2');
+    DialogueOff;
+    LaunchMines;
+    wait(0$3);
+
+    arabianArmy = FilterAllUnits([[f_side, 2], [f_type, unit_human]]) diff FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 4]]);
+    arabianArmy = arabianArmy ^ FilterAllUnits([[f_side, 2], [f_type, unit_vehicle]]);
+
+    ComAgressiveMove(arabianArmy, 178, 66);
+    wait(0$10);
+    ComContaminate(FilterAllUnits([[f_side, 2], [f_type, unit_human], [f_class, 4]]), 177, 69);
+end;
+
+// Remove Ru units
+Every 0$1 trigger russianEscape = 1 and FilterUnitsInArea(RussianEscapeArea, [[f_side, 3], [f_type, unit_human]]) do
+var i;
+begin
+enable;
+     for i in FilterUnitsInArea(RussianEscapeArea, [[f_side, 3], [f_type, unit_human]]) do
+         RemoveUnit(i);
+end;
+
+Function LaunchMines;
+var mines_pos, mines_pos1, i, j;
+ begin
+   mines_pos= [[168,18], [169,20], [167,20], [164,18], [164,19], [163,19],
+               [164,21], [165,21], [163,20], [164,22], [162,20]];
+   mines_pos1= [[169,34], [169,35], [167,32], [170,31], [173,35], [174,39]];
+
+   for i= 1 to mines_pos do
+     begin
+       MineExplosion(mines_pos[i][1], mines_pos[i][2], 1);
+       Wait(Rand(1, 3));
+       if i < mines_pos then
+         RemoveEnvironmentWithoutRebuild(mines_pos[i][1], mines_pos[i][2])
+       else
+         begin
+
+           for j= 1 to mines_pos1 do
+             begin
+               MineExplosion(mines_pos1[j][1], mines_pos1[j][2], 1);
+               Wait(Rand(1,3));
+             end;
+           RemoveEnvironment(mines_pos[i][1], mines_pos[i][2]);
+         end;
+     end;
+ end;
+
+// Omar die
+Every 0$1 trigger missionStage = 7 and IsDead(Omar) and IsOk(Heike) do
+begin
+    DialogueOn;
+    Say(JMM, 'D19a-JMM-1');
+    Say(Heike, 'D19a-Hke-1');
+    DialogueOff;
+end;

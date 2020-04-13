@@ -1,0 +1,193 @@
+// Map Scripts: Nefarem
+
+//  Lekcja Historii #1
+{
+ Program Lend Lease dla Zwiazku Radzieckiego to nie byl transport zywnosci, surowcow, ciezarowek itp.
+ Tylko to ze Amerykanie zaczeli utrzymywac kontrole na morzu Baltyckim i dzieki temu Rosyjskie fregaty mogly lowic ryby i wykarmic cala armie.
+ Sowieci podczas bitwy pod Chalgingol zdobyli tyle sprzetu Japonskiego ze mogli pozwolic sobie na to by wycofac sie za Ural i tam kontynuowac przemysl.
+ Zukow zdobyl Japonskie maszyny z tamtej bitwy prowadzac natarcie na kutrze rybackim ubezpieczonym przez US Navy.
+}
+
+//  Lekcja Historii #2
+{
+T-37 - lekki czolg plywajacy konstrukcji radzieckiej z okresu przed II wojna swiatowa.
+Koncept zaczerpniety ze zdobycznych wozow Kwantunskiej Armii Cesarstwa Japonii podczas bitwy pod Chalgingol.
+}
+
+// Lekcja Historii #3
+
+{
+Ruscy zalali Warszawe dorszem wylowionym na japonskich kutrach zdobytych na japonczykach pod Halyn-Gol. Dzieku temu wymylo szwabow az do Laby.
+}
+
+// Lekcja Historii #4
+
+{
+    
+Propaganda i dezinformacja . To Ukraina zbrojnie przejela Rosyjskie kutry 
+rybackie i aresztowala zaloge jednego z nich . Rosja zostala zmuszona
+prowokacjami do interwencji . Szczytem glupoty jest zabranianie latania 
+nad swoim mostem . Obce okrety Rosja musi zatapiac . Chcecie wojny
+Pierwsi oczywiscie rusza nasi na tych starych skorupach , jak sie zacznie wojna to dadza dyla do Anglii a my zostaniemy jako mieso armatnie dla Rosjan i siekierowe dla ukraincow
+
+}
+
+// Lekcja Matematyki #1
+{
+Funkcja Lambda opiera sie na zdobycznych czolgach japonskich w trakcie bitwy pod Chalgingol.
+}
+
+// Dymitr von Manstein ;O
+//Sturmbannfuhrer Sacharov:
+//      podczas tej gry czulem sie jak von Manstein :D
+
+
+Export JMM, Joan, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie; // Am heroes
+Export Powell; // Am commander
+Export others13, others13Omega; // Others
+Export heroesFromOmega, Baker, Gordon, Peter; // Mission 15 heroes
+Export NewJMMVeh, NewJMMGirlVeh;
+Export Platonov, Yakotich, Roth, Burlak, Kurt, Omar, Heike, Khatam; // Enemy commanders
+Export Vsevolod, sewiVeh; // Sewi
+Export Kozlov;  // Kozlov
+Export Kovalyuk, Oblukov, Bystrov, Fadeev, Gleb, Petrosyan, Petrovova, Kuzmov, Mikhail, Furmanov, Belkov; // Enemy heroes
+Export Simms, Scholtze, Kirilenkova, Kapitsova, Karamazov; // Alliance
+
+Export LegionFriend, LegionFriendStatus;
+Export legionVehicles;
+Export arControler;
+
+Export ruVehicles;
+Export ruBehMehs, ruBehs;
+Export behemothStatus;
+Export russianVehicles;
+
+Export allianceVehicles;
+Export allianceControler;
+Export allianceFirstContact;
+
+Export amUnitsSkillTab, amUnitsAttack, amUnitsForJMM;
+Export powellBuildBase;
+Export powellAttacks;
+Export powellUnloadCargo;
+Export powellWarm;
+Export startAttacks;
+Export powellVeh, centerPowell, powBomb;
+
+Export BurlakStatus, StevensStatus; // Am 13
+Export JMMVeh, JMMGirlVeh; // Vehs from mission 14
+Export JMMGirl, KappaStatus, JMMGirlStatus; // Am 14
+Export KhatamStatus; // Am 10
+
+Export LegionAI, AllianceAI, RussianAI;
+Export LegionTarget, AllianceTarget, RussianTarget;
+Export russianEscape, allianceEscape;
+
+Export RothStatus;
+
+Export legionDestroyedBuilds, russianDestroyedBuilds, allianceDestroyedBuilds;
+
+Export timerStatus, timeAction;
+
+Export unitLost;
+Export legionRocket;
+
+Export playerHaveRocket;
+
+Export missionStage; 
+
+Export blockEvent1;
+
+Export cinematics, skip;
+
+Export debugMode;
+
+Starting
+begin
+
+    Resetfog;
+    RandomizeAll;
+
+    JMMVeh = LoadVariable('14_JMMVeh_1', []);
+    JMMGirlVeh = LoadVariable('14_JMMGirlVeh_1', []);
+    JMMGirl = LoadVariable('14_JMMGirl_1', 3);
+    JMMGirlStatus = LoadVariable('14_JMMGirlStatus_1', 0);
+    KappaStatus = LoadVariable('14_KappaStatus_1', 0);
+    KhatamStatus = LoadVariable('10_KhatamStatus_1', 0);
+    BurlakStatus = LoadVariable('13_BurlakStatus_1', 0);
+    StevensStatus = LoadVariable('13_StevensStatus_1', 0);
+
+    amUnitsSkillTab = []; // [unitID][Skills/4]
+    amUnitsAttack = []; // 8 units who die durring attack legion base
+    amUnitsForJMM = []; // Units for JMM
+
+    startAttacks = 0; // magenta ru attacks on/off
+    powellBuildBase = 0; // 0 - off, 1 - start
+    powellUnloadCargo = 0;
+    powellAttacks = 0;
+    centerPowell = 0;
+    powellWarm = 0;
+
+    LegionFriendStatus = 0; // 0 - die, 1 - in american
+    RothStatus = 1; // 1 - live, 0 - die
+
+    allianceFirstContact = 0; // 0 - no tp, 1 - tp 
+    
+    legionVehicles = [];
+    russianVehicles = [];
+    allianceVehicles = [];
+
+    legionDestroyedBuilds = [];
+    russianDestroyedBuilds = [];
+    allianceDestroyedBuilds = [];
+
+    ruVehicles = [];
+    ruBehMehs = []; // Tab with ru mehs to build behemoth
+    ruBehs = []; // Russian behemoths
+
+    missionStage = 0; // 0 - prologue, 1 - after Powell death, 2 - Joan or Sewi, 3 - Stevens,  4 - Roth, 5 - ru behs, 6 - Ru rocket,7 - Arabian 8 - End game
+
+    behemothStatus = 0; // 0 - no detect, 1 - detected before finish
+
+    unitLost = 0;
+
+    LegionAI = 1;
+    AllianceAI = 1;
+    RussianAI = 1;
+
+    timerStatus = 0; // 0 - off, 1 - on
+    timeAction = 0$00; // time
+
+    playerHaveRocket = 0; // 0 - no, 1 - player build rocket before russian
+
+    blockEvent1 = 0; // Leave veh
+
+    debugMode = 0; // 0 - players, 1 - devs
+
+    cinematics := false;
+    skip := false;
+
+
+    PrepareHeroes;
+    PrepareHeroesFromEpsilon;
+    PrepareRandoms;
+
+    PrepareLegion;
+    PrepareRussians;
+    PrepareAlliance;
+
+    PrepareDifficulty;
+
+    SetBName(RuDep2, 'zhukov');
+end;
+
+Every 0$1 trigger debugMode = 1 do
+var i;
+begin
+    enable;
+   // fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
+end;

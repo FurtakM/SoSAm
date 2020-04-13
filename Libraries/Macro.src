@@ -1,5 +1,5 @@
 // Macro Module [SoS] By Serpent
-// ver.  22.03.20
+// ver.  12.04.20
 
 Export skirmish, debug_mc;
 Export mc_bases, mc_building_need_repair, mc_building_repairs,
@@ -426,7 +426,7 @@ if not tmp then
 sol := UnitFilter(mc_bases[base], [f_or, [f_class, 1], [f_class, 5], [f_class, 8], [f_class, 9]]);
 eng := UnitFilter(mc_bases[base], [f_class, 2]);
 mech := UnitFilter(mc_bases[base], [f_class, 3]);
-sci := UnitFilter(mc_bases[base], [f_class, 4]);
+sci := UnitFilter(mc_bases[base], [[f_class, 4], [f_lives, 251]]);
 
 // case 4
 if mc_scan[base] then
@@ -1050,7 +1050,7 @@ for i = 1 to mc_bases do
     if tw then
        begin
        tw := tw[1];
-       weapon := GetTurretWeapon(tw);
+       weapon := GetTurretWeapon(tw, mc_scan_area[i]);
        
        if mc_allowed_tower_weapons[i] then
           if not weapon in mc_allowed_tower_weapons[i] then
