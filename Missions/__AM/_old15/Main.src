@@ -1,0 +1,135 @@
+// Ballada o Yurku Striatovie
+{
+Na komorach niesli, przez OWNeta, naprzeciw Sierpkom, naprzeciw MarcinomSzablom... Chlopcy GSowcy, pomscijcie druha! Yuri Striatov padl!
+Modderzy OWNetu, modderzy SoSa, idzcie do domu, skonczona walka, Discord sie dowiedzial, nic nie powiedzial.  Yuri Striatov padl!
+Nie placzcie Daniele, to nie na darmo, nad OWNetem sztarndar z czarna kokarda, za SAILa i SGUI i nowe OW !  Yuri Striatov padl!
+}
+
+// Mieciu Mod xD
+//mieciu: serpent robi mody kiedy jest turek ja robie pierogi a rafal gotuje zurek
+// mieciu: laboratorium to kuchnia w ktorej robie pierogi xD i musimy sie bronic przed dostawczakami nefka xD
+
+// Flashbecki ze Stalingradu
+// Moderator dymitr_sacharow: W rozpoczetej 22 czerwca 1941 roku wojnie z ZSRR, Manstein dowodzil� LVI Korpusem Pancernym.
+// Pierwszego dnia wojny jego oddzialy musialy pokonac 80 km i zdobyc wielki wiadukt drogowy nad dolina Dubissy pod Ejragoł Zadanie zostalo wykonane i po pokonaniu dalszych 240 km jego jednostki byly wkurwione bo ktos nie przypilnowal mostu na poludniu. @SoSCreator @Nefarem
+
+//Moderator Grzmihuj_ze_Sztutowa: "Zukow byl lepszy od Platonowa, a wy jesteście lepsi od Zukowa. Ale wszyscy jestescie produktami tej samej kobiety, a ta kobieta ciora sie ze wszystkimi na kazdej linii :D" ~ Gossudarow po udarze
+
+// Piosenka z dedykacja dla Serpenta ;D
+{
+Pracuje ciezko na wlasny rachunek
+Nie wzialem nigdy zasilku
+Nie zebram wcale o dotacje unijne
+Jednak fiskus dobija mnie
+Utrzymuje darmozjadow z urzedow Z ministerstw wszelakich tez
+Ale ledwo ciagne juz Jedyna nadzieja - dobrze wiesz
+
+Lo o! Libertaryat! 
+Tylko Libertaryat 
+Poprowadzi nas w o Wolnosc boj! 
+Lo o! Libertaryat! Tylko Libertaryat
+Poprowadzi nas w o Wlasnosc boj!
+
+II Obdarliscie mnie z polowy dochodu
+Potem w sklepie znowu tez 
+Na zabieg czekalem dlugie pol roku 
+W szpitalu zlapałem wredna wesz 
+
+Lo o! Libertaryat! 
+Tylko Libertaryat 
+Poprowadzi nas w o Wolnosc boj! 
+Lo o! Libertaryat! Tylko Libertaryat
+Poprowadzi nas w o Wlasnosc boj!
+
+Dobrobyt z powietrza nie bierze sie 
+Nie tworzy go panstwo ani Bog 
+Jedynie praca, ziemia, kapital i czas 
+Doprowadza do bogactwa mas! 
+Ci, co obiecuja za darmo dogodzic nam 
+Klamia, knuja aby napasc sie
+Oni najpierw obrabuja nas przez VAT
+By ochlapem przekupic cie!
+
+Lo o! Libertaryat! 
+Tylko Libertaryat 
+Poprowadzi nas w o Wolnosc boj! 
+Lo o! Libertaryat! Tylko Libertaryat
+Poprowadzi nas w o Wlasnosc boj!
+}
+
+Export Stevens, Baker, Gordon, Peter, DeltaDoctor, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornell, Gary, Frank, Kikuchi, Connie; // Am heroes
+Export Powell; // Am commander
+Export others13Omega; // others
+
+Export Burlak, burlakVeh;
+
+Export omegaHeroes;
+Export ruAttacksCounter;
+Export amSciStatus;
+
+Export russianTPUnits;
+
+Export escapeAvalaible;
+
+Export StevensStatus, BurlakStatus;
+Export unitLost;
+
+Export allUnitsLengh;
+
+Export mission_prefix;
+Export siberiteRocketStatus;
+
+Export JMMGirl;
+
+Export debugMode;
+
+Starting
+begin
+    Resetfog;
+    RandomizeAll;
+
+    ChangeSideFog(4, 1);
+
+    PrepareNature(4, 3, 3, 3, 2, 0, 0, natureArea, 0);
+
+    SetBName(amheaddepo, 'lambda');
+
+    StevensStatus = LoadVariable('13_StevensStatus_1', 0);
+    BurlakStatus = LoadVariable('13_BurlakStatus_1', 0);
+    JMMGirl = LoadVariable('14_JMMGirl_1', 0);
+
+    omegaHeroes = [];
+
+    russianTPUnits = [];
+
+    ruAttacksCounter = 0;
+    escapeAvalaible = 0;
+
+    allUnitsLengh = 0;
+
+    siberiteRocketStatus = 0;
+    unitLost = 0;
+
+    amSciStatus = 1;
+
+    mission_prefix = '15_';
+
+    debugMode = 0;
+
+    PlaceSeeing(1, 1, 1, -32972);
+    RemoveSeeing(1, 1, 1);
+
+    PrepareOmegaTeam;
+    SetDifficulty;
+end;
+
+Every 0$1 trigger debugMode = 1 do
+var i;
+begin
+    enable;
+    fogoff(true);
+    for i in FilterAllUnits([[f_side, 1], [f_type, unit_human]]) do SetLives(i, 1000);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 1, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 2, 9999);
+    for i in FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) do SetResourceType(GetBase(i), 3, 9999);
+end;
