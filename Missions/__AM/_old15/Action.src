@@ -1,0 +1,140 @@
+Every 1 do
+begin
+    InGameOn;
+    SetClass(Stevens, 4);
+    RevealFogArea(1, AmericanBaseArea);
+    CenterNowOnUnits([Gordon, Peter]);
+    Say(Peter, 'D1-Pet-1');
+    If IsOK(Stevens) then Say(Stevens, 'D1-Stev-1')
+    else Say(Baker, 'D1-Stev-1');
+    CenterOnXY(108, 140);
+    wait(0$2);
+    CenterNowOnUnits([Gordon, Peter]);
+    SayRadio(Powell, 'D1-Pow-1');
+    If IsOK(Stevens) then Say(Stevens, 'D1-Stev-2')
+    else Say(Baker, 'D1-Stev-2');
+    PrepareFirstAtacks;
+    CenterOnXY(108, 140);
+    wait(0$5);
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]) diff Peter, 'D1-Rand-1', '');
+    wait(0$3);
+    CenterNowOnUnits([Gordon, Peter]);
+    Say(Peter, 'D1-Pet-2');
+    If IsOK(Stevens) then Say(Stevens, 'D1-Stev-3')
+    else Say(Baker, 'D1-Stev-3');
+    Say(Peter, 'D1-Pet-3');
+    SetLives(FilterUnitsInArea(ObsBaseArea, [f_side, 1]), 150);
+    InGameOff;
+                  
+    if IsOk(Stevens) then
+       ChangeMissionObjectives('C1stev')
+    else
+       ChangeMissionObjectives('C1baker');
+end;
+
+Every 0$1 trigger EscapeAvalaible = 1 do
+begin
+enable;
+allUnitsLengh = TabLenght(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_ok]]));
+end;
+
+Every 0$10 trigger ruAttacksCounter = 3 and FilterAllUnits([[f_side, 3], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 do EscapeAvalaible = 1;
+
+// Teleport russian units near am siberite lab
+
+Every 0$1 trigger EscapeAvalaible = 1 do
+var i, tmp;
+begin
+
+     InGameOn;
+     SetAttitude(3, 1, att_friend, true);
+     PlaceSeeing(126, 17, 1, -8);
+     CenterNowOnUnits(amsiblab);
+     PrepareRussianTPUNits;
+     ChangeSideFog(3, 1);
+
+     wait(0$5);
+
+     tmp := FilterUnitsInArea(labHill, [[f_side, 1], [f_not, [f_type, unit_building]]]);
+
+     if tmp then
+        for i in tmp do
+            TeleportUnit(i, 143, 98, 10, true);
+
+     for i in russianTPUnits do TeleportUnit(i, 128, 19, 4, true);
+     wait(0$1);
+     ComTurnUnit(russianTPUnits, amsiblab);
+     SetSide(amsiblab, 3);
+     ComEnterUnit(UnitFilter(russianTPUnits, [f_class, 4]), amsiblab);
+
+     for i in FilterUnitsInArea(LabHill, [[f_type, unit_building]]) diff [amsiblab] do AddComAttackUnit(russianTPUnits, i);
+     wait(0$2);
+
+     If IsOK(Peter) then Say(Peter, 'D2-Pet-1')
+     else DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1]]), 'D2-Pet-1', '');
+
+    If IsOK(Stevens) then Say(Stevens, 'D2-Stev-1')
+    else Say(Baker, 'D2-Stev-1');
+
+    if IsOk(Peter) then
+    begin
+        Say(Peter, 'D2-Pet-2');
+    end else
+    begin
+        if IsOk(DeltaDoctor) then
+        begin
+            Say(DeltaDoctor, 'D2-Pet-2');
+        end
+        else
+        begin
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]), 'D2-Pet-2', '');
+        end;
+    end;
+
+    If IsOK(Stevens) then Say(Stevens, 'D2-Stev-2')
+    else Say(Baker, 'D2-Stev-2');
+
+    if IsOk(Peter) then
+    begin
+        Say(Peter, 'D2-Pet-3');
+    end else
+    begin
+        if IsOk(DeltaDoctor) then
+        begin
+            Say(DeltaDoctor, 'D2-Pet-3');
+        end
+        else
+        begin
+            DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]), 'D2-Pet-3', '');
+        end;
+    end;
+
+
+    ComExitBuilding(UnitsInside(amsiblab));
+
+    wait(0$2);
+
+    for i in russianTPUnits do TeleportUnit(i, 185, 175, 4, true);
+    wait(0$2);
+
+    SetLives(amsiblab, 0);
+    wait(0$2);
+
+    for i in russianTPUnits do RemoveUnit(i);
+
+    SetAttitude(3, 1, att_enemy, true);
+    ChangeSideFog(3, 3);
+
+    escapeAvalaible = 1;
+    
+
+    InGameOff;
+
+    ChangeMissionObjectives('C2');
+
+    SetAreaMapShow(EscapeArea, 1);
+
+end;
+
+
+
