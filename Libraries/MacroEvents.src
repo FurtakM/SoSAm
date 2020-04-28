@@ -9,7 +9,7 @@ for i = 1 to mc_bases do
     begin
     if sci in mc_bases[i] then
        begin
-       mc_ape := Add(mc_ape, [i, mc_ape[i]+1], ape);
+       mc_ape := ReplaceIn(mc_ape, [i, mc_ape[i]+1], ape);
 
        tmp := NearestUnitToUnit(UnitFilter(mc_bases[i], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]), ape);
 
@@ -92,7 +92,7 @@ for i = 1 to mc_bases do
        if mc_defender[i] < mc_defender_limit[i] and not GetWeapon(vehicle) in [ar_control_tower, ar_cargo_bay, ru_cargo_bay, ru_big_cargo_bay, us_cargo_bay, ar_radar, ru_radar, us_radar, ru_bulldozer, us_bulldozer, ar_bio_bomb, ar_selfpropelled_bomb, us_hack, us_crane, ru_crane, ru_siberium_rocket, us_siberium_rocket] then
            mc_defender := Replace(mc_defender, i, mc_defender[i]^vehicle)
        else
-          mc_vehicles := Add(mc_vehicles, [i, mc_vehicles[i]+1], vehicle);
+          mc_vehicles := ReplaceIn(mc_vehicles, [i, mc_vehicles[i]+1], vehicle);
 
        if not mc_scan[i] then
           begin
@@ -136,7 +136,7 @@ for i = 1 to mc_bases do
        for j in mc_crates_area[i] do
            if InArea(x, y, j) then
               begin
-              mc_crates := Add(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
+              mc_crates := ReplaceIn(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
               exit;
               end;
 
@@ -148,7 +148,7 @@ for i = 1 to mc_bases do
     for j in depot do
         if GetDistUnitXY(j, x, y) < 30 then
            begin
-           mc_crates := Add(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
+           mc_crates := ReplaceIn(mc_crates, [i, mc_crates[i]+1], [amount, x, y]);
            exit;
            end;
     end;
@@ -245,7 +245,7 @@ for i = 1 to mc_bases do
           if btype in [b_lab_half, b_lab_full] then
              btype := b_lab;
 
-          mc_build_list := Add(mc_build_list, [i, mc_build_list[i]+1], [btype, GetX(un), GetY(un), GetDir(un)]);
+          mc_build_list := ReplaceIn(mc_build_list, [i, mc_build_list[i]+1], [btype, GetX(un), GetY(un), GetDir(un)]);
 
           if pos = 1 then
              begin
@@ -305,7 +305,7 @@ for i = 1 to mc_bases do
           mc_lab_upgrade := Replace(mc_lab_upgrade, i, Reindex(mc_lab_upgrade[i], 1, mc_lab_upgrade[i], false));
 
        if not building in mc_bases[i] then
-          mc_bases := Add(mc_bases, [i, mc_bases[i]+1], building);
+          mc_bases := ReplaceIn(mc_bases, [i, mc_bases[i]+1], building);
        exit;
        end;
 
@@ -324,13 +324,13 @@ for i = 1 to mc_bases do
     if building in mc_construct_list[i] then
        begin
        mc_construct_list := Replace(mc_construct_list, i, mc_construct_list[i] diff building);
-       mc_bases := Add(mc_bases, [i, mc_bases[i]+1], building);
+       mc_bases := ReplaceIn(mc_bases, [i, mc_bases[i]+1], building);
        btype := GetBType(building);
        side := GetSide(building);
 
        if btype = b_lab then
           begin
-          mc_lab := Add(mc_lab, [i, mc_lab[i]+1], building);
+          mc_lab := ReplaceIn(mc_lab, [i, mc_lab[i]+1], building);
           exit;
           end;
 
@@ -346,17 +346,17 @@ for i = 1 to mc_bases do
              btype := b_factory;
 
           if GetRestrict(btype, side) = state_enabled then
-             mc_build_upgrade := Add(mc_build_upgrade, [i, mc_build_upgrade[i]+1], building);
+             mc_build_upgrade := ReplaceIn(mc_build_upgrade, [i, mc_build_upgrade[i]+1], building);
           exit;
           end;
 
        if btype in [b_bunker, b_turret] then
           begin
-          mc_turret_list := Add(mc_turret_list, [i, mc_turret_list[i]+1], building);
+          mc_turret_list := ReplaceIn(mc_turret_list, [i, mc_turret_list[i]+1], building);
 
           if btype = b_bunker then
              begin
-             mc_empty_turret_list := Add(mc_empty_turret_list, [i, mc_empty_turret_list[i]+1], building);
+             mc_empty_turret_list := ReplaceIn(mc_empty_turret_list, [i, mc_empty_turret_list[i]+1], building);
 
              // get soldier for tower
              tmp := UnitFilter(mc_bases[i], [[f_class, 1], [f_not, [f_inside]]]);
@@ -408,7 +408,7 @@ for i = 1 to mc_bases do
     if CompareArray([btype, x, y, d], mc_build_list[i][1]) then
        begin
        mc_build_list := Replace(mc_build_list, i, Delete(mc_build_list[i], 1));
-       mc_construct_list := Add(mc_construct_list, [i, mc_construct_list[i]+1], building);
+       mc_construct_list := ReplaceIn(mc_construct_list, [i, mc_construct_list[i]+1], building);
        exit;
        end;
 
@@ -425,7 +425,7 @@ for i = 1 to mc_bases do
     begin
     if building in mc_turret_list[i] and not building in mc_empty_turret_list[i] then
        begin
-       mc_empty_turret_list := Add(mc_empty_turret_list, [i, mc_empty_turret_list[i]+1], building);
+       mc_empty_turret_list := ReplaceIn(mc_empty_turret_list, [i, mc_empty_turret_list[i]+1], building);
        break;
        end;
     end;

@@ -55,7 +55,7 @@ begin
     for i in FilterAllUnits([f_side, 7]) do 
         If IsInArea(i, AllianceEscape) then
         begin
-            If i = Burlak or i = Masha then
+            if i = Burlak or i = Masha then
             begin
                 RemoveUnit(i);
                 DialogueOn;
@@ -66,10 +66,28 @@ begin
                 spawnBurlak = 0;
             end;
 
-            if GetWeapon(i) = 49 then SetLives(i, 1)
-            else RemoveUnit(i);
+            if GetType(i) = unit_vehicle and GetControl(i) = control_manual then
+               begin
 
-        end; 
+                    case IsDrivenBy(i) of
+                         Gnyevko: SaveVariable(1, '13_Gnyevko_1');
+                         Titov: SaveVariable(1, '13_Titov_1');
+                         Xavier: SaveVariable(1, '13_Xavier_1');
+                         Belkov: SaveVariable(1, '13_Belkov_1');
+                         Lipshchin: SaveVariable(1, '13_Lipshchin_1');
+                    end;
+
+               end;
+
+            if GetWeapon(i) = 49 then
+               DestroyUnit(i)
+            else 
+               RemoveUnit(i);
+
+        end;
+
+    if FilterAllUnits([[f_side, 7], [f_type, unit_human]]) = 0 then
+       disable;
 end;
 
 // Gorky fast escape

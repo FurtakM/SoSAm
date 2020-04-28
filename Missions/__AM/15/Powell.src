@@ -1,1 +1,36 @@
-//
+Export Powell;
+Export Function PreparePowell;
+var i, b, tmp, depot, lab, armoury, workshop;
+begin
+uc_side := 4;
+uc_nation := 1;
+
+Powell := NewCharacter('Powell');
+PlaceUnitXY(Powell, 57, 94, false);
+ComTurnXY(Powell, 58, 94);
+
+tmp := CreateCharacterSet('13s_others');
+
+if tmp < 14 then
+   for i = 1 to 14 - tmp do
+       begin
+       PrepareHuman(false, i mod 4 + 1, 8);
+       tmp := tmp ^ CreateHuman;
+       end;
+
+depot := FilterAllUnits([[f_side, 4], [f_btype, b_depot]])[1];
+lab := FilterAllUnits([[f_side, 4], [f_btype, b_lab]])[1];
+armoury := FilterAllUnits([[f_side, 4], [f_btype, b_armoury]])[1];
+workshop := FilterAllUnits([[f_side, 4], [f_btype, b_workshop]])[1];
+
+for i in tmp do
+    begin
+    b := [armoury, depot, workshop, lab][GetClass(i)];
+
+    if UnitsInside(b) < 6 then
+       PlaceHumanInUnit(i, b)
+    else
+       PlaceUnitXYR(i, 58, 91, 6, false);
+    end;
+
+End;
