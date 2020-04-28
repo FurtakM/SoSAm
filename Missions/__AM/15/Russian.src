@@ -1,1 +1,29 @@
-//
+Export Platonov, Kovalyuk;
+Export Function PrepareRussian;
+var i, base, tmp, side;
+begin
+side := 3;
+
+uc_side := side;
+uc_nation := 3;
+
+for i in FilterAllUnits([[f_side, side], [f_type, unit_building]]) do
+    SetBLevel(i, 10);
+
+Platonov := NewCharacter('Platonov');
+Kovalyuk := NewCharacter('Kovalyuk');
+
+PlaceHumanInUnit(Platonov, ru_depot);
+PlaceHumanInUnit(Kovalyuk, ru_fac1);
+
+// PrepareBase(base_dep, area, name, skill, sources, personel);
+PrepareBase(ru_depot, russianBaseArea, 'zhukov', [9, 10, 10][Difficulty], [3000, 1000, 300], [-1, 8, 13, 8]);
+
+base := GetBase(ru_depot2);
+
+SetResourceType(base, mat_cans, 600);
+SetResourceType(base, mat_oil, 200);
+SetResourceType(base, mat_siberit, 20);
+
+mc_bases := Replace(mc_bases, 2, FilterAllUnits([[f_side, side], [f_not, [f_type, unit_vehicle]]]) diff [Platonov, Kovalyuk]);
+End;

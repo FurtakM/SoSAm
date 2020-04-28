@@ -2,7 +2,18 @@
 // Serpent
 Starting
 begin
+ResetFog;
 
+InitVariables;
+InitMacro;
+
+PrepareAlliance;
+PrepareRussian;
+PrepareLegion;
+PreparePowell;
+PrepareAmerican;
+
+MC_Start();
 End;
 
 {
@@ -56,8 +67,26 @@ End;
   8 - Legion
 }
 
+Export debug;
+Export KappaStatus, KurtStatus, JMMVeh, JMMGirlVeh, JMMGirlStatus, JMMGirl, KhatamStatus, BurlakStatus, StevensStatus;
+Export Function InitVariables;
+begin
+debug := true;
+KappaStatus := LoadVariable('14_KappaStatus_1', 0); // 0 - destroyed, 1 - survived
+KurtStatus := LoadVariable('06_KurtStatus_1', 0); // 1 - Kurt alive
+JMMVeh = LoadVariable('14_JMMVeh_1', []);
+JMMGirlVeh = LoadVariable('14_JMMGirlVeh_1', []);
+JMMGirl = LoadVariable('14_JMMGirl_1', 3);  // 0 - non, 1 - Joan, 2 - Lisa, 3 - Connie
+JMMGirlStatus = LoadVariable('14_JMMGirlStatus_1', 0); // 0 - dead, 1 - alive
+KhatamStatus = LoadVariable('10_KhatamStatus_1', 0); // 0 - dead, 1 - alive
+BurlakStatus = LoadVariable('13_BurlakStatus_1', 0); // 0 - alive, 1 - killed by jmm
+StevensStatus = LoadVariable('13_StevensStatus_1', 0); // 0 - dead, 1 - alive
+End;
+
 Export Function CustomInitMacro();
 begin
+mc_parking := [ allianceParkingArea, russianParkingArea, legionParkingArea ];
+mc_scan_area := [ allianceBaseArea, russianBaseArea, legionBaseArea ];
 
-
+mc_ape := Replace(mc_ape, 3, FilterAllUnits([[f_side, 8], [f_class, class_apeman_soldier]]));
 End;

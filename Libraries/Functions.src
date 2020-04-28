@@ -709,14 +709,6 @@ list := Replace(list, pos2, i);
 result := list;
 End;
 
-// alias for ReplaceIn
-Export Function Add(list, pos, val);
-begin
-result := ReplaceIn(list, pos, val)
-End;
-
-
-
 Export Function SortByDistanceUnit(unit, list, asc, mode);
 begin
 result := SortByDistanceXY(GetX(unit), GetY(unit), list, asc, mode);
@@ -1072,6 +1064,11 @@ uc_nation := nation;
 
 if buildings then
    begin
+   tmp := UnitFilter(buildings, [f_or, [f_btype, b_oil_mine], [f_btype, b_siberite_mine]]);
+
+   if tmp then
+      for i in tmp do
+          SetResourceVisibility(GetX(i), GetY(i), side);
 
    if UnitFilter(buildings, [f_or, [f_btype, b_bunker], [f_btype, b_turret]]) then
       begin
@@ -1089,7 +1086,7 @@ if buildings then
           break;
 
        case i of
-       1: f := UnitFilter(buildings, [[f_side, side], [f_or, [f_btype, b_bunker], [f_btype, b_armoury], [f_btype, b_barracks]]]);
+       1: f := UnitFilter(buildings, [[f_side, side], [f_empty], [f_or, [f_btype, b_bunker], [f_btype, b_armoury], [f_btype, b_barracks]]]);
        2: f := UnitFilter(buildings, [[f_side, side], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
        3: f := UnitFilter(buildings, [[f_side, side], [f_or, [f_btype, b_workshop], [f_btype, b_factory]]]);
        4: f := UnitFilter(buildings, [[f_side, side], [f_or, [f_btype, b_lab], [f_btype, b_lab_half], [f_btype, b_lab_full]]]);
@@ -1414,7 +1411,10 @@ for i = 1 to hexes do
     begin
     tmp := HexInfo(hexes[i][1], hexes[i][2]);
 
-    if not tmp or GetType(tmp) = unit_building then
+    if IsEnvironment(hexes[i][1], hexes[i][2]) or not ValidHex(hexes[i][1], hexes[i][2]) or GetType(tmp) = unit_building then
+       exit;
+
+    if not tmp then
        continue;
 
     result := true;
@@ -1458,7 +1458,7 @@ End;
   1: Can be build
 }
 Export Function CanBeBuilded(bdepot, btype, x, y, d);
-var i, j, pom, cost, hexes, height, dist, hex;
+var i, j, side, pom, cost, hexes, height, dist, hex;
 begin
 result := false;
 
@@ -1474,7 +1474,7 @@ if not (GetResourceType(pom, mat_cans) >= cost[1] and
    exit;
 
 //    MAX_DISTANCE 28 (26 in vanilla)
-//    MAX_DISTANCE_BONUS 8
+//    MAX_DISTANCE_BONUS 12
 
 if GetBType(bdepot) = b_depot then
    dist := 28
@@ -1499,24 +1499,26 @@ height := hex[2];
 for i = 1 to hexes do
     begin
 
-    if not ValidHex(hexes[i][1], hexes[i][2]) then
-       continue;
+    if not ValidHex(hexes[i][1], hexes[i][2]) or
+       HexInfo(hexes[i][1], hexes[i][2]) > 0 or
+       IsEnvironment(hexes[i][1], hexes[i][2]) then
+       exit;
 
     j := GetHexInfo(hexes[i][1], hexes[i][2]);
 
     if j[1] or j[2] > height+2 or j[2] < height-2 or
        not j[3] in [0, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21] or
-       not j[5] or not j[6] in [1, 2, 7, 9, 10, 11] or
-       HexInfo(hexes[i][1], hexes[i][2]) > 0 or
-       IsEnvironment(hexes[i][1], hexes[i][2]) then
+       not j[5] or not j[6] in [1, 2, 7, 9, 10, 11] then
        exit;
 
     end;
 
-if DangerAtRangeXY(GetSide(bdepot), x, y, 20)[4] then
+side := GetSide(bdepot);
+
+if DangerAtRangeXY(side, x, y, 20)[4] then
    exit;
 
-if btype in [b_oil_mine, b_siberite_mine] and not GetResourceVisibility(x, y, GetSide(bdepot)) then
+if btype in [b_oil_mine, b_siberite_mine] and not GetResourceVisibility(x, y, side) then
    exit;
 
 result := true;

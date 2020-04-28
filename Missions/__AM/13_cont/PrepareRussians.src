@@ -21,7 +21,7 @@ end;
 
 
 Export function BurlakArmy;
-var i, veh;
+var i, veh, tmp;
 begin
     uc_side = 7;
     uc_nation = 3;
@@ -43,22 +43,28 @@ begin
         PlaceUnitArea(veh, GorkySpawn, false);
     end;
 
-    PlaceHumanInUnit(Gnyevko, FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Titov, FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Xavier, FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Belkov, FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_empty]])[1]);
-    PlaceHumanInUnit(Lipshchin, FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_empty]])[1]);
+    tmp := FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_empty]]);
+
+    PlaceHumanInUnit(Gnyevko, tmp[1]);
+    PlaceHumanInUnit(Titov, tmp[2]);
+    PlaceHumanInUnit(Xavier, tmp[3]);
+    PlaceHumanInUnit(Belkov, tmp[4]);
+    PlaceHumanInUnit(Lipshchin, tmp[5]);
 
     SetClass(Gnyevko, 3);
     SetClass([Titov, Lipshchin], 9);
 
-    ComAgressiveMove(FilterAllUnits([[f_side, 7], [f_type, unit_vehicle]]), 107, 118);
+    tmp := FilterAllUnits([[f_side, 7], [f_type, unit_vehicle]]);
+    ComAgressiveMove(tmp, 107, 118);
 
     repeat
-          wait(0$1);
-          ComMoveUnit(FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_weapon, 49]]), Masha);
+     wait(0$1);
+     ComMoveUnit(UnitFilter(tmp, [f_weapon, 49]), Masha);
+    until UnitFilter(tmp, [f_weapon, 49]) = 0 or IsDying(Masha);
 
-    until FilterAllUnits([[f_side, 7], [f_type, unit_vehicle], [f_weapon, 49]]) = 0 or IsDying(Masha);
-
-    ComAgressiveMove(FilterAllUnits([[f_side, 7], [f_type, unit_vehicle]]), 107, 118);
+    repeat
+     wait(0$1);
+     tmp := FilterAllUnits([f_side, 7]);
+     ComAgressiveMove(tmp, 107, 118);
+    until not tmp;
 end;
