@@ -1,4 +1,5 @@
 Export Powell;
+Export vip;
 Export Function PreparePowell;
 var i, b, tmp, depot, lab, armoury, workshop;
 begin
@@ -9,10 +10,78 @@ Powell := NewCharacter('Powell');
 PlaceUnitXY(Powell, 57, 94, false);
 ComTurnXY(Powell, 58, 94);
 
-tmp := CreateCharacterSet('13s_others');
+vip := [];
+tmp := [];
 
-if tmp < 14 then
-   for i = 1 to 14 - tmp do
+// Lisa, Donaldson, Bobby, Cyrus, Denis,
+// Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi;
+
+if JMMGirl <> 2 then
+   Lisa := PrepareUnit('Lisa', (not debug), '13s_');
+
+if Lisa then
+   tmp := tmp ^ Lisa;
+
+Donaldson := PrepareUnit('Donaldson', (not debug), '13s_');
+
+if Donaldson then
+   tmp := tmp ^ Donaldson;
+
+Bobby := PrepareUnit('Bobby', (not debug), '13s_');
+
+if Bobby then
+   tmp := tmp ^ Bobby;
+
+Cyrus := PrepareUnit('Cyrus', (not debug), '13s_');
+
+if Cyrus then
+   tmp := tmp ^ Cyrus;
+
+Denis := PrepareUnit('Denis', (not debug), '13s_');
+
+if Denis then
+   tmp := tmp ^ Denis;
+
+Brown := PrepareUnit('Brown', (not debug), '13s_');
+
+if Brown then
+   tmp := tmp ^ Brown;
+
+Gladstone := PrepareUnit('Gladstone', (not debug), '13s_');
+
+if Gladstone then
+   tmp := tmp ^ Gladstone;
+
+Houten := PrepareUnit('Houten', (not debug), '13s_');
+
+if Houten then
+   tmp := tmp ^ Houten;
+
+Cornel := PrepareUnit('Cornel', (not debug), '13s_');
+
+if Cornel then
+   tmp := tmp ^ Cornel;
+
+Gary := PrepareUnit('Gary', (not debug), '13s_');
+
+if Gary then
+   tmp := tmp ^ Gary;
+
+Frank := PrepareUnit('Frank', (not debug), '13s_');
+
+if Frank then
+   tmp := tmp ^ Frank;
+
+Kikuchi := PrepareUnit('Kikuchi', (not debug), '13s_');
+
+if Kikuchi then
+   tmp := tmp ^ Kikuchi;
+
+vip := tmp;
+tmp := tmp union CreateCharacterSet('13s_others');
+
+if tmp < 20 then
+   for i = 1 to 20 - tmp do
        begin
        PrepareHuman(false, i mod 4 + 1, 8);
        tmp := tmp ^ CreateHuman;

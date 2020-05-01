@@ -1,4 +1,5 @@
 Export function PrepareAmericanHeroes;
+var tmp, i;
 begin
     uc_side = 1;
 
@@ -68,6 +69,20 @@ begin
     begin
             PrepareAmericansRandom(PlayerSpawn, 0, 1, 0);
     end;
+
+    // one men
+    tmp := UnitFilter(others11, [f_sex, 1]);
+
+    if not tmp then
+       begin
+       PrepareSoldier(sex_male, 8);
+       PlaceUnitArea(CreateHuman, PlayerSpawn, false);
+       end
+    else
+       begin
+       PlaceUnitArea(tmp[1], PlayerSpawn, false);
+       others11 := others11 diff tmp[1];
+       end;
 
     Powell = PrepareUnit('Powell', false);
 end;

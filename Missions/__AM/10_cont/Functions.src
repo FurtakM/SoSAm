@@ -79,10 +79,15 @@ end;
 // AI functions
 
 Export function BuildRussianBase(position);
-var i, engineers, buildingsTab, area;
+var i, engineers, buildingsTab, area, sources;
 begin
 
 // 1 - west , 2 - middle, 3 - east
+
+   sources := [ [43,68], [43,79], [99,114], [103,114], [156,92], [152,85] ];
+
+   for i in sources do
+       SetResourceVisibility(i[1], i[2], 3);
 
    case position of
    1: area := westConv;
