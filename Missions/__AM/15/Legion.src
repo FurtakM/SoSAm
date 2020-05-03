@@ -1,4 +1,5 @@
 Export Kurt, Kozlov;
+Export powellBomb;
 Export Function PrepareLegion;
 var i, side, un, tmp;
 begin
@@ -50,4 +51,10 @@ if tmp then
 PrepareBase(ar_depot1, legionBaseArea, '', [8, 9, 10][Difficulty], [3000, 500, 150], [16, 6, 6, 8]);
 
 mc_bases := Replace(mc_bases, 3, FilterAllUnits([[f_side, side], [f_nation, 2], [f_not, [f_type, unit_vehicle]]]) diff Kurt);
+
+
+// bomb for Powell
+PrepareVehicle(ar_half_tracked, engine_siberite, control_manual, ar_selfpropelled_bomb, 100);
+powellBomb := CreateVehicle;
+PlaceUnitXY(powellBomb, 90, 51, false);
 End;

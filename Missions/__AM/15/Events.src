@@ -1,3 +1,8 @@
+Export Function CustomEvent(event);
+begin
+
+End;
+
 On UnitDestroyed(un) do
 begin
 MCE_UnitDestroyed(un);
@@ -55,6 +60,12 @@ End;
 
 On EvacuateVehicle(driver, abandoned_vehicle, unknown1, unknown2) do
 begin
+if GetSide(driver) = 4 and driver in powellSquadAttack[1] and powellAllowRetreat then
+   begin
+   ComMoveXY(driver, 61, 93);
+   exit;
+   end;
+
 MCE_EvacuateVehicle(driver, abandoned_vehicle, unknown1, unknown2);
 End;
 

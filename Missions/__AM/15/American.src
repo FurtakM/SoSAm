@@ -1,5 +1,52 @@
 Export JMM, Joan, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie;
+Export JMMNewVeh, GirlNewVeh;
 Export Function PrepareAmerican;
 begin
-JMM := PrepareUnit('JMM', (not debug), '');
+uc_side := 1;
+uc_nation := 1;
+
+JMM := PrepareUnit('JMM', (not debug), '14_');
+
+if not JMMVeh then
+   PrepareVehicle(us_medium_tracked, engine_siberite, control_manual, us_double_gun, 100)
+else
+   PrepareVehicle(JMMVeh[1][1], JMMVeh[2][1], JMMVeh[3][1], JMMVeh[4][1], 30);
+
+JMMNewVeh := CreateVehicle;
+
+SetDir(JMMNewVeh, 4);
+PlaceUnitXY(JMMNewVeh, 75, 92, false);
+PlaceHumanInUnit(JMM, JMMNewVeh);
+
+if JMMGirl and not KappaStatus then
+   begin
+   if not JMMGirlVeh then
+      PrepareVehicle(us_medium_tracked, engine_siberite, control_manual, us_laser, 100)
+   else
+      PrepareVehicle(JMMGirlVeh[1][1], JMMGirlVeh[2][1], JMMGirlVeh[3][1], JMMGirlVeh[4][1], 30);
+
+   GirlNewVeh := CreateVehicle;
+
+   SetDir(GirlNewVeh, 4);
+   PlaceUnitXY(GirlNewVeh, 82, 96, false);
+
+   if JMMGirl = 1 then
+      begin
+      Joan = PrepareUnit('Joan', true, '14_');
+      PlaceHumanInUnit(Joan, GirlNewVeh);
+      end;
+
+   if JMMGirl = 2 then
+      begin
+      Lisa = PrepareUnit('Lisa', true, '14_');
+      PlaceHumanInUnit(Lisa, GirlNewVeh);
+      end;
+
+   if JMMGirl = 3 then
+      begin
+      Connie = PrepareUnit('Connie', true, '14_');
+      PlaceHumanInUnit(Connie, GirlNewVeh);
+      end;
+   end;
+
 End;

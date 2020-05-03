@@ -1,0 +1,19 @@
+// Crates module
+Every 0$30 trigger missionStage = 2 do
+var time;
+begin
+time := 0$10;
+
+repeat
+ wait(time);
+ CreateCratesXYR(rand(1,5), 106, 150, 19, true);
+ time := time + 0$9;
+
+ wait(rand(0$3, 0$11));
+
+ if Prob(50) then
+    CreateCratesXYR(rand(1,5), 62, 108, 10, true);
+
+until missionStage > 2;
+
+End;

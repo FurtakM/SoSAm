@@ -2,7 +2,7 @@
 Export Function MCE_ApemanTamed(ape, sci);
 var i, tmp;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 for i = 1 to mc_bases do
@@ -24,7 +24,7 @@ End;
 Export Function MCE_EnterBuilding(building, unit);
 var i, tmp;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 for i = 1 to mc_bases do
@@ -41,7 +41,7 @@ End;
 Export Function MCE_BuildingCaptured(building, side, capturning_unit);
 var i, tmp;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 for i = 1 to mc_bases do
@@ -64,7 +64,7 @@ Export Function MCE_VehicleCaptured(new, old, side, capturing_unit);
 var i, tmp;
 begin
 
-if not mc_bases or not side in mc_sides then
+if not mc_bases or not skirmish or not side in mc_sides then
    exit;
 
 for i = 1 to mc_vehicles do
@@ -80,7 +80,7 @@ End;
 Export Function MCE_VehicleConstructed(vehicle, factory);
 var i, side, tmp;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 side := GetSide(vehicle);
@@ -120,7 +120,7 @@ End;
 Export Function MCE_CrateSpawn(id, x, y, amount, mode);
 var i, j, depot;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 repeat
@@ -157,6 +157,9 @@ End;
 Export Function MCE_ResearchComplete(tech, lab);
 var side, i, tmp;
 begin
+if not mc_bases or not skirmish then
+   exit;
+
 side := GetSide(lab);
 
 if not side in mc_sides or not mc_tech or not mc_bases then
@@ -191,7 +194,7 @@ Export Function MCE_UnitDestroyed(un);
 var i, j, btype, pos, tmp, fac, components;
 begin
 
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 for i = 1 to mc_bases do
@@ -291,7 +294,7 @@ End;
 Export Function MCE_UpgradeComplete(building);
 var i, j;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 for i = 1 to mc_bases do
@@ -315,7 +318,7 @@ End;
 Export Function MCE_BuildingComplete(building);
 var i, j, btype, tmp, units, side;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 for i = 1 to mc_bases do
@@ -391,7 +394,7 @@ End;
 Export Function MCE_BuildingStarted(building, builder);
 var i, j, btype, x, y, d;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 btype := GetBType(building);
@@ -418,7 +421,7 @@ End;
 Export Function MCE_LeaveBuilding(building, unit);
 var i, tmp;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 for i = 1 to mc_bases do
@@ -438,7 +441,7 @@ End;
 Export Function MCE_EvacuateVehicle(driver, abandoned_vehicle, unknown1, unknown2);
 var i;
 begin
-if not mc_bases then
+if not mc_bases or not skirmish then
    exit;
 
 if GetLives(abandoned_vehicle) > 250 then
