@@ -20,6 +20,13 @@ End;
 
 On BuildingComplete(building) do
 begin
+if building in FilterAllUnits([[f_side, 8], [f_btype, b_workshop], [f_nation, 3]]) then
+   begin
+   ComUpgrade(building);
+   ComComplete(Kozlov, building);
+   exit;
+   end;
+
 MCE_BuildingComplete(building);
 End;
 

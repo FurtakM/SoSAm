@@ -7,8 +7,8 @@ ResetFog;
 InitVariables;
 InitMacro;
 
-//if debug then
-   //FogOff(1);
+if debug then
+   FogOff(1);
 
 PrepareAlliance;
 PrepareRussian;
@@ -74,7 +74,8 @@ End;
 }
 
 Export debug;
-Export KappaStatus, KurtStatus, JMMVeh, JMMGirlVeh, JMMGirlStatus, JMMGirl, KhatamStatus, BurlakStatus, StevensStatus, FastEnd;
+Export KappaStatus, KurtStatus, JMMVeh, JMMGirlVeh, JMMGirlStatus, JMMGirl,
+       KhatamStatus, BurlakStatus, StevensStatus, FastEnd, FakeInfo;
 Export missionStart, missionTime, missionStage, activeAttacks, powellAnger,
        powellSquadAttack, powellAllowRetreat, powellCenterCameraMode;
 Export Function InitVariables;
@@ -89,7 +90,7 @@ powellAllowRetreat := true;
 powellCenterCameraMode := false;
 powellSquadAttack := [ [], [] ];
 KappaStatus := LoadVariable('14_KappaStatus_1', 0); // 0 - destroyed, 1 - survived
-KurtStatus := LoadVariable('06_KurtStatus_1', 0); // 1 - Kurt alive
+KurtStatus := LoadVariable('06_KurtStatus_1', 0); // 1 - Kurt alive (friendly), 2 - Kurt alive (enemy)
 JMMVeh = LoadVariable('14_JMMVeh_1', 0);
 JMMGirlVeh = LoadVariable('14_JMMGirlVeh_1', 0);
 JMMGirl = LoadVariable('14_JMMGirl_1', 0);  // 0 - non, 1 - Joan, 2 - Lisa, 3 - Connie
@@ -98,12 +99,17 @@ KhatamStatus = LoadVariable('10_KhatamStatus_1', 0); // 0 - dead, 1 - alive
 BurlakStatus = LoadVariable('13_BurlakStatus_1', 0); // 0 - alive, 1 - killed by jmm
 StevensStatus = LoadVariable('13_StevensStatus_1', 0); // 0 - dead, 1 - alive
 FastEnd := LoadVariable('14_FastEnd_1', 0); // 0 - normal end, 1 - fast end
+FakeInfo := LoadVariable('12_MainDepositFake_1', 0); // 1 - fake info in 12
 End;
 
 Export Function CustomInitMacro();
 begin
 mc_parking := [ allianceParkingArea, russianParkingArea, legionParkingArea, powellParking ];
 mc_scan_area := [ allianceBaseArea, russianBaseArea, legionBaseArea, powellBase ];
+
+MC_SetLabKind(1, [b_lab_weapon, b_lab_siberium, b_lab_computer]);
+MC_SetLabKind(2, [b_lab_weapon, b_lab_siberium, b_lab_computer, b_lab_spacetime]);
+MC_SetLabKind(3, [b_lab_weapon, b_lab_siberium, b_lab_biological, b_lab_opto]);
 
 mc_ape := Replace(mc_ape, 3, FilterAllUnits([[f_side, 8], [f_class, class_apeman_soldier]]));
 

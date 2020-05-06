@@ -929,12 +929,35 @@ for i in GetTechNation(4, 1, 2) do
 
 missionStart := 0$00;
 missionStage := 6;
+activeAttacks := true;
 
 ChangeMissionObjectives('M2');
 
 SaveForQuickRestart;
+
+wait(0$40);
+
+DialogueOn;
+SayRadio(Friend, 'D7-Friend-1');
+Say(JMM, 'D7-JMM-1');
+SayRadio(Friend, 'D7-Friend-2');
+Say(JMM, 'D7-JMM-2');
+SayRadio(Friend, 'D7-Friend-3');
+Say(JMM, 'D7-JMM-3');
+SayRadio(Friend, 'D7-Friend-4');
+Say(JMM, 'D7-JMM-4');
+SayRadio(Friend, 'D7-Friend-5');
+Say(JMM, 'D7-JMM-5');
+SayRadio(Friend, 'D7-Friend-6');
+Say(JMM, 'D7-JMM-6');
+DialogueOff;
+
+ChangeMissionObjectives('Mlegion');
+
+RebuildKozlovFactory;
 End;
 
+// Powell camera mode
 Every 0$2 trigger powellCenterCameraMode and IsLive(Powell) do
 begin
 enable;
@@ -943,4 +966,29 @@ if IsInUnit(Powell) then
    CenterOnUnits(IsInUnit(Powell))
 else
    CenterOnUnits(Powell);
+End;
+
+// Legion send bomb
+Every 0$3 trigger FilterAllUnits([[f_side, 8], [f_weapon, ru_siberium_rocket]]) do
+var bomb, target;
+begin
+bomb := FilterAllUnits([[f_side, 8], [f_weapon, ru_siberium_rocket]])[1];
+
+if FakeInfo or KurtStatus in [0, 2] then
+   target := [68, 108, 1] // JMM is target
+else
+   target := [181, 88, 2]; // Motherlode
+
+if not target then
+   exit;
+
+ComAttackPlace(IsInUnit(bomb), target[1], target[2]);
+
+if target[3] = 1 then
+   SayRadio(Kurt, 'D12-Kurt-1')
+else
+   begin
+   SayRadio(Kurt, 'D12a-Kurt-1');
+   SayRadio(Roth, 'D12a-Roth-1');
+   end;
 End;

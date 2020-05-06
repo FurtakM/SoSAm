@@ -1,4 +1,4 @@
-Export Kurt, Kozlov;
+Export Kurt, Kozlov, Friend;
 Export powellBomb;
 Export Function PrepareLegion;
 var i, side, un, tmp;
@@ -52,9 +52,72 @@ PrepareBase(ar_depot1, legionBaseArea, '', [8, 9, 10][Difficulty], [3000, 500, 1
 
 mc_bases := Replace(mc_bases, 3, FilterAllUnits([[f_side, side], [f_nation, 2], [f_not, [f_type, unit_vehicle]]]) diff Kurt);
 
+// friend
+PrepareMechanic(sex_male, 7);
+Friend := CreateHuman;
 
 // bomb for Powell
 PrepareVehicle(ar_half_tracked, engine_siberite, control_manual, ar_selfpropelled_bomb, 100);
 powellBomb := CreateVehicle;
 PlaceUnitXY(powellBomb, 90, 51, false);
+End;
+
+Export Function RebuildKozlovFactory;
+var fac, lab;
+begin
+if IsLive(kozlov_fac) then
+   exit;
+
+ComExitBuilding(Kozlov);
+
+if GetClass(Kozlov) <> 2 then
+   begin
+   AddComEnterUnit(Kozlov, ar_depot1);
+   AddComChangeProfession(Kozlov, class_engineer);
+   AddComExitBuilding(Kozlov);
+   end;
+
+AddComBuild(Kozlov, b_workshop, 93, 32, 3);
+
+repeat
+ wait(0$1);
+until FilterAllUnits([[f_side, 8], [f_btype, b_factory], [f_nation, 3], [f_constructed]]);
+
+fac := FilterAllUnits([[f_side, 8], [f_btype, b_factory], [f_nation, 3], [f_constructed]])[1];
+
+if not FilterAllUnits([[f_side, 8], [f_nation, 3], [f_btype, b_ext_siberium]]) then
+   begin
+   AddComBuild(Kozlov, b_ext_siberium, 97, 36, 5);
+   repeat
+    wait(0$1);
+   until FilterAllUnits([[f_side, 8], [f_nation, 3], [f_btype, b_ext_siberium], [f_constructed]]);
+   end;
+
+if not FilterAllUnits([[f_side, 8], [f_nation, 3], [f_btype, b_ext_rocket]]) then
+   begin
+   AddComBuild(Kozlov, b_ext_rocket, 89, 32, 1);
+   repeat
+    wait(0$1);
+   until FilterAllUnits([[f_side, 8], [f_nation, 3], [f_btype, b_ext_rocket], [f_constructed]]);
+   end;
+
+lab := kozlov_lab;
+
+if not lab then
+   exit; // wtf?
+
+AddComEnterUnit(Kozlov, lab[1]);
+AddComChangeProfession(Kozlov, 4);
+
+ComResearch(lab[1], tech_sibFiss);
+
+repeat
+ wait(0$1);
+until GetTech(tech_sibFiss, 8) = state_researched;
+
+ComExitBuilding(Kozlov);
+AddComEnterUnit(Kozlov, fac);
+AddComChangeProfession(Kozlov, 3);
+
+ComConstruct(fac, ru_heavy_wheeled, engine_siberite, control_manual, ru_siberium_rocket);
 End;

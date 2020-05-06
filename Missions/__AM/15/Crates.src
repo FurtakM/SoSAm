@@ -16,4 +16,38 @@ repeat
 
 until missionStage > 2;
 
+repeat
+ wait(0$1);
+until missionStage = 6;
+
+time := 0$20;
+
+repeat
+ wait(time);
+ CreateCratesXYR(rand(1,5), 106, 89, 40, true);
+ time := time + 0$3;
+
+ if Prob(30) then
+    begin
+    wait(rand(0$5, 0$11));
+    CreateCratesXYR(rand(1,5), 21, 26, 12, true);
+    end;
+
+ if Prob(50) then
+    begin
+    wait(rand(0$10, 0$20));
+    CreateCratesXYR(rand(1,5), 181, 218, 16, true);
+    end;
+
+ if Prob(45) then
+    begin
+    wait(rand(0$15, 0$25));
+    CreateCratesXYR(rand(1,5), 103, 140, 20, true);
+    end;
+
+  if time > 3$20 then
+     time := 0$40;
+
+until false;
+
 End;
