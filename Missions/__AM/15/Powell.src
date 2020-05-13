@@ -43,6 +43,9 @@ if Cyrus then
 
 Denis := PrepareUnit('Denis', (not debug), '13s_');
 
+if not Denis then
+   Denis := PrepareUnit('Denis', (not debug), '13f_');
+
 if Denis then
    tmp := tmp ^ Denis;
 
@@ -87,7 +90,7 @@ tmp := tmp union CreateCharacterSet('13s_others');
 if tmp < 20 then
    for i = 1 to 20 - tmp do
        begin
-       PrepareHuman(false, i mod 4 + 1, 8);
+       PrepareHuman(sex_male, i mod 4 + 1, 5);
        tmp := tmp ^ CreateHuman;
        end;
 

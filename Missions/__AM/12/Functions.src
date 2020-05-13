@@ -19,20 +19,17 @@ end;
 
 
 Export function DialogRandom(characters, dialogMID, dialogFID);
-var i, rnd;
+var i, speaker;
 begin
 characters := characters diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Kikuchi, Houten, Gary, Denis, Gladstone, Cornel, Powell];
+speaker := characters[rand(1, characters)];
 
-    rnd = rand(1, characters);  
+if GetSex(speaker) = sex_male then
+   Say(speaker, dialogMID)
+else
+   Say(speaker, dialogFID);
 
-    for i = 1 to characters do
-    begin
-
-       if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
-       if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
-
-    end;
-  
+result := speaker;
 end;
 
 Export function PrepareDifficulty;
@@ -248,8 +245,10 @@ begin
         if russianTimeLapsers > 0 then
             for j in UnitFilter(russianTimeLapsers, [f_not, [f_hastask]]) do
             begin
-                nearUnit := NearestUnitToUnit(FilterAllUnits([[f_enemy, side], [f_see, 1], [f_type, unit_human]]), j);
-                ComMoveXY(j, GetX(nearUnit), GetY(nearUnit));
+                nearUnit := NearestUnitToUnit(FilterAllUnits([f_enemy, side]), j);
+
+                if nearUnit then
+                   ComMoveUnit(j, nearUnit);
             end; 
 
     until russianTimeLapsers = 0;  

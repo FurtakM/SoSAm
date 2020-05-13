@@ -68,6 +68,8 @@ begin
             AddComTimeShift(bazook_list, 96, 85);
             AddComTimeShift(bazook_list, 96, 85);
 
+            wait(0$2);
+
             Say(JMM, 'D1a-JMM-1');
             Say(Donaldson, 'D1a-Don-1');
 
@@ -137,6 +139,17 @@ begin
     Say(JMM, 'DC2-JMM-1');
     SayRadio(Powell, 'DC2-Pow-1');
     DialogueOff;
+
+    wait(3$00);
+
+    repeat
+     wait(0$1);
+    until FilterAllUnits([[f_side, 1], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]) and not FilterUnitsInArea(OutsideArea1, [f_side, 3]);
+
+    wait(0$10);
+
+    Legion;
+
     wait(6$0);
     PowellSupport3;
     DialogueOn;
@@ -146,8 +159,8 @@ begin
 end;
 
 // Kurt
-Every 7$30 trigger secondPass = 2 and FilterAllUnits([[f_side, 1], [f_or, [f_btype, 0], [f_btype, 1]]]) > 0 do
-var i, dec1, dec2, tmp, tmp2, crates, oil, siberite;
+Export Function Legion;
+var i, dec1, dec2, tmp, tmp2, tmp3, crates, oil, siberite, cr, sb;
 begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
@@ -179,8 +192,10 @@ begin
         Say(Kurt, 'D3-Kurt-5');
         Say(Kurt, 'D3-Kurt-5a');
         
-        if crates >= 60 and siberite >= 60 then dec1 = SelectiveQuery('Q2K', [1, 2, 3, 4])
-        else dec1 = SelectiveQuery('Q2K', [3, 4]);
+        if crates >= 60 and siberite >= 60 then
+           dec1 = SelectiveQuery('Q2K', [1, 2, 3, 4])
+        else
+           dec1 = SelectiveQuery('Q2K', [3, 4]);
 
         if dec1 = 1 then
         begin
@@ -190,35 +205,49 @@ begin
         end;
 
         if dec1 = 2 then
-        begin
-            Say(JMM, 'D3Kb-JMM-1');
-            Say(Kurt, 'D3Kb-Kurt-1');
+           begin
+           Say(JMM, 'D3Kb-JMM-1');
+           Say(Kurt, 'D3Kb-Kurt-1');
 
-            for i in tmp do
-            begin
-                tmp2 = GetResourceType(GetBase(i), 1);
-                if tmp2 >= 60 then
-                begin
-                    SetResourceType(GetBase(i), 1, tmp2 - 60);
-                    break;
-                end else begin
-                    SetResourceType(GetBase(i), 1, 0);
-                end;
-            end;
+           cr := 60;
+           sb := 60;
 
-            for i in tmp do
-            begin
-                tmp2 = GetResourceType(GetBase(i), 3);
-                if tmp2 >= 60 then
-                begin
-                    SetResourceType(GetBase(i), 3, tmp2 - 60);
-                    break;
-                end else begin
-                    SetResourceType(GetBase(i), 3, 0);
-                end;
-            end;
+           for i in tmp do
+               begin
+               tmp2 := GetResourceType(GetBase(i), 1);
+               tmp3 := GetResourceType(GetBase(i), 3);
 
-        end;
+               if cr then
+                  begin 
+                  if tmp2 and tmp2 < cr then
+                     begin
+                     SetResourceType(GetBase(i), 1, cr - tmp2);
+                     cr := cr - tmp2;
+                     end
+                  else
+                     if tmp2 > cr then
+                        begin
+                        SetResourceType(GetBase(i), 1, tmp2 - cr);
+                        cr := 0;
+                        end;
+                  end;
+
+               if sb then
+                  begin
+                  if tmp2 and tmp2 < sb then
+                     begin
+                     SetResourceType(GetBase(i), 1, sb - tmp2);
+                     sb := sb - tmp2;
+                     end
+                  else
+                     if tmp2 > sb then
+                        begin
+                        SetResourceType(GetBase(i), 1, tmp2 - sb);
+                        cr := 0;
+                        end;
+                  end;
+               end;
+           end;
 
         if dec1 = 3 then
         begin
@@ -259,8 +288,10 @@ begin
         begin
             Say(JMM, 'D3Kd-JMM-1');
 
-            if crates >= 120 and siberite >= 120 then dec2 = SelectiveQuery('Q2aK', [1, 2, 3, 4])
-            else dec2 = SelectiveQuery('Q2K', [1, 4]);
+            if crates >= 120 and siberite >= 120 then
+               dec2 = SelectiveQuery('Q2aK', [1, 2, 3, 4])
+            else
+               dec2 = SelectiveQuery('Q2K', [1, 4]);
 
             if dec2 = 1 then
             begin
@@ -355,8 +386,9 @@ begin
         RemoveUnit(Kurt);
         RemoveUnit(KurtVeh);
 
-    end else
-    begin
+    end
+    else
+        begin
 
         ComExitVehicle(otherKurt);
         CenterNowOnUnits(otherKurt);
@@ -383,34 +415,48 @@ begin
         end;
 
         if dec1 = 2 then
-        begin
-            Say(JMM, 'D3Kb-JMM-1');
-            Say(otherKurt, 'D3Kb-Kurt-1');
+           begin
+           Say(JMM, 'D3Kb-JMM-1');
+           Say(otherKurt, 'D3Kb-Kurt-1');
 
-            for i in tmp do
-            begin
-                tmp2 = GetResourceType(GetBase(i), 1);
-                if tmp2 >= 100 then
-                begin
-                    SetResourceType(GetBase(i), 1, tmp2 - 100);
-                    break;
-                end else begin
-                    SetResourceType(GetBase(i), 1, 0);
-                end;
-            end;
+           cr := 120;
+           sb := 120;
 
-            for i in tmp do
-            begin
-                tmp2 = GetResourceType(GetBase(i), 3);
-                if tmp2 >= 100 then
-                begin
-                    SetResourceType(GetBase(i), 3, tmp2 - 100);
-                    break;
-                end else begin
-                    SetResourceType(GetBase(i), 3, 0);
-                end;
-            end;
+           for i in tmp do
+               begin
+               tmp2 := GetResourceType(GetBase(i), 1);
+               tmp3 := GetResourceType(GetBase(i), 3);
 
+               if cr then
+                  begin
+                  if tmp2 and tmp2 < cr then
+                     begin
+                     SetResourceType(GetBase(i), 1, cr - tmp2);
+                     cr := cr - tmp2;
+                     end
+                  else
+                     if tmp2 > cr then
+                        begin
+                        SetResourceType(GetBase(i), 1, tmp2 - cr);
+                        cr := 0;
+                        end;
+                  end;
+
+               if sb then
+                  begin
+                  if tmp2 and tmp2 < sb then
+                     begin
+                     SetResourceType(GetBase(i), 1, sb - tmp2);
+                     sb := sb - tmp2;
+                     end
+                  else
+                     if tmp2 > sb then
+                        begin
+                        SetResourceType(GetBase(i), 1, tmp2 - sb);
+                        cr := 0;
+                        end;
+                  end;
+               end;
         end;
 
         if dec1 = 3 then
@@ -553,7 +599,8 @@ begin
 end;
 
 // Spawn enemy Legion
-Every 0$10 trigger warWithLegion = 1 do PrepareAttackLegion;
+Every 0$10 trigger warWithLegion = 1 do
+PrepareAttackLegion;
 
 // Set side cargos
 Every 0$1 trigger IsPlaced(amCargo1) and not GetCargo(amCargo1, 1) and not GetCargo(amCargo1, 2) and not GetCargo(amCargo1, 3) do SetSide(amCargo1, 4);
@@ -646,7 +693,7 @@ begin
 end;
 
 // Dialog after destroy tanks
-Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 and tpCounter <= [3, 3, 4][Difficulty] and tpCounter > 5 do
+Every 0$10 trigger vehicleTeleported = 1 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 and tpCounter do
 begin
     vehicleTeleported = 2;
     DialogueOn;
@@ -657,36 +704,36 @@ begin
 end;
 
 // Second tp
-Every 0$1 trigger vehicleTeleported = 3 and tpCounter > 4  do
-var i, vehicles;
+Every 0$2 trigger vehicleTeleported = 3 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_see, 1]])  do
+var i, vehicles, speaker;
 begin
-    vehicles = FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 250]]);
-    enable;
 
-    for i in vehicles do
-    begin
-        if See(1, i) and vehicleTeleported = 3 then
-        begin
-            Disable;
-            DialogueOn;
-            DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4],  [f_class, 5], [f_class, 8]]]), 'DT2-Sol1-1', 'DT2-FSol1-1');
-            DialogueOff;
-            break;
-        end;
-    end;
+   wait(0$0.3);
 
+   DialogueOn;
+   speaker := DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4],  [f_class, 5], [f_class, 8]]]), 'DT2-Sol1-1', 'DT2-FSol1-1');
+   DialogueOff;   
+
+   repeat
+    wait(0$1);
+   until FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 250]]) = 0;
+
+   wait(0$2);
+
+   vehicleTeleported = 4;
+   DialogueOn;
+   Say(JMM, 'DT2a-JMM-1');
+
+   if speaker then
+      if GetSex(speaker) = 1 then
+         Say(speaker, 'DT2a-Sol1-1')
+      else
+         Say(speaker, 'DT2a-FSol1-1');
+
+   Say(Donaldson, 'DT2a-Don-1');
+   DialogueOff;
 end;
 
-// Dialog after destroy tanks
-Every 0$10 trigger vehicleTeleported = 3 and FilterUnitsInArea(OutsideArea1, [[f_side, 3], [f_lives, 251], [f_or, [f_type, unit_vehicle], [f_type, unit_human]]]) = 0 and tpCounter = [6, 6, 8][Difficulty] do
-begin
-    vehicleTeleported = 4;
-    DialogueOn;
-    Say(JMM, 'DT2a-JMM-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4],  [f_class, 5], [f_class, 8]]]), 'DT2a-Sol1-1', 'DT2a-FSol1-1');
-    Say(Donaldson, 'DT2a-Don-1');
-    DialogueOff;
-end;
 
 // See bridge
 Every 0$1 trigger SeeXY(1, 45, 74) do

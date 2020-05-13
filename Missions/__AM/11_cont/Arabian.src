@@ -5,7 +5,7 @@ Export Saliba, Gensher;
 Export Function PrepareArabian;
 var i, d, un, skill, tmp;
 begin
-skill := [6, 7, 8][Difficulty];
+skill := [6, 7, 7][Difficulty];
 
 uc_side := 2;
 uc_nation := 2;
@@ -443,7 +443,7 @@ repeat
   if mc_vehicles[2] then
      MC_PrepareAttack(2, mc_vehicles[2], [ [73,115] ], flags);
 
-  wait(rand(9$30, 12$30));
+  wait(rand(10$30, 13$30));
   w := w + 1;
 
 until IsDead(ar_dep_n) or not UnitFilter(mc_bases[1], [f_btype, b_factory]);
@@ -483,8 +483,14 @@ for i = 1 to 4 do
     tmp := Replace(tmp, tmp+1, un);
     end;
 
+wait(0$3);
+
+for i in tmp do
+    if GetClass(i) = 1 or GetType(i) = unit_vehicle then
+       ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 8]), i));
+
 repeat
- ComAgressiveMove(tmp, 210, 177);
+ AddComAgressiveMove(tmp, 210, 178);
 
  x := FilterUnitsInArea(escape_area, [f_side, 8]);
 
@@ -492,8 +498,8 @@ repeat
     for i in x do
         RemoveUnit(i);
 
- wait(0$3);
-until tmp;
+ wait(0$1);
+until not FilterAllUnits([f_side, 8]);
 End;
 
 

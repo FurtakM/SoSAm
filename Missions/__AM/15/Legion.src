@@ -48,7 +48,7 @@ if tmp then
        PlaceUnitArea(i, legionBaseArea, false);
 
 // PrepareBase(base_dep, area, name, skill, sources, personel);
-PrepareBase(ar_depot1, legionBaseArea, '', [8, 9, 10][Difficulty], [3000, 500, 150], [16, 6, 6, 8]);
+PrepareBase(ar_depot1, legionBaseArea, '', [8, 9, 10][Difficulty], [3000, 500, 150], [12, 6, 6, 8]);
 
 mc_bases := Replace(mc_bases, 3, FilterAllUnits([[f_side, side], [f_nation, 2], [f_not, [f_type, unit_vehicle]]]) diff Kurt);
 
@@ -120,4 +120,71 @@ AddComEnterUnit(Kozlov, fac);
 AddComChangeProfession(Kozlov, 3);
 
 ComConstruct(fac, ru_heavy_wheeled, engine_siberite, control_manual, ru_siberium_rocket);
+End;
+
+
+// Legion attacks
+Every 7$30 trigger not legionDestroyed and missionStage >= 6 do
+var i, tmp, target;
+begin
+enable;
+
+if not FilterAllUnits([[f_side, 8], [f_nation, 2], [f_btype, b_factory]]) then
+   exit;
+
+if Prob(40) then
+   begin
+   MC_InsertProduceList(3, [
+      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_medium_trike, engine_combustion, control_remote, ar_flame_thrower],
+   ]);
+   end
+else
+   begin
+   MC_InsertProduceList(3, [
+      [ar_medium_trike, engine_combustion, control_remote, [ar_gun, ar_flame_thrower, ar_flame_thrower][Difficulty]],
+      [ar_medium_trike, engine_combustion, control_remote, [ar_gun, ar_flame_thrower, ar_flame_thrower][Difficulty]],
+      [ar_medium_trike, engine_combustion, control_remote, [ar_flame_thrower, ar_flame_thrower, ar_selfpropelled_bomb][Difficulty]],
+      [ar_medium_trike, engine_combustion, control_remote, [ar_flame_thrower, ar_selfpropelled_bomb, ar_selfpropelled_bomb][Difficulty]],
+      [ar_medium_trike, engine_combustion, control_remote, ar_selfpropelled_bomb],
+      [ar_medium_trike, engine_combustion, control_remote, ar_flame_thrower],
+   ]);
+   end;
+
+repeat
+ wait(0$1);
+until MC_GetVehicles(3, true) >= 6;
+
+tmp := MC_GetVehicles(3, true);
+
+target := rand(0, 1);
+
+if target then
+   begin
+   repeat
+    ComMoveXY(tmp, 90, 75);
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 90, 75, 6]) > 2;
+   end
+else
+   begin
+   repeat
+    ComMoveXY(tmp, 128, 11);
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 128, 11, 6]) > 2;
+   end;
+
+repeat
+ wait(0$1);
+
+ for i in tmp do
+     if GetLives(i) > 251 then
+        ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 8]), i))
+     else
+        tmp := tmp diff i;
+until not tmp;
 End;

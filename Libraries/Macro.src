@@ -1,5 +1,5 @@
 // Macro Module [SoS] By Serpent
-// ver.  02.05.20
+// ver.  13.05.20
 
 Export skirmish, debug_mc;
 Export mc_bases, mc_building_need_repair, mc_building_repairs,
@@ -2405,4 +2405,22 @@ if not mc_bases or not base then
 ape_techs := [1, 2, 3, 4, 11];
 
 mc_tech := Replace(mc_tech, base, mc_tech[base] diff ape_techs);
+End;
+
+Export Function MC_GetVehicles(base, onlyCombat);
+begin
+result := mc_vehicles[base];
+
+if onlyCombat then
+   result := result diff UnitFilter(result, [f_or, [f_weapon, us_cargo_bay],
+                                                   [f_weapon, ru_cargo_bay],
+                                                   [f_weapon, ru_big_cargo_bay],
+                                                   [f_weapon, ar_cargo_bay],
+                                                   [f_weapon, us_crane],
+                                                   [f_weapon, ru_crane],
+                                                   [f_weapon, us_bulldozer],
+                                                   [f_weapon, ru_bulldozer],
+                                                   [f_weapon, ru_radar],
+                                                   [f_weapon, ar_control_tower]
+                                            ]);
 End;

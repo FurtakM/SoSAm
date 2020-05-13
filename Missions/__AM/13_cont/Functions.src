@@ -11,20 +11,17 @@ begin
 End;
 
 Export function DialogRandom(characters, dialogMID, dialogFID);
-var i, rnd;
+var i, speaker;
 begin
+characters := characters diff [JMM, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
+speaker := characters[rand(1, characters)];
 
-    characters := characters diff [JMM, Stevens,  Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Powell];
-    rnd = rand(1, characters);  
+if GetSex(speaker) = sex_male then
+   Say(speaker, dialogMID)
+else
+   Say(speaker, dialogFID);
 
-    for i = 1 to characters do
-    begin
-
-        if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
-        if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
-
-    end;
-
+result := speaker;
 end;
 
 Export function PrepareDifficulty;

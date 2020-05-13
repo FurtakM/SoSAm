@@ -19,7 +19,7 @@ teleport := FilterAllUnits([[f_side, side], [f_btype, b_teleport]]);
 if teleport then
    TeleportExit(teleport[1], 262, 119);
 
-SetResourceType(base, mat_cans, 2500);
+SetResourceType(base, mat_cans, 3500);
 SetResourceType(base, mat_oil, 200);
 SetResourceType(base, mat_siberit, 50);
 
@@ -92,5 +92,45 @@ for i = 1 to 8 do
 for i in tmp do
     PlaceUnitXYR(i, 260, 235, 8, false);
 
-mc_bases := Replace(mc_bases, 1, FilterAllUnits([[f_side, side], [f_not, [f_type, unit_vehicle]]]));
+mc_bases := Replace(mc_bases, 1, FilterAllUnits([[f_side, side], [f_not, [f_type, unit_vehicle]]]) diff [Roth, Simms]);
+
+uc_side := 0;
+uc_nation := 0;
+
+for i = 1 to 5 do
+    begin
+    InitHc;
+    hc_class := class_apeman;
+    PlaceUnitXYR(CreateHuman, 299, 229, 10, false);
+    end;
+
+ComMoveXY(Roth, 259, 235);
+AddComTurnXY(Roth, 262, 235);
+
+if Simms then
+   begin
+   ComMoveXY(Simms, 262, 235);
+   AddComTurnUnit(Simms, Roth);
+   end;
+End;
+
+
+// Artifact #1
+Every 4$00 trigger allianceActive and not allianceDestroyed do
+var i, tmp;
+begin
+enable;
+
+tmp := FilterAllUnits([[f_enemy, 7], [f_or, [f_engine, engine_siberite],
+                                            [f_btype, b_siberite_mine],
+                                            [f_btype, b_siberite_power],
+                                            [f_weapon, ru_time_lapser],
+                                            [f_weapon, us_double_laser],
+                                            [f_weapon, us_siberium_rocket]
+                     ]]);
+
+if not tmp then
+   exit;
+
+SetLives(tmp[rand(1,tmp)], 0);
 End;

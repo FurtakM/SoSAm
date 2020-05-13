@@ -17,18 +17,17 @@ interface_hidden = mode;
 End;
 
 Export function DialogRandom(characters, dialogMID, dialogFID);
-var i, rnd;
+var i, speaker;
 begin
-    rnd = rand(1, characters);
+characters := characters diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Khatam];
+speaker := characters[rand(1, characters)];
 
-    for i = 1 to characters do
-    begin
+if GetSex(speaker) = sex_male then
+   Say(speaker, dialogMID)
+else
+   Say(speaker, dialogFID);
 
-       if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
-       if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
-
-    end;
-
+result := speaker;
 end;
 
 Export Function PrepareSolBun(skill, b);
