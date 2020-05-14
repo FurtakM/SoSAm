@@ -60,7 +60,7 @@ if Difficulty < 3 then
 else
    begin
    SetDir(Bobby, 5);
-   PlaceUnitXY(Bobby, 108, 97, false);
+   PlaceUnitXY(Bobby, 105, 98, false);
    ComCrawl(Bobby);
    AddComHold(Bobby);
    end;
@@ -152,6 +152,18 @@ repeat
 
 until GetDistUnitXY(russian_troops_1[1], 45, 5) < 10;
 
+End;
+
+// Easy mode camera
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_distxy, 80, 83, 6]]) and Difficulty = 1 do
+begin
+PlaceSeeing(80, 83, 1, -7);
+
+repeat
+ wait(0$1);
+until not FilterAllUnits([[f_side, 3], [f_distxy, 80, 83, 10]]);
+
+RemoveSeeing(80, 83, 1);
 End;
 
 // Macmilan spot Bobby

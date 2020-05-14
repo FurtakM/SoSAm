@@ -1,6 +1,7 @@
 Export Roth, Simms, Kirilenkova, Dolgov, Petrosyan, Petrovova, Kuzmov,
        Lipshchin, Gnyevko, Titov, Xavier, Belkov, Burlak,
        Karamazov, Kapitsova, Scholtze, Oblukov;
+Export allianceSpecialForce;
 Export Function PrepareAlliance;
 var i, tmp, base, side, teleport;
 begin
@@ -19,13 +20,20 @@ teleport := FilterAllUnits([[f_side, side], [f_btype, b_teleport]]);
 if teleport then
    TeleportExit(teleport[1], 262, 119);
 
-SetResourceType(base, mat_cans, 2500);
+SetResourceType(base, mat_cans, 3500);
 SetResourceType(base, mat_oil, 200);
 SetResourceType(base, mat_siberit, 50);
 
 Roth := NewCharacter('Roth');
 
 Simms := PrepareUnit('Simms', (not debug), '10c_');
+
+if not Simms then
+   begin
+   uc_nation := 1;
+   PrepareScientist(sex_female, 10);
+   Simms := CreateHuman;
+   end;
 
 uc_nation := 3;
 
@@ -92,5 +100,180 @@ for i = 1 to 8 do
 for i in tmp do
     PlaceUnitXYR(i, 260, 235, 8, false);
 
-mc_bases := Replace(mc_bases, 1, FilterAllUnits([[f_side, side], [f_not, [f_type, unit_vehicle]]]));
+mc_bases := Replace(mc_bases, 1, FilterAllUnits([[f_side, side], [f_not, [f_type, unit_vehicle]]]) diff [Roth, Simms]);
+
+uc_side := 0;
+uc_nation := 0;
+
+for i = 1 to 5 do
+    begin
+    InitHc;
+    hc_class := class_apeman;
+    PlaceUnitXYR(CreateHuman, 299, 229, 10, false);
+    end;
+
+ComMoveXY(Roth, 259, 235);
+AddComTurnXY(Roth, 262, 235);
+
+if Simms then
+   begin
+   ComMoveXY(Simms, 262, 235);
+   AddComTurnUnit(Simms, Roth);
+   end;
+End;
+
+
+// Artifact #1
+Every 4$00 trigger allianceActive and not allianceDestroyed do
+var i, tmp;
+begin
+enable;
+
+tmp := FilterAllUnits([[f_enemy, 7], [f_or, [f_engine, engine_siberite],
+                                            [f_btype, b_siberite_mine],
+                                            [f_btype, b_siberite_power],
+                                            [f_weapon, ru_time_lapser],
+                                            [f_weapon, us_double_laser],
+                                            [f_weapon, us_siberium_rocket]
+                     ]]);
+
+if not tmp then
+   exit;
+
+SetLives(tmp[rand(1,tmp)], 0);
+End;
+
+// special tp group
+Every 0$2 trigger not allianceDestroyed and allianceActive do
+var i, un, tmp;
+begin
+uc_side := 7;
+uc_nation := 1;
+
+tmp := Shuffle([ [125,163], [185,168], [111,97] ]);    
+allianceSpecialForce := [];
+
+for i = 1 to Difficulty do
+    begin
+    InitHc;
+    PrepareSoldier(false, 8);
+    un := CreateHuman;
+    PlaceUnitXYR(un, 258, 267, 4, false);
+    allianceSpecialForce := allianceSpecialForce union un;
+
+    TeleportUnit(un, tmp[i][1], tmp[i][2], 4, true);
+    AddComMoveXY(un, tmp[i][1], tmp[i][2]);
+    AddComInvisible(un);
+    end;
+
+repeat
+ wait(0$20);
+
+ for i in allianceSpecialForce do
+     begin
+     if IsInvisible(i) then
+        begin          
+        tmp := FilterAllUnits([[f_side, 1], [f_ok], [f_not, [f_driving]], [f_dist, i, [25, 30, 35][Difficulty]],
+                              [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]);
+
+        display_strings := [tick, i, tmp];
+
+        if not tmp then
+           continue;
+
+        if Prob(30 * Difficulty) then
+           AllianceCaptureUnit(tmp[rand(1, tmp)]);
+        end;
+
+     if IsDead(i) then
+        begin
+        allianceSpecialForce := allianceSpecialForce diff i;
+        continue;
+        end;
+     end;
+
+until allianceDestroyed or not allianceSpecialForce;
+End;
+
+// Roth attacks
+Every 11$30 trigger not allianceDestroyed and allianceActive do
+var i, tmp, target, teleport;
+begin
+enable;
+
+if not FilterAllUnits([[f_side, 7], [f_btype, b_factory]]) then
+   exit;
+
+teleport := FilterAllUnits([[f_side, 7], [f_btype, b_teleport]]);
+
+if Prob(40) then
+   begin
+   MC_InsertProduceList(1, [
+      [us_morphling, engine_siberite, control_remote, us_heavy_gun],
+      [us_morphling, engine_siberite, control_remote, us_heavy_gun],
+      [us_morphling, engine_siberite, control_remote, us_heavy_gun],
+      [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket_launcher],
+      [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+      [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket_launcher]
+   ]);
+   end
+else
+   begin
+   MC_InsertProduceList(1, [
+      [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+      [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+      [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
+      [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
+      [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
+      [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
+   ]);
+   end;
+
+if Difficulty > 1 then
+   MC_InsertProduceList(1, [[ru_heavy_tracked, engine_siberite, control_computer, ru_rocket]]);
+
+repeat
+ wait(0$1);
+until MC_GetVehicles(1, true) >= [6, 7, 7][Difficulty];
+
+tmp := MC_GetVehicles(1, true);
+mc_vehicles := Replace(mc_vehicles, 1, mc_vehicles[1] diff tmp);
+
+target := rand(0, 1);
+
+if target then
+   begin
+   for i in tmp do
+       TeleportUnit(i, 179, 209, 8, true);
+
+   repeat
+    AddComMoveXY(tmp, 179, 209);
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 179, 209, 6]) > 3;
+   end
+else
+   begin
+   for i in tmp do
+       TeleportUnit(i, 285, 163, 8, true);
+
+   repeat
+    AddComMoveXY(tmp, 285, 163);
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 285, 163, 6]) > 3;
+   end;
+
+repeat
+ wait(0$1);
+
+ for i in tmp do
+     if GetLives(i) > 251 then
+        begin
+        if GetWeapon(i) = ru_time_lapser then
+           ComMoveUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 7]), i))
+        else
+           ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 7]), i));
+        end
+     else
+        tmp := tmp diff i;
+until not tmp;
 End;

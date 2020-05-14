@@ -2699,6 +2699,45 @@ PlaceSeeing(x, y, side, range);
 RemoveSeeing(x, y, side);
 End;
 
+Export function Video(mode);
+begin
+ingame_video = mode;
+interface_hidden = mode;
+End;
+
+Export Function Join(array, element);
+begin
+result := array ^ element;
+End;
+
+Export Function JoinUnion(array, element);
+begin
+result := array union element;
+End;
+
+Export Function GetBehemoths(side);
+begin
+result := FilterAllUnits([[f_side, side], [f_chassis, 25]]);
+End;
+
+Export Function Shuffle(array);
+var i, index;
+begin
+result := [];
+
+if not array then
+   exit;
+
+Randomize;
+
+for i = array downto 1 do
+    begin
+    index := rand(1, array);
+    result := Insert(result, result + 1, array[index]);
+    array := Delete(array, index);
+    end;
+End;
+
 
 
 

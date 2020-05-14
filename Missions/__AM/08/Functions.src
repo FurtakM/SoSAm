@@ -17,18 +17,17 @@ interface_hidden = mode;
 End;
 
 Export function DialogRandom(characters, dialogMID, dialogFID);
-var i, rnd;
+var i, speaker;
 begin
-    rnd = rand(1, characters);  
+characters := characters diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Khatam];
+speaker := characters[rand(1, characters)];
 
-    for i = 1 to characters do
-    begin
+if GetSex(speaker) = sex_male then
+   Say(speaker, dialogMID)
+else
+   Say(speaker, dialogFID);
 
-       if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
-       if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
-
-    end;
-  
+result := speaker;
 end;
 
 Export Function PrepareSolBun(skill, b);
@@ -122,7 +121,7 @@ begin
         [b_turret, 88, 79, 3],
         [b_turret, 76, 87, 1],
         [b_oil_power, 96, 97, 5],
-        [b_oil_power, 85, 84, 2], 
+        [b_oil_power, 85, 84, 2],
         [b_lab, 88, 95, 0],
         [b_ext_noncombat, 103, 89, 4],
         [b_ext_track, 97, 86, 2],
@@ -500,7 +499,7 @@ begin
 
 
         // strategy , 1 - flank and attack oil drilling mine,  2 - front attack, 3 - left flank
-  
+
         if strategy = 1 then
         begin
                 repeat
@@ -526,7 +525,7 @@ begin
                                         for i in damageUnit_list  do
                                         begin
                                                 ComMoveToArea(i, healArea);
-                                                for j in medic_list do 
+                                                for j in medic_list do
                                                 AddComHeal(j, i);
                                         end;
                                  end;
@@ -575,7 +574,7 @@ begin
                                         for i in damageUnit_list  do
                                         begin
                                                 ComMoveToArea(i, healArea);
-                                                for j in medic_list do 
+                                                for j in medic_list do
                                                 AddComHeal(j, i);
                                         end;
                                  end;
@@ -625,7 +624,7 @@ begin
                                         for i in damageUnit_list  do
                                         begin
                                                 ComMoveToArea(i, healArea);
-                                                for j in medic_list do 
+                                                for j in medic_list do
                                                 AddComHeal(j, i);
                                         end;
                                  end;

@@ -58,18 +58,16 @@ End;
 // Function is used to call the dialogue spoken by random male or female characters
 // Example: DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human]]), 'DAtt1-Sol1-1', 'DAtt1-FSol1-1');
 Export function DialogRandom(characters, dialogMID, dialogFID);
-var i, rnd;
+var i, speaker;
 begin
-    rnd = rand(1, characters);  
+speaker := characters[rand(1, characters)];
 
-    for i = 1 to characters do
-    begin
+if GetSex(speaker) = sex_male then
+   Say(speaker, dialogMID)
+else
+   Say(speaker, dialogFID);
 
-       if i = rnd AND GetSex(characters[i]) = 1 then Say(characters[i], dialogMID);
-       if i = rnd AND GetSex(characters[i]) = 2 then Say(characters[i], dialogFID);
-
-    end;
-  
+result := speaker;
 end;
 //rubbrwr1 rubbrwr0
 Export function PrepareDifficulty;
