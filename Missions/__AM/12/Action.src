@@ -165,17 +165,26 @@ begin
 
     tmp = FilterAllUnits([[f_side, 1], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
 
-    for i in tmp do crates = crates + GetResourceType(GetBase(i), 1);
-    for i in tmp do oil = oil + GetResourceType(GetBase(i), 2);
-    for i in tmp do siberite = siberite + GetResourceType(GetBase(i), 3);
+    crates := 0;
+    oil := 0;
+    siberite := 0;
+
+    for i in tmp do
+        crates = crates + GetResourceType(GetBase(i), 1);
+
+    for i in tmp do
+        oil = oil + GetResourceType(GetBase(i), 2);
+
+    for i in tmp do
+        siberite = siberite + GetResourceType(GetBase(i), 3);
 
     PrepareKurt;
     ComMoveXY(KurtVeh, 144, 111);
     wait(0$2);
     ChangeSideFog(8, 1);
 
-    if kurtStatus > 0 then
-    begin
+    if kurtStatus then
+       begin
 
         ComExitVehicle(Kurt);
         CenterNowOnUnits(Kurt);
@@ -256,8 +265,8 @@ begin
             Say(JMM, 'D3Kc1-JMM-2');
             Say(Kurt, 'D3Kc1-Kurt-2');
             askSiberite = 1;
-            
-            dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+
+            dec2 = SelectiveQuery('Q2b', [1, 2, 3]);
             
             if dec2 = 1 then
             begin
@@ -290,6 +299,8 @@ begin
 
             if crates >= 120 and siberite >= 120 then
                dec2 = SelectiveQuery('Q2aK', [1, 2, 3, 4])
+            else if crates >= 60 and siberite >= 60 then
+               dec2 = SelectiveQuery('Q2aK', [1, 2, 4])
             else
                dec2 = SelectiveQuery('Q2K', [1, 4]);
 
@@ -349,7 +360,7 @@ begin
                     Say(Kurt, 'D3Kc1-Kurt-2');
                     askSiberite = 1;
                     
-                    dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+                    dec2 = SelectiveQuery('Q2b', [1, 2, 3]);
                     
                     if dec2 = 1 then
                     begin
@@ -403,9 +414,11 @@ begin
         Say(JMM, 'D3-JMM-3');
         Say(otherKurt, 'D3-Kurt-5');
         Say(otherKurt, 'D3-Kurt-5b');
-        
-        if crates >= 100 and siberite >= 100 then dec1 = SelectiveQuery('Q2', [1, 2, 3, 4])
-        else dec1 = SelectiveQuery('Q2', [3, 4]);
+
+        if crates >= 100 and siberite >= 100 then
+           dec1 = SelectiveQuery('Q2', [1, 2, 3, 4])
+        else
+           dec1 = SelectiveQuery('Q2', [3, 4]);
 
         if dec1 = 1 then
         begin
@@ -419,8 +432,8 @@ begin
            Say(JMM, 'D3Kb-JMM-1');
            Say(otherKurt, 'D3Kb-Kurt-1');
 
-           cr := 120;
-           sb := 120;
+           cr := 100;
+           sb := 100;
 
            for i in tmp do
                begin
@@ -467,7 +480,7 @@ begin
             Say(otherKurt, 'D3Kc1-Kurt-2');
             askSiberite = 1;
             
-            dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+            dec2 = SelectiveQuery('Q2b', [1, 2, 3]);
             
             if dec2 = 1 then
             begin
@@ -498,8 +511,12 @@ begin
         begin
             Say(JMM, 'D3Kd-JMM-1');
 
-            if crates >= 200 and siberite >= 200 then dec2 = SelectiveQuery('Q2a', [1, 2, 3, 4])
-            else dec2 = SelectiveQuery('Q2a', [1, 4]);
+            if crates >= 200 and siberite >= 200 then
+               dec2 = SelectiveQuery('Q2a', [1, 2, 3, 4])
+            else if crates >= 100 and siberite >= 100 then
+               dec2 = SelectiveQuery('Q2a', [1, 2, 4])
+            else
+               dec2 = SelectiveQuery('Q2a', [1, 4]);
 
             if dec2 = 1 then
             begin
@@ -557,7 +574,7 @@ begin
                     Say(otherKurt, 'D3Kc1-Kurt-2');
                     askSiberite = 1;
                     
-                    dec1 = SelectiveQuery('Q2b', [1, 2, 3]);
+                    dec2 = SelectiveQuery('Q2b', [1, 2, 3]);
                     
                     if dec2 = 1 then
                     begin

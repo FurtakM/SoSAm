@@ -165,6 +165,7 @@ options = [1, 2, 3, 4, 5, 6];
 
 if not dialogue_skipped then
    begin
+   game_speed := 4;
    wait(0$6);
 
    dec = SelectiveQuery('Q1', options);
@@ -404,7 +405,7 @@ repeat
  wait(0$1);
 until mc_vehicles[4] >= 4;
 
-tmp := FilterAllUnits([[f_side, 4], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff (Powell ^ vip);
+tmp := FilterAllUnits([[f_side, 4], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5]]]) diff (Powell ^ vip);
 tmp2 := UnitFilter(tmp, [f_sex, sex_male]);
 
 tmp := tmp diff tmp2;
@@ -969,6 +970,7 @@ DialogueOff;
 Video(false);
 
 SetSide(FilterAllUnits([f_side, 4]), 1);
+ChangeSideFog(4, 4);
 
 for i in GetTechNation(4, 1, 2) do
     if GetTech(i, 1) <> state_researched then
@@ -1597,7 +1599,7 @@ End;
 
 // Russian defeat
 Every 0$2 trigger IsDead(Platonov) and IsDead(Yakotich) and FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_ok]]) < [7, 8, 9][Difficulty] do
-var i, tmp, arabianArmy;
+var i, tmp, tmp2, omarOnMotherLode;
 begin
 MC_Kill(1);
 
@@ -1635,6 +1637,43 @@ AddComMoveToArea(FilterAllUnits([[f_side, 3], [f_type, unit_human]]), russianEsc
 wait(0$10);
 
 PrepareOmarInvasion;
+
+tmp := [GetX(Omar), GetY(Omar)];
+PlaceSeeing(tmp[1], tmp[2], 1, -8);
+
+CenterNowOnUnits(Omar);
+
+DialogueOn;
+Say(JMM, 'D19-JMM-1');
+
+tmp2 := FilterAllUnits([[f_side, 1], [f_sex, sex_male], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]) diff [JMM, Joan, Stevens, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi, Connie, Baker];
+
+if tmp2 then
+   Say(tmp2[1], 'D19-Sol1-1');
+
+Say(JMM, 'D19-JMM-2');
+DialogueOff;
+
+RemoveSeeing(tmp[1], tmp[2], 1);
+ChangeMissionObjectives('M5');
+
+omarOnMotherLode := false;
+
+repeat
+ wait(0$1);
+
+ if GetDistUnitXY(Omar, 215, 100) < 10 and not omarOnMotherLode then
+    begin
+    omarOnMotherLode := true;
+    Say(JMM, 'D19b-JMM-1');
+    end;
+
+until IsDead(Omar);
+
+Say(JMM, 'D19a-JMM-1');
+
+if Heike then
+   Say(Heike, 'D19a-Hke-1');
 End;
 
 Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_human]]) and russianDestroyed do
@@ -1651,7 +1690,7 @@ for i in tmp do
     RemoveUnit(i);
 End;
 
-Every 0$1 trigger FilterAllUnits([[f_side, 7], [f_type, unit_human]]) < 5 do
+Every 0$1 trigger FilterAllUnits([[f_side, 7], [f_type, unit_human]]) < 6 do
 var tmp, i;
 begin
 MC_Kill(1);
@@ -1688,6 +1727,19 @@ DialogueOff;
 
 allianceDestroyed := true;
 
+if trueAmericans then
+   begin
+   if trueAmericans = 1 then
+      Say(JMM, 'DAb-JMM-1a')
+   else
+      Say(JMM, 'DAb-JMM-1b');
+
+   CenterNowOnUnits(trueAmericans);
+
+   for i in trueAmericans do
+       SetSide(i, 1);
+   end;
+
 repeat
  wait(0$1);
 
@@ -1703,6 +1755,146 @@ repeat
        RemoveUnit(i);
     end;
 until not FilterAllUnits([[f_side, 7], [f_type, unit_human]]);
+End;
+
+
+Export Function AllianceCaptureUnit(unit);
+var join;
+begin
+if not unit then
+   exit;
+
+DoNotAttack(8, unit);
+TeleportUnit(unit, 260, 235, 3, true);
+SetSide(unit, 4);
+
+capturedUnit := capturedUnit + 1;
+
+wait(0$2);
+
+PlaceSeeing(260, 235, 1, -8);
+CenterNowOnUnits(unit);
+
+ComTurnUnit(unit, Roth);
+
+DialogueOn;
+
+case unit of
+     JMM: ForceSay(JMM, 'DA1-JMM-1');
+     Joan: ForceSay(Joan, 'DA1-Joan-1');
+     Lisa: ForceSay(Lisa, 'DA1-Lisa-1');
+     Donaldson: ForceSay(Donaldson, 'DA1-Don-1');
+     Cornel: ForceSay(Cornel, 'DA1-Corn-1');
+     Denis: ForceSay(Denis, 'DA1-Den-1');
+     Bobby: ForceSay(Bobby, 'DA1-Bobby-1');
+     Gladstone: ForceSay(Gladstone, 'DA1-Glad-1');
+     Cyrus: ForceSay(Cyrus, 'DA1-Cyrus-1');
+     Stevens: ForceSay(Stevens, 'DA1-Huck-1');
+     Baker: ForceSay(Baker, 'DA1-Huck-1');
+     Brown: ForceSay(Brown, 'DA1-Brown-1');
+     Gary: ForceSay(Gary, 'DA1-Gary-1');
+     Connie: ForceSay(Connie, 'DA1-Con-1');
+     Kurt: ForceSay(Kurt, 'DA1-Kurt-1');
+     Kikuchi: ForceSay(Kikuchi, 'DA1-Yam-1');
+     Frank: ForceSay(Frank, 'DA1-Frank-1');
+else
+     begin 
+     if GetSex(unit) = sex_male then
+        ForceSay(unit, 'DA1-Sol1-1')
+     else
+        ForceSay(unit, 'DA1-FSol1-1');
+     end;
+end;
+
+Say(Roth, 'DA-Roth-1');
+
+if capturedUnit = 1 then
+   begin
+   Say(Simms, 'DA-Sim-1');
+   Say(Roth, 'DA-Roth-2');
+   end
+else
+   Say(Simms, 'DA-Sim-2');
+
+case unit of
+     JMM: ForceSay(JMM, 'DA1-JMM-1a');
+     Joan: ForceSay(Joan, 'DA1-Joan-1a');
+     Lisa: ForceSay(Lisa, 'DA1-Lisa-1a');
+     Donaldson: ForceSay(Donaldson, 'DA1-Don-1a');
+     Cornel: ForceSay(Cornel, 'DA1-Corn-1a');
+     Denis: ForceSay(Denis, 'DA1-Den-1a');
+     Bobby: ForceSay(Bobby, 'DA1-Bobby-1a');
+     Gladstone: ForceSay(Gladstone, 'DA1-Glad-1a');
+     Cyrus: ForceSay(Cyrus, 'DA1-Cyrus-1a');
+     Stevens: ForceSay(Stevens, 'DA1-Huck-1a');
+     Baker: ForceSay(Baker, 'DA1-Huck-1a');
+     Brown: ForceSay(Brown, 'DA1-Brown-1a');
+     Gary: ForceSay(Gary, 'DA1-Gary-1a');
+     Connie: ForceSay(Connie, 'DA1-Con-1a');
+     Kurt: ForceSay(Kurt, 'DA1-Kurt-1a');
+     Kikuchi: ForceSay(Kikuchi, 'DA1-Yam-1a');
+     Frank: ForceSay(Frank, 'DA1-Frank-1a');
+else
+     begin
+     join := rand(0, 1);
+
+     if join then
+        begin
+        if GetSex(unit) = sex_male then
+           ForceSay(unit, 'DA1-Sol1-1b')
+        else
+           ForceSay(unit, 'DA1-FSol1-1b');
+        end
+     else
+        begin
+        if GetSex(unit) = sex_male then
+           ForceSay(unit, 'DA1-Sol1-1a')
+        else
+           ForceSay(unit, 'DA1-FSol1-1a');
+        end;
+     end;
+end;
+
+if unit = JMM then
+   begin
+   YouLost('JMMCaptured');
+   exit;
+   end;
+
+if unit in [Donaldson, Denis, Bobby, Stevens, Baker, Brown, Kikuchi] or join then
+   begin
+   Say(Roth, 'DA-Roth-3');
+   SetSide(unit, 7);
+   mc_bases := Replace(mc_bases, 1, mc_bases[1] union unit);
+
+   RemoveSeeing(260, 235, 1);
+   SetLives(unit, 1000);
+   DialogueOff;
+   end
+else
+   begin
+   Say(Roth, 'DA-Roth-3a');
+   trueAmericans := trueAmericans union unit;
+
+   RemoveSeeing(260, 235, 1);
+   SetLives(unit, 1000);
+   DialogueOff;
+
+   ComMoveXY(unit, 272, 254);
+   AddComHold(unit);
+   end;
+
+if capturedUnit = 1 then
+   begin
+   DialogueOn;
+   CenterNowOnUnits(JMM);
+
+   Say(JMM, 'DAa-JMM-1');
+   Say(JMM, 'DAa-JMM-1a');
+   Say(JMM, 'DAa-JMM-1b');
+   
+   DialogueOff;
+   end;
 End;
 
 // End
