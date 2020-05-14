@@ -205,6 +205,17 @@ case strength of
 
          uc_nation := 3;
 
+         for i = 1 to 3 do
+             begin
+             PrepareVehicle([ru_medium_tracked, ru_heavy_tracked, ru_heavy_tracked][i mod 3 + 1],
+                            [engine_combustion, engine_siberite][rand(1,2)],
+                            control_computer,
+                            [ru_rocket_launcher, ru_rocket, ru_rocket][i mod 3 + 1],
+                            80
+                           );
+             result := result union CreateVehicle;
+             end;
+
          PrepareVehicle(ru_heavy_tracked, engine_siberite, control_manual, ru_rocket, 100);
          sewiVeh := CreateVehicle;
          SetMark(sewiVeh, 1);
