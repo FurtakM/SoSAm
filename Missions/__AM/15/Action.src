@@ -1309,7 +1309,7 @@ var tmp;
 begin
 missionStage := 10;
 
-tmp := FilterAllUnits([[f_side, 1], [f_sex, sex_male], [f_not, [f_class, class_apeman], [f_class, class_apeman_engineer]]]) diff [JMM, Stevens, Baker, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
+tmp := FilterAllUnits([[f_side, 1], [f_sex, sex_male], [f_not, [f_class, class_apeman]], [f_not, [f_class, class_apeman_engineer]]]) diff [JMM, Stevens, Baker, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown, Gladstone, Houten, Cornel, Gary, Frank, Kikuchi];
 
 if not tmp and Brown then
    tmp := [Brown];
@@ -1548,7 +1548,7 @@ else
 End;
 
 // Alliance
-Every 0$1 trigger missionTime >= 60$00 do
+Every 0$1 trigger missionTime >= 60$00 and not allianceDestroyed and IsOk(Roth) do
 var dec;
 begin
 missionStage = 11;

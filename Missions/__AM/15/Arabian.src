@@ -33,12 +33,12 @@ if KhatamStatus then
 
 for i = 1 to Difficulty do
     begin
-    PrepareSoldier(false, 7+Difficulty);
+    PrepareScientist(false, 7+Difficulty);
     un := CreateHuman;
-    PlaceUnitArea(un, [arabianAttackArea, arabianAttackArea2][rand(1,2)], false);
+    PlaceUnitArea(un, [arabianAttackArea, arabianAttackArea2][i mod 3 + 1], false);
     end;
 
-for i = 1 to 4 do
+for i = 1 to 6 do
     begin
     PrepareSoldier(false, 7+Difficulty);
     un := CreateHuman;
@@ -64,7 +64,7 @@ for i = 1 to 3 do
     PlaceHumanInUnit(CreateHuman, veh);
     end;
 
-for i = 1 to 6 do
+for i = 1 to 5+Difficulty do
     begin
     PrepareVehicle(ar_half_tracked, rand(1,3), control_manual, [ar_rocket_launcher, ar_flame_thrower, ar_gun, ar_gatling_gun][i mod 4 + 1], 80);
     veh := CreateVehicle;

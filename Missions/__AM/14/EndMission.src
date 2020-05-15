@@ -1,9 +1,8 @@
 Every 0$5 trigger IsInArea(IsInUnit(JMM), ExitArea) and fastEnd = 0 do
-var JMMNewVeh, JMMGirlVeh;
+var JMMGirlVeh;
 begin
     enable;
 
-    JMMNewVeh = IsInUnit(JMM);
     if JMMGirl = 1 then JMMGirlVeh = IsInUnit(Joan);
     if JMMGirl = 2 then JMMGirlVeh = IsInUnit(Lisa);
     if JMMGirl = 3 then JMMGirlVeh = IsInUnit(Connie);
@@ -12,8 +11,7 @@ begin
     begin
 
         case Query('Q3b') of
-         1: begin
-            SaveVariable([ [GetChassis(JMMNewVeh)], [GetEngine(JMMNewVeh)], [GetControl(JMMNewVeh)], [GetWeapon(JMMNewVeh)]  ], '14_JMMVeh_1');
+         1: begin              
             SaveVariable([ [GetChassis(JMMGirlVeh)], [GetEngine(JMMGirlVeh)], [GetControl(JMMGirlVeh)], [GetWeapon(JMMGirlVeh)]  ], '14_JMMGirlVeh_1');
             FinishMission;
           end;
@@ -50,9 +48,13 @@ begin
 end;
 
 Export function FinishMission;
+var JMMNewVeh;
 begin
 
     SaveCharacters(JMM, '14_JMM');
+
+    JMMNewVeh = IsInUnit(JMM);
+    SaveVariable([ [GetChassis(JMMNewVeh)], [GetEngine(JMMNewVeh)], [GetControl(JMMNewVeh)], [GetWeapon(JMMNewVeh)]  ], '14_JMMVeh_1');
 
     if fastEnd = 1 then
     begin
@@ -63,7 +65,6 @@ begin
         SaveVariable(JMMGirl, '14_JMMGirl_1');
         SaveVariable(0, '14_JMMGirlStatus_1');
         SaveVariable(0, '14_KappaStatus_1');
-        SaveVariable([ [GetChassis(JMMVeh)], [GetEngine(JMMveh)], [GetControl(JMMveh)], [GetWeapon(JMMveh)]  ], '14_JMMVeh_1');
     end;
     
     if fastEnd = 0 then

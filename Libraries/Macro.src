@@ -2409,7 +2409,7 @@ End;
 
 Export Function MC_GetVehicles(base, onlyCombat);
 begin
-result := mc_vehicles[base];
+result := mc_vehicles[base] diff mc_defender[base];
 
 if onlyCombat then
    result := result diff UnitFilter(result, [f_or, [f_weapon, us_cargo_bay],
