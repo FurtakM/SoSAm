@@ -91,7 +91,7 @@ Export missionStart, missionTime, missionStage, activeAttacks, powellAnger,
        capturedUnit, trueAmericans;
 Export Function InitVariables;
 begin
-debug := 0;
+debug := false;
 missionStart := false;
 missionTime := 0$00;
 missionStage := 1;
@@ -140,10 +140,16 @@ MC_SetTame(1, allianceCratesArea);
 MC_SetLabKind(2, [b_lab_weapon, b_lab_siberium, b_lab_computer, b_lab_spacetime]);
 MC_SetCratesArea(2, [russianCratesArea]);
 MC_SetProduceList(2, [
-   [ru_medium_wheeled, engine_siberite, control_computer, ru_cargo_bay]
+   [ru_medium_wheeled, engine_siberite, control_computer, ru_cargo_bay],
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket]
 ]);
+MC_SetDefenderLimit(2, 5);
 MC_SetUpgradeBuilding(2, b_depot);
-MC_SetMinesField(2, [7, 8, 9][Difficulty], legionMinefield);
+MC_SetMinesField(2, [10, 12, 15][Difficulty], legionMinefield);
 
 MC_SetLabKind(3, [b_lab_weapon, b_lab_siberium, b_lab_biological, b_lab_opto]);
 MC_SetCratesArea(3, [legionCratesArea]);
