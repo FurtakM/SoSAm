@@ -3,6 +3,9 @@ var i, t, cargo, tmp, options, dec, amount, macmilan_squad;
 begin
 Video(true);
 
+if debug then
+   dialogue_skipped := true;
+
 tmp := AreaToList(macmilanCameraArea, 0);
 
 for i = 1 to tmp[1] do
@@ -19,7 +22,7 @@ ComMoveXY(tmp, 60, 109);
 
 if KappaStatus then  // kappa saved
    begin
-   Say(JMM, 'D1T-JMM-1');
+   Say(JMM, 'D1nT-JMM-1');
    Say(Powell, 'D1T-Pow-1');
    Say(JMM, 'D1T-JMM-2');
    Say(Powell, 'D1T-Pow-2');
@@ -409,6 +412,9 @@ tmp := FilterAllUnits([[f_side, 4], [f_or, [f_class, 1], [f_class, 2], [f_class,
 tmp2 := UnitFilter(tmp, [f_sex, sex_male]);
 
 tmp := tmp diff tmp2;
+
+tmp := SortBySkill(tmp, 1);
+tmp2:= SortBySkill(tmp2, 1);
 
 for i = 1 to 4 do
     begin
@@ -887,6 +893,8 @@ async;
 
 Say(Powell, 'D6b-Pow-2');
 
+wait(0$1);
+
 if tmp2 > 1 then
    Say(tmp2[2], 'D6b-ArSol2-1');
 
@@ -1201,10 +1209,12 @@ if JMMGirl = 3 then
 End;
 
 // Stevens or Baker from 13
-Every 0$1 trigger missionTime >= 30$00 do
+Every 0$1 trigger missionTime >= 45$00 do
 var i, veh, tmp;
 begin
 tmp := PrepareStevensSquad;
+
+display_strings := tmp;
 
 if not tmp then
    exit; // ?

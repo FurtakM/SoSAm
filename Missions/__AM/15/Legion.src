@@ -48,7 +48,7 @@ if tmp then
        PlaceUnitArea(i, legionBaseArea, false);
 
 // PrepareBase(base_dep, area, name, skill, sources, personel);
-PrepareBase(ar_depot1, legionBaseArea, '', [8, 9, 10][Difficulty], [3000, 500, 150], [12, 6, 6, 8]);
+PrepareBase(ar_depot1, legionBaseArea, '', [8, 9, 10][Difficulty], [3000, 500, 150], [16, 6, 6, 8]);
 
 mc_bases := Replace(mc_bases, 3, FilterAllUnits([[f_side, side], [f_nation, 2], [f_not, [f_type, unit_vehicle]]]) diff Kurt);
 
@@ -135,23 +135,23 @@ if not FilterAllUnits([[f_side, 8], [f_nation, 2], [f_btype, b_factory]]) then
 if Prob(40) then
    begin
    MC_InsertProduceList(3, [
-      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
-      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
-      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
-      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
-      [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher],
-      [ar_medium_trike, engine_combustion, control_remote, ar_flame_thrower],
+      [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_half_tracked, engine_combustion, control_remote, ar_rocket_launcher],
+      [ar_half_tracked, engine_combustion, control_remote, ar_flame_thrower],
    ]);
    end
 else
    begin
    MC_InsertProduceList(3, [
-      [ar_medium_trike, engine_combustion, control_remote, [ar_gun, ar_flame_thrower, ar_flame_thrower][Difficulty]],
-      [ar_medium_trike, engine_combustion, control_remote, [ar_gun, ar_flame_thrower, ar_flame_thrower][Difficulty]],
-      [ar_medium_trike, engine_combustion, control_remote, [ar_flame_thrower, ar_flame_thrower, ar_selfpropelled_bomb][Difficulty]],
+      [ar_half_tracked, engine_combustion, control_remote, [ar_gun, ar_flame_thrower, ar_flame_thrower][Difficulty]],
+      [ar_half_tracked, engine_combustion, control_remote, [ar_gun, ar_flame_thrower, ar_flame_thrower][Difficulty]],
+      [ar_half_tracked, engine_combustion, control_remote, [ar_flame_thrower, ar_flame_thrower, ar_selfpropelled_bomb][Difficulty]],
       [ar_medium_trike, engine_combustion, control_remote, [ar_flame_thrower, ar_selfpropelled_bomb, ar_selfpropelled_bomb][Difficulty]],
       [ar_medium_trike, engine_combustion, control_remote, ar_selfpropelled_bomb],
-      [ar_medium_trike, engine_combustion, control_remote, ar_flame_thrower],
+      [ar_half_tracked, engine_combustion, control_remote, ar_flame_thrower],
    ]);
    end;
 
@@ -159,24 +159,28 @@ repeat
  wait(0$1);
 until MC_GetVehicles(3, true) >= 6;
 
+wait(0$30);
+
 tmp := MC_GetVehicles(3, true);       
 mc_vehicles := Replace(mc_vehicles, 3, mc_vehicles[3] diff tmp);
 
-target := rand(0, 1);
+target := rand(0, 2);
 
 if target then
    begin
    repeat
-    ComMoveXY(tmp, 90, 75);
+    ComMoveXY(tmp, 89, 71);
     wait(0$1);
-   until UnitFilter(tmp, [f_distxy, 90, 75, 6]) > 2;
+    tmp := UnitFilter(tmp, [f_lives, 250]);
+   until UnitFilter(tmp, [f_distxy, 89, 71, 8]) >= (tmp-1);
    end
 else
    begin
    repeat
-    ComMoveXY(tmp, 128, 11);
+    ComMoveXY(tmp, 125, 129);
     wait(0$1);
-   until UnitFilter(tmp, [f_distxy, 128, 11, 6]) > 2;
+    tmp := UnitFilter(tmp, [f_lives, 250]);
+   until UnitFilter(tmp, [f_distxy, 125, 129, 8]) >= (tmp-1);
    end;
 
 repeat
@@ -186,6 +190,64 @@ repeat
      if GetLives(i) > 251 then
         ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 8]), i))
      else
+      if IsDead(i) then
+         tmp := tmp diff i;
+until not tmp;
+End;
+
+// extra legion attack
+Every 20$00 trigger not legionDestroyed and missionStage >= 6 and Difficulty > 1 do
+var i, un, tmp;
+begin
+enable;
+
+tmp := [];
+
+for i = 1 to [4, 6, 7][Difficulty] do
+    begin
+    uc_side := 8;
+    uc_nation := 2;
+
+    PrepareVehicle([ar_medium_trike, ar_half_tracked][rand(1,2)], engine_combustion, control_apeman, [ar_gun, ar_rocket_launcher, ar_flame_thrower, ar_gatling_gun][rand(1,4)], 88);
+    un := CreateVehicle;
+    tmp := tmp ^ un;
+
+    SetDir(un, 3);
+    PlaceUnitArea(un, northSpawn, false);
+
+    ComMoveXY(un, 16, 11);
+    wait(0$2);
+    end;
+
+for i = 1 to Difficulty do
+    begin
+    uc_side := 8;
+    uc_nation := 2;
+
+    PrepareHuman(false, class_mortar, [8, 8, 9][Difficulty]);
+    un := CreateHuman;
+    tmp := tmp ^ un;
+
+    SetDir(un, 3);
+    PlaceUnitArea(un, northSpawn, false);
+
+    ComMoveXY(un, 16, 11);
+    wait(0$2);
+    end;
+
+repeat
+ wait(0$1);
+
+ for i in tmp do
+     if GetLives(i) > 250 then
+        begin
+        if not FilterAllUnits([[f_enemy, 8], [f_dist, i, 10]]) then
+           ComAgressiveMove(i, 67, 110)
+        else
+           ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 8]), i));
+        end
+     else
         tmp := tmp diff i;
+
 until not tmp;
 End;

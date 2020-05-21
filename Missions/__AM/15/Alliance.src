@@ -20,9 +20,9 @@ teleport := FilterAllUnits([[f_side, side], [f_btype, b_teleport]]);
 if teleport then
    TeleportExit(teleport[1], 262, 119);
 
-SetResourceType(base, mat_cans, 3500);
+SetResourceType(base, mat_cans, 8500);
 SetResourceType(base, mat_oil, 200);
-SetResourceType(base, mat_siberit, 50);
+SetResourceType(base, mat_siberit, 650);
 
 Roth := NewCharacter('Roth');
 
@@ -173,10 +173,8 @@ repeat
      begin
      if IsInvisible(i) then
         begin          
-        tmp := FilterAllUnits([[f_side, 1], [f_ok], [f_not, [f_driving]], [f_dist, i, [25, 30, 35][Difficulty]],
+        tmp := FilterAllUnits([[f_side, 1], [f_ok], [f_not, [f_inside]], [f_not, [f_driving]], [f_dist, i, [25, 30, 35][Difficulty]],
                               [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]);
-
-        display_strings := [tick, i, tmp];
 
         if not tmp then
            continue;
@@ -249,7 +247,8 @@ if target then
    repeat
     AddComMoveXY(tmp, 179, 209);
     wait(0$1);
-   until UnitFilter(tmp, [f_distxy, 179, 209, 6]) > 3;
+    tmp := UnitFilter(tmp, [f_lives, 250]);
+   until UnitFilter(tmp, [f_distxy, 179, 209, 6]) >= (tmp-1);
    end
 else
    begin
@@ -259,7 +258,8 @@ else
    repeat
     AddComMoveXY(tmp, 285, 163);
     wait(0$1);
-   until UnitFilter(tmp, [f_distxy, 285, 163, 6]) > 3;
+    tmp := UnitFilter(tmp, [f_lives, 250]);
+   until UnitFilter(tmp, [f_distxy, 285, 163, 6]) >= (tmp-1);
    end;
 
 repeat

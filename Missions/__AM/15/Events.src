@@ -25,7 +25,13 @@ if not behemothDestroyedBeforeFinish then
 End;
 
 On SiberiteRocketExploded(unit, x, y) Do
-begin  
+begin
+if GetSide(unit) = 1 and platonovHasBomb and FilterAllUnits([[f_side, 3], [f_weapon, ru_siberium_rocket]]) and not FilterAllUnits([[f_side, 1], [f_weapon, us_siberium_rocket]]) then
+   begin
+   wait(0$5);
+   ComAttackPlace(FilterAllUnits([[f_side, 3], [f_weapon, ru_siberium_rocket]])[1], 60, 95);
+   end;
+
 if InArea(x, y, motherLodeArea) then
    begin   
    if GetSide(unit) = 1 then

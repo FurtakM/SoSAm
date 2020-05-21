@@ -38,15 +38,15 @@ PlaceUnitXYR(Bystrov, 197, 111, 9, false);
 PlaceUnitXYR(Gleb, 197, 111, 9, false);
 
 // PrepareBase(base_dep, area, name, skill, sources, personel);
-PrepareBase(ru_depot, russianBaseArea, 'zhukov', [9, 10, 10][Difficulty], [10000, 1000, 300], [-1, 8, 13, 8]);
+tmp := PrepareBase(ru_depot, russianBaseArea, 'zhukov', [9, 10, 10][Difficulty], [99999, 1000, 300], [12, 8, 13, 8]);
 
 base := GetBase(ru_depot2);
 
-SetResourceType(base, mat_cans, 2000);
+SetResourceType(base, mat_cans, 5000);
 SetResourceType(base, mat_oil, 200);
 SetResourceType(base, mat_siberit, 200);
 
-mc_bases := Replace(mc_bases, 2, FilterAllUnits([[f_side, side], [f_not, [f_type, unit_vehicle]]]) diff Platonov);
+mc_bases := Replace(mc_bases, 2, tmp union FilterAllUnits([[f_side, side], [f_not, [f_type, unit_vehicle]]]) diff Platonov);
 
 // behemoths
 behemoths := [];
@@ -311,7 +311,7 @@ until russianDestroyed;
 End;
 
 // Platonov attacks
-Every 7$30 trigger not russianDestroyed and missionStage >= 8 do
+Every 7$30 trigger not russianDestroyed and missionStage >= 6 do
 var i, tmp, target, teleport;
 begin
 enable;
@@ -351,6 +351,8 @@ repeat
  wait(0$1);
 until MC_GetVehicles(2, true) >= [6, 7, 7][Difficulty];
 
+wait(0$30);
+
 tmp := MC_GetVehicles(2, true);
 mc_vehicles := Replace(mc_vehicles, 2, mc_vehicles[2] diff tmp);
 
@@ -361,7 +363,8 @@ if target then
    repeat
     ComMoveXY(tmp, 139, 89);
     wait(0$1);
-   until UnitFilter(tmp, [f_distxy, 139, 89, 6]) > 3;
+    tmp := UnitFilter(tmp, [f_lives, 250]);
+   until UnitFilter(tmp, [f_distxy, 139, 89, 6]) >= (tmp-1);
    end
 else
    begin
@@ -370,7 +373,8 @@ else
    repeat
     AddComMoveXY(tmp, 124, 139);
     wait(0$1);
-   until UnitFilter(tmp, [f_distxy, 124, 139, 6]) > 5;
+    tmp := UnitFilter(tmp, [f_lives, 250]);
+   until UnitFilter(tmp, [f_distxy, 124, 139, 6]) >= (tmp-1);
    end;
 
 repeat
