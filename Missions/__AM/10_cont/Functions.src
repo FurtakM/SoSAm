@@ -238,7 +238,7 @@ begin
     engineers = FilterAllUnits([[f_side, 2], [f_class, 2]]);
     AddComBuild(engineers, b_depot, 71, 15, 3);
 
-    buildingsTab = [
+buildingsTab = [
     [b_lab, 77, 18, 3],
     [b_armoury, 77, 26, 0],
     [b_breastwork, 82, 28, 0],
@@ -250,7 +250,6 @@ begin
 
 for i := 1 to buildingsTab do
     AddComBuild(engineers, buildingsTab[i][1], buildingsTab[i][2], buildingsTab[i][3], buildingsTab[i][4]);
-
 end;
 
 Export Function IntBazooka(side, targetSide);
@@ -783,7 +782,7 @@ repeat
  for j in FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) do
      ComTameXY(tmp, GetX(j), GetY(j));
 
-until FilterAllUnits([[f_side, 2], [f_class, 4]]) = 0 or FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) = 0;
+until FilterAllUnits([[f_side, 2], [f_class, 4]]) = 0 or FilterUnitsInArea(NatureArea1, [[f_side, 0], [f_class, 12]]) < 2 or tick >= 3$20;
 
 repeat
  wait(0$1);

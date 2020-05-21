@@ -133,7 +133,13 @@ begin
             arLab = building;
         end; 
 
-        if  GetBType(building) = 2 or GetBType(building) = 4 then ComUpgrade(building);
+        if GetBType(building) = 2 or GetBType(building) = 4 then
+           begin
+           ComUpgrade(building);
+
+           if GetBType(building) = b_armoury then
+              ComMoveXY(FilterAllUnits([[f_side, 2], [f_class, 1]]), 75, 21);
+           end;
 
        // if GetBType(building) = b_breastwork and FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]]) > 0 then
          //   ComEnterUnit(FilterAllUnits([[f_side, 2], [f_class, 1], [f_not, [f_inside], [f_not, [f_hastask]]]])[1], building);

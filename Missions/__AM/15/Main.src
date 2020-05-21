@@ -149,7 +149,7 @@ MC_SetProduceList(2, [
 ]);
 MC_SetDefenderLimit(2, 5);
 MC_SetUpgradeBuilding(2, b_depot);
-MC_SetMinesField(2, [10, 12, 15][Difficulty], legionMinefield);
+MC_SetMinesField(3, [10, 12, 15][Difficulty], legionMinefield);
 
 MC_SetLabKind(3, [b_lab_weapon, b_lab_siberium, b_lab_biological, b_lab_opto]);
 MC_SetCratesArea(3, [legionCratesArea]);
@@ -192,4 +192,19 @@ MC_SetProduceList(4, [
    [us_heavy_tracked, engine_combustion, control_manual, us_heavy_gun]
 ]);
 MC_SetTame(4, powellApe);
+End;
+
+// debug only
+Every 0$1 trigger debug do
+var i, tmp;
+begin
+enable;
+
+tmp := FilterAllUnits([[f_side, 1], [f_not, [f_type, unit_building]], [f_not, [f_lives, 999]]]);
+
+if not tmp then
+   exit;
+
+for i in tmp do
+    SetLives(i, 1000);
 End;
