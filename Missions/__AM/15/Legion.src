@@ -27,6 +27,7 @@ PlaceHumanInUnit(Kurt, ar_depot1);
 
 Kozlov := PrepareUnit('Kozlov', false, '');
 PlaceHumanInUnit(Kozlov, FilterAllUnits([[f_side, 8], [f_nation, 3], [f_btype, b_lab_full]])[1]);
+SetSkill(Kozlov, class_mechanic, 10);
 
 tmp := FilterAllUnits([[f_side, side], [f_btype, b_bunker], [f_empty]]);
 
@@ -122,9 +123,20 @@ AddComChangeProfession(Kozlov, 3);
 ComConstruct(fac, ru_heavy_wheeled, engine_siberite, control_manual, ru_siberium_rocket);
 End;
 
+// add defenders
+Every 0$10 trigger not legionDestroyed and missionStage >= 6 do
+begin
+MC_SetDefenderLimit(3, 3);
+MC_InsertProduceList(3, [
+   [ar_half_tracked, engine_combustion, control_manual, ar_rocket_launcher],
+   [ar_half_tracked, engine_combustion, control_manual, ar_rocket_launcher],
+   [ar_half_tracked, engine_combustion, control_manual, ar_rocket_launcher]
+]);
+End;
+
 
 // Legion attacks
-Every 7$30 trigger not legionDestroyed and missionStage >= 6 do
+Every 7$30 trigger not legionDestroyed and missionStage >= 6 and not MC_GetVehicles(3, true) do
 var i, tmp, target;
 begin
 enable;
@@ -169,29 +181,39 @@ target := rand(0, 2);
 if target then
    begin
    repeat
-    ComMoveXY(tmp, 89, 71);
-    wait(0$1);
     tmp := UnitFilter(tmp, [f_lives, 250]);
-   until UnitFilter(tmp, [f_distxy, 89, 71, 8]) >= (tmp-1);
+
+    for i in tmp do
+        if GetDistUnitXY(i, 89, 71) > 9 then
+           ComMoveXY(i, 89, 71);
+
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 89, 71, 9]) >= (tmp-1);
    end
 else
    begin
    repeat
-    ComMoveXY(tmp, 125, 129);
-    wait(0$1);
     tmp := UnitFilter(tmp, [f_lives, 250]);
-   until UnitFilter(tmp, [f_distxy, 125, 129, 8]) >= (tmp-1);
+
+    for i in tmp do
+        if GetDistUnitXY(i, 125, 129) > 9 then
+           ComMoveXY(i, 125, 129);
+
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 125, 129, 9]) >= (tmp-1);
    end;
 
 repeat
  wait(0$1);
 
  for i in tmp do
+     begin
      if GetLives(i) > 251 then
         ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 8]), i))
      else
       if IsDead(i) then
          tmp := tmp diff i;
+     end;
 until not tmp;
 End;
 
@@ -239,6 +261,7 @@ repeat
  wait(0$1);
 
  for i in tmp do
+     begin
      if GetLives(i) > 250 then
         begin
         if not FilterAllUnits([[f_enemy, 8], [f_dist, i, 10]]) then
@@ -247,7 +270,8 @@ repeat
            ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 8]), i));
         end
      else
-        tmp := tmp diff i;
-
+      if IsDead(i) then
+         tmp := tmp diff i;
+     end;
 until not tmp;
 End;

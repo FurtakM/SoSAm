@@ -47,13 +47,12 @@ begin
 end;
 
 // Remove Alliance from map
-Every 0$1 do 
+Every 0$1 trigger FilterUnitsInArea(AllianceEscape, [f_side, 7]) do
 var i;
 begin
-    enable;
+enable;
 
-    for i in FilterAllUnits([f_side, 7]) do 
-        If IsInArea(i, AllianceEscape) then
+    for i in FilterUnitsInArea(AllianceEscape, [f_side, 7]) do
         begin
             if i = Burlak or i = Masha then
             begin
@@ -83,15 +82,12 @@ begin
                DestroyUnit(i)
             else 
                RemoveUnit(i);
-
         end;
-
-    if FilterAllUnits([[f_side, 7], [f_type, unit_human]]) = 0 then
-       disable;
 end;
 
 // Gorky fast escape
-Every 0$1 trigger GetLives(Masha) < 500 and GetSide(Masha) = 7 do ComMoveXY(Masha, 107, 118);
+Every 0$1 trigger IsOk(Burlak) and GetLives(Masha) < 500 and GetSide(Masha) = 7 do
+ComMoveXY(Burlak, 107, 118);
 
 // Gorky killed
 Every 0$10 trigger IsDead(Burlak) and spawnBurlak = 1 do

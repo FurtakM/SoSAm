@@ -20,7 +20,7 @@ teleport := FilterAllUnits([[f_side, side], [f_btype, b_teleport]]);
 if teleport then
    TeleportExit(teleport[1], 262, 119);
 
-SetResourceType(base, mat_cans, 8500);
+SetResourceType(base, mat_cans, 19500);
 SetResourceType(base, mat_oil, 200);
 SetResourceType(base, mat_siberit, 650);
 
@@ -125,7 +125,7 @@ End;
 
 // Artifact #1
 Every 4$00 trigger allianceActive and not allianceDestroyed do
-var i, tmp;
+var i, tmp, target;
 begin
 enable;
 
@@ -140,7 +140,12 @@ tmp := FilterAllUnits([[f_enemy, 7], [f_or, [f_engine, engine_siberite],
 if not tmp then
    exit;
 
-SetLives(tmp[rand(1,tmp)], 0);
+target := tmp[rand(1, tmp)];
+
+if GetSide(target) = 1 then
+   CenterNowOnUnits(target);
+
+SetLives(target, 0);
 End;
 
 // special tp group
@@ -173,7 +178,7 @@ repeat
      begin
      if IsInvisible(i) then
         begin          
-        tmp := FilterAllUnits([[f_side, 1], [f_ok], [f_not, [f_inside]], [f_not, [f_driving]], [f_dist, i, [25, 30, 35][Difficulty]],
+        tmp := FilterAllUnits([[f_side, 1], [f_ok], [f_outside], [f_dist, i, [25, 30, 35][Difficulty]],
                               [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8]]]);
 
         if not tmp then
@@ -194,7 +199,7 @@ until allianceDestroyed or not allianceSpecialForce;
 End;
 
 // Roth attacks
-Every 11$30 trigger not allianceDestroyed and allianceActive do
+Every 12$30 trigger not allianceDestroyed and allianceActive and not MC_GetVehicles(1, true) do
 var i, tmp, target, teleport;
 begin
 enable;
@@ -220,8 +225,8 @@ else
    MC_InsertProduceList(1, [
       [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
       [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
-      [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
-      [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
+      [us_morphling, engine_siberite, control_remote, us_laser],
+      [us_morphling, engine_siberite, control_remote, us_laser],
       [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
       [ru_heavy_tracked, engine_combustion, control_computer, ru_rocket_launcher],
    ]);
@@ -234,6 +239,8 @@ repeat
  wait(0$1);
 until MC_GetVehicles(1, true) >= [6, 7, 7][Difficulty];
 
+wait(0$40);
+
 tmp := MC_GetVehicles(1, true);
 mc_vehicles := Replace(mc_vehicles, 1, mc_vehicles[1] diff tmp);
 
@@ -245,10 +252,14 @@ if target then
        TeleportUnit(i, 179, 209, 8, true);
 
    repeat
-    AddComMoveXY(tmp, 179, 209);
-    wait(0$1);
     tmp := UnitFilter(tmp, [f_lives, 250]);
-   until UnitFilter(tmp, [f_distxy, 179, 209, 6]) >= (tmp-1);
+
+    for i in tmp do
+        if GetDistUnitXY(i, 179, 209) > 9 then
+           ComMoveXY(i, 179, 209);
+
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 179, 209, 9]) >= (tmp-1);
    end
 else
    begin
@@ -256,10 +267,14 @@ else
        TeleportUnit(i, 285, 163, 8, true);
 
    repeat
-    AddComMoveXY(tmp, 285, 163);
-    wait(0$1);
     tmp := UnitFilter(tmp, [f_lives, 250]);
-   until UnitFilter(tmp, [f_distxy, 285, 163, 6]) >= (tmp-1);
+
+    for i in tmp do
+        if GetDistUnitXY(i, 285, 163) > 9 then
+           ComMoveXY(i, 285, 163);
+
+    wait(0$1);
+   until UnitFilter(tmp, [f_distxy, 285, 163, 9]) >= (tmp-1);
    end;
 
 repeat

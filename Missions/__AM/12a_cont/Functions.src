@@ -177,14 +177,18 @@ repeat
     // scan area
     enemy := FilterAllUnits([[f_enemy, GetSide(unit)], [f_not, [f_type, unit_building]], [f_dist, unit, spot_dist], [f_see, 1]]);
 
-     // enemy spotted!
-    if (enemy) then
-        begin
-        SetRememberedX(unit, GetX(unit));
-        SetRememberedY(unit, GetY(unit));
+    for i in enemy do
+        if IsInvisible(i) then
+           enemy := enemy diff i;
 
-        status = 2;
-        end
+     // enemy spotted!
+    if enemy then
+       begin
+       SetRememberedX(unit, GetX(unit));
+       SetRememberedY(unit, GetY(unit));
+
+       status = 2;
+       end
     else // continue patrol
         begin
         // go to next point
@@ -225,7 +229,7 @@ repeat
        begin
        e := NearestUnitToUnit(enemy, unit);
 
-       if GetDistUnitXY(e, x, y) < spot_dist + chase_range and not IsInvisible(e) then
+       if GetDistUnitXY(e, x, y) < spot_dist + chase_range then
           ComAttackUnit(unit, e);
        end
     else
