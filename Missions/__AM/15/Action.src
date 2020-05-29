@@ -494,6 +494,8 @@ repeat
      if not IsInUnit(i) then
         begin
         // See Events.src :: 63
+        if not HasTask(i) then
+           ComMoveXY(i, 64, 93);
         
         if not retreat and GetSex(i) = sex_male then
            begin
@@ -545,7 +547,7 @@ for i = 1 to 4 do
     end;
 
 if ru then
-   ComAgressiveMove(ru, 80, 93);
+   ComAgressiveMove(ru, 80, 92);
 
 wait(8$00);
 
@@ -1214,8 +1216,6 @@ var i, veh, tmp;
 begin
 tmp := PrepareStevensSquad;
 
-display_strings := tmp;
-
 if not tmp then
    exit; // ?
 
@@ -1400,10 +1400,10 @@ End;
 
 
 // Platonov start constructed bomb
-Every 0$1 trigger missionTime >= 55$00 do
+Every 0$1 trigger missionTime >= 55$30 do
 var bomb, dec, tmp;
 begin
-MC_InsertProduceList(2, [ru_heavy_wheeled, engine_siberite, control_computer, ru_siberium_rocket]);
+MC_InsertProduceList(2, [[ru_heavy_wheeled, engine_siberite, control_computer, ru_siberium_rocket]]);
 
 repeat
  wait(0$1);
@@ -1676,6 +1676,7 @@ repeat
     begin
     omarOnMotherLode := true;
     Say(JMM, 'D19b-JMM-1');
+    Say(Omar, 'DOmarContam-Omar-1');
     end;
 
 until IsDead(Omar);
@@ -1774,7 +1775,7 @@ begin
 if not unit then
    exit;
 
-DoNotAttack(8, unit);
+DoNotAttack(7, unit);
 TeleportUnit(unit, 260, 235, 3, true);
 SetSide(unit, 4);
 
@@ -1875,16 +1876,18 @@ if unit in [Donaldson, Denis, Bobby, Stevens, Baker, Brown, Kikuchi] or join the
    begin
    Say(Roth, 'DA-Roth-3');
    SetSide(unit, 7);
-   mc_bases := Replace(mc_bases, 1, mc_bases[1] union unit);
+   mc_bases := Replace(mc_bases, 1, mc_bases[1] ^ unit);
 
    RemoveSeeing(260, 235, 1);
    SetLives(unit, 1000);
    DialogueOff;
+
+   ComFree(unit);
    end
 else
    begin
    Say(Roth, 'DA-Roth-3a');
-   trueAmericans := trueAmericans union unit;
+   trueAmericans := trueAmericans ^ unit;
 
    RemoveSeeing(260, 235, 1);
    SetLives(unit, 1000);

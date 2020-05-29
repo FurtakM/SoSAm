@@ -211,7 +211,7 @@ for i = 1 to mc_bases do
           mc_ape_in_lab := Replace(mc_ape_in_lab, i, []);
           end;
 
-       if GetType(un) = unit_vehicle and GetTag(un) = 20 then
+       if GetType(un) = unit_vehicle and (GetTag(un) = 20 or un in mc_defender[i]) then
           begin
           fac := MC_GetBuilding(i, b_factory);
 
@@ -275,6 +275,11 @@ for i = 1 to mc_bases do
        if un in mc_vehicles[i] then
           begin
           mc_vehicles := Replace(mc_vehicles, i, mc_vehicles[i] diff un);
+          end;
+
+       if un in mc_defender[i] then
+          begin
+          mc_defender := Replace(mc_defender, i, mc_defender[i] diff un);
           end;
 
        if un in mc_empty_turret_list[i] then

@@ -1,40 +1,44 @@
 Every 0$5 trigger IsInArea(IsInUnit(JMM), ExitArea) and fastEnd = 0 do
-var JMMGirlVeh;
+var JMMGirlVeh, dec;
 begin
-    enable;
+enable;
 
-    if JMMGirl = 1 then JMMGirlVeh = IsInUnit(Joan);
-    if JMMGirl = 2 then JMMGirlVeh = IsInUnit(Lisa);
-    if JMMGirl = 3 then JMMGirlVeh = IsInUnit(Connie);
+    if JMMGirl = 1 then
+       JMMGirlVeh = IsInUnit(Joan);
+
+    if JMMGirl = 2 then
+       JMMGirlVeh = IsInUnit(Lisa);
+
+    if JMMGirl = 3 then
+       JMMGirlVeh = IsInUnit(Connie);
 
     if GetDistUnits(IsInUnit(JMM), IsInUnit(Joan)) < 10 or GetDistUnits(IsInUnit(JMM), IsInUnit(Lisa)) < 10 or GetDistUnits(IsInUnit(JMM), IsInUnit(Connie)) < 10 then
-    begin
+       begin
 
         case Query('Q3b') of
          1: begin              
             SaveVariable([ [GetChassis(JMMGirlVeh)], [GetEngine(JMMGirlVeh)], [GetControl(JMMGirlVeh)], [GetWeapon(JMMGirlVeh)]  ], '14_JMMGirlVeh_1');
             FinishMission;
-          end;
-        end;
-
-    end else
-    begin
-        if JMMGirl = 1 then
-        begin
-            case Query('Q3bJ') of  1: FinishMission; end;
-        end else
-        begin
-            if JMMGirl = 2 then
-            begin
-                case Query('Q3bL') of  1: FinishMission; end;
-            end else
-            begin
-                case Query('Q3bX') of  1: FinishMission; end;
+            disable;
             end;
-        end;   
-    end;
+        end;
+       end
+    else
+     begin
+        if JMMGirl = 1 then
+           dec := Query('Q3bJ')
+        else if JMMGirl = 2 then
+           dec := Query('Q3bL')
+        else
+           dec := Query('Q3bX');
 
-end;
+     if dec = 1 then
+        begin
+        FinishMission;
+        exit;
+        end;
+     end;
+End;
 
 Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 and fastEnd = 0 do
 begin
@@ -54,7 +58,7 @@ begin
     SaveCharacters(JMM, '14_JMM');
 
     JMMNewVeh = IsInUnit(JMM);
-    SaveVariable([ [GetChassis(JMMNewVeh)], [GetEngine(JMMNewVeh)], [GetControl(JMMNewVeh)], [GetWeapon(JMMNewVeh)]  ], '14_JMMVeh_1');
+    SaveVariable([[GetChassis(JMMNewVeh)], [GetEngine(JMMNewVeh)], [GetControl(JMMNewVeh)], [GetWeapon(JMMNewVeh)]], '14_JMMVeh_1');
 
     if fastEnd = 1 then
     begin

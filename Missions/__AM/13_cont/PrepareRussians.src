@@ -54,17 +54,21 @@ begin
     SetClass(Gnyevko, 3);
     SetClass([Titov, Lipshchin], 9);
 
-    tmp := FilterAllUnits([[f_side, 7], [f_type, unit_vehicle]]);
+    tmp := FilterAllUnits([f_side, 7]);
     ComAgressiveMove(tmp, 107, 118);
 
     repeat
      wait(0$1);
      ComMoveUnit(UnitFilter(tmp, [f_weapon, 49]), Masha);
+     ComAgressiveMove(UnitFilter(tmp, [f_not, [f_weapon, 49]]), 107, 118);
     until UnitFilter(tmp, [f_weapon, 49]) = 0 or IsDying(Masha);
 
     repeat
      wait(0$1);
-     tmp := FilterAllUnits([f_side, 7]);
+     tmp := FilterAllUnits([f_side, 7]) diff Burlak;
      ComAgressiveMove(tmp, 107, 118);
+
+     if IsOk(Burlak) and not IsInUnit(Burlak) then
+        ComMoveXY(Burlak, 107, 118);
     until not tmp;
 end;

@@ -1,5 +1,5 @@
 // Macro Module [SoS] By Serpent
-// ver.  13.05.20
+// ver.  29.05.20
 
 Export skirmish, debug_mc;
 Export mc_bases, mc_building_need_repair, mc_building_repairs,
@@ -2223,7 +2223,7 @@ if not mc_bases[base] then
 
 mc_produce := Replace(mc_produce, base, mc_produce[base] ^ components);
 End;
-
+  
 Export Function MC_SetDefenderList(base, deflist);
 begin
 if not mc_bases[base] then
@@ -2231,7 +2231,6 @@ if not mc_bases[base] then
 
 mc_defender := Replace(mc_defender, base, deflist);
 mc_defender_limit := Replace(mc_defender_limit, base, deflist+0);
-mc_vehicles := Replace(mc_vehicles, base, mc_vehicles[base] union UnitFilter(mc_defender[base], [f_type, unit_vehicle]));
 End;
 
 Export Function MC_SetDefenderLimit(base, limit);
@@ -2455,6 +2454,8 @@ if onlyCombat then
                                                    [f_weapon, us_bulldozer],
                                                    [f_weapon, ru_bulldozer],
                                                    [f_weapon, ru_radar],
-                                                   [f_weapon, ar_control_tower]
+                                                   [f_weapon, ar_control_tower],
+                                                   [f_weapon, ru_siberium_rocket],
+                                                   [f_weapon, us_siberium_rocket]
                                             ]);
 End;

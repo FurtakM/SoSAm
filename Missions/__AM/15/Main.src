@@ -135,7 +135,14 @@ mc_scan_area := [ allianceBaseArea, russianBaseArea, legionBaseArea, powellBase 
 
 MC_SetLabKind(1, [b_lab_weapon, b_lab_siberium, b_lab_computer]);
 MC_SetCratesArea(1, [allianceCratesArea]);
-MC_SetTame(1, allianceCratesArea);
+MC_SetDefenderLimit(1, 5);
+MC_SetProduceList(1, [
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_computer, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_manual, ru_rocket],
+   [ru_heavy_tracked, engine_siberite, control_manual, ru_rocket]
+]);
 
 MC_SetLabKind(2, [b_lab_weapon, b_lab_siberium, b_lab_computer, b_lab_spacetime]);
 MC_SetCratesArea(2, [russianCratesArea]);
@@ -149,18 +156,17 @@ MC_SetProduceList(2, [
 ]);
 MC_SetDefenderLimit(2, 5);
 MC_SetUpgradeBuilding(2, b_depot);
-MC_SetMinesField(3, [10, 12, 15][Difficulty], legionMinefield);
 
+MC_SetMinesField(3, [10, 12, 15][Difficulty], legionMinefield);
 MC_SetLabKind(3, [b_lab_weapon, b_lab_siberium, b_lab_biological, b_lab_opto]);
 MC_SetCratesArea(3, [legionCratesArea]);
-
 mc_ape := Replace(mc_ape, 3, FilterAllUnits([[f_side, 8], [f_class, class_apeman_soldier]]));
-
 MC_SetProduceList(3, [
    [ar_medium_trike, engine_solar, control_manual, ar_control_tower],
    [ar_medium_trike, engine_solar, control_manual, ar_control_tower],
    [ar_medium_trike, engine_siberite, control_remote, ar_cargo_bay]
 ]);
+
 MC_SetLabKind(4, [b_lab_weapon, b_lab_computer]);
 MC_SetCratesArea(4, [powellBase]);
 MC_SetBuildingList(4, [
@@ -198,8 +204,7 @@ End;
 Every 0$1 trigger debug do
 var i, tmp;
 begin
-enable;
-
+enable;  
 tmp := FilterAllUnits([[f_side, 1], [f_not, [f_type, unit_building]], [f_not, [f_lives, 999]]]);
 
 if not tmp then
