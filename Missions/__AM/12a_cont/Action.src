@@ -73,6 +73,9 @@ InGameOff;
 
 ChangeMissionObjectives('M1');
 
+if Difficulty < 3 then
+   ChangeSideFog(4, 7);
+
 SaveForQuickRestart;
 
 SetAttitude(7, 1, att_enemy, true);
@@ -97,7 +100,7 @@ End;
 Every 0$1 do
 var i, tmp;
 begin
-tmp := selected union friends union others;
+tmp := selected union friends;
 
 if not tmp then
    exit;
@@ -508,7 +511,7 @@ else
 GiveMedals('MAIN');
 tmp := FilterAllUnits([[[f_side, 7], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8], [f_class, 9]]]]);
 
-RewardPeople(tmp union Roth);
+RewardPeople(tmp ^ Roth);
 
 // Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
 // Gladstone, Houten, Cornel, Gary, Frank, Kikuchi,
@@ -590,7 +593,7 @@ tmp := tmp diff [JMM, Roth, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
 if tmp then
    SaveCharacters(tmp, '12a_others');
 
-SaveCharacters(others diff tmp, '12p_others');
+SaveCharacters(friends diff tmp, '12p_others');
 
 YouWin;
 End;

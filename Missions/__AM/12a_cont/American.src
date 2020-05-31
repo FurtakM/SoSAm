@@ -181,4 +181,38 @@ repeat
 until not defenders;
 End;
 
+// Extra patrol
+Every 7$30 trigger Difficulty > 1 and extra_patrol do
+var un;
+begin
+enable;
+
+uc_side := 1;
+uc_nation := 1;
+
+PrepareVehicle(us_medium_tracked, engine_siberite, control_computer, us_gatling_gun, 100);
+un := CreateVehicle;
+SetDir(un, 3);
+PlaceUnitXY(un, 155, 2, false);
+
+ComAgressiveMove(un, 169, 77);
+AddComWait(un, 0$2);
+AddComAgressiveMove(un, 134, 62);
+AddComAgressiveMove(un, 103, 42);
+AddComWait(un, 0$2);
+AddComAgressiveMove(un, 84, 2);
+
+repeat
+ wait(0$1);
+
+ if IsDead(un) then
+    begin
+    extra_patrol := false;
+    exit;
+    end;
+
+until IsAt(un, 84, 2);
+
+RemoveUnit(un);
+End;
 
