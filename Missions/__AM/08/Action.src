@@ -63,26 +63,29 @@ end;
 
 
 // Arrive two soldiers from Delta base
-Every 1$0 do 
+Every 0$45 trigger FilterAllUnits([[f_side, 1], [f_see, 6]]) = 0 do
 begin
     PrepareSupportFromDelta;
     firstAttack = 1;
 
     if IsOk(Gladstone) then
-    begin
-        Say(Gladstone, 'D2-Glad-1');
-    end else
-    begin
-        DialogRandom(FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [Joan, Denis], 'D2-Sol1-1', 'D2-FSol1-1');
-    end;
+       Say(Gladstone, 'D2-Glad-1')
+    else
+       DialogRandom(FilterUnitsInArea(GammaSupport, [[f_side, 1], [f_type, unit_human], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [Joan, Denis], 'D2-Sol1-1', 'D2-FSol1-1');
 
-    If IsOK(Donaldson) and gammaCommander = 1 then Say(Donaldson, 'D2-Don-1');
-    If IsOK(Brown) and gammaCommander = 2 then Say(Brown, 'D2-Brown-1');
-    If IsOK(Houten) and gammaCommander = 3 then Say(Houten, 'D2-VanH-1');
+    If IsOK(Donaldson) and gammaCommander = 1 then
+       Say(Donaldson, 'D2-Don-1');
+
+    If IsOK(Brown) and gammaCommander = 2 then
+       Say(Brown, 'D2-Brown-1');
+
+    If IsOK(Houten) and gammaCommander = 3 then
+       Say(Houten, 'D2-VanH-1');
 end;
 
 // Spawn John
 Every 0$1 do
+var none;
 begin
     wait(LoadVariable('07_time', 6$00) div 3);
     PrepareMacmillanSquad;
@@ -161,9 +164,11 @@ begin
      end;
     end;
 
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Khatam, Joan, Denis], 'DCa-Sol1-1', 'DCa-Sol1-1');
+    none := [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Khatam, Joan, Denis] ^ macmilan_squad;
+
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff none, 'DCa-Sol1-1', 'DCa-Sol1-1');
     Say(JMM, 'DCb-JMM-1');
-    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff [JMM, Brown, Donaldson, Bobby, Cyrus, Lisa, Frank, Gladstone, Kikuchi, Khatam, Joan, Denis], 'DCb-Sol1-1', 'DCb-Sol1-1');
+    DialogRandom(FilterAllUnits([[f_side, 1], [f_type, unit_human], [f_sex, 1], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4]]]) diff none, 'DCb-Sol1-1', 'DCb-Sol1-1');
     Say(JMM, 'DCb-JMM-2');
 
     secondAttack = 1;
