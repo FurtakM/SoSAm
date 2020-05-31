@@ -75,8 +75,8 @@ if Brown then
 
 friends := friends ^ CreateCharacterSet('11c_others') ^ CreateCharacterSet('11_others');
 
-if friends < 10 then
-   for i = 1 to 10 do
+if friends < 18 then
+   for i = 1 to 18 do
        begin
        PrepareHuman(false, rand(1, 4), 7);
        friends := Insert(friends, friends+1, CreateHuman);
@@ -168,7 +168,8 @@ if others then
 
 areas := areas union [guard_spawn_1, guard_spawn_2, guard_spawn_3,
                       guard_spawn_4, guard_spawn_5, guard_spawn_6,
-                      guard_spawn_7, guard_spawn_8];
+                      guard_spawn_7, guard_spawn_8, guard_spawn_9,
+                      guard_spawn_10, guard_spawn_11, guard_spawn_12];
 
 for i in friends^others do
     begin
@@ -191,13 +192,12 @@ for i in friends^others do
        end;
 
     PlaceUnitArea(i, areas[1], false);
+    areas := Delete(areas, 1);
 
     if GetClass(i) <> 4 then
        SetClass(i, 1);
 
     ComHold(i);
-
-    areas := Delete(areas, 1);
 
     if not areas then
        break;

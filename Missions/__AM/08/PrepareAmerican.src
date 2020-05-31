@@ -241,40 +241,48 @@ begin
     uc_side := 1;
     uc_nation := 1;
 
+    bc_kind1 := -1;
+    bc_kind2 := -1;
+
     for i in blist do
-    begin
+        begin
         bc_type := i[1];
         bc_level := i[5];
 
-        if i[1] in [b_lab_half, b_lab_full] then
-        begin
-            bc_kind1 := i[7];
-            if LoadVariable('06_remoteVehs_1', 0) = 1 then begin  bc_kind2 := 15;
-            end else begin bc_kind2 := i[8]; end;
-        end;
+        if bc_type in [b_lab, b_lab_half] then
+           begin
+           bc_type := b_lab_half;
+
+           if LoadVariable('06_remoteVehs_1', 0) then
+              begin
+              if i[7] > 9 then
+                 begin
+                 bc_type := b_lab_full;
+                 bc_kind2 := 15;
+                 end
+              else
+                 bc_kind1 := 15;
+              end;
+           end;
+
+        if bc_type = b_workshop then
+           bc_type := b_factory;
       
         if bc_type = b_depot then 
-        begin
-            bc_type := b_warehouse;
-            amDepot := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]);
-        end else
-        begin
-            if bc_type = 4 then
-            begin
-                bc_type = 5;
-                b := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]); 
-            end
-            else
-            begin
-                bc_type := i[1];
-                if LoadVariable('06_remoteVehs_1', 0) = 1 and bc_type = b_lab_half then bc_type := b_lab_full;
-                b := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]); 
-            end;
+           begin
+           bc_type := b_warehouse;
+           amDepot := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]);
+           continue;
+           end;
+
+         if bc_type = b_armoury then
+            bc_type = b_barracks;
+
+        b := CreateAndPlaceBuildingXYD(i[2], i[3], i[4]); 
+
+        if GetBType(b) = b_bunker then
+           PlaceWeaponTurret(b, i[7]);
         end;
-
-        if GetBType(b) = b_bunker then PlaceWeaponTurret(b, i[7]);
-
-    end;
 
     if not amDepot then
        begin
@@ -310,8 +318,8 @@ begin
               end;
        end;
 
-    if LoadVariable('06_remoteVehs_1', 0) = 1 then
-    begin
+    if LoadVariable('06_remoteVehs_1', 0) then
+       begin
         bc_type = 36;
         bc_level = 4;
 
@@ -423,6 +431,8 @@ Export Function PrepareMacmillanSquad;
 var i, k, un, others, tmp, tmp_vehs, vehicles, veh;
 begin
 vehicles := LoadVariable('07_vehicles', []);
+macmilan_squad := [];
+tmp_vehs := [];
 
 uc_side := 1;
 uc_nation := 1;
@@ -520,6 +530,7 @@ if not Khatam then
    end;
 
 others := CreateCharacterSet('07c_others');
+macmilan_squad := others;
 
 if others then
    for i in others do
@@ -545,7 +556,10 @@ for i in tmp do
        PlaceUnitArea(i, GammaSupport, false);
 
     ComMoveXY(i, 77, 16);
-    wait(0$2);
+
+    repeat
+     wait(0$1);
+    until not FilterUnitsInArea(GammaSupport, [f_side, 1]);
     end;
 
 
