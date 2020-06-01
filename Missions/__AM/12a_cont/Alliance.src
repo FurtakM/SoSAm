@@ -41,6 +41,18 @@ if LoadVariable('11_artifact_captured', 0) then
 
 SetSide(amlab, 7);
 DoNotAttack(1, amlab);
+End;
 
-ChangeSideFog(7, 4);
+Every 0$1 trigger FilterUnitsInArea(hill, [f_side, 7]) and not on_hill do
+begin
+enable;
+on_hill := true;
+PlaceSeeing(126, 13, 7, -90);
+End;
+
+Every 0$1 trigger not FilterUnitsInArea(hill, [f_side, 7]) and on_hill do
+begin
+enable;
+on_hill := false;
+RemoveSeeing(126, 13, 7);
 End;
