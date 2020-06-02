@@ -181,6 +181,31 @@ repeat
 until not defenders;
 End;
 
+Every 0$1 do
+var radar, i;
+begin
+uc_side := 1;
+uc_nation := 1;
+
+PrepareVehicle(us_light_wheeled, engine_solar, control_computer, us_radar, 100);
+radar := CreateVehicle;
+SetDir(radar, 4);
+PlaceUnitXY(radar, 51, 45, false);
+
+repeat
+ AddComWait(radar, 0$20);
+ AddComMoveXY(radar, 65, 75);
+ AddComWait(radar, 0$10);
+ AddComMoveXY(radar, 83, 87);
+ AddComWait(radar, 0$15);
+ AddComMoveXY(radar, 94, 81);
+ AddComWait(radar, 0$10);
+ AddComMoveXY(radar, 55, 48);
+
+ wait(1$00);
+until not IsOk(radar);
+End;
+
 // Extra patrol
 Every 7$30 trigger Difficulty > 1 and extra_patrol do
 var un;
@@ -190,7 +215,7 @@ enable;
 uc_side := 1;
 uc_nation := 1;
 
-PrepareVehicle(us_medium_tracked, engine_siberite, control_computer, us_gatling_gun, 100);
+PrepareVehicle(us_morphling, engine_siberite, control_computer, us_gatling_gun, 100);
 un := CreateVehicle;
 SetDir(un, 3);
 PlaceUnitXY(un, 155, 2, false);

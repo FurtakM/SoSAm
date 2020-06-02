@@ -43,7 +43,7 @@ PrepareGossudarov;
 
 repeat
  wait(0$1);
-until FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]]]);
+until FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]]]) or See(7, Gossudarov);
 
 tmp := FilterAllUnits([f_side, 6]);
 
@@ -58,7 +58,8 @@ CenterNowOnUnits(Gossudarov);
 
 if not Roth then
    begin
-   Say(JMM, 'D2-JMM-1');
+   if UnitFilter(tmp, [f_not, [f_lives, 1000]]) then
+      Say(JMM, 'D2-JMM-1');
    Say(JMM, 'D2-JMM-1b');
    Say(Gossudarov, 'D2-Gos-1');
    Say(JMM, 'D2-JMM-2');
@@ -66,14 +67,22 @@ if not Roth then
    end
 else
    begin
-   Say(Roth, 'D2-Roth-2');
-   Say(JMM, 'D2-JMM-1a');
+   if UnitFilter(tmp, [f_not, [f_lives, 1000]]) then
+      begin
+      Say(Roth, 'D2-Roth-2');
+      Say(JMM, 'D2-JMM-1a');
+      end;
+
    Say(Roth, 'D2-Roth-2a');
    Say(Roth, 'D2-Roth-2b');
    Say(JMM, 'D2-JMM-3');
-   Say(Gossudarov, 'D2-Gos-3');
-   Say(JMM, 'D2-JMM-4');
-   Say(Gossudarov, 'D2-Gos-4');
+
+   if UnitFilter(tmp, [f_not, [f_lives, 1000]]) then
+      begin
+      Say(Gossudarov, 'D2-Gos-3');
+      Say(JMM, 'D2-JMM-4');
+      Say(Gossudarov, 'D2-Gos-4');
+      end;
    end;
 
 Say(JMM, 'D2-JMM-5');
@@ -172,6 +181,7 @@ End;
 
 // Spawn Belkov
 Every 0$30+2$30 trigger player_spotted do
+var time, veh, vehSpawned;
 begin
 PrepareBelkov;
 
@@ -215,14 +225,32 @@ case Query('QSaveBelkov') of
 2: begin
    Say(JMM, 'D5a-JMM-2');
 
-   ComWait(Belkov, 0$10);
-   AddComMoveXY(Belkov, 107, 109);
-   AddComHold(Belkov);
+   ComHold(Belkov);
    end;
 end;
 
+time := 0$00;
+vehSpawned := false;
+
 repeat
  wait(0$1);
+
+ if time >= [0$10, 0$05, 0$02][Difficulty] and not vehSpawned then
+    begin
+    vehSpawned := true;
+
+    uc_side := 3;
+    uc_nation := 3;
+
+    PrepareVehicle(ru_medium_tracked, engine_siberite, control_computer, ru_gatling_gun, 100);
+    veh := CreateVehicle;
+    PlaceUnitXY(veh, 130, 131, false);
+
+    ComAgressiveMove(veh, 100, 82);
+    end
+  else
+    time := time + 0$1;
+
 until (IsDead(Belkov) and GetSide(Belkov) = 4) or GetDistUnits(NearestUnitToUnit(FilterAllUnits([f_side, 7]), Belkov), Belkov) < 10;
 
 if IsDead(Belkov) then
@@ -547,7 +575,7 @@ End;
 // - No ru forces
 // - All techs invented
 Every 0$01 trigger FilterAllUnits([[f_side, 2], [f_type, unit_human]]) = 0 and
-                   FilterAllUnits([f_side, 3]) = 0 and
+                   FilterAllUnits([[f_side, 3], [f_type, unit_human]]) = 0 and
                    FilterAllUnits([f_side, 1]) = 0 and
                    GetTechNation(7, 1, state_enabled) = 0 and
                    GetTechNation(7, 3, state_enabled) = 0 do

@@ -111,7 +111,7 @@ for i in tmp do
 End;
 
 Export Function PrepareRussianAttack(strength);
-var i;
+var i, j;
 begin
 result := [];
 
@@ -178,10 +178,11 @@ case strength of
 
       for i = 1 to 3 do
           begin
-          PrepareVehicle([us_medium_tracked, us_morphling][rand(1,2)],
+          j := rand(0,1);
+          PrepareVehicle([us_medium_tracked, us_morphling, us_morphling, us_heavy_tracked][j + rand(1,3)],
                          [engine_combustion, engine_siberite][rand(1,2)],
                          control_computer,
-                         [us_laser, us_rocket_launcher][rand(1,2)],
+                         [us_laser, us_rocket_launcher, us_heavy_gun][j + rand(1,2)],
                          85
                         );
           result := result union CreateVehicle;
@@ -229,11 +230,11 @@ End;
 
 // Purple attacks
 Every 0$30 trigger activeAttacks do
-var i, tmp, time, areas, strength, xy, x, y;
+var i, tmp, time, areas, strength, xy;
 begin
 areas := [southSpawn, southWestSpawn];
 time := [4$00, 3$30, 3$10][Difficulty];
-xy := [60, 96];
+xy := [ [60, 96], [78, 31] ];
 
 repeat
  if missionStage = 2 then
@@ -295,13 +296,15 @@ repeat
 
      for i in tmp do
          begin
-         x := GetX(i);
-         y := GetY(i);
-
-         if FilterAllUnits([[f_enemy, 6], [f_distxy, x, y, 12]]) then
-            ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([[f_enemy, 6], [f_distxy, x, y, 12]]), i))
-         else if GetDistUnitXY(i, xy[1], xy[2]) > 10 then
-              ComAgressiveMove(i, xy[1], xy[2])
+         if FilterAllUnits([[f_enemy, 6], [f_dist, i, 12]]) then
+            ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([[f_enemy, 6], [f_distxy, i, 12]]), i))
+         else if FilterUnitsInArea(powellBase, [f_enemy, 6]) then
+           begin
+              if GetDistUnitXY(i, xy[1], xy[2]) > 10 and not IsInArea(i, powellBase) then
+                 ComAgressiveMove(i, xy[1], xy[2])
+              else
+                 ComAttackUnit(i, NearestUnitToUnit(FilterUnitsInArea(powellBase, [f_enemy, 6]), i));
+           end
          else
               ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 6]), i));
          end;

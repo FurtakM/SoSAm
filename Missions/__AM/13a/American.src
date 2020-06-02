@@ -1,5 +1,5 @@
 Export Function PrepareAmericanAttack;
-var i, tmp, veh, flags, _target;
+var i, tmp, veh;
 begin
 uc_side := 1;
 uc_nation := 1;
@@ -8,8 +8,6 @@ InitHc;
 InitVc;
 
 tmp := [];
-flags := [0, 0, 0, 0, 0, 0, 0, 0, 1, 0];
-_target := [ [71, 34], [63, 49] ];
 
 for i = 1 to [5, 6, 6][Difficulty] do
     begin
@@ -32,5 +30,13 @@ if not tmp then
 if not first_powell_attack then
    first_powell_attack := true;
 
-Attack([0, tmp, _target, flags]);
+repeat
+ wait(0$2);
+
+ for i in tmp do
+     if IsOk(i) then
+        ComAttackUnit(i, NearestUnitToUnit([f_enemy, 1], i))
+     else
+        tmp := tmp diff i; 
+until not tmp;  
 End;
