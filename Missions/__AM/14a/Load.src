@@ -3,6 +3,9 @@ var i, tmp, b;
 begin
 tmp := LoadVariable('13a_buildings', [ [7, 1, b_warehouse, 70, 46, 3, 10, 0, 0, 0] ]);
 
+bc_kind1 := -1;
+bc_kind2 := -1;
+
 // GetSide(i), GetNation(i), GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)
 for i in tmp do
     begin
@@ -26,7 +29,14 @@ for i in tmp do
     if i[10] then
        PlaceWeaponTurret(b, i[10]);
     end;
+
+if HexInfo(144, 65) = 0 then
+   begin
+   bc_type := b_warehouse;
+   b := CreateAndPlaceBuildingXYD(144, 65, 3);
+   end;
 End;
+
 
 Export Function PrepareUnit(ident, exist_mode, prefix);
 var unit;

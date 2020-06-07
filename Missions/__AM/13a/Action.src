@@ -474,6 +474,7 @@ End;
 
 // Spawn Gnyevko
 Every 0$1 trigger IsPlaced(Burlak) and GetSide(Burlak) = 7 do
+var time;
 begin
 wait(4$40);
 
@@ -486,9 +487,12 @@ PrepareGnyevko;
 ComMoveXY(Gnyevko, 124, 118);
 AddComHold(Gnyevko);
 
+time := 0$00;
+
 repeat
  wait(0$1);
-until IsAt(Gnyevko, 124, 118);
+ time := time + 0$1;
+until IsAt(Gnyevko, 124, 118) or time >= 0$30;
 
 SayRadio(Gnyevko, 'DBelkov-Gny-1');
 Say(Burlak, 'DBelkov-Bur-1a');
@@ -501,7 +505,7 @@ SetSide(Gnyevko, 7);
 End;
 
 // Spawn american attack
-Every 10$00+1$30 trigger GetSide(Burlak) = 7 do
+Every 12$00+1$30 trigger GetSide(Burlak) = 7 do
 begin
 enable;  
 PrepareAmericanAttack;
@@ -700,7 +704,7 @@ tmp2 := [];
 
 if tmp then
    for i in tmp do
-       tmp2 := tmp2 ^ [GetSide(i), GetNation(i), GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)];
+       tmp2 := tmp2 ^ [[GetSide(i), GetNation(i), GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)]];
 
 if tmp2 then
    SaveVariable(tmp2, '13a_buildings');

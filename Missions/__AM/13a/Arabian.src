@@ -186,16 +186,16 @@ tmp := [ [ar_half_tracked, engine_combustion, control_remote, ar_flame_thrower],
 for i = 1 to Difficulty+tick div 10$00 do
     tmp := Insert(tmp, tmp+1, [[ar_medium_trike, ar_half_tracked][rand(1,2)], engine_combustion, control_remote, [ar_rocket_launcher, ar_selfpropelled_bomb, ar_gatling_gun, ar_flame_thrower][rand(1,4)]]);
 
-MC_SetProduceList(base, tmp);
+MC_InsertProduceList(base, tmp);
 
 repeat
  wait(0$1);
-until MC_GetProduceList(base) = 0;
+until mc_vehicles[base] > 6;
 
 wait(0$20);
 
 _target := [[124,85], [90,61], [69,48], [68,48]];
-attackers := mc_vehicles[base] diff (mc_defender[base] union UnitFilter(mc_vehicles[base], [f_weapon, ar_cargo_bay]));
+attackers := mc_vehicles[base] diff UnitFilter(mc_vehicles[base], [f_weapon, ar_cargo_bay]);
 
 if not attackers then
    exit;
@@ -222,16 +222,16 @@ tmp := [ [ar_medium_trike, engine_combustion, control_remote, ar_rocket_launcher
          [ar_hovercraft, engine_solar, control_remote, ar_double_machine_gun]
        ];
 
-MC_SetProduceList(base, tmp);
+MC_InsertProduceList(base, tmp);
 
 repeat
  wait(0$1);
-until MC_GetProduceList(base) = 0;
+until mc_vehicles[base] >= 6;
 
 wait(0$20);
 
 _target := [[119,9]];
-attackers := mc_vehicles[base] diff (mc_defender[base] union UnitFilter(mc_vehicles[base], [f_weapon, ar_cargo_bay]));
+attackers := mc_vehicles[base] diff UnitFilter(mc_vehicles[base], [f_weapon, ar_cargo_bay]);
 
 if not attackers then
    exit;

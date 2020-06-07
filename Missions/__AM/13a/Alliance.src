@@ -174,6 +174,10 @@ begin
 uc_side := 4;
 uc_nation := 3;
 
+repeat
+ wait(0$1);
+until not FilterAllUnits([f_distxy, 123, 3, 3]);
+
 InitHc;
 
 Burlak := NewCharacter('Burlak');
@@ -187,7 +191,7 @@ SetMark(Masha, 1);
 
 PlaceUnitArea(Masha, burlak_spawn, false);
 PlaceUnitXY(Burlak, 125, 1, false);
-
+                         
 ComMoveUnit(Burlak, Masha);
 
 wait(0$0.3);
@@ -220,7 +224,7 @@ for i in UnitFilter(tmp, [f_class, 1]) do
 
 repeat
  wait(0$1);
-until IsAt(Masha, 110, 10);
+until IsAt(Masha, 110, 10) or not IsPlaced(Masha);
 
 ComStop(Burlak);
 AddComHold(Burlak);
