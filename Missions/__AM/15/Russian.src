@@ -234,7 +234,7 @@ var i, tmp, time, areas, strength, xy;
 begin
 areas := [southSpawn, southWestSpawn];
 time := [4$00, 3$30, 3$10][Difficulty];
-xy := [ [60, 96], [78, 31] ];
+xy := [ [70, 118], [78, 31] ];
 
 repeat
  if missionStage = 2 then
@@ -300,8 +300,8 @@ repeat
             ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([[f_enemy, 6], [f_distxy, i, 12]]), i))
          else if FilterUnitsInArea(powellBase, [f_enemy, 6]) then
            begin
-              if GetDistUnitXY(i, xy[1], xy[2]) > 10 and not IsInArea(i, powellBase) then
-                 ComAgressiveMove(i, xy[1], xy[2])
+              if GetDistUnitXY(i, xy[1][1], xy[1][2]) > 10 and not IsInArea(i, powellBase) then
+                 ComAgressiveMove(i, xy[1][1], xy[1][2])
               else
                  ComAttackUnit(i, NearestUnitToUnit(FilterUnitsInArea(powellBase, [f_enemy, 6]), i));
            end
