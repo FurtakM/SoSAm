@@ -946,8 +946,14 @@ if lose_counter = 0 then
 GiveMedals('MAIN');
 
 if IsDead(Pokryshkin) then
+   begin
+   stop_talking := true;
+
    for i in save_group^save_others do
        AddExperience(i, skill_combat, 1500);
+
+   stop_talking := false;
+   end;
 
 RewardPeople(save_group^save_others);
 

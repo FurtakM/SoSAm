@@ -257,7 +257,11 @@ missionStage := 2;
 
 wait(0$3);
 
-tmp := tmp diff FilterAllUnits([[f_side, 1], [f_type, unit_human]]);
+tmp := FilterAllUnits([[f_side, 4], [f_type, unit_human]]) diff Powell;
+
+if not tmp then
+   tmp := [Powell];
+
 mc_bases := Replace(mc_bases, 4, FilterAllUnits([[f_side, 4], [f_nation, 1], [f_not, [f_type, unit_vehicle]]]) diff Powell);
 
 // cargo
@@ -398,11 +402,21 @@ End;
 
 // Powell first attack
 Every 0$30 trigger missionStart and FilterAllUnits([[f_side, 4], [f_type, unit_vehicle]]) >= 4 and missionStage = 2 do
-var i, tmp, tmp2, retreat, arm, ru, un;
+var i, tmp, tmp2, retreat, arm, bar, ru, un;
 begin
 missionStage := 3;
 retreat := false;
-arm := FilterAllUnits([[f_side, 4], [f_btype, b_armoury]])[1];
+arm := FilterAllUnits([[f_side, 4], [f_btype, b_armoury]]);
+bar := FilterAllUnits([[f_side, 4], [f_btype, b_barracks]]);
+
+if not bar then
+   begin
+   repeat
+    wait(0$1);
+   until FilterAllUnits([[f_side, 4], [f_not, [f_constructed]], [f_btype, b_barracks]]);
+   end;
+
+bar := FilterAllUnits([[f_side, 4], [f_btype, b_barracks]]);
 
 repeat
  wait(0$1);
@@ -440,6 +454,17 @@ for i = 1 to 4 do
 
 mc_bases := Replace(mc_bases, 4, mc_bases[4] diff powellSquadAttack[1]);
 
+if UnitsInside(arm[1]) then
+   begin
+   for i in UnitsInside(arm[1]) do
+       begin
+       ComExitBuilding(i);
+       AddComEnterUnit(i, bar[1]);
+       end;
+   end;
+
+wait(0$3);
+
 for i in powellSquadAttack[1] do
     begin
     if IsInUnit(i) then
@@ -447,7 +472,7 @@ for i in powellSquadAttack[1] do
 
     if GetClass(i) <> 1 then
        begin
-       AddComEnterUnit(i, arm);
+       AddComEnterUnit(i, arm[1]);
        AddComChangeProfession(i, class_soldier);
        AddComExitBuilding(i);
        end;
@@ -573,7 +598,7 @@ fac := FilterAllUnits([[f_side, 4], [f_btype, b_factory]])[1];
 
 repeat
  wait(0$1);
-until mc_vehicles[4] >= 5;
+until mc_vehicles[4] >= 5 and UnitFilter(mc_vehicles[4], [f_empty]) >= 5;
 
 powellAllowRetreat := false;
 
@@ -624,7 +649,7 @@ for i = 1 to powellSquadAttack do
 
     end;
 
-wait(0$45);
+wait(0$55);
 
 MC_Kill(4); // !!!
 

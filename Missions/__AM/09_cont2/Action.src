@@ -408,7 +408,7 @@ End;
 
 // Arabian arrive
 Every 0$1 trigger ar_can_arrive do
-var i, x, tmp, dep, time, no_oil_gain, first_warn, b, have_crates;
+var i, x, tmp, dep, time, no_oil_gain, first_warn, b, have_crates, filter;
 begin
 PrepareArabian;
 
@@ -632,10 +632,17 @@ if player_want_mortar then
         CenterNowOnUnits(Gali);
 
         SetSide(Gali, 1);
-        ComBuild(Gali, b_armoury, 107, 131, 0);
 
         repeat
-         wait(1);
+         filter := FilterAllUnits([[f_side, 1], [f_not, [f_nation, 2]], [f_type, unit_human], [f_distxy, 107, 131, 6]]);
+
+         if filter then
+            for i in filter do
+                ComMoveXY(i, 107, 121);
+
+         ComBuild(Gali, b_armoury, 107, 131, 0);
+
+         wait(0$1);
         until FilterAllUnits([[f_btype, b_armoury], [f_nation, nation_arabian]]);
 
         SetSide(Gali, 2);

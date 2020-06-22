@@ -715,8 +715,13 @@ begin
     vc_chassis = 4;
 
     SikorskyTank = CreateVehicle;
+    SetDir(SikorskyTank, 3);
 
-    PlaceUnitArea(SikorskyTank, SikorskySpawn, false);
+    repeat
+     wait(0$1);
+     PlaceUnitXY(SikorskyTank, 18, 5, false);
+    until IsPlaced(SikorskyTank);
+
     PlaceHumanInUnit(Sikorski, SikorskyTank);
     ComMoveToArea(SikorskyTank, GammaSpawn);
 end;
@@ -735,8 +740,11 @@ begin
         PrepareHuman(false, 1, Rand(5, 8));
 
         un = CreateHuman;
+        SetDir(un, 3);
         PlaceUnitArea(un, SikorskySpawn, false);
         ComMoveXY(un, 53, 23);
+
+        wait(0$1);
     end;
 
     for i = 1 to 3 do
@@ -749,8 +757,11 @@ begin
         PrepareHuman(false, 4, Rand(5, 8));
 
         un = CreateHuman;
+        SetDir(un, 3);
         PlaceUnitArea(un, SikorskySpawn, false);
         ComMoveXY(un, 53, 23);
+
+        wait(0$1);
     end;
 
     for i = 1 to [9, 8, 7][Difficulty] do
@@ -765,6 +776,7 @@ begin
         vc_chassis = 4;
 
         veh = CreateVehicle;
+        SetDir(veh, 3);
 
         PlaceUnitArea(veh, SikorskySpawn, false);
 

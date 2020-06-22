@@ -98,7 +98,7 @@ if Kirilenkova then
 
 gossudarov_arrive := true;
 
-//Hint('CombinedForces');
+Hint('CombinedForces');
 
 repeat
  wait(0$1);
@@ -117,7 +117,7 @@ if Kirilenkova or un then
 End;
 
 // If player has less than 6 people
-Every 0$1 trigger gossudarov_arrive and FilterAllUnits([[f_side, 7], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8], [f_class, 9]]]) < 6 do
+Every 0$1 trigger gossudarov_arrive and FilterAllUnits([[f_side, 7], [f_or, [f_class, 1], [f_class, 2], [f_class, 3], [f_class, 4], [f_class, 5], [f_class, 8], [f_class, 9]]]) < 7 do
 YouLost('TooMany');
 
 
@@ -157,6 +157,9 @@ until tmp;
 un := NearestUnitToUnit(tmp, JMM);
 player_spotted := true;
 tmp := SciRu;
+
+if not tmp then
+   tmp := SolRu;
 
 DialogueOn;
 
@@ -474,6 +477,7 @@ End;
 
 // Spawn Gnyevko
 Every 0$1 trigger IsPlaced(Burlak) and GetSide(Burlak) = 7 do
+var time;
 begin
 wait(4$40);
 
@@ -486,9 +490,12 @@ PrepareGnyevko;
 ComMoveXY(Gnyevko, 124, 118);
 AddComHold(Gnyevko);
 
+time := 0$00;
+
 repeat
  wait(0$1);
-until IsAt(Gnyevko, 124, 118);
+ time := time + 0$1;
+until IsAt(Gnyevko, 124, 118) or time >= 0$30;
 
 SayRadio(Gnyevko, 'DBelkov-Gny-1');
 Say(Burlak, 'DBelkov-Bur-1a');
@@ -501,7 +508,7 @@ SetSide(Gnyevko, 7);
 End;
 
 // Spawn american attack
-Every 10$00+1$30 trigger GetSide(Burlak) = 7 do
+Every 12$00+1$30 trigger GetSide(Burlak) = 7 do
 begin
 enable;  
 PrepareAmericanAttack;
@@ -700,7 +707,7 @@ tmp2 := [];
 
 if tmp then
    for i in tmp do
-       tmp2 := tmp2 ^ [GetSide(i), GetNation(i), GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)];
+       tmp2 := tmp2 ^ [[GetSide(i), GetNation(i), GetBType(i), GetX(i), GetY(i), GetDir(i), GetBLevel(i), GetLabKind(i, 1), GetLabKind(i, 2), GetBWeapon(i)]];
 
 if tmp2 then
    SaveVariable(tmp2, '13a_buildings');
@@ -709,17 +716,10 @@ YouWin;
 End;
 
 
-
-
-
-
-
-
-
 Export Function SciRu;
 var tmp, t;
 begin
-t := [Gossudarov, Burlak, Titov, Belkov, Gnyevko];
+t := [Gossudarov, Burlak, Titov, Belkov, Gnyevko, Petrosyan, Scholtze, Dolgov];
 
 tmp := FilterAllUnits([[f_side, 7], [f_nation, 3], [f_class, 4], [f_sex, sex_male]]) diff t;
 
@@ -730,7 +730,7 @@ End;
 Export Function SolRu;
 var tmp, t;
 begin
-t := [Belkov, Burlak, Gossudarov];
+t := [Gossudarov, Burlak, Titov, Belkov, Gnyevko, Petrosyan, Scholtze, Dolgov];
 
 tmp := FilterAllUnits([[f_side, 7], [f_nation, 3], [f_class, 1], [f_sex, sex_male]]) diff t;
 

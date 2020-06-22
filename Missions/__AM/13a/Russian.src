@@ -40,16 +40,16 @@ tmp := [ [ru_medium_tracked, engine_combustion, control_computer, ru_rocket_laun
 for i = 1 to Difficulty+tick div 10$00 do
     tmp := Insert(tmp, tmp+1, [[ru_heavy_wheeled, ru_heavy_tracked][rand(1,2)], engine_combustion, control_computer, [ru_heavy_gun, ru_rocket, ru_rocket_launcher][rand(1,3)]]);
 
-MC_SetProduceList(base, tmp);
+MC_InsertProduceList(base, tmp);
 
 repeat
  wait(0$1);
-until MC_GetProduceList(base) = 0;
+until mc_vehicles[base] > 6;
 
 wait(0$20);
 
 _target := [[71,19], [91,67], [52,44], [68,48]];
-attackers := mc_vehicles[base] diff (mc_defender[base] union UnitFilter(mc_vehicles[base], [f_or, [f_weapon, ru_cargo_bay], [f_weapon, ru_crane]]));
+attackers := mc_vehicles[base] diff UnitFilter(mc_vehicles[base], [f_or, [f_weapon, ru_cargo_bay], [f_weapon, ru_crane]]);
 
 if not attackers then
    exit;

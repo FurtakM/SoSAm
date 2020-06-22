@@ -252,17 +252,21 @@ end;
 // Sikorsky dialog about attack with JMM
 Every 0$1 trigger IsInArea(SikorskyTank, PrepareToBattle) do 
 begin
-    Say(Sikorski, 'D7-Sik-1');
-    if IsInArea(JMM, RussianBaseTerritory) or IsInUnit(JMM) then
-    begin
-        Say(Sikorski, 'D7a-Sik-1');
-        SikorskyStatus = 1;
-    end else
-    begin
-        Say(Sikorski, 'D7b-Sik-1');
-        SikorskyStatus = 2;
-    end;
-end;
+Say(Sikorski, 'D7-Sik-1');
+
+wait(0$10);
+
+if IsInArea(JMM, RussianBaseTerritory) or (GetDriverVehicle(JMM) and IsInArea(GetDriverVehicle(JMM), RussianBaseTerritory)) then
+   begin
+   Say(Sikorski, 'D7a-Sik-1');
+   SikorskyStatus = 1;
+   end
+else
+   begin
+   Say(Sikorski, 'D7b-Sik-1');
+   SikorskyStatus = 2;
+   end;
+End;
 
 // Remove units from map
 Every 0$01 trigger escapeAvalaible = 1 do
