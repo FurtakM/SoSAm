@@ -155,22 +155,24 @@ begin
 end; 
 
 Export function PrepareDenis;
-var _xy, xy, i;
+var xy, i;
 begin
     uc_side = 4;
     uc_nation = 1;
 
     xy := [ [63,1], [70,1], [83,1], [16,1], [27,1], [38,1], [5,1], [54,1] ];
 
-    for i in xy do
+    Denis = PrepareUnit('Denis', true);
+
+    for i = 1 to xy do
         if HexInfo(xy[i][1], xy[i][2]) = 0 then
            begin
-           _xy := xy[i];
-           break;
+           PlaceUnitXY(Denis, xy[i][1], xy[i][2], false);
+
+           if IsPlaced(Denis) then
+              break;
            end;
 
-    Denis = PrepareUnit('Denis', true);
-    PlaceUnitXY(Denis, _xy[1], _xy[2], false);
     SetClass(Denis, 4);
     SetLives(Denis, 750);
 end;

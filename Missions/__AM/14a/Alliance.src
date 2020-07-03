@@ -5,7 +5,7 @@ Export Roth, Lisa, Donaldson, Bobby, Cyrus, Denis, Brown,
        Gossudarov, Kirilenkova, Titov, Dolgov,
        Petrosyan, Scholtze, Oblukov, Kapitsova,
        Lipshchin, Petrovova, Kovalyuk, Kuzmov, Karamazov,
-       Belkov, Gnyevko;
+       Belkov, Gnyevko, Masha;
 Export squad1, squad2;
 Export Function PrepareAlliance;
 var tmp, i, veh;
@@ -41,12 +41,14 @@ if freedom then
    CenterNowOnUnits(JMM);
    end;
 
+SetClass(JMM, 2);
+
 tmp := [ [us_medium_wheeled, us_medium_tracked, us_heavy_tracked, us_morphling],
          [us_double_gun, us_laser, us_rocket_launcher, us_gatling_gun, us_cargo_bay] ];
 
 for i = 1 to 5 do
     begin
-    PrepareVehicle(tmp[1][rand(1, tmp[1])], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][rand(1, tmp[2])], 100);
+    PrepareVehicle(tmp[1][i mod 4 + 1], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][i mod 5 + 1], 100);
     veh := CreateVehicle;
     SetDir(veh, rand(0, 5));
 
@@ -66,14 +68,14 @@ tmp := [ [ru_medium_wheeled, ru_medium_tracked, ru_heavy_wheeled, ru_heavy_track
 
 for i = 1 to 5 do
     begin
-    PrepareVehicle(tmp[1][rand(1, tmp[1])], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][rand(1, tmp[2])], 100);
+    PrepareVehicle(tmp[1][i mod 4 + 1], [engine_combustion, engine_siberite][rand(1, 2)], control_manual, tmp[2][i mod 3 + 1], 100);
     veh := CreateVehicle;
 
     SetDir(veh, rand(0, 5));
     PlaceUnitArea(veh, freedom_base, false);
     end;
 
-if not FilterAllUnits([[f_or, [f_weapon, us_cargo_bay], [f_weapon, ru_cargo_bay]]]) then
+if not FilterAllUnits([f_or, [f_weapon, us_cargo_bay], [f_weapon, ru_cargo_bay]]) then
    begin
    PrepareVehicle(ru_medium_tracked, engine_siberite, control_manual, ru_cargo_bay, 0);
    veh := CreateVehicle;
@@ -82,6 +84,15 @@ if not FilterAllUnits([[f_or, [f_weapon, us_cargo_bay], [f_weapon, ru_cargo_bay]
    PlaceUnitArea(veh, freedom_base, false);
    end;
 
+tmp := LoadVariable('13a_Masha', []);
+
+if tmp then
+   begin
+   PrepareVehicle(tmp[1], tmp[2], tmp[3], tmp[4], 100);
+   Masha := CreateVehicle;
+   PlaceUnitArea(Masha, freedom_base, false);
+   SetMark(Masha, 1);
+   end;
 
 // others in arabian base
 //[Joan, Roth, Gossudarov, Simms, Denis, DeltaDoctor, Kirilenkova, Petrosyan, Dolgov, Scholtze];
@@ -181,19 +192,18 @@ for i in tmp do
 
 squad2 := tmp;
 
-if GetMonth mod 2 = 0 then
-   begin
-   uc_side := 0;
-   uc_nation := 0;
 
-   InitHc;
 
-   hc_importance := 0;
-   hc_name := 'Find some goods!';
-   PrepareHuman(false, class_apeman, 1);
-   PlaceUnitXY(CreateHuman, 96, 108, false);
-   InitHc;
-   end;
+uc_side := 0;
+uc_nation := 0;
+
+InitHc;
+
+hc_importance := 0;
+hc_name := 'Find some goods!';
+PrepareHuman(false, class_apeman, 1);
+PlaceUnitXY(CreateHuman, 96, 108, false);
+InitHc;
 End;
 
 Every 3 trigger FilterAllUnits([[f_side, 7], [f_nation, 0]]) do
