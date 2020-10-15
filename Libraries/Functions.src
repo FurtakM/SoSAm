@@ -1457,16 +1457,16 @@ End;
   0: Can't be build
   1: Can be build
 }
-Export Function CanBeBuilded(bdepot, btype, x, y, d);
+Export Function CanBeBuilt(depot, btype, x, y, d);
 var i, j, side, pom, cost, hexes, height, dist, hex;
 begin
 result := false;
 
-if not bdepot or not GetBType(bdepot) in [b_depot, b_warehouse] or not btype or not d in [0, 1, 2, 3, 4, 5] or not ValidHex(x, y) then
+if not depot or not GetBType(depot) in [b_depot, b_warehouse] or not btype or not d in [0, 1, 2, 3, 4, 5] or not ValidHex(x, y) then
    exit;
 
-pom := GetBase(bdepot);
-cost := CostOfBuilding(btype, GetNation(bdepot));
+pom := GetBase(depot);
+cost := CostOfBuilding(btype, GetNation(depot));
 
 if not (GetResourceType(pom, mat_cans) >= cost[1] and
    GetResourceType(pom, mat_oil) >= cost[2] and
@@ -1476,15 +1476,15 @@ if not (GetResourceType(pom, mat_cans) >= cost[1] and
 //    MAX_DISTANCE 28 (26 in vanilla)
 //    MAX_DISTANCE_BONUS 12
 
-if GetBType(bdepot) = b_depot then
+if GetBType(depot) = b_depot then
    dist := 28
   else
    dist := 36;
 
-if GetDistUnitXY(bdepot, x, y) > dist then
+if GetDistUnitXY(depot, x, y) > dist then
    exit;
 
-hexes := GetBuildingHexes(btype, x, y, d, GetNation(bdepot), 0);
+hexes := GetBuildingHexes(btype, x, y, d, GetNation(depot), 0);
 
 if not hexes then
    exit;
@@ -1513,7 +1513,7 @@ for i = 1 to hexes do
 
     end;
 
-side := GetSide(bdepot);
+side := GetSide(depot);
 
 if DangerAtRangeXY(side, x, y, 20)[4] then
    exit;
@@ -1975,7 +1975,7 @@ Export Function Attack(list);
 var base, group, path, flags, i, j, k, x, y, d, z, tmp, tmp2, units_path,
     f_ignore_area, f_capture, f_ignore_civ,
     f_murder, f_mines, f_repair, f_heal, f_spacetime, f_attack_depot, f_crawl,
-    mined, bombed, attacking, to_heal, healers, to_repair, repairs, empty_vehs;
+    mined, bombed, attacking, to_heal, healers, to_repair, repairs, empty_vehs, side;
 begin
 if not list then
    exit;
@@ -1996,6 +1996,8 @@ to_repair := [];
 
 if not group or not path then
    exit;
+
+side := GetSide(group[1]);
 
 // prepare flags
 if flags then
@@ -2439,7 +2441,7 @@ repeat
  end;
 
  wait(0$1);
-until group = [];
+until group = [] or not FilterAllUnits([f_enemy, side]);
 
 End;
 
